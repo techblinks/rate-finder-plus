@@ -4,7 +4,7 @@ import { getFAQs } from "@/data/faq";
 import { getPageContent } from "@/data/content";
 import SEOHead from "@/components/SEOHead";
 import BreadcrumbNav from "@/components/BreadcrumbNav";
-import AdPlaceholder from "@/components/AdPlaceholder";
+import AdPlaceholder, { AffiliateCTA, TrustDisclaimer } from "@/components/AdPlaceholder";
 import FAQSection from "@/components/FAQSection";
 import ContentBlocks from "@/components/ContentBlocks";
 import InternalLinks from "@/components/InternalLinks";
@@ -57,19 +57,26 @@ const CalculatorPage = () => {
           ]}
         />
 
-        <AdPlaceholder zone="top-banner" className="h-20 mb-8" />
+        {/* Top ad — visible but not intrusive */}
+        <AdPlaceholder zone="top-banner" className="h-16 mb-6 hidden sm:flex" />
 
         <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
           {c.flag} {content.h1}
         </h1>
-        <p className="text-lg text-muted-foreground mb-8 max-w-3xl">
+        <p className="text-base text-muted-foreground mb-8 max-w-3xl leading-relaxed">
           {content.intro}
         </p>
 
+        {/* Calculator */}
         <CalcComponent country={c} />
 
-        <AdPlaceholder zone="post-calculator" className="h-20 mt-8" />
+        {/* Affiliate CTA — high-intent placement right after calculator */}
+        <AffiliateCTA countryName={c.name} symbol={c.currencySymbol} />
 
+        {/* Post-calculator ad */}
+        <AdPlaceholder zone="post-calculator" className="h-20 mt-2 mb-8" />
+
+        {/* Rich content */}
         <ContentBlocks
           howItWorks={content.howItWorks}
           whyUse={content.whyUse}
@@ -77,9 +84,13 @@ const CalculatorPage = () => {
           keyTerms={content.keyTerms}
         />
 
-        <AdPlaceholder zone="in-content" className="h-20 mt-8" />
+        {/* In-content ad between content and FAQ */}
+        <AdPlaceholder zone="in-content" className="h-20 my-8" />
 
         <FAQSection faqs={faqs} />
+
+        {/* Trust disclaimer */}
+        <TrustDisclaimer />
 
         <InternalLinks currentCountry={country} currentCalc={calcType} />
       </div>

@@ -2,7 +2,7 @@ import { useParams, Navigate, Link } from "react-router-dom";
 import { countries, calculatorTypes, calculatorMeta } from "@/data/countries";
 import SEOHead from "@/components/SEOHead";
 import BreadcrumbNav from "@/components/BreadcrumbNav";
-import AdPlaceholder from "@/components/AdPlaceholder";
+import AdPlaceholder, { TrustDisclaimer } from "@/components/AdPlaceholder";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, Calculator, TrendingUp, Banknote } from "lucide-react";
 
@@ -23,16 +23,16 @@ const CountryHome = () => {
       />
       <div className="container py-8">
         <BreadcrumbNav items={[{ label: c.name }]} />
-        <AdPlaceholder zone="top-banner" className="h-20 mb-8" />
+        <AdPlaceholder zone="top-banner" className="h-16 mb-6 hidden sm:flex" />
 
         <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
           {c.flag} {c.name} Financial Calculators
         </h1>
-        <p className="text-lg text-muted-foreground mb-8 max-w-2xl">
+        <p className="text-base text-muted-foreground mb-8 max-w-2xl leading-relaxed">
           Free, accurate financial calculators built for {c.name}. Estimate mortgage payments, compare loan options, and project investment growth — all in {c.currency}.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
           {calculatorTypes.map((calc) => {
             const Icon = icons[calc];
             return (
@@ -54,9 +54,9 @@ const CountryHome = () => {
           })}
         </div>
 
-        <AdPlaceholder zone="in-content" className="h-20 mb-8" />
+        <AdPlaceholder zone="in-content" className="h-20 mb-10" />
 
-        <section className="mb-12">
+        <section className="mb-10">
           <h2 className="text-2xl font-bold text-foreground mb-4">Popular Cities in {c.name}</h2>
           <div className="flex flex-wrap gap-2">
             {c.cities.map((city) => {
@@ -74,17 +74,19 @@ const CountryHome = () => {
           </div>
         </section>
 
-        <section>
+        <section className="mb-8">
           <h2 className="text-2xl font-bold text-foreground mb-4">About {c.name} Financial Calculators</h2>
-          <div className="prose prose-sm max-w-none text-muted-foreground">
+          <div className="text-sm text-muted-foreground space-y-3 leading-relaxed">
             <p>
-              Our {c.name} financial calculators are designed with local market conditions in mind. Default values reflect current {c.name} averages for property prices, interest rates, and loan terms. Whether you're buying your first home, consolidating debt, or planning your retirement savings, these tools provide the clarity you need to make confident financial decisions.
+              Our {c.name} financial calculators are designed with local market conditions in mind. Default values reflect current {c.name} averages for property prices, interest rates, and loan terms.
             </p>
             <p>
-              All calculations use {c.currency} ({c.currencySymbol}) and follow {c.name} financial conventions. Results are for informational purposes only and should not be considered financial advice. Always consult a qualified financial advisor for personalized guidance.
+              All calculations use {c.currency} ({c.currencySymbol}) and follow {c.name} financial conventions. Results are for informational purposes only.
             </p>
           </div>
         </section>
+
+        <TrustDisclaimer />
       </div>
     </>
   );
