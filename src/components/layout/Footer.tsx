@@ -2,10 +2,12 @@ import { Link } from "react-router-dom";
 import { Calculator } from "lucide-react";
 import { countries, calculatorTypes, calculatorMeta } from "@/data/countries";
 
+const year = new Date().getFullYear();
+
 const Footer = () => (
   <footer className="border-t bg-primary text-primary-foreground mt-16">
     <div className="container py-12">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
         <div>
           <Link to="/" className="flex items-center gap-2 font-bold text-lg mb-3">
             <Calculator className="h-5 w-5" />
@@ -27,14 +29,29 @@ const Footer = () => (
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link to={`/${c.code}`} className="text-sm opacity-80 hover:opacity-100 transition-opacity">
+                  All {c.name} Calculators →
+                </Link>
+              </li>
             </ul>
           </div>
         ))}
+
+        <div>
+          <h3 className="font-semibold mb-3">Company</h3>
+          <ul className="space-y-2">
+            <li><Link to="/about" className="text-sm opacity-80 hover:opacity-100 transition-opacity">About Us</Link></li>
+            <li><Link to="/contact" className="text-sm opacity-80 hover:opacity-100 transition-opacity">Contact</Link></li>
+            <li><Link to="/privacy-policy" className="text-sm opacity-80 hover:opacity-100 transition-opacity">Privacy Policy</Link></li>
+            <li><Link to="/terms" className="text-sm opacity-80 hover:opacity-100 transition-opacity">Terms of Service</Link></li>
+          </ul>
+        </div>
       </div>
 
       <div className="mt-10 pt-6 border-t border-primary-foreground/20">
         <p className="text-xs opacity-60 text-center">
-          © {new Date().getFullYear()} ZuneCalculator.com. All rights reserved. We do not provide financial services. We connect users with third-party providers. Calculations are for informational purposes only.
+          © {year} ZuneCalculator.com. All rights reserved. We do not provide financial services or advice. We connect users with third-party providers. Calculations are for informational purposes only.
         </p>
       </div>
     </div>
