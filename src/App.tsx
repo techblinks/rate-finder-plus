@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,6 +7,10 @@ import Layout from "@/components/layout/Layout";
 import Index from "./pages/Index.tsx";
 import CountryHome from "./pages/CountryHome.tsx";
 import CalculatorPage from "./pages/CalculatorPage.tsx";
+import About from "./pages/About.tsx";
+import Contact from "./pages/Contact.tsx";
+import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
+import Terms from "./pages/Terms.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -20,6 +24,14 @@ const App = () => (
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<Index />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<Terms />} />
+            {/* Redirect bare calculator slugs to /us */}
+            <Route path="/mortgage-calculator" element={<Navigate to="/us/mortgage-calculator" replace />} />
+            <Route path="/loan-calculator" element={<Navigate to="/us/loan-calculator" replace />} />
+            <Route path="/interest-calculator" element={<Navigate to="/us/interest-calculator" replace />} />
             <Route path="/:country" element={<CountryHome />} />
             <Route path="/:country/:calculator" element={<CalculatorPage />} />
           </Route>
