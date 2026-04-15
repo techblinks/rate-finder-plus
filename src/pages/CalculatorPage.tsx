@@ -27,6 +27,12 @@ const CalculatorPage = () => {
   const { country, calculator } = useParams<{ country: string; calculator: string }>();
   if (!country || !countries[country]) return <Navigate to="/us" replace />;
 
+  // Check if this is a city page (e.g., mortgage-calculator-new-york)
+  const parsed = parseCityFromCalculatorSlug(calculator || "");
+  if (parsed.calcType && parsed.citySlug && getCityBySlug(country, parsed.citySlug)) {
+    return <CityCalculatorPage />;
+  }
+
   const calcType = calculator as CalculatorType;
   if (!calculatorMeta[calcType]) return <Navigate to={`/${country}`} replace />;
 
