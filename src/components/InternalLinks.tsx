@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { countries, calculatorTypes, calculatorMeta, CalculatorType } from "@/data/countries";
+import { citiesByCountry } from "@/data/cities";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MapPin } from "lucide-react";
 
 interface InternalLinksProps {
   currentCountry: string;
@@ -14,6 +15,7 @@ const InternalLinks = ({ currentCountry, currentCalc }: InternalLinksProps) => {
 
   const otherCalcs = calculatorTypes.filter((c) => c !== currentCalc);
   const otherCountries = Object.values(countries).filter((c) => c.code !== currentCountry);
+  const cities = citiesByCountry[currentCountry] || [];
 
   return (
     <section className="mt-12 space-y-8">
@@ -66,26 +68,25 @@ const InternalLinks = ({ currentCountry, currentCalc }: InternalLinksProps) => {
       )}
 
       {/* City links */}
-      <div>
-        <h2 className="text-xl font-bold text-foreground mb-4">
-          Popular Cities in {country.name}
-        </h2>
-        <div className="flex flex-wrap gap-2">
-          {country.cities.map((city) => {
-            const slug = city.toLowerCase().replace(/\s+/g, "-");
-            const calcSlug = currentCalc || "mortgage-calculator";
-            return (
+      {currentCalc && cities.length > 0 && (
+        <div>
+          <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+            <MapPin className="h-5 w-5" />
+            {calculatorMeta[currentCalc].title} by City in {country.name}
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            {cities.map((city) => (
               <Link
-                key={city}
-                to={`/${currentCountry}/${calcSlug}-${slug}`}
+                key={city.slug}
+                to={`/${currentCountry}/${currentCalc}-${city.slug}`}
                 className="px-3 py-1.5 text-sm bg-secondary text-secondary-foreground rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
               >
-                {city}
+                {city.name}
               </Link>
-            );
-          })}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 };

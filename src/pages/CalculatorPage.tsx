@@ -1,5 +1,6 @@
 import { useParams, Navigate } from "react-router-dom";
 import { countries, calculatorMeta, CalculatorType } from "@/data/countries";
+import { parseCityFromCalculatorSlug, getCityBySlug } from "@/data/cities";
 import { getFAQs } from "@/data/faq";
 import { getEnhancedContent } from "@/lib/seo/content";
 import { generateCalculatorMeta } from "@/lib/seo/metadata";
@@ -12,6 +13,7 @@ import InternalLinks from "@/components/InternalLinks";
 import MortgageCalculator from "@/components/calculators/MortgageCalculator";
 import LoanCalculator from "@/components/calculators/LoanCalculator";
 import InterestCalculator from "@/components/calculators/InterestCalculator";
+import CityCalculatorPage from "@/pages/CityCalculatorPage";
 
 const calculatorComponents: Record<CalculatorType, React.FC<{ country: any }>> = {
   "mortgage-calculator": MortgageCalculator,
@@ -24,6 +26,12 @@ const year = new Date().getFullYear();
 const CalculatorPage = () => {
   const { country, calculator } = useParams<{ country: string; calculator: string }>();
   if (!country || !countries[country]) return <Navigate to="/us" replace />;
+
+  // Check if this is a city page (e.g., mortgage-calculator-new-york)
+  const parsed = parseCityFromCalculatorSlug(calculator || "");
+  if (parsed.calcType && parsed.citySlug && getCityBySlug(country, parsed.citySlug)) {
+    return <CityCalculatorPage />;
+  }
 
   const calcType = calculator as CalculatorType;
   if (!calculatorMeta[calcType]) return <Navigate to={`/${country}`} replace />;
