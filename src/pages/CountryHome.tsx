@@ -7,7 +7,15 @@ import AdPlaceholder, { TrustDisclaimer } from "@/components/AdPlaceholder";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, Calculator, TrendingUp, Banknote } from "lucide-react";
 
-const icons = { "mortgage-calculator": Calculator, "loan-calculator": Banknote, "interest-calculator": TrendingUp };
+const icons: Record<string, typeof Calculator> = {
+  "mortgage-calculator": Calculator,
+  "borrowing-power-calculator": TrendingUp,
+  "stamp-duty-calculator": Banknote,
+  "extra-repayments-calculator": TrendingUp,
+  "loan-comparison-calculator": Calculator,
+  "loan-calculator": Banknote,
+  "interest-calculator": TrendingUp,
+};
 
 const year = new Date().getFullYear();
 
@@ -23,6 +31,10 @@ const countryContent: Record<string, { intro: string; body: string }> = {
   ca: {
     intro: `Free, accurate financial calculators built for Canada. Estimate mortgage payments, compare loan options, and project investment growth — all in CAD with Canadian conventions including semi-annual compounding and stress test considerations.`,
     body: `Canadian mortgages use semi-annual compounding — a unique convention our calculators handle accurately. Default values reflect Canadian market conditions: home prices around C$500,000, rates in the 5.5% range, and 25-year amortization (the maximum for CMHC-insured mortgages). We cover CMHC insurance premiums, the mortgage stress test, TFSA and RRSP considerations, and the First Home Savings Account (FHSA). Whether you're a first-time buyer in Toronto, upgrading in Vancouver, or investing in Calgary, our tools are calibrated for the Canadian market.`,
+  },
+  uk: {
+    intro: `Free, accurate financial calculators built for the United Kingdom. Estimate mortgage repayments, compare loan offers, and plan savings growth — all in GBP with UK-specific defaults including Bank of England base rate context and stamp duty land tax.`,
+    body: `Our UK calculators reflect British market conditions: average property prices around £280,000, mortgage rates in the 5% range, and 25-year terms as the standard. We cover Stamp Duty Land Tax (SDLT) brackets for England, first-time buyer reliefs up to £425,000, Help to Buy ISA considerations, and the impact of Bank of England base rate changes on tracker and SVR mortgages. Whether you're buying in London, investing in Manchester, or saving in Edinburgh, our tools are calibrated for the UK market.`,
   },
 };
 
