@@ -43,7 +43,15 @@ const CountryHome = () => {
   if (!country || !countries[country]) return <Navigate to="/us" replace />;
   const c = countries[country];
   const seoMeta = generateCountryMeta(c);
-  const cc = countryContent[country];
+  const cc = countryContent[country] ?? {
+    intro: `Free, accurate financial calculators built for ${c.name}. Estimate mortgage payments, compare loan options, and project investment growth in ${c.currency} (${c.currencySymbol}).`,
+    body: `Our ${c.name} financial calculators use ${c.currency} (${c.currencySymbol}) and follow local conventions. All results are estimates for informational use only — always confirm details with a licensed ${c.name} financial professional before committing.`,
+  };
+
+  // Defensive: only render cards whose component primitives + meta are defined.
+  const safeCards = calculatorTypes.filter(
+    (calc) => !!calculatorMeta[calc] && !!Card && !!CardHeader && !!CardTitle && !!CardContent,
+  );
 
   return (
     <>
@@ -65,20 +73,22 @@ const CountryHome = () => {
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          {calculatorTypes.map((calc) => {
+          {safeCards.map((calc) => {
             const Icon = icons[calc] ?? Calculator;
+            const meta = calculatorMeta[calc];
+            if (!meta) return null;
             return (
               <Link key={calc} to={`/${c.code}/${calc}`}>
                 <Card className="h-full hover:shadow-lg transition-shadow group">
                   <CardHeader>
-                    <Icon className="h-8 w-8 text-accent mb-2" />
+                    {Icon ? <Icon className="h-8 w-8 text-accent mb-2" /> : null}
                     <CardTitle className="flex items-center justify-between">
-                      {calculatorMeta[calc].title}
-                      <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      {meta.title}
+                      {ArrowRight ? <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" /> : null}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground">{calculatorMeta[calc].description}</p>
+                    <p className="text-sm text-muted-foreground">{meta.description}</p>
                   </CardContent>
                 </Card>
               </Link>
