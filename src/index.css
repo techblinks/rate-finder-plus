@@ -101,8 +101,8 @@
     font-feature-settings: "ss01", "cv11";
   }
 
-  h1, h2, h3, .font-display {
-    @apply font-display;
+  h1, h2, h3 {
+    font-family: "Cormorant Garamond", Georgia, serif;
     font-feature-settings: "lnum", "ss01";
     letter-spacing: -0.01em;
   }
