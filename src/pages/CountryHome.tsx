@@ -66,7 +66,7 @@ const CountryHome = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
           {calculatorTypes.map((calc) => {
-            const Icon = icons[calc];
+            const Icon = icons[calc] ?? Calculator;
             return (
               <Link key={calc} to={`/${c.code}/${calc}`}>
                 <Card className="h-full hover:shadow-lg transition-shadow group">
