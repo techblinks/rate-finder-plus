@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useParams, Navigate, Link } from "react-router-dom";
 import { countries, calculatorTypes, calculatorMeta } from "@/data/countries";
 import { generateCountryMeta } from "@/lib/seo/metadata";
@@ -5,7 +6,23 @@ import SEOHead from "@/components/SEOHead";
 import BreadcrumbNav from "@/components/BreadcrumbNav";
 import AdPlaceholder, { TrustDisclaimer } from "@/components/AdPlaceholder";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowRight, Calculator, TrendingUp, Banknote } from "lucide-react";
+
+const CardSkeleton = () => (
+  <div
+    className="h-full rounded-lg border bg-card p-6 shadow-sm"
+    role="status"
+    aria-label="Loading calculator"
+  >
+    <Skeleton className="h-8 w-8 mb-3 rounded-md" />
+    <Skeleton className="h-6 w-3/4 mb-4" />
+    <Skeleton className="h-3 w-full mb-2" />
+    <Skeleton className="h-3 w-5/6 mb-2" />
+    <Skeleton className="h-3 w-2/3" />
+  </div>
+);
+
 
 const icons: Record<string, typeof Calculator> = {
   "mortgage-calculator": Calculator,
@@ -40,6 +57,16 @@ const countryContent: Record<string, { intro: string; body: string }> = {
 
 const CountryHome = () => {
   const { country } = useParams<{ country: string }>();
+
+  // Brief skeleton state on mount/route change so cards never flash undefined
+  // while module-level imports (Card primitives, calculatorMeta) finish resolving.
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    setReady(false);
+    const id = requestAnimationFrame(() => setReady(true));
+    return () => cancelAnimationFrame(id);
+  }, [country]);
+
   if (!country || !countries[country]) return <Navigate to="/us" replace />;
   const c = countries[country];
   const seoMeta = generateCountryMeta(c);
@@ -49,9 +76,12 @@ const CountryHome = () => {
   };
 
   // Defensive: only render cards whose component primitives + meta are defined.
-  const safeCards = calculatorTypes.filter(
-    (calc) => !!calculatorMeta[calc] && !!Card && !!CardHeader && !!CardTitle && !!CardContent,
-  );
+  const primitivesReady = !!Card && !!CardHeader && !!CardTitle && !!CardContent;
+  const safeCards = primitivesReady
+    ? calculatorTypes.filter((calc) => !!calculatorMeta[calc])
+    : [];
+  const showSkeletons = !ready || !primitivesReady || safeCards.length === 0;
+  const skeletonCount = Math.max(safeCards.length, calculatorTypes.length, 6);
 
   return (
     <>
@@ -73,27 +103,29 @@ const CountryHome = () => {
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          {safeCards.map((calc) => {
-            const Icon = icons[calc] ?? Calculator;
-            const meta = calculatorMeta[calc];
-            if (!meta) return null;
-            return (
-              <Link key={calc} to={`/${c.code}/${calc}`}>
-                <Card className="h-full hover:shadow-lg transition-shadow group">
-                  <CardHeader>
-                    {Icon ? <Icon className="h-8 w-8 text-accent mb-2" /> : null}
-                    <CardTitle className="flex items-center justify-between">
-                      {meta.title}
-                      {ArrowRight ? <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" /> : null}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">{meta.description}</p>
-                  </CardContent>
-                </Card>
-              </Link>
-            );
-          })}
+          {showSkeletons
+            ? Array.from({ length: skeletonCount }).map((_, i) => <CardSkeleton key={`sk-${i}`} />)
+            : safeCards.map((calc) => {
+                const Icon = icons[calc] ?? Calculator;
+                const meta = calculatorMeta[calc];
+                if (!meta) return null;
+                return (
+                  <Link key={calc} to={`/${c.code}/${calc}`}>
+                    <Card className="h-full hover:shadow-lg transition-shadow group">
+                      <CardHeader>
+                        {Icon ? <Icon className="h-8 w-8 text-accent mb-2" /> : null}
+                        <CardTitle className="flex items-center justify-between">
+                          {meta.title}
+                          {ArrowRight ? <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" /> : null}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-muted-foreground">{meta.description}</p>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                );
+              })}
         </div>
 
         {/* Comparison table */}
