@@ -103,27 +103,29 @@ const CountryHome = () => {
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          {safeCards.map((calc) => {
-            const Icon = icons[calc] ?? Calculator;
-            const meta = calculatorMeta[calc];
-            if (!meta) return null;
-            return (
-              <Link key={calc} to={`/${c.code}/${calc}`}>
-                <Card className="h-full hover:shadow-lg transition-shadow group">
-                  <CardHeader>
-                    {Icon ? <Icon className="h-8 w-8 text-accent mb-2" /> : null}
-                    <CardTitle className="flex items-center justify-between">
-                      {meta.title}
-                      {ArrowRight ? <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" /> : null}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">{meta.description}</p>
-                  </CardContent>
-                </Card>
-              </Link>
-            );
-          })}
+          {showSkeletons
+            ? Array.from({ length: skeletonCount }).map((_, i) => <CardSkeleton key={`sk-${i}`} />)
+            : safeCards.map((calc) => {
+                const Icon = icons[calc] ?? Calculator;
+                const meta = calculatorMeta[calc];
+                if (!meta) return null;
+                return (
+                  <Link key={calc} to={`/${c.code}/${calc}`}>
+                    <Card className="h-full hover:shadow-lg transition-shadow group">
+                      <CardHeader>
+                        {Icon ? <Icon className="h-8 w-8 text-accent mb-2" /> : null}
+                        <CardTitle className="flex items-center justify-between">
+                          {meta.title}
+                          {ArrowRight ? <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" /> : null}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-muted-foreground">{meta.description}</p>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                );
+              })}
         </div>
 
         {/* Comparison table */}
