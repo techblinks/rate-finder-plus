@@ -15,7 +15,7 @@ import LoanCalculator from "@/components/calculators/LoanCalculator";
 import InterestCalculator from "@/components/calculators/InterestCalculator";
 import CityCalculatorPage from "@/pages/CityCalculatorPage";
 
-const calculatorComponents: Record<CalculatorType, React.FC<{ country: any }>> = {
+const calculatorComponents: Partial<Record<CalculatorType, React.FC<{ country: any }>>> = {
   "mortgage-calculator": MortgageCalculator,
   "loan-calculator": LoanCalculator,
   "interest-calculator": InterestCalculator,
