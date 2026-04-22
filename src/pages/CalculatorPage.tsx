@@ -15,7 +15,7 @@ import LoanCalculator from "@/components/calculators/LoanCalculator";
 import InterestCalculator from "@/components/calculators/InterestCalculator";
 import CityCalculatorPage from "@/pages/CityCalculatorPage";
 
-const calculatorComponents: Record<CalculatorType, React.FC<{ country: any }>> = {
+const calculatorComponents: Partial<Record<CalculatorType, React.FC<{ country: any }>>> = {
   "mortgage-calculator": MortgageCalculator,
   "loan-calculator": LoanCalculator,
   "interest-calculator": InterestCalculator,
@@ -42,6 +42,7 @@ const CalculatorPage = () => {
   const content = getEnhancedContent(calcType, c);
   const seoMeta = generateCalculatorMeta(calcType, c);
   const CalcComponent = calculatorComponents[calcType];
+  if (!CalcComponent) return <Navigate to={`/${country}`} replace />;
 
   const hreflang = Object.keys(countries).map((code) => ({
     lang: code === "us" ? "en-us" : code === "au" ? "en-au" : "en-ca",

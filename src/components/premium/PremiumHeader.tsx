@@ -166,11 +166,12 @@ const PremiumHeader = () => {
                     </span>
                     {opt.code === currentCountry && <Check className="h-5 w-5 text-primary" />}
                   </Link>
-                ))}
-              </ul>
-            </div>
+                </li>
+              ))}
+            </ul>
           </div>
-        )}
+        </div>
+      )}
     </>
   );
 };

@@ -12,7 +12,7 @@ import InterestCalculator from "@/components/calculators/InterestCalculator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, MapPin } from "lucide-react";
 
-const calculatorComponents: Record<CalculatorType, React.FC<{ country: any }>> = {
+const calculatorComponents: Partial<Record<CalculatorType, React.FC<{ country: any }>>> = {
   "mortgage-calculator": MortgageCalculator,
   "loan-calculator": LoanCalculator,
   "interest-calculator": InterestCalculator,
