@@ -87,7 +87,7 @@ const interestFAQs: Record<string, FAQItem[]> = {
 };
 
 export const getFAQs = (calcType: CalculatorType, countryCode: string): FAQItem[] => {
-  const faqMap: Record<CalculatorType, Record<string, FAQItem[]>> = {
+  const faqMap: Partial<Record<CalculatorType, Record<string, FAQItem[]>>> = {
     "mortgage-calculator": mortgageFAQs,
     "loan-calculator": loanFAQs,
     "interest-calculator": interestFAQs,

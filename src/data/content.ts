@@ -1,14 +1,14 @@
 import { CalculatorType, CountryConfig } from "./countries";
 
 export const getPageContent = (calcType: CalculatorType, country: CountryConfig) => {
-  const content: Record<CalculatorType, {
+  const content: Partial<Record<CalculatorType, {
     h1: string;
     intro: string;
     howItWorks: string;
     whyUse: string;
     tips: string[];
     keyTerms: { term: string; definition: string }[];
-  }> = {
+  }>> = {
     "mortgage-calculator": {
       h1: `${country.name} Mortgage Calculator`,
       intro: `Use our free ${country.name} mortgage calculator to estimate your monthly home loan payments. Enter your property price, down payment, interest rate, and loan term to get an instant breakdown of your mortgage costs including principal, interest, and a full amortization schedule. Whether you're a first-time homebuyer or refinancing, this tool helps you make informed decisions about your ${country.name} property purchase.`,
