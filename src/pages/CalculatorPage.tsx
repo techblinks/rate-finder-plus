@@ -42,6 +42,7 @@ const CalculatorPage = () => {
   const content = getEnhancedContent(calcType, c);
   const seoMeta = generateCalculatorMeta(calcType, c);
   const CalcComponent = calculatorComponents[calcType];
+  if (!CalcComponent) return <Navigate to={`/${country}`} replace />;
 
   const hreflang = Object.keys(countries).map((code) => ({
     lang: code === "us" ? "en-us" : code === "au" ? "en-au" : "en-ca",
