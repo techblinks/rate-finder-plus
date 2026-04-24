@@ -54,6 +54,10 @@ export const citiesByCountry: Record<string, CityConfig[]> = {
   us: usCities,
   au: auCities,
   ca: caCities,
+  gb: [
+    { name: "London", slug: "london", state: "England", medianHomePrice: 525000, avgMortgageRate: 5.25, avgRent: 2400, population: "9.0M", highlights: ["Highest UK prices", "Strong transport links", "Competitive mortgage market"] },
+    { name: "Manchester", slug: "manchester", state: "England", medianHomePrice: 260000, avgMortgageRate: 5.15, avgRent: 1200, population: "550K", highlights: ["Northern growth hub", "Strong rental demand", "Regeneration areas"] },
+  ],
 };
 
 export const getCityBySlug = (countryCode: string, slug: string): CityConfig | undefined =>
