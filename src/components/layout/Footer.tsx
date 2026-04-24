@@ -1,60 +1,20 @@
 import { Link } from "react-router-dom";
-import { Calculator } from "lucide-react";
-import { countries, calculatorTypes, calculatorMeta } from "@/data/countries";
 
 const year = new Date().getFullYear();
 
 const Footer = () => (
-  <footer className="border-t bg-primary text-primary-foreground mt-16">
-    <div className="container py-12">
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-        <div>
-          <Link to="/" className="flex items-center gap-2 font-bold text-lg mb-3">
-            <Calculator className="h-5 w-5" />
-            Zune Calculator
-          </Link>
-          <p className="text-sm opacity-80">
-            Free financial calculators for smarter money decisions. Trusted by users across the US, Australia, and Canada.
-          </p>
-        </div>
-
-        {Object.values(countries).map((c) => (
-          <div key={c.code}>
-            <h3 className="font-semibold mb-3">{c.flag} {c.name}</h3>
-            <ul className="space-y-2">
-              {calculatorTypes.map((calc) => (
-                <li key={calc}>
-                  <Link to={`/${c.code}/${calc}`} className="text-sm opacity-80 hover:opacity-100 transition-opacity">
-                    {calculatorMeta[calc].title}
-                  </Link>
-                </li>
-              ))}
-              <li>
-                <Link to={`/${c.code}`} className="text-sm opacity-80 hover:opacity-100 transition-opacity">
-                  All {c.name} Calculators →
-                </Link>
-              </li>
-            </ul>
-          </div>
-        ))}
-
-        <div>
-          <h3 className="font-semibold mb-3">Company</h3>
-          <ul className="space-y-2">
-            <li><Link to="/about" className="text-sm opacity-80 hover:opacity-100 transition-opacity">About Us</Link></li>
-            <li><Link to="/contact" className="text-sm opacity-80 hover:opacity-100 transition-opacity">Contact</Link></li>
-            <li><Link to="/privacy-policy" className="text-sm opacity-80 hover:opacity-100 transition-opacity">Privacy Policy</Link></li>
-            <li><Link to="/terms" className="text-sm opacity-80 hover:opacity-100 transition-opacity">Terms of Service</Link></li>
-          </ul>
-        </div>
-      </div>
-
-      <div className="mt-10 pt-6 border-t border-primary-foreground/20">
-        <p className="text-xs opacity-60 text-center">
-          © {year} ZuneCalculator.com. All rights reserved. We do not provide financial services or advice. We connect users with third-party providers. Calculations are for informational purposes only.
-        </p>
-      </div>
+  <footer className="mt-16 bg-navy px-6 py-12 text-center text-white md:py-14">
+    <Link to="/" className="font-display text-2xl text-white">Zune Calculator</Link>
+    <p className="mt-2 text-[13px] text-white/35">Mortgage Calculator · Australia · USA · Canada · UK</p>
+    <p className="mx-auto mt-6 max-w-xl text-[11px] leading-relaxed text-white/25">
+      Calculations are estimates for illustrative purposes only. Zune Calculator is not a lender, broker, bank, or financial adviser and does not provide financial advice.
+    </p>
+    <div className="mt-6 flex flex-wrap items-center justify-center gap-5 text-xs font-semibold text-white/35">
+      <Link to="/privacy-policy" className="hover:text-white">Privacy Policy</Link>
+      <Link to="/terms" className="hover:text-white">Terms of Use</Link>
+      <span>zunecalculator.com</span>
     </div>
+    <p className="mt-6 text-[11px] text-white/25">© {year} zunecalculator.com — For illustrative purposes only. Not financial advice.</p>
   </footer>
 );
 
