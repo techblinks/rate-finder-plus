@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Navigate, Link } from "react-router-dom";
-import { countries, calculatorTypes, calculatorMeta } from "@/data/countries";
+import { countries, calculatorTypes, primaryCalculatorTypes, calculatorMeta } from "@/data/countries";
 import { generateCountryMeta } from "@/lib/seo/metadata";
 import SEOHead from "@/components/SEOHead";
 import BreadcrumbNav from "@/components/BreadcrumbNav";
@@ -11,7 +11,7 @@ import { ArrowRight, Calculator, TrendingUp, Banknote } from "lucide-react";
 
 const CardSkeleton = () => (
   <div
-    className="h-full rounded-lg border bg-card p-6 shadow-sm"
+    className="h-full rounded-xl border bg-card p-6 shadow-sm"
     role="status"
     aria-label="Loading calculator"
   >
@@ -49,7 +49,7 @@ const countryContent: Record<string, { intro: string; body: string }> = {
     intro: `Free, accurate financial calculators built for Canada. Estimate mortgage payments, compare loan options, and project investment growth — all in CAD with Canadian conventions including semi-annual compounding and stress test considerations.`,
     body: `Canadian mortgages use semi-annual compounding — a unique convention our calculators handle accurately. Default values reflect Canadian market conditions: home prices around C$500,000, rates in the 5.5% range, and 25-year amortization (the maximum for CMHC-insured mortgages). We cover CMHC insurance premiums, the mortgage stress test, TFSA and RRSP considerations, and the First Home Savings Account (FHSA). Whether you're a first-time buyer in Toronto, upgrading in Vancouver, or investing in Calgary, our tools are calibrated for the Canadian market.`,
   },
-  uk: {
+  gb: {
     intro: `Free, accurate financial calculators built for the United Kingdom. Estimate mortgage repayments, compare loan offers, and plan savings growth — all in GBP with UK-specific defaults including Bank of England base rate context and stamp duty land tax.`,
     body: `Our UK calculators reflect British market conditions: average property prices around £280,000, mortgage rates in the 5% range, and 25-year terms as the standard. We cover Stamp Duty Land Tax (SDLT) brackets for England, first-time buyer reliefs up to £425,000, Help to Buy ISA considerations, and the impact of Bank of England base rate changes on tracker and SVR mortgages. Whether you're buying in London, investing in Manchester, or saving in Edinburgh, our tools are calibrated for the UK market.`,
   },
@@ -67,6 +67,7 @@ const CountryHome = () => {
     return () => cancelAnimationFrame(id);
   }, [country]);
 
+  if (country === "uk") return <Navigate to="/gb" replace />;
   if (!country || !countries[country]) return <Navigate to="/us" replace />;
   const c = countries[country];
   const seoMeta = generateCountryMeta(c);
@@ -78,10 +79,10 @@ const CountryHome = () => {
   // Defensive: only render cards whose component primitives + meta are defined.
   const primitivesReady = !!Card && !!CardHeader && !!CardTitle && !!CardContent;
   const safeCards = primitivesReady
-    ? calculatorTypes.filter((calc) => !!calculatorMeta[calc])
+    ? primaryCalculatorTypes.filter((calc) => !!calculatorMeta[calc])
     : [];
   const showSkeletons = !ready || !primitivesReady || safeCards.length === 0;
-  const skeletonCount = Math.max(safeCards.length, calculatorTypes.length, 6);
+  const skeletonCount = Math.max(safeCards.length, primaryCalculatorTypes.length, 6);
 
   return (
     <>
@@ -91,18 +92,18 @@ const CountryHome = () => {
         canonical={seoMeta.canonical}
         breadcrumbs={[{ name: "Home", url: "/" }, { name: c.name, url: `/${c.code}` }]}
       />
-      <div className="container py-8">
+      <div className="container py-8 md:py-12">
         <BreadcrumbNav items={[{ label: c.name }]} />
         <AdPlaceholder zone="top-banner" className="h-16 mb-6 hidden sm:flex" />
 
-        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-          {c.flag} {c.name} Financial Calculators ({year})
+        <h1 className="mb-4 text-4xl text-foreground md:text-5xl">
+          {c.name} Mortgage Calculator ({year})
         </h1>
         <p className="text-base text-muted-foreground mb-8 max-w-2xl leading-relaxed">
           {cc.intro}
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div className="mb-10 grid grid-cols-1 gap-4 md:grid-cols-3">
           {showSkeletons
             ? Array.from({ length: skeletonCount }).map((_, i) => <CardSkeleton key={`sk-${i}`} />)
             : safeCards.map((calc) => {
@@ -111,9 +112,9 @@ const CountryHome = () => {
                 if (!meta) return null;
                 return (
                   <Link key={calc} to={`/${c.code}/${calc}`}>
-                    <Card className="h-full hover:shadow-lg transition-shadow group">
+                    <Card className="h-full rounded-xl border-border shadow-sm transition-colors hover:border-gray-300 hover:shadow-sm group">
                       <CardHeader>
-                        {Icon ? <Icon className="h-8 w-8 text-accent mb-2" /> : null}
+                        {Icon ? <Icon className="mb-2 h-8 w-8 text-primary" /> : null}
                         <CardTitle className="flex items-center justify-between">
                           {meta.title}
                           {ArrowRight ? <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" /> : null}
@@ -136,9 +137,9 @@ const CountryHome = () => {
               <thead>
                 <tr className="bg-secondary">
                   <th className="text-left p-3 font-semibold">Feature</th>
-                  <th className="text-left p-3 font-semibold">Mortgage</th>
-                  <th className="text-left p-3 font-semibold">Loan</th>
-                  <th className="text-left p-3 font-semibold">Interest</th>
+                  <th className="text-left p-3 font-semibold">Repayment</th>
+                  <th className="text-left p-3 font-semibold">Borrowing</th>
+                  <th className="text-left p-3 font-semibold">Compare</th>
                 </tr>
               </thead>
               <tbody className="text-muted-foreground">

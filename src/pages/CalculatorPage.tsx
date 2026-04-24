@@ -11,12 +11,22 @@ import FAQSection from "@/components/FAQSection";
 import ContentBlocks from "@/components/ContentBlocks";
 import InternalLinks from "@/components/InternalLinks";
 import MortgageCalculator from "@/components/calculators/MortgageCalculator";
+import BorrowingPowerCalculator from "@/components/calculators/BorrowingPowerCalculator";
+import StampDutyCalculator from "@/components/calculators/StampDutyCalculator";
+import ExtraRepaymentsCalculator from "@/components/calculators/ExtraRepaymentsCalculator";
+import MortgageInsuranceCalculator from "@/components/calculators/MortgageInsuranceCalculator";
+import LoanComparisonCalculator from "@/components/calculators/LoanComparisonCalculator";
 import LoanCalculator from "@/components/calculators/LoanCalculator";
 import InterestCalculator from "@/components/calculators/InterestCalculator";
 import CityCalculatorPage from "@/pages/CityCalculatorPage";
 
 const calculatorComponents: Partial<Record<CalculatorType, React.FC<{ country: any }>>> = {
   "mortgage-calculator": MortgageCalculator,
+  "borrowing-power-calculator": BorrowingPowerCalculator,
+  "stamp-duty-calculator": StampDutyCalculator,
+  "extra-repayments-calculator": ExtraRepaymentsCalculator,
+  "mortgage-insurance-calculator": MortgageInsuranceCalculator,
+  "loan-comparison-calculator": LoanComparisonCalculator,
   "loan-calculator": LoanCalculator,
   "interest-calculator": InterestCalculator,
 };
@@ -45,7 +55,7 @@ const CalculatorPage = () => {
   if (!CalcComponent) return <Navigate to={`/${country}`} replace />;
 
   const hreflang = Object.keys(countries).map((code) => ({
-    lang: code === "us" ? "en-us" : code === "au" ? "en-au" : "en-ca",
+    lang: code === "us" ? "en-us" : code === "au" ? "en-au" : code === "ca" ? "en-ca" : "en-gb",
     href: `/${code}/${calcType}`,
   }));
 
@@ -65,7 +75,7 @@ const CalculatorPage = () => {
           { name: meta.title, url: `/${country}/${calculator}` },
         ]}
       />
-      <div className="container py-8">
+      <div className="container py-7 md:py-10">
         <BreadcrumbNav
           items={[
             { label: c.name, href: `/${country}` },
@@ -75,10 +85,10 @@ const CalculatorPage = () => {
 
         <AdPlaceholder zone="top-banner" className="h-16 mb-6 hidden sm:flex" />
 
-        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
+        <h1 className="mb-3 text-4xl text-foreground md:text-5xl">
           {c.flag} {content.h1}
         </h1>
-        <p className="text-base text-muted-foreground mb-8 max-w-3xl leading-relaxed">
+        <p className="mb-8 max-w-3xl text-base leading-relaxed text-muted-foreground">
           {content.intro}
         </p>
 
@@ -99,7 +109,8 @@ const CalculatorPage = () => {
           <h2 className="text-2xl font-bold text-foreground mb-3">
             {calcType === "mortgage-calculator" ? `Mortgage Rates in ${c.name} ${year}` :
              calcType === "loan-calculator" ? `Loan Rates in ${c.name} ${year}` :
-             `Savings & Interest Rates in ${c.name} ${year}`}
+             calcType === "interest-calculator" ? `Savings & Interest Rates in ${c.name} ${year}` :
+             `${meta.shortTitle} Insights in ${c.name} ${year}`}
           </h2>
           <p className="text-muted-foreground leading-relaxed">{content.localInsights}</p>
         </section>

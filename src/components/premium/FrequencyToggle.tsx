@@ -12,25 +12,11 @@ const options: { value: Frequency; label: string }[] = [
 ];
 
 const FrequencyToggle = ({ value, onChange }: FrequencyToggleProps) => (
-  <div
-    role="tablist"
-    aria-label="Repayment frequency"
-    className="inline-flex items-center gap-1 p-1 rounded-[10px] bg-secondary"
-  >
+  <div role="tablist" aria-label="Repayment frequency" className="flex w-full items-center gap-1 rounded-lg border border-border bg-secondary p-1">
     {options.map((opt) => {
       const active = value === opt.value;
       return (
-        <button
-          key={opt.value}
-          role="tab"
-          aria-selected={active}
-          onClick={() => onChange(opt.value)}
-          className={`px-4 py-1.5 text-xs font-semibold rounded-[7px] transition-all ${
-            active
-              ? "bg-card text-navy shadow-sm"
-              : "text-muted-foreground hover:text-navy"
-          }`}
-        >
+        <button key={opt.value} role="tab" aria-selected={active} onClick={() => onChange(opt.value)} className={`flex-1 rounded-md px-2 py-2.5 text-[13px] transition-all ${active ? "bg-card font-bold text-foreground shadow-sm" : "font-medium text-muted-foreground hover:text-foreground"}`}>
           {opt.label}
         </button>
       );
