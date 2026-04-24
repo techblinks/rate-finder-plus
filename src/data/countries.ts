@@ -22,10 +22,7 @@ export const countries: Record<string, CountryConfig> = {
     defaultTerm: 30,
     defaultAmount: 400000,
     rateLabel: "30yr Fixed Rate",
-    cities: [
-      "New York", "Los Angeles", "Chicago", "Houston", "Phoenix",
-      "Philadelphia", "San Antonio", "San Diego", "Dallas", "Austin",
-    ],
+    cities: ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Philadelphia", "San Antonio", "San Diego", "Dallas", "Austin"],
   },
   au: {
     code: "au",
@@ -37,10 +34,7 @@ export const countries: Record<string, CountryConfig> = {
     defaultTerm: 30,
     defaultAmount: 650000,
     rateLabel: "RBA Variable Rate",
-    cities: [
-      "Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide",
-      "Gold Coast", "Canberra", "Newcastle", "Hobart", "Darwin",
-    ],
+    cities: ["Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide", "Gold Coast", "Canberra", "Newcastle", "Hobart", "Darwin"],
   },
   ca: {
     code: "ca",
@@ -52,13 +46,10 @@ export const countries: Record<string, CountryConfig> = {
     defaultTerm: 25,
     defaultAmount: 550000,
     rateLabel: "Mortgage Rate",
-    cities: [
-      "Toronto", "Vancouver", "Montreal", "Calgary", "Edmonton",
-      "Ottawa", "Winnipeg", "Quebec City", "Hamilton", "Victoria",
-    ],
+    cities: ["Toronto", "Vancouver", "Montreal", "Calgary", "Edmonton", "Ottawa", "Winnipeg", "Quebec City", "Hamilton", "Victoria"],
   },
-  uk: {
-    code: "uk",
+  gb: {
+    code: "gb",
     name: "United Kingdom",
     currency: "GBP",
     currencySymbol: "£",
@@ -67,10 +58,7 @@ export const countries: Record<string, CountryConfig> = {
     defaultTerm: 25,
     defaultAmount: 280000,
     rateLabel: "Base Rate",
-    cities: [
-      "London", "Manchester", "Birmingham", "Edinburgh", "Glasgow",
-      "Bristol", "Leeds", "Liverpool", "Cardiff", "Belfast",
-    ],
+    cities: ["London", "Manchester", "Birmingham", "Edinburgh", "Glasgow", "Bristol", "Leeds", "Liverpool", "Cardiff", "Belfast"],
   },
 };
 
@@ -81,75 +69,77 @@ export const calculatorTypes = [
   "borrowing-power-calculator",
   "stamp-duty-calculator",
   "extra-repayments-calculator",
+  "mortgage-insurance-calculator",
   "loan-comparison-calculator",
   "loan-calculator",
   "interest-calculator",
 ] as const;
 export type CalculatorType = typeof calculatorTypes[number];
 
-/**
- * The 5 "premium tabs" surfaced in the bank-style top + bottom navigation.
- * Loan + interest are still indexable but live as supplementary calculators.
- */
 export const primaryCalculatorTypes: CalculatorType[] = [
   "mortgage-calculator",
   "borrowing-power-calculator",
   "stamp-duty-calculator",
   "extra-repayments-calculator",
+  "mortgage-insurance-calculator",
   "loan-comparison-calculator",
 ];
 
-export const calculatorMeta: Record<
-  CalculatorType,
-  { title: string; shortTitle: string; description: string; tabLabel: string; icon: string }
-> = {
+export const calculatorMeta: Record<CalculatorType, { title: string; shortTitle: string; description: string; tabLabel: string; icon: string }> = {
   "mortgage-calculator": {
-    title: "Mortgage Calculator",
-    shortTitle: "Mortgage",
-    description: "Calculate monthly home loan repayments, total interest, and view a full amortisation schedule.",
+    title: "Repayment Calculator",
+    shortTitle: "Repayment",
+    description: "Calculate home loan repayments, total interest, and view an amortisation breakdown.",
     tabLabel: "Repayment",
-    icon: "🏠",
+    icon: "⌂",
   },
   "borrowing-power-calculator": {
     title: "Borrowing Power Calculator",
-    shortTitle: "Borrowing Power",
-    description: "Estimate the maximum home loan you could qualify for based on income, expenses, and lender stress tests.",
-    tabLabel: "Borrow Power",
-    icon: "💪",
+    shortTitle: "Borrowing",
+    description: "Estimate borrowing capacity from income, expenses, debts, and lender stress rates.",
+    tabLabel: "Borrowing",
+    icon: "↗",
   },
   "stamp-duty-calculator": {
     title: "Stamp Duty Calculator",
     shortTitle: "Stamp Duty",
-    description: "Calculate stamp duty, transfer tax, and upfront costs by state, with first-home-buyer concessions.",
+    description: "Estimate stamp duty, transfer tax, and upfront costs by market and buyer type.",
     tabLabel: "Stamp Duty",
-    icon: "📋",
+    icon: "◇",
   },
   "extra-repayments-calculator": {
     title: "Extra Repayments Calculator",
-    shortTitle: "Extra Repayments",
-    description: "See how extra monthly repayments shorten your loan term and slash total interest paid.",
-    tabLabel: "Extra Repayments",
-    icon: "⚡",
+    shortTitle: "Extra",
+    description: "See how additional repayments can shorten the loan and reduce lifetime interest.",
+    tabLabel: "Extra",
+    icon: "+",
+  },
+  "mortgage-insurance-calculator": {
+    title: "Mortgage Insurance Calculator",
+    shortTitle: "Insurance",
+    description: "Estimate LMI, PMI, CMHC, or protection insurance costs based on deposit and loan size.",
+    tabLabel: "Insurance",
+    icon: "◌",
   },
   "loan-comparison-calculator": {
     title: "Loan Comparison Calculator",
-    shortTitle: "Compare Loans",
-    description: "Compare two mortgage scenarios side-by-side — see which one saves you more over the loan life.",
-    tabLabel: "Compare Loans",
-    icon: "⚖️",
+    shortTitle: "Compare",
+    description: "Compare two mortgage scenarios side-by-side and identify the lower-cost option.",
+    tabLabel: "Compare",
+    icon: "⇄",
   },
   "loan-calculator": {
     title: "Loan Calculator",
     shortTitle: "Loan",
     description: "Estimate monthly loan repayments, total cost of borrowing, and full payoff timeline.",
     tabLabel: "Loan",
-    icon: "💳",
+    icon: "□",
   },
   "interest-calculator": {
     title: "Interest Calculator",
     shortTitle: "Interest",
     description: "Calculate simple and compound interest on savings or investments over time.",
     tabLabel: "Interest",
-    icon: "📈",
+    icon: "△",
   },
 };
