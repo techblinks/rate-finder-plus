@@ -15,4 +15,4 @@ Allow: /
 Disallow: /admin
 Disallow: /api
 
-Sitemap: https://calcvault.com/sitemap.xml
+Sitemap: https://zunecalculator.com/sitemap.xml
