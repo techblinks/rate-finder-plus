@@ -1,62 +1,82 @@
-## Shareable URL with selected inputs and outputs
+## Static SEO routes for city-level calculator pages
 
-Generate a URL that encodes the user's calculator inputs so that opening the link reproduces the exact same scenario (and therefore the exact same outputs, since outputs are deterministically derived from inputs). Encoding only inputs keeps URLs short and tamper-resistant; outputs are recomputed on load to stay consistent with the live formulas.
+Goal: at build time, generate a real, indexable HTML file for every `/{country}/{calc}-{city}` URL so search engines see fully-rendered metadata, headings, intro, local insights, FAQ, and JSON-LD without executing JS. Scale this to all countries × calculators × cities, and emit a complete `sitemap.xml`.
 
-### User experience
+### What already exists
+- Dynamic routing via `CalculatorPage` → `parseCityFromCalculatorSlug` → `CityCalculatorPage` already handles `/us/mortgage-calculator-houston`, etc.
+- `src/data/cities.ts` provides `citiesByCountry`, `generateCityFAQs`, `generateCityContent`.
+- `SEOHead` injects meta + JSON-LD client-side via React Helmet-style refs.
 
-On every calculator (Repayment, Borrowing, Stamp Duty, Extra Repayments, Insurance, Comparison), a small action row sits directly under the hero result card with two buttons:
+### What's missing for "at scale, pre-rendered"
+1. The dataset is small (10 US, 10 AU, 10 CA, 2 GB cities). To "scale" we expand it.
+2. There is no build-time HTML generation, so crawlers that don't execute JS see only `<div id="root"></div>`.
+3. There is no `sitemap.xml`, so URLs aren't discoverable at scale.
 
-- **Copy link** — copies a URL like `/au/mortgage-calculator?s=<base64>` to the clipboard and shows a "Link copied" toast.
-- **Share** — uses the native Web Share API on mobile (system share sheet with title, result text, and URL); falls back to copy-to-clipboard on desktop.
+### Implementation
 
-When someone opens a shared URL, the calculator reads `?s=` from the query string, decodes it, and applies those values as the initial state — so they immediately see the same inputs and the same computed result.
+**1. Expand the city dataset** (`src/data/cities.ts`)
+- US: add ~15 more (San Jose, Jacksonville, Indianapolis, Columbus, Charlotte, Seattle, Denver, Boston, Nashville, Portland, Las Vegas, Miami, Atlanta, Minneapolis, Tampa).
+- AU: add ~5 more (Wollongong, Geelong, Townsville, Cairns, Sunshine Coast).
+- CA: add ~5 more (Mississauga, Brampton, Surrey, Halifax, Saskatoon).
+- GB: add ~10 more (Birmingham, Leeds, Glasgow, Liverpool, Bristol, Edinburgh, Sheffield, Cardiff, Belfast, Newcastle).
 
-### Technical design
+**2. Build-time prerender script** (`scripts/prerender.mjs`)
+- Run as `postbuild` after `vite build`.
+- Imports the city data (via a small CJS/ESM-friendly export shim) and `countries`.
+- Enumerates every route: home, country home, country×calculator, country×calculator×city.
+- For each route, builds an HTML page by reading `dist/index.html` as a template and injecting:
+  - `<title>` from `generateCalculatorMeta` / `generateCityContent`.
+  - `<meta name="description">`, `<link rel="canonical">`, OG/Twitter tags.
+  - Hreflang `<link>` tags for the same calc across `/us`, `/au`, `/ca`, `/gb`.
+  - A pre-rendered `<div id="prerender-content">` containing H1, intro, local insights, tips, FAQ Q&A, breadcrumb text, internal links — so the document body has real content for crawlers.
+  - JSON-LD blocks (BreadcrumbList, FAQPage, WebPage).
+- Writes each route to `dist/{country}/{calc}-{city}/index.html` so static hosting serves it directly.
+- Reuses the SPA fallback for any missed routes — the React app still hydrates the same DOM and replaces `#prerender-content` with the live calculator UI.
 
-**1. New utility: `src/lib/share.ts`**
-- `encodeState(obj)` → URL-safe base64 of `JSON.stringify(obj)` (handles unicode via `encodeURIComponent`).
-- `decodeState(str)` → parsed object or `null` on failure.
-- `readSharedState<T>()` → reads `?s=` from `window.location.search` and decodes it once at mount.
-- `buildShareUrl(encoded)` → `${origin}${pathname}?s=${encoded}`.
+**3. Hydration coexistence**
+- Add a `<div id="prerender-content" hidden>...</div>` slot before `<div id="root">` in `index.html`. After client mount, `main.tsx` removes it. This guarantees the SPA UI takes over without flashing duplicate content.
+- No changes to existing components needed; prerendered HTML is generated separately from the React tree (templated strings with the same `generateCityContent` / `generateCityFAQs` helpers).
 
-**2. New component: `src/components/premium/ShareButton.tsx`**
-- Props: `state` (the inputs object), `title`, `resultLabel`, `resultValue`.
-- Two buttons (Copy link, Share) styled to match the bank-grade UI (rounded-full, border, primary fill).
-- Uses `sonner` toast for feedback and `lucide-react` icons (`Link2`, `Check`, `Share2`).
-- Web Share API with graceful fallback to clipboard.
+**4. Sitemap generator** (`scripts/generate-sitemap.mjs`)
+- Also run as `postbuild`.
+- Emits `dist/sitemap.xml` with `<url>` entries for every prerendered route (`<loc>`, `<lastmod>`, `<changefreq>weekly</changefreq>`, `<priority>` weighted by depth).
+- Updates `public/robots.txt` to reference the sitemap (`Sitemap: https://zunecalculator.com/sitemap.xml`).
 
-**3. Refactor each calculator in `src/components/calculators/MortgageTools.tsx`**
-- Replace the multiple `useState` calls per calculator with a single state object initialized from `readSharedState()` merged over per-country defaults.
-- Example for Repayment:
-  ```ts
-  type RepaymentState = { amount: number; deposit: number; rate: number; term: number; frequency: Frequency };
-  const defaults: RepaymentState = { amount: country.defaultAmount, deposit: ..., ... };
-  const [s, setS] = useState<RepaymentState>(() => ({ ...defaults, ...(readSharedState<RepaymentState>() ?? {}) }));
-  const set = <K extends keyof RepaymentState>(k: K, v: RepaymentState[K]) => setS(prev => ({ ...prev, [k]: v }));
-  ```
-- Replace each setter (`setAmount`, `setRate`, …) with `set("amount", v)`, etc.
-- Render `<ShareButton state={s} resultLabel={...} resultValue={...} />` directly under the `HeroResultCard` inside each calculator's left column.
+**5. Static-route registry** (`src/lib/seo/staticRoutes.ts`)
+- A single function `enumerateStaticRoutes()` that returns `{ path, country, calcType, citySlug? }[]`. Used by both prerender and sitemap scripts (single source of truth, no drift).
 
-**4. Validation & safety**
-- `decodeState` is wrapped in try/catch; bad/expired payloads simply fall back to defaults.
-- Clamp/coerce decoded numeric values inside each calculator (`Math.max(min, Math.min(max, n))`) before use, so a tampered URL can't push sliders out of bounds.
-- The `?s=` query string is non-canonical; existing `SEOHead` already emits canonical URLs without query params, so search engines won't index share variants.
+**6. Package wiring**
+- Add `"postbuild": "node scripts/prerender.mjs && node scripts/generate-sitemap.mjs"` to `package.json`.
+- Both scripts are pure Node ESM — no new dependencies. They use `node:fs`, `node:path`, and dynamic `import()` of the data modules transpiled via `tsx`. To avoid pulling in `tsx`, mirror the dataset into a small JS file (`scripts/data.mjs`) that re-exports plain JS versions of the cities/countries dictionaries. The TS data file remains the source for the app; the JS mirror is generated by a tiny `scripts/sync-data.mjs` step (also run pre-build).
 
-**5. No backend required**
-- All encoding happens client-side. No database, no auth, no Cloud — the URL itself carries the full state.
+  Simpler alternative: write the dataset itself in plain `.js` and have the TS file re-export it. **I'll take the simpler path** — convert `cities.ts` to import a plain JS dataset (`cities.data.js`) so both runtime and build scripts read the same file.
+
+**7. Router compatibility**
+- No changes to `App.tsx` routing — the existing `/:country/:calculator` route already matches city slugs.
+- Lovable's hosting SPA fallback still handles deep links; the new HTML files just **upgrade** crawler experience and won't block the router.
 
 ### Files
 
 Created:
-- `src/lib/share.ts`
-- `src/components/premium/ShareButton.tsx`
+- `scripts/prerender.mjs`
+- `scripts/generate-sitemap.mjs`
+- `src/lib/seo/staticRoutes.ts`
+- `src/data/cities.data.js` (plain JS dataset, ~50+ cities total)
 
 Edited:
-- `src/components/calculators/MortgageTools.tsx` — refactor 6 calculators to single-object state hydrated from `?s=`, render `<ShareButton>` under each hero card.
+- `src/data/cities.ts` (re-export from `cities.data.js`, keep all existing helpers)
+- `package.json` (add `postbuild` script)
+- `index.html` (add `<div id="prerender-content">` slot + remove-on-hydrate hook)
+- `src/main.tsx` (remove prerender slot after mount)
+- `public/robots.txt` (add Sitemap line)
+
+### Out of scope
+- True per-page SSR with the live calculator (would need React StaticRouter + renderToString of the full tree). The interactive calculator UI still hydrates client-side; only metadata/content blocks are prerendered, which is what matters for SEO.
+- Edge-side rendering / ISR. Lovable hosting serves static files; revalidation happens on each `vite build`.
 
 ### Verification
-
-- Change inputs on `/au/mortgage-calculator` → click Copy link → open in incognito → sliders, frequency, and computed repayment match the original.
-- On mobile (384×676), Share opens the native sheet; on desktop it falls back to copy with a toast.
-- Tampered/garbled `?s=` value renders defaults without errors.
-- Build passes; no runtime errors.
+- `npm run build` succeeds and `dist/us/mortgage-calculator-houston/index.html` exists with H1, FAQ, JSON-LD baked in (verified with `cat`).
+- `dist/sitemap.xml` lists all expected URLs.
+- Loading `/us/mortgage-calculator-houston` in a browser shows the calculator (SPA hydrates and replaces prerender slot).
+- View-source on a built page shows real text content (not just `<div id="root"></div>`).
+- `curl -A "Googlebot" .../us/mortgage-calculator-houston` returns the prerendered HTML.
