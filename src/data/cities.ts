@@ -1,4 +1,7 @@
 import { CountryConfig, CalculatorType } from "./countries";
+// Single source of truth for city data lives in plain JS so build-time scripts
+// (prerender, sitemap) can import the same dataset without a TS toolchain.
+import { citiesByCountry as citiesByCountryRaw } from "./cities.data.js";
 
 export interface CityConfig {
   name: string;
@@ -11,54 +14,7 @@ export interface CityConfig {
   highlights: string[];
 }
 
-const usCities: CityConfig[] = [
-  { name: "New York", slug: "new-york", state: "NY", medianHomePrice: 680000, avgMortgageRate: 6.85, avgRent: 3500, population: "8.3M", highlights: ["Co-ops and condos dominate", "High property taxes", "Competitive market"] },
-  { name: "Los Angeles", slug: "los-angeles", state: "CA", medianHomePrice: 950000, avgMortgageRate: 6.75, avgRent: 2800, population: "3.9M", highlights: ["Jumbo loans common", "ADU-friendly zoning", "Earthquake insurance needed"] },
-  { name: "Chicago", slug: "chicago", state: "IL", medianHomePrice: 330000, avgMortgageRate: 6.70, avgRent: 1900, population: "2.7M", highlights: ["Affordable vs coasts", "High property taxes", "Strong rental market"] },
-  { name: "Houston", slug: "houston", state: "TX", medianHomePrice: 310000, avgMortgageRate: 6.80, avgRent: 1400, population: "2.3M", highlights: ["No state income tax", "Flood zone considerations", "Rapid suburban growth"] },
-  { name: "Phoenix", slug: "phoenix", state: "AZ", medianHomePrice: 420000, avgMortgageRate: 6.75, avgRent: 1600, population: "1.6M", highlights: ["Fast appreciation", "Low property taxes", "Desert climate savings"] },
-  { name: "Philadelphia", slug: "philadelphia", state: "PA", medianHomePrice: 260000, avgMortgageRate: 6.70, avgRent: 1500, population: "1.6M", highlights: ["Affordable Northeast option", "Wage tax for residents", "Historic neighborhoods"] },
-  { name: "San Antonio", slug: "san-antonio", state: "TX", medianHomePrice: 280000, avgMortgageRate: 6.80, avgRent: 1300, population: "1.5M", highlights: ["No state income tax", "Military-friendly lending", "Growing tech sector"] },
-  { name: "San Diego", slug: "san-diego", state: "CA", medianHomePrice: 870000, avgMortgageRate: 6.75, avgRent: 2600, population: "1.4M", highlights: ["VA loan popular (military)", "Coastal premium", "Limited housing supply"] },
-  { name: "Dallas", slug: "dallas", state: "TX", medianHomePrice: 380000, avgMortgageRate: 6.80, avgRent: 1600, population: "1.3M", highlights: ["No state income tax", "DFW suburban boom", "Corporate relocations driving demand"] },
-  { name: "Austin", slug: "austin", state: "TX", medianHomePrice: 480000, avgMortgageRate: 6.80, avgRent: 1700, population: "1.0M", highlights: ["Tech hub growth", "No state income tax", "High demand from transplants"] },
-];
-
-const auCities: CityConfig[] = [
-  { name: "Sydney", slug: "sydney", state: "NSW", medianHomePrice: 1150000, avgMortgageRate: 6.30, avgRent: 750, population: "5.3M", highlights: ["Most expensive market", "Stamp duty reform ongoing", "Strong auction culture"] },
-  { name: "Melbourne", slug: "melbourne", state: "VIC", medianHomePrice: 780000, avgMortgageRate: 6.25, avgRent: 580, population: "5.0M", highlights: ["Auction-dominated market", "Investor-friendly", "Inner-city apartments competitive"] },
-  { name: "Brisbane", slug: "brisbane", state: "QLD", medianHomePrice: 750000, avgMortgageRate: 6.20, avgRent: 600, population: "2.5M", highlights: ["Strong capital growth", "Olympic 2032 infrastructure", "No stamp duty for FHB under threshold"] },
-  { name: "Perth", slug: "perth", state: "WA", medianHomePrice: 620000, avgMortgageRate: 6.25, avgRent: 550, population: "2.1M", highlights: ["Mining boom influence", "Affordable vs east coast", "Rising rental yields"] },
-  { name: "Adelaide", slug: "adelaide", state: "SA", medianHomePrice: 680000, avgMortgageRate: 6.20, avgRent: 500, population: "1.4M", highlights: ["Strong price growth", "Defence sector investment", "Affordable relative to size"] },
-  { name: "Gold Coast", slug: "gold-coast", state: "QLD", medianHomePrice: 830000, avgMortgageRate: 6.25, avgRent: 650, population: "700K", highlights: ["Tourism-driven economy", "Lifestyle premium", "Strong interstate migration"] },
-  { name: "Canberra", slug: "canberra", state: "ACT", medianHomePrice: 850000, avgMortgageRate: 6.20, avgRent: 620, population: "460K", highlights: ["Government employment stability", "High median incomes", "Stamp duty being replaced by land tax"] },
-  { name: "Newcastle", slug: "newcastle", state: "NSW", medianHomePrice: 750000, avgMortgageRate: 6.25, avgRent: 520, population: "320K", highlights: ["Sydney overflow market", "Harbour city lifestyle", "Emerging tech hub"] },
-  { name: "Hobart", slug: "hobart", state: "TAS", medianHomePrice: 630000, avgMortgageRate: 6.20, avgRent: 480, population: "240K", highlights: ["Rapid price appreciation", "Limited housing stock", "Growing tourism economy"] },
-  { name: "Darwin", slug: "darwin", state: "NT", medianHomePrice: 490000, avgMortgageRate: 6.30, avgRent: 520, population: "140K", highlights: ["Most affordable capital", "Defence and mining economy", "Tropical climate building costs"] },
-];
-
-const caCities: CityConfig[] = [
-  { name: "Toronto", slug: "toronto", state: "ON", medianHomePrice: 1100000, avgMortgageRate: 5.55, avgRent: 2800, population: "2.9M", highlights: ["Most expensive market", "Foreign buyer ban impacts", "Condo market dominates"] },
-  { name: "Vancouver", slug: "vancouver", state: "BC", medianHomePrice: 1200000, avgMortgageRate: 5.50, avgRent: 2700, population: "2.6M", highlights: ["Foreign buyer tax", "Empty homes tax", "Highest prices nationally"] },
-  { name: "Montreal", slug: "montreal", state: "QC", medianHomePrice: 530000, avgMortgageRate: 5.45, avgRent: 1600, population: "1.8M", highlights: ["Welcome tax (mutation)", "Bilingual market", "Affordable vs Toronto/Vancouver"] },
-  { name: "Calgary", slug: "calgary", state: "AB", medianHomePrice: 520000, avgMortgageRate: 5.50, avgRent: 1800, population: "1.3M", highlights: ["No provincial sales tax", "Oil economy influence", "Strong price recovery"] },
-  { name: "Edmonton", slug: "edmonton", state: "AB", medianHomePrice: 380000, avgMortgageRate: 5.50, avgRent: 1400, population: "1.0M", highlights: ["Most affordable major city", "No provincial sales tax", "Government sector employment"] },
-  { name: "Ottawa", slug: "ottawa", state: "ON", medianHomePrice: 620000, avgMortgageRate: 5.55, avgRent: 2100, population: "1.0M", highlights: ["Government employment stability", "Bilingual market", "Steady appreciation"] },
-  { name: "Winnipeg", slug: "winnipeg", state: "MB", medianHomePrice: 350000, avgMortgageRate: 5.50, avgRent: 1300, population: "750K", highlights: ["Very affordable housing", "Land transfer tax applies", "Growing immigrant population"] },
-  { name: "Quebec City", slug: "quebec-city", state: "QC", medianHomePrice: 340000, avgMortgageRate: 5.45, avgRent: 1100, population: "550K", highlights: ["Francophone market", "Low vacancy rates", "Affordable historic city"] },
-  { name: "Hamilton", slug: "hamilton", state: "ON", medianHomePrice: 720000, avgMortgageRate: 5.55, avgRent: 1900, population: "580K", highlights: ["Toronto spillover market", "GO Transit commuter city", "Revitalizing downtown"] },
-  { name: "Victoria", slug: "victoria", state: "BC", medianHomePrice: 880000, avgMortgageRate: 5.50, avgRent: 2200, population: "400K", highlights: ["Island premium pricing", "Retirement destination", "Limited land supply"] },
-];
-
-export const citiesByCountry: Record<string, CityConfig[]> = {
-  us: usCities,
-  au: auCities,
-  ca: caCities,
-  gb: [
-    { name: "London", slug: "london", state: "England", medianHomePrice: 525000, avgMortgageRate: 5.25, avgRent: 2400, population: "9.0M", highlights: ["Highest UK prices", "Strong transport links", "Competitive mortgage market"] },
-    { name: "Manchester", slug: "manchester", state: "England", medianHomePrice: 260000, avgMortgageRate: 5.15, avgRent: 1200, population: "550K", highlights: ["Northern growth hub", "Strong rental demand", "Regeneration areas"] },
-  ],
-};
+export const citiesByCountry: Record<string, CityConfig[]> = citiesByCountryRaw as Record<string, CityConfig[]>;
 
 export const getCityBySlug = (countryCode: string, slug: string): CityConfig | undefined =>
   citiesByCountry[countryCode]?.find((c) => c.slug === slug);

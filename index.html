@@ -39,6 +39,9 @@
   </head>
 
   <body>
+    <!-- Prerender slot: build-time scripts inject SEO HTML here for crawlers.
+         Removed automatically once the React app hydrates. -->
+    <div id="prerender-content" hidden></div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
