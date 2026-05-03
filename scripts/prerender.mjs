@@ -212,6 +212,7 @@ function jsonLdBlocks(route, seo) {
   if (route.country) crumbs.push({ name: countries[route.country].name, url: `${SITE}/${route.country}` });
   if (route.calc) crumbs.push({ name: calculatorMeta[route.calc].title, url: `${SITE}/${route.country}/${route.calc}` });
   if (route.city) crumbs.push({ name: route.city.name, url: seo.canonical });
+  if (route.kind === "seo") crumbs.push({ name: route.seo.city ?? route.seo.topicLabel ?? route.seo.slug, url: seo.canonical });
   blocks.push({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -238,6 +239,22 @@ function jsonLdBlocks(route, seo) {
     url: seo.canonical,
     inLanguage: "en",
   });
+  // Article schema for programmatic SEO pages
+  if (route.kind === "seo") {
+    const today = new Date().toISOString().slice(0, 10);
+    blocks.push({
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: seo.h1,
+      description: seo.description,
+      url: seo.canonical,
+      datePublished: "2025-01-15",
+      dateModified: today,
+      author: { "@type": "Organization", name: "Zune Calculator Editorial" },
+      publisher: { "@type": "Organization", name: "Zune Calculator", url: SITE },
+      mainEntityOfPage: { "@type": "WebPage", "@id": seo.canonical },
+    });
+  }
   return blocks
     .map((b) => `<script type="application/ld+json">${escapeJson(JSON.stringify(b))}</script>`)
     .join("\n    ");
