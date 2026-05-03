@@ -11,6 +11,8 @@ import Contact from "./pages/Contact.tsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
 import Terms from "./pages/Terms.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import ProgrammaticSeoPage from "./pages/seo/ProgrammaticSeoPage.tsx";
+import SeoAdmin from "./pages/seo/SeoAdmin.tsx";
 
 
 const UkCalculatorRedirect = () => {
