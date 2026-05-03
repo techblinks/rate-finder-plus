@@ -60,6 +60,14 @@ function enumerateRoutes() {
       }
     }
   }
+  // Programmatic SEO pages.
+  for (const p of seoPages) {
+    if (!p.enabled) continue;
+    const country = countries[p.country];
+    if (!country) continue;
+    const city = p.citySlug ? (citiesByCountry[p.country] ?? []).find((c) => c.slug === p.citySlug) : null;
+    routes.push({ path: `/seo/${p.slug}`, kind: "seo", country: p.country, seo: p, city });
+  }
   return routes;
 }
 
@@ -145,30 +153,54 @@ function seoFor(route) {
   }
 
   // city-calculator
-  const content = cityContent(city, country, calc);
-  const faqs = cityFaqs(city, country, calc);
-  return {
-    title: `${city.name} ${meta.title} ${YEAR} | Zune Calculator`,
-    description: `Free ${city.name} ${meta.shortTitle.toLowerCase()} calculator. Median home price ${country.currencySymbol}${fmt(city.medianHomePrice)}, avg rate ${city.avgMortgageRate}%. Calculate payments instantly.`,
-    canonical,
-    h1: `${country.flag} ${content.h1}`,
-    intro: content.intro,
-    bodyExtras: `
-      <section class="prerender-section">
-        <h2>${escapeHtml(meta.shortTitle)} Rates in ${escapeHtml(city.name)} ${YEAR}</h2>
-        <p>${escapeHtml(content.localInsights)}</p>
-      </section>
-      <section class="prerender-section">
-        <h2>${escapeHtml(city.name)} Market Highlights</h2>
-        <ul>${city.highlights.map((h) => `<li>${escapeHtml(h)}</li>`).join("")}</ul>
-      </section>
-      <section class="prerender-section">
-        <h2>Tips for ${escapeHtml(city.name)} Home Buyers</h2>
-        <ul>${content.tips.map((t) => `<li>${escapeHtml(t)}</li>`).join("")}</ul>
-      </section>`,
-    faqs,
-    city,
-  };
+  if (kind === "city-calculator") {
+    const content = cityContent(city, country, calc);
+    const faqs = cityFaqs(city, country, calc);
+    return {
+      title: `${city.name} ${meta.title} ${YEAR} | Zune Calculator`,
+      description: `Free ${city.name} ${meta.shortTitle.toLowerCase()} calculator. Median home price ${country.currencySymbol}${fmt(city.medianHomePrice)}, avg rate ${city.avgMortgageRate}%. Calculate payments instantly.`,
+      canonical,
+      h1: `${country.flag} ${content.h1}`,
+      intro: content.intro,
+      bodyExtras: `
+        <section class="prerender-section">
+          <h2>${escapeHtml(meta.shortTitle)} Rates in ${escapeHtml(city.name)} ${YEAR}</h2>
+          <p>${escapeHtml(content.localInsights)}</p>
+        </section>
+        <section class="prerender-section">
+          <h2>${escapeHtml(city.name)} Market Highlights</h2>
+          <ul>${city.highlights.map((h) => `<li>${escapeHtml(h)}</li>`).join("")}</ul>
+        </section>
+        <section class="prerender-section">
+          <h2>Tips for ${escapeHtml(city.name)} Home Buyers</h2>
+          <ul>${content.tips.map((t) => `<li>${escapeHtml(t)}</li>`).join("")}</ul>
+        </section>`,
+      faqs,
+      city,
+    };
+  }
+
+  // programmatic SEO page
+  if (kind === "seo") {
+    const seoPage = route.seo;
+    const c = generateSeoContent(seoPage, country, route.city ?? undefined);
+    const sectionsHtml = c.sections
+      .map((s) => `<section class="prerender-section"><h2>${escapeHtml(s.h2)}</h2><p>${escapeHtml(s.body)}</p></section>`)
+      .join("");
+    const exampleHtml = `<section class="prerender-section"><h2>${escapeHtml(c.example.h2)}</h2><p>${escapeHtml(c.example.body)}</p></section>`;
+    const tipsHtml = `<section class="prerender-section"><h2>Tips</h2><ul>${c.tips.map((t) => `<li>${escapeHtml(t)}</li>`).join("")}</ul></section>`;
+    return {
+      title: c.title,
+      description: c.metaDescription,
+      canonical,
+      h1: c.h1,
+      intro: c.intro,
+      bodyExtras: sectionsHtml + exampleHtml + tipsHtml,
+      faqs: c.faqs,
+    };
+  }
+
+  return null;
 }
 
 // ---- HTML assembly -------------------------------------------------------
