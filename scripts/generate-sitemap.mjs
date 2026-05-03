@@ -6,6 +6,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { citiesByCountry } from "../src/data/cities.data.js";
 import { countries, allCalculatorTypes } from "./data.mjs";
+import { seoPages } from "../src/data/seo/seoPages.data.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -44,6 +45,11 @@ function entries() {
         });
       }
     }
+  }
+  // Programmatic SEO pages
+  for (const p of seoPages) {
+    if (!p.enabled) continue;
+    list.push({ loc: `${SITE}/seo/${p.slug}`, priority: 0.7, changefreq: "weekly" });
   }
   return list;
 }
