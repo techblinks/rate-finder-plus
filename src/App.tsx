@@ -35,6 +35,8 @@ const App = () => (
             <Route path="/interest-calculator" element={<Navigate to="/us/interest-calculator" replace />} />
             <Route path="/uk" element={<Navigate to="/gb" replace />} />
             <Route path="/uk/:calculator" element={<UkCalculatorRedirect />} />
+            <Route path="/seo/admin" element={<SeoAdmin />} />
+            <Route path="/seo/:slug" element={<ProgrammaticSeoPage />} />
             <Route path="/:country" element={<CountryHome />} />
             <Route path="/:country/:calculator" element={<CalculatorPage />} />
           </Route>
