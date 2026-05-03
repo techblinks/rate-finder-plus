@@ -12,6 +12,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { citiesByCountry } from "../src/data/cities.data.js";
 import { countries, allCalculatorTypes, calculatorMeta } from "./data.mjs";
+import { seoPages } from "../src/data/seo/seoPages.data.js";
+import { generateContent as generateSeoContent } from "./seo-content.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
