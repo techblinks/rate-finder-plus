@@ -50,7 +50,7 @@ const BorrowingPower = () => {
             <NumberInput value={creditLimit} onChange={setCreditLimit} min={0} step={500} prefix="$" />
           </Field>
           <Field label="Dependants">
-            <SelectInput
+            <SelectInput<"0" | "1" | "2" | "3" | "4">
               value={dependants}
               onChange={setDependants}
               options={[
