@@ -1,0 +1,37 @@
+import { AUD } from "@/lib/format";
+
+interface BarCompareProps {
+  a: { label: string; value: number };
+  b: { label: string; value: number };
+  caption?: string;
+}
+
+const BarCompare = ({ a, b, caption }: BarCompareProps) => {
+  const max = Math.max(a.value, b.value, 1);
+  return (
+    <div>
+      {caption && <p className="mb-3 text-[13px] font-medium text-muted-foreground">{caption}</p>}
+      <div className="space-y-3">
+        {[a, b].map((row, i) => {
+          const pct = (row.value / max) * 100;
+          return (
+            <div key={i}>
+              <div className="mb-1 flex items-center justify-between text-[13px]">
+                <span className="font-medium text-foreground">{row.label}</span>
+                <span className="tnum text-muted-foreground">{AUD(row.value)}</span>
+              </div>
+              <div className="h-3 w-full rounded-full bg-surface">
+                <div
+                  className={i === 0 ? "h-3 rounded-full bg-accent" : "h-3 rounded-full bg-success"}
+                  style={{ width: `${pct}%` }}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+export default BarCompare;
