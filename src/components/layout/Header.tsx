@@ -1,57 +1,83 @@
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import { useState } from "react";
-import { countries, calculatorMeta, primaryCalculatorTypes } from "@/data/countries";
+import { useEffect, useState } from "react";
+
+const NAV = [
+  { to: "/mortgage-calculator", label: "Mortgage" },
+  { to: "/stamp-duty-calculator", label: "Stamp Duty" },
+  { to: "/borrowing-power-calculator", label: "Borrowing" },
+  { to: "/extra-repayments-calculator", label: "Extra" },
+  { to: "/lmi-calculator", label: "LMI" },
+  { to: "/loan-comparison-calculator", label: "Compare" },
+];
 
 const Header = () => {
-  const { country } = useParams<{ country: string }>();
-  const location = useLocation();
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const currentCountry = country && countries[country] ? country : "us";
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-card/95 shadow-[0_1px_0_hsl(var(--navy)/0.06)] backdrop-blur supports-[backdrop-filter]:bg-card/90">
-      <div className="container flex h-16 items-center justify-between md:h-[72px]">
-        <Link to={`/${currentCountry}`} className="leading-none">
-          <span className="block font-display text-[26px] text-navy">Zune</span>
-          <span className="hidden text-[11px] font-medium text-muted-foreground md:block">Mortgage Calculator</span>
+    <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
+      <div className="page-shell flex h-14 items-center justify-between">
+        <Link to="/" className="flex items-baseline gap-1.5" onClick={() => setOpen(false)}>
+          <span className="text-[18px] font-bold tracking-tight text-foreground">Zune</span>
+          <span className="text-[14px] font-normal text-muted-foreground">Calculator</span>
         </Link>
 
-        <nav className="hidden items-center gap-7 md:flex" aria-label="Main navigation">
-          {primaryCalculatorTypes.map((calc) => {
-            const active = location.pathname.includes(calc);
-            return (
-              <Link key={calc} to={`/${currentCountry}/${calc}`} className={`border-b-2 py-6 text-[13px] font-semibold transition-colors ${active ? "border-primary text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"}`}>
-                {calculatorMeta[calc].shortTitle}
-              </Link>
-            );
-          })}
-          <div className="flex items-center gap-1 rounded-lg border border-border bg-secondary px-2 py-1.5">
-            {Object.values(countries).map((c) => (
-              <Link key={c.code} to={`/${c.code}`} className={`rounded-md px-2 py-1 text-[13px] font-semibold transition-all hover:bg-card ${c.code === currentCountry ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"}`} title={c.name}>
-                {c.code.toUpperCase()}
-              </Link>
-            ))}
-          </div>
+        <nav className="hidden md:flex items-center gap-6" aria-label="Primary">
+          {NAV.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                `text-[13px] font-medium transition-colors ${
+                  isActive ? "text-accent" : "text-muted-foreground hover:text-foreground"
+                }`
+              }
+            >
+              {item.label}
+            </NavLink>
+          ))}
         </nav>
 
-        <button className="rounded-lg border border-border bg-secondary p-2 md:hidden" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Toggle menu">
-          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-label={open ? "Close menu" : "Open menu"}
+          aria-expanded={open}
+          className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-md border border-border bg-surface"
+        >
+          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </div>
 
-      {mobileOpen && (
-        <nav className="border-t border-border bg-card p-4 md:hidden" aria-label="Mobile navigation">
-          <div className="grid gap-1">
-            {primaryCalculatorTypes.map((calc) => (
-              <Link key={calc} to={`/${currentCountry}/${calc}`} className="rounded-lg px-3 py-3 text-sm font-semibold text-muted-foreground hover:bg-secondary hover:text-foreground" onClick={() => setMobileOpen(false)}>
-                {calculatorMeta[calc].title}
-              </Link>
+      {open && (
+        <nav
+          aria-label="Mobile"
+          className="md:hidden border-t border-border bg-background"
+        >
+          <ul className="page-shell py-3">
+            {NAV.map((item) => (
+              <li key={item.to}>
+                <NavLink
+                  to={item.to}
+                  onClick={() => setOpen(false)}
+                  className={({ isActive }) =>
+                    `block py-3 text-[15px] font-medium ${
+                      isActive ? "text-accent" : "text-foreground"
+                    }`
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              </li>
             ))}
-          </div>
-          <div className="mt-3 flex gap-2 border-t border-border pt-3">
-            {Object.values(countries).map((c) => <Link key={c.code} to={`/${c.code}`} className="rounded-lg bg-secondary px-3 py-2 text-xs font-bold" onClick={() => setMobileOpen(false)}>{c.code.toUpperCase()}</Link>)}
-          </div>
+          </ul>
         </nav>
       )}
     </header>

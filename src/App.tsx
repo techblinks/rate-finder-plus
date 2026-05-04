@@ -1,51 +1,35 @@
-import { BrowserRouter, Route, Routes, Navigate, useParams } from "react-router-dom";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
-import Index from "./pages/Index.tsx";
-import CountryHome from "./pages/CountryHome.tsx";
-import CalculatorPage from "./pages/CalculatorPage.tsx";
-import About from "./pages/About.tsx";
-import Contact from "./pages/Contact.tsx";
-import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
-import Terms from "./pages/Terms.tsx";
-import NotFound from "./pages/NotFound.tsx";
-import ProgrammaticSeoPage from "./pages/seo/ProgrammaticSeoPage.tsx";
-import SeoAdmin from "./pages/seo/SeoAdmin.tsx";
-
-
-const UkCalculatorRedirect = () => {
-  const { calculator } = useParams<{ calculator: string }>();
-  return <Navigate to={`/gb/${calculator ?? "mortgage-calculator"}`} replace />;
-};
+import Home from "./pages/Home";
+import MortgageCalculatorPage from "./pages/MortgageCalculatorPage";
+import StampDutyPage from "./pages/StampDutyPage";
+import BorrowingPowerPage from "./pages/BorrowingPowerPage";
+import ExtraRepaymentsPage from "./pages/ExtraRepaymentsPage";
+import LmiPage from "./pages/LmiPage";
+import LoanComparisonPage from "./pages/LoanComparisonPage";
+import About from "./pages/About";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
+import NotFound from "./pages/NotFound";
 
 const App = () => (
-  <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<Index />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/mortgage-calculator" element={<Navigate to="/us/mortgage-calculator" replace />} />
-            <Route path="/loan-calculator" element={<Navigate to="/us/loan-calculator" replace />} />
-            <Route path="/interest-calculator" element={<Navigate to="/us/interest-calculator" replace />} />
-            <Route path="/uk" element={<Navigate to="/gb" replace />} />
-            <Route path="/uk/:calculator" element={<UkCalculatorRedirect />} />
-            <Route path="/seo/admin" element={<SeoAdmin />} />
-            <Route path="/seo/:slug" element={<ProgrammaticSeoPage />} />
-            <Route path="/:country" element={<CountryHome />} />
-            <Route path="/:country/:calculator" element={<CalculatorPage />} />
-          </Route>
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-  </TooltipProvider>
+  <BrowserRouter>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/mortgage-calculator" element={<MortgageCalculatorPage />} />
+        <Route path="/stamp-duty-calculator" element={<StampDutyPage />} />
+        <Route path="/borrowing-power-calculator" element={<BorrowingPowerPage />} />
+        <Route path="/extra-repayments-calculator" element={<ExtraRepaymentsPage />} />
+        <Route path="/lmi-calculator" element={<LmiPage />} />
+        <Route path="/loan-comparison-calculator" element={<LoanComparisonPage />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="*" element={<NotFound />} />
+      </Route>
+    </Routes>
+  </BrowserRouter>
 );
 
 export default App;
