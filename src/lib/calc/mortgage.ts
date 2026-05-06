@@ -15,10 +15,19 @@ export interface MortgageBreakdown {
   totalInterest: number;
   payoffDate: Date;
   yearlySchedule: YearRow[];
+  monthlySchedule: MonthRow[];
 }
 
 export interface YearRow {
   year: number;
+  opening: number;
+  principal: number;
+  interest: number;
+  closing: number;
+}
+
+export interface MonthRow {
+  month: number;
   opening: number;
   principal: number;
   interest: number;
@@ -42,11 +51,13 @@ export function calcMortgage(
   let monthIndex = 0;
 
   const yearly: YearRow[] = [];
+  const monthly_rows: MonthRow[] = [];
   let yearOpening = principal;
   let yearPrincipal = 0;
   let yearInterest = 0;
 
   for (let m = 1; m <= totalMonths && balance > 0.005; m++) {
+    const monthOpening = balance;
     const interest = balance * r;
     let principalPart = monthly - interest + extraMonthly;
     if (principalPart > balance) principalPart = balance;
@@ -57,6 +68,14 @@ export function calcMortgage(
     yearPrincipal += principalPart;
     yearInterest += interest;
     monthIndex = m;
+
+    monthly_rows.push({
+      month: m,
+      opening: monthOpening,
+      principal: principalPart,
+      interest,
+      closing: Math.max(0, balance),
+    });
 
     if (m % 12 === 0 || balance <= 0.005) {
       yearly.push({
@@ -83,5 +102,6 @@ export function calcMortgage(
     totalInterest,
     payoffDate: payoff,
     yearlySchedule: yearly,
+    monthlySchedule: monthly_rows,
   };
 }
