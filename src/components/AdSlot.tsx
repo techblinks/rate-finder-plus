@@ -8,7 +8,7 @@ import { useEffect, useRef } from "react";
  * Slot IDs come from env (`VITE_ADSENSE_SLOT_HEADER`, `VITE_ADSENSE_SLOT_INLINE`,
  * `VITE_ADSENSE_SLOT_SIDEBAR`) so they can be swapped without code changes.
  */
-type SlotName = "header" | "inline" | "sidebar";
+type SlotName = "header" | "inline" | "sidebar" | "stickyMobile";
 
 interface AdSlotProps {
   slot: SlotName;
@@ -19,12 +19,14 @@ const SLOT_ENV: Record<SlotName, string | undefined> = {
   header: import.meta.env.VITE_ADSENSE_SLOT_HEADER as string | undefined,
   inline: import.meta.env.VITE_ADSENSE_SLOT_INLINE as string | undefined,
   sidebar: import.meta.env.VITE_ADSENSE_SLOT_SIDEBAR as string | undefined,
+  stickyMobile: import.meta.env.VITE_ADSENSE_SLOT_STICKY_MOBILE as string | undefined,
 };
 
 const SLOT_CLASS: Record<SlotName, string> = {
   header: "min-h-[90px]",
   inline: "min-h-[250px]",
   sidebar: "min-h-[600px]",
+  stickyMobile: "h-[60px] w-full",
 };
 
 declare global {
