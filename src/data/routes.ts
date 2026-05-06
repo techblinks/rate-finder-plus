@@ -8,6 +8,7 @@ export interface RouteMeta {
   canonical: string;
   faqs?: FaqItem[];
   isCalculator?: boolean;
+  isArticle?: boolean;
 }
 
 export const SITE = "https://calcy.com.au";
