@@ -16,24 +16,96 @@ export type Database = {
     Tables: {
       site_settings: {
         Row: {
+          ads_txt: string | null
+          adsense_auto_ads: boolean
+          adsense_client: string | null
+          adsense_enabled: boolean
+          adsense_slot_header: string | null
+          adsense_slot_inline: string | null
+          adsense_slot_sidebar: string | null
+          adsense_slot_sticky_mobile: string | null
+          bing_verification: string | null
+          body_html: string | null
+          default_meta_description: string | null
+          default_og_image: string | null
           favicon_url: string | null
+          fb_pixel_id: string | null
+          ga4_id: string | null
+          gsc_verification: string | null
+          gtm_id: string | null
+          head_html: string | null
           id: number
+          indexing_enabled: boolean
           logo_height: number
           logo_url: string | null
+          robots_txt: string | null
+          slot_header_enabled: boolean
+          slot_inline_enabled: boolean
+          slot_sidebar_enabled: boolean
+          slot_sticky_mobile_enabled: boolean
+          title_template: string
           updated_at: string
         }
         Insert: {
+          ads_txt?: string | null
+          adsense_auto_ads?: boolean
+          adsense_client?: string | null
+          adsense_enabled?: boolean
+          adsense_slot_header?: string | null
+          adsense_slot_inline?: string | null
+          adsense_slot_sidebar?: string | null
+          adsense_slot_sticky_mobile?: string | null
+          bing_verification?: string | null
+          body_html?: string | null
+          default_meta_description?: string | null
+          default_og_image?: string | null
           favicon_url?: string | null
+          fb_pixel_id?: string | null
+          ga4_id?: string | null
+          gsc_verification?: string | null
+          gtm_id?: string | null
+          head_html?: string | null
           id?: number
+          indexing_enabled?: boolean
           logo_height?: number
           logo_url?: string | null
+          robots_txt?: string | null
+          slot_header_enabled?: boolean
+          slot_inline_enabled?: boolean
+          slot_sidebar_enabled?: boolean
+          slot_sticky_mobile_enabled?: boolean
+          title_template?: string
           updated_at?: string
         }
         Update: {
+          ads_txt?: string | null
+          adsense_auto_ads?: boolean
+          adsense_client?: string | null
+          adsense_enabled?: boolean
+          adsense_slot_header?: string | null
+          adsense_slot_inline?: string | null
+          adsense_slot_sidebar?: string | null
+          adsense_slot_sticky_mobile?: string | null
+          bing_verification?: string | null
+          body_html?: string | null
+          default_meta_description?: string | null
+          default_og_image?: string | null
           favicon_url?: string | null
+          fb_pixel_id?: string | null
+          ga4_id?: string | null
+          gsc_verification?: string | null
+          gtm_id?: string | null
+          head_html?: string | null
           id?: number
+          indexing_enabled?: boolean
           logo_height?: number
           logo_url?: string | null
+          robots_txt?: string | null
+          slot_header_enabled?: boolean
+          slot_inline_enabled?: boolean
+          slot_sidebar_enabled?: boolean
+          slot_sticky_mobile_enabled?: boolean
+          title_template?: string
           updated_at?: string
         }
         Relationships: []
