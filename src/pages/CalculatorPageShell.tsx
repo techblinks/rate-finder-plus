@@ -67,6 +67,7 @@ const CalculatorPageShell = ({
           </section>
         ))}
         <FAQ items={faqs} />
+        <RelatedGuides canonical={canonical} />
         <RelatedCalculators items={related} />
       </div>
     </div>
