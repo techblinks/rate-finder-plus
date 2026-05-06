@@ -184,71 +184,107 @@ const Home = () => {
             </div>
 
             {/* Right tile — Quick estimate (replaces middle + right) */}
-            <div
+            <section
+              aria-labelledby="quick-estimate-heading"
               className="rounded-[24px] p-7 text-white sm:p-9 md:p-10 min-h-[280px] md:min-h-[380px] flex flex-col"
               style={{ background: "hsl(var(--accent))" }}
             >
-              <p className="text-label mb-5 text-white/75">Quick estimate</p>
+              <h2 id="quick-estimate-heading" className="text-label mb-5 text-white/75 font-semibold">
+                Quick estimate
+              </h2>
 
               <div className="mb-2 flex flex-col gap-3 sm:flex-row sm:items-start">
-                <label className="flex-1 min-w-0">
-                  <span className="mb-1.5 block text-[12px] text-white/80">Loan amount</span>
+                <div className="flex-1 min-w-0">
+                  <label htmlFor="qe-loan" className="mb-1.5 block text-[12px] text-white/80">
+                    Loan amount
+                  </label>
                   <div className="relative">
-                    <span className="absolute left-3.5 top-[22px] -translate-y-1/2 text-[15px] text-muted-foreground">$</span>
+                    <span aria-hidden className="absolute left-3.5 top-[22px] -translate-y-1/2 text-[15px] text-muted-foreground">
+                      $
+                    </span>
                     <input
+                      id="qe-loan"
                       type="number"
                       value={Number.isFinite(loan) ? loan : ""}
                       onChange={(e) => setLoan(Number(e.target.value))}
-                      className={`input-field pl-7 tnum ${loanError ? "border-destructive focus:border-destructive" : ""}`}
+                      className={`input-field pl-7 tnum focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] ${
+                        loanError ? "border-destructive focus:border-destructive" : ""
+                      }`}
                       inputMode="numeric"
                       min={LOAN_MIN}
                       max={LOAN_MAX}
                       step={1000}
+                      autoComplete="off"
                       aria-invalid={Boolean(loanError)}
-                      aria-describedby={loanError ? "loan-err" : undefined}
+                      aria-describedby="qe-loan-hint"
+                      aria-errormessage={loanError ? "qe-loan-hint" : undefined}
                     />
                   </div>
                   <span
-                    id="loan-err"
+                    id="qe-loan-hint"
                     role={loanError ? "alert" : undefined}
-                    className={`mt-1.5 block text-[11px] min-h-[14px] ${loanError ? "text-white font-medium" : "text-white/55"}`}
+                    aria-live={loanError ? "assertive" : "off"}
+                    className={`mt-1.5 block text-[11px] min-h-[14px] ${
+                      loanError ? "text-white font-medium" : "text-white/55"
+                    }`}
                   >
-                    {loanError ?? `${fmt(LOAN_MIN)} – ${fmt(LOAN_MAX)}`}
+                    {loanError ?? `Range: ${fmt(LOAN_MIN)} to ${fmt(LOAN_MAX)}`}
                   </span>
-                </label>
-                <label className="w-full sm:w-[130px]">
-                  <span className="mb-1.5 block text-[12px] text-white/80">Rate</span>
+                </div>
+                <div className="w-full sm:w-[130px]">
+                  <label htmlFor="qe-rate" className="mb-1.5 block text-[12px] text-white/80">
+                    Rate
+                  </label>
                   <div className="relative">
                     <input
+                      id="qe-rate"
                       type="number"
                       step="0.01"
                       value={Number.isFinite(rate) ? rate : ""}
                       onChange={(e) => setRate(Number(e.target.value))}
-                      className={`input-field pr-7 tnum ${rateError ? "border-destructive focus:border-destructive" : ""}`}
+                      className={`input-field pr-7 tnum focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] ${
+                        rateError ? "border-destructive focus:border-destructive" : ""
+                      }`}
                       inputMode="decimal"
                       min={RATE_MIN}
                       max={RATE_MAX}
+                      autoComplete="off"
                       aria-invalid={Boolean(rateError)}
-                      aria-describedby={rateError ? "rate-err" : undefined}
+                      aria-describedby="qe-rate-hint"
+                      aria-errormessage={rateError ? "qe-rate-hint" : undefined}
                     />
-                    <span className="absolute right-3 top-[22px] -translate-y-1/2 text-[14px] text-muted-foreground">%</span>
+                    <span aria-hidden className="absolute right-3 top-[22px] -translate-y-1/2 text-[14px] text-muted-foreground">
+                      %
+                    </span>
                   </div>
                   <span
-                    id="rate-err"
+                    id="qe-rate-hint"
                     role={rateError ? "alert" : undefined}
-                    className={`mt-1.5 block text-[11px] min-h-[14px] ${rateError ? "text-white font-medium" : "text-white/55"}`}
+                    aria-live={rateError ? "assertive" : "off"}
+                    className={`mt-1.5 block text-[11px] min-h-[14px] ${
+                      rateError ? "text-white font-medium" : "text-white/55"
+                    }`}
                   >
-                    {rateError ?? `${RATE_MIN}% – ${RATE_MAX}%`}
+                    {rateError ?? `Range: ${RATE_MIN}% to ${RATE_MAX}%`}
                   </span>
-                </label>
+                </div>
               </div>
 
-              <div className="mt-3 min-h-[96px]" aria-live="polite">
-                <p className="text-[12px] text-white/75">Fortnightly repayment</p>
+              <div
+                className="mt-3 min-h-[96px]"
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                <p className="text-[12px] text-white/75" id="qe-result-label">
+                  Fortnightly repayment
+                </p>
                 <p
                   className="mt-1 text-[34px] sm:text-[40px] font-semibold leading-none tnum tabular-nums transition-opacity duration-150"
                   style={{ opacity: hasError ? 0.5 : 1 }}
+                  aria-labelledby="qe-result-label"
                 >
+                  <span className="sr-only">Estimated fortnightly repayment: </span>
                   {hasError ? "—" : fmt(repayments.fortnightly)}
                 </p>
                 <p className="mt-1.5 text-[13px] text-white/75 tnum tabular-nums min-h-[18px]">
@@ -258,15 +294,18 @@ const Home = () => {
                 </p>
               </div>
 
-              <div className="my-5 h-px bg-white/15" />
+              <div className="my-5 h-px bg-white/15" aria-hidden />
 
-              <Link to="/mortgage-calculator" className="text-[13px] font-medium text-white/90 hover:text-white hover:underline">
+              <Link
+                to="/mortgage-calculator"
+                className="text-[13px] font-medium text-white/90 hover:text-white hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] rounded-sm"
+              >
                 Full mortgage calculator with amortisation →
               </Link>
               <p className="mt-3 text-[11px] text-white/55">
                 Estimate only. Not financial advice.
               </p>
-            </div>
+            </section>
           </div>
         </div>
       </section>
