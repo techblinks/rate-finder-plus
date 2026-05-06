@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { SeoHead } from "@/components/seo/SeoHead";
-import { BreadcrumbJsonLd, FaqJsonLd, HowToJsonLd, WebApplicationJsonLd } from "@/components/seo/JsonLd";
+import { ArticleJsonLd, BreadcrumbJsonLd, FaqJsonLd, HowToJsonLd, WebApplicationJsonLd } from "@/components/seo/JsonLd";
 import { HOW_TOS } from "@/data/howTos";
 import Breadcrumb from "@/components/Breadcrumb";
 import FAQ from "@/components/FAQ";
@@ -46,6 +46,12 @@ const CalculatorPageShell = ({
     <FaqJsonLd faqs={faqs} />
     <WebApplicationJsonLd name={title} description={metaDescription} path={canonical} />
     {HOW_TOS[canonical] && <HowToJsonLd {...HOW_TOS[canonical]} />}
+    <ArticleJsonLd
+      headline={metaTitle}
+      description={metaDescription}
+      path={canonical}
+      sectionHeadings={sections.map((s) => s.heading)}
+    />
     <div className="page-shell py-8 md:py-10">
       <Breadcrumb current={title} />
       <h1 className="mb-6">{title}</h1>
