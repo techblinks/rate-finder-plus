@@ -63,6 +63,16 @@ const MortgageRepayment = () => {
     [dAmount, dRate, dTerm, dExtra],
   );
 
+  useDebouncedCalculate("mortgage_repayment", {
+    loan_type: loanType,
+    amount: dAmount,
+    rate: dRate,
+    term: dTerm,
+    extra: dExtra,
+    frequency,
+    monthly: Math.round(result.monthly),
+  });
+
   const display =
     frequency === "monthly" ? result.monthly : frequency === "fortnightly" ? result.fortnightly : result.weekly;
 
