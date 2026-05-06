@@ -10,6 +10,9 @@ import {
   MapPin,
   Zap,
   Table,
+  TrendingDown,
+  TrendingUp,
+  Minus,
 } from "lucide-react";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
