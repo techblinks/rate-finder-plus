@@ -131,6 +131,7 @@ export const ArticleJsonLd = ({
     "@type": "Article",
     headline,
     description,
+    image: [`${SITE}/icon-512.png`],
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
     url,
     inLanguage: "en-AU",
