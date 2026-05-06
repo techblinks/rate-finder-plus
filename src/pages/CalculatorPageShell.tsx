@@ -1,9 +1,10 @@
 import { ReactNode } from "react";
 import { SeoHead } from "@/components/seo/SeoHead";
-import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/seo/JsonLd";
+import { BreadcrumbJsonLd, FaqJsonLd, WebApplicationJsonLd } from "@/components/seo/JsonLd";
 import Breadcrumb from "@/components/Breadcrumb";
 import FAQ from "@/components/FAQ";
 import RelatedCalculators from "@/components/RelatedCalculators";
+import AdSlot from "@/components/AdSlot";
 import type { FaqItem } from "@/data/faqs";
 
 interface Section {
