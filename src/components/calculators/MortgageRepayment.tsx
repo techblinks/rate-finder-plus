@@ -216,7 +216,7 @@ const MortgageRepayment = () => {
         </div>
 
         <div className="mt-5">
-          <AmortisationTable rows={result.yearlySchedule} />
+          <AmortisationTable rows={result.yearlySchedule} monthlyRows={result.monthlySchedule} />
         </div>
       </ResultCard>
     </div>
