@@ -5,6 +5,7 @@ import { Card, ResultCard, ResultRow } from "@/components/ui-kit";
 import RangeField from "@/components/RangeField";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
+import ResultActions from "@/components/ResultActions";
 
 const Lmi = () => {
   const [propertyValue, setPropertyValue] = useState(700000);
@@ -91,6 +92,7 @@ const Lmi = () => {
         <p className="mt-3 text-[12px] leading-relaxed text-muted-foreground">
           LMI estimates are indicative. Actual costs depend on your lender and insurer (Helia or QBE).
         </p>
+              <ResultActions calculator="lmi" />
       </ResultCard>
     </div>
   );

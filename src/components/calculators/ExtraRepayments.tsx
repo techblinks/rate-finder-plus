@@ -6,6 +6,7 @@ import RangeField from "@/components/RangeField";
 import BarCompare from "@/components/BarCompare";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
+import ResultActions from "@/components/ResultActions";
 
 const ExtraRepayments = () => {
   const [balance, setBalance] = useState(500000);
@@ -101,6 +102,7 @@ const ExtraRepayments = () => {
             b={{ label: "With extra", value: result.withExtra.totalInterest }}
           />
         </div>
+              <ResultActions calculator="extra_repayments" />
       </ResultCard>
     </div>
   );

@@ -5,6 +5,7 @@ import { Card, Field, NumberInput, ResultCard } from "@/components/ui-kit";
 import BarCompare from "@/components/BarCompare";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
+import ResultActions from "@/components/ResultActions";
 
 interface ScenarioInput {
   rate: number;
@@ -155,6 +156,7 @@ const LoanComparisonCalc = () => {
             b={{ label: "Loan B", value: result.b.totalInterest }}
           />
         </div>
+              <ResultActions calculator="loan_comparison" />
       </ResultCard>
     </div>
   );
