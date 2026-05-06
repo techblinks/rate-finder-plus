@@ -272,11 +272,15 @@ const Home = () => {
               const Icon = t.icon;
               return (
                 <li key={t.to} className="flex">
-                  <Link to={t.to} className="calc-card min-h-[220px] w-full">
-                    <Icon className="mb-4 h-8 w-8 text-accent" strokeWidth={1.75} />
+                  <Link to={t.to} className="calc-card min-h-[240px] w-full">
                     <h3 className="text-h4 mb-2.5">{t.title}</h3>
                     <p className="text-body text-small flex-1">{t.description}</p>
-                    <span className="btn-link mt-auto pt-5">Get started →</span>
+                    <div className="mt-5 flex items-end justify-between">
+                      <Icon className="h-9 w-9 text-accent" strokeWidth={1.75} />
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-[13px] font-semibold text-accent-foreground">
+                        Get started <span aria-hidden>↗</span>
+                      </span>
+                    </div>
                   </Link>
                 </li>
               );
