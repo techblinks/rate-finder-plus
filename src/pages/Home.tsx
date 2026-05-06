@@ -104,14 +104,39 @@ const CURRENT_CARDS = [
 const fmt = (n: number) =>
   n.toLocaleString("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 });
 
+const LOAN_MIN = 10_000;
+const LOAN_MAX = 10_000_000;
+const RATE_MIN = 0.1;
+const RATE_MAX = 20;
+
+const validateLoan = (n: number) => {
+  if (!Number.isFinite(n) || n <= 0) return "Enter a loan amount";
+  if (n < LOAN_MIN) return `Minimum loan is ${fmt(LOAN_MIN)}`;
+  if (n > LOAN_MAX) return `Maximum loan is ${fmt(LOAN_MAX)}`;
+  return null;
+};
+const validateRate = (n: number) => {
+  if (!Number.isFinite(n) || n <= 0) return "Enter a rate";
+  if (n < RATE_MIN) return `Minimum rate is ${RATE_MIN}%`;
+  if (n > RATE_MAX) return `Maximum rate is ${RATE_MAX}%`;
+  return null;
+};
+
 const Home = () => {
   const [loan, setLoan] = useState(650000);
   const [rate, setRate] = useState(5.5);
   const dLoan = useDebouncedValue(loan, 300);
   const dRate = useDebouncedValue(rate, 300);
 
+  const loanError = validateLoan(loan);
+  const rateError = validateRate(rate);
+  const hasError = Boolean(loanError || rateError);
+
   const repayments = useMemo(() => {
-    const monthly = monthlyPayment(dLoan || 0, dRate || 0, 30);
+    if (validateLoan(dLoan) || validateRate(dRate)) {
+      return { monthly: 0, fortnightly: 0, weekly: 0 };
+    }
+    const monthly = monthlyPayment(dLoan, dRate, 30);
     return {
       monthly,
       fortnightly: monthly / 2,
