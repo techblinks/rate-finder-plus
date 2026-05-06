@@ -190,43 +190,68 @@ const Home = () => {
             >
               <p className="text-label mb-5 text-white/75">Quick estimate</p>
 
-              <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end">
+              <div className="mb-2 flex flex-col gap-3 sm:flex-row sm:items-start">
                 <label className="flex-1 min-w-0">
                   <span className="mb-1.5 block text-[12px] text-white/80">Loan amount</span>
                   <div className="relative">
-                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[15px] text-muted-foreground">$</span>
+                    <span className="absolute left-3.5 top-[22px] -translate-y-1/2 text-[15px] text-muted-foreground">$</span>
                     <input
                       type="number"
-                      value={loan}
+                      value={Number.isFinite(loan) ? loan : ""}
                       onChange={(e) => setLoan(Number(e.target.value))}
-                      className="input-field pl-7 tnum"
+                      className={`input-field pl-7 tnum ${loanError ? "border-destructive focus:border-destructive" : ""}`}
                       inputMode="numeric"
+                      min={LOAN_MIN}
+                      max={LOAN_MAX}
+                      step={1000}
+                      aria-invalid={Boolean(loanError)}
+                      aria-describedby={loanError ? "loan-err" : undefined}
                     />
                   </div>
+                  <span
+                    id="loan-err"
+                    role={loanError ? "alert" : undefined}
+                    className={`mt-1.5 block text-[11px] min-h-[14px] ${loanError ? "text-white font-medium" : "text-white/55"}`}
+                  >
+                    {loanError ?? `${fmt(LOAN_MIN)} – ${fmt(LOAN_MAX)}`}
+                  </span>
                 </label>
-                <label className="w-full sm:w-[120px]">
+                <label className="w-full sm:w-[130px]">
                   <span className="mb-1.5 block text-[12px] text-white/80">Rate</span>
                   <div className="relative">
                     <input
                       type="number"
                       step="0.01"
-                      value={rate}
+                      value={Number.isFinite(rate) ? rate : ""}
                       onChange={(e) => setRate(Number(e.target.value))}
-                      className="input-field pr-7 tnum"
+                      className={`input-field pr-7 tnum ${rateError ? "border-destructive focus:border-destructive" : ""}`}
                       inputMode="decimal"
+                      min={RATE_MIN}
+                      max={RATE_MAX}
+                      aria-invalid={Boolean(rateError)}
+                      aria-describedby={rateError ? "rate-err" : undefined}
                     />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[14px] text-muted-foreground">%</span>
+                    <span className="absolute right-3 top-[22px] -translate-y-1/2 text-[14px] text-muted-foreground">%</span>
                   </div>
+                  <span
+                    id="rate-err"
+                    role={rateError ? "alert" : undefined}
+                    className={`mt-1.5 block text-[11px] min-h-[14px] ${rateError ? "text-white font-medium" : "text-white/55"}`}
+                  >
+                    {rateError ?? `${RATE_MIN}% – ${RATE_MAX}%`}
+                  </span>
                 </label>
               </div>
 
-              <div>
+              <div className="mt-3">
                 <p className="text-[12px] text-white/75">Fortnightly repayment</p>
                 <p className="mt-1 text-[34px] sm:text-[40px] font-semibold leading-none tnum">
-                  {fmt(repayments.fortnightly)}
+                  {hasError ? "—" : fmt(repayments.fortnightly)}
                 </p>
                 <p className="mt-1.5 text-[13px] text-white/75 tnum">
-                  Monthly {fmt(repayments.monthly)} · Weekly {fmt(repayments.weekly)}
+                  {hasError
+                    ? "Enter valid values to see your estimate"
+                    : `Monthly ${fmt(repayments.monthly)} · Weekly ${fmt(repayments.weekly)}`}
                 </p>
               </div>
 
