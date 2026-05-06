@@ -24,6 +24,8 @@ export default {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
           hover: "hsl(var(--accent-hover))",
+          light: "hsl(var(--accent-light))",
+          mid: "hsl(var(--accent-mid))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",

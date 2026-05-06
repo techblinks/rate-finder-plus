@@ -20,11 +20,13 @@
     --secondary: 210 17% 98%;
     --secondary-foreground: 220 39% 11%;
 
-    --accent: 217 91% 60%;                /* #2563EB */
+    --accent: 173 84% 32%;                /* #0D9488 Calcy Teal */
     --accent-foreground: 0 0% 100%;
-    --accent-hover: 224 76% 48%;          /* #1D4ED8 */
+    --accent-hover: 175 77% 26%;          /* #0F766E */
+    --accent-light: 166 76% 97%;          /* #F0FDFA */
+    --accent-mid: 167 85% 89%;            /* #CCFBF1 */
 
-    --primary: 217 91% 60%;
+    --primary: 173 84% 32%;
     --primary-foreground: 0 0% 100%;
 
     --success: 160 84% 30%;               /* #059669 */
@@ -38,7 +40,7 @@
 
     --border: 220 13% 91%;                /* #E5E7EB */
     --input: 220 13% 91%;
-    --ring: 217 91% 60%;
+    --ring: 173 84% 32%;
 
     --radius: 0.5rem;
   }
