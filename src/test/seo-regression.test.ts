@@ -8,12 +8,16 @@
  *    indexing toggles, title templates, and OG image overrides never break
  *    canonical, og:url, or hreflang invariants.
  */
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { renderToString } from "react-dom/server";
-import { HelmetProvider } from "react-helmet-async";
+import { HelmetProvider, Helmet } from "react-helmet-async";
+// react-helmet-async detects jsdom as a browser and skips populating the
+// server context. Force SSR mode for these tests.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(Helmet as any).canUseDOM = false;
 import React from "react";
 import { SeoHead } from "@/components/seo/SeoHead";
 import * as siteSettings from "@/hooks/useSiteSettings";
