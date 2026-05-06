@@ -16,10 +16,11 @@ export const ROUTES: RouteMeta[] = [
   {
     path: "/",
     title: "Calcy",
-    metaTitle: "Calcy | Free Australian Mortgage Calculators",
+    metaTitle: "Free Australian Mortgage Calculator 2026 | Calcy",
     metaDescription:
-      "Free Australian mortgage repayment, stamp duty, borrowing power, LMI and loan comparison calculators. Bank-grade, no sign-up. Updated for 2026.",
+      "Calculate home loan repayments, stamp duty, borrowing power and LMI for free. All 8 Australian states. Updated with current RBA rates. No sign-up required.",
     canonical: "/",
+    faqs: FAQS.home,
   },
   {
     path: "/mortgage-calculator",
