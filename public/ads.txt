@@ -1,0 +1,5 @@
+# Calcy ads.txt
+# Replace pub-XXXXXXXXXXXXXXXX with your AdSense publisher ID once approved.
+# Format: <ad_system_domain>, <publisher_id>, <relationship>, <certification_authority_id>
+# DIRECT relationships only — no resellers configured.
+google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
