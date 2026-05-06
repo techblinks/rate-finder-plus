@@ -128,115 +128,95 @@ const Home = () => {
       />
       <BreadcrumbJsonLd items={[{ name: "Home", path: "/" }]} />
 
-      {/* SECTION 1 — HERO (3-tile rounded layout) */}
+      {/* SECTION 1 — HERO (2-tile rounded layout) */}
       <section className="bg-background">
-        <div className="page-shell pt-10 pb-8 md:pt-14 md:pb-10">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
+        <div className="page-shell pt-10 pb-10 md:pt-14 md:pb-14">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5 md:items-stretch">
             {/* Left tile — solid blue */}
             <div
-              className="rounded-[24px] p-8 text-white md:p-10 flex flex-col justify-between min-h-[320px]"
+              className="rounded-[24px] p-7 text-white sm:p-9 md:p-10 flex flex-col justify-between min-h-[280px] md:min-h-[380px]"
               style={{ background: "hsl(var(--accent))" }}
             >
               <div>
                 <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold tracking-wide text-white/90 mb-5">
                   Free · No sign-up · Updated May 2026
                 </span>
-                <h1 className="font-display text-[34px] leading-[1.1] font-extrabold text-white mb-3">
+                <h1 className="font-display text-[32px] sm:text-[40px] md:text-[44px] leading-[1.05] font-extrabold text-white mb-4">
                   Make confident<br />mortgage decisions.
                 </h1>
-                <p className="text-[14px] text-white/85 max-w-[320px]">
+                <p className="text-[14px] sm:text-[15px] text-white/85 max-w-[420px]">
                   Free Australian mortgage, stamp duty, borrowing power and LMI calculators.
                   Bank-grade results — no account required.
                 </p>
               </div>
-            </div>
-
-            {/* Middle tile — gradient illustration */}
-            <div
-              className="rounded-[24px] min-h-[320px] hidden md:block"
-              style={{
-                background:
-                  "linear-gradient(135deg, hsl(var(--accent-light)) 0%, hsl(var(--accent-mid)) 60%, hsl(var(--accent) / 0.35) 100%)",
-              }}
-              aria-hidden
-            />
-
-            {/* Right tile — pale blue trust panel */}
-            <div className="rounded-[24px] p-8 md:p-10 min-h-[320px] flex items-center bg-surface">
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] font-medium" style={{ color: "hsl(var(--text-secondary))" }}>
+              <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] font-medium text-white/80">
                 <span>6 calculators</span>
-                <span className="inline-block h-1 w-1 rounded-full bg-border" aria-hidden />
+                <span className="inline-block h-1 w-1 rounded-full bg-white/40" aria-hidden />
                 <span>All 8 states</span>
-                <span className="inline-block h-1 w-1 rounded-full bg-border" aria-hidden />
+                <span className="inline-block h-1 w-1 rounded-full bg-white/40" aria-hidden />
                 <span>Updated monthly</span>
               </div>
             </div>
+
+            {/* Right tile — Quick estimate (replaces middle + right) */}
+            <div
+              className="rounded-[24px] p-7 text-white sm:p-9 md:p-10 min-h-[280px] md:min-h-[380px] flex flex-col"
+              style={{ background: "hsl(var(--accent))" }}
+            >
+              <p className="text-label mb-5 text-white/75">Quick estimate</p>
+
+              <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end">
+                <label className="flex-1 min-w-0">
+                  <span className="mb-1.5 block text-[12px] text-white/80">Loan amount</span>
+                  <div className="relative">
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[15px] text-muted-foreground">$</span>
+                    <input
+                      type="number"
+                      value={loan}
+                      onChange={(e) => setLoan(Number(e.target.value))}
+                      className="input-field pl-7 tnum"
+                      inputMode="numeric"
+                    />
+                  </div>
+                </label>
+                <label className="w-full sm:w-[120px]">
+                  <span className="mb-1.5 block text-[12px] text-white/80">Rate</span>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={rate}
+                      onChange={(e) => setRate(Number(e.target.value))}
+                      className="input-field pr-7 tnum"
+                      inputMode="decimal"
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[14px] text-muted-foreground">%</span>
+                  </div>
+                </label>
+              </div>
+
+              <div>
+                <p className="text-[12px] text-white/75">Fortnightly repayment</p>
+                <p className="mt-1 text-[34px] sm:text-[40px] font-semibold leading-none tnum">
+                  {fmt(repayments.fortnightly)}
+                </p>
+                <p className="mt-1.5 text-[13px] text-white/75 tnum">
+                  Monthly {fmt(repayments.monthly)} · Weekly {fmt(repayments.weekly)}
+                </p>
+              </div>
+
+              <div className="my-5 h-px bg-white/15" />
+
+              <Link to="/mortgage-calculator" className="text-[13px] font-medium text-white/90 hover:text-white hover:underline">
+                Full mortgage calculator with amortisation →
+              </Link>
+              <p className="mt-3 text-[11px] text-white/55">
+                Estimate only. Not financial advice.
+              </p>
+            </div>
           </div>
         </div>
       </section>
-
-      {/* SECTION 1b — Quick estimate */}
-      <section className="bg-background">
-        <div className="page-shell pb-14">
-          <div
-            className="rounded-[20px] p-7 text-white max-w-[640px] mx-auto"
-            style={{ background: "hsl(var(--accent))" }}
-          >
-            <p className="text-label mb-5 text-white/75">Quick estimate</p>
-
-            <div className="mb-5 flex items-end gap-3">
-              <label className="flex-1">
-                <span className="mb-1.5 block text-[12px] text-white/80">Loan amount</span>
-                <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[15px] text-muted-foreground">$</span>
-                  <input
-                    type="number"
-                    value={loan}
-                    onChange={(e) => setLoan(Number(e.target.value))}
-                    className="input-field pl-7 tnum"
-                    inputMode="numeric"
-                  />
-                </div>
-              </label>
-              <label className="w-[110px]">
-                <span className="mb-1.5 block text-[12px] text-white/80">Rate</span>
-                <div className="relative">
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={rate}
-                    onChange={(e) => setRate(Number(e.target.value))}
-                    className="input-field pr-7 tnum"
-                    inputMode="decimal"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[14px] text-muted-foreground">%</span>
-                </div>
-              </label>
-            </div>
-
-            <div>
-              <p className="text-[12px] text-white/75">Fortnightly repayment</p>
-              <p className="mt-1 text-[40px] font-semibold leading-none tnum">
-                {fmt(repayments.fortnightly)}
-              </p>
-              <p className="mt-1.5 text-[13px] text-white/75 tnum">
-                Monthly {fmt(repayments.monthly)} · Weekly {fmt(repayments.weekly)}
-              </p>
-            </div>
-
-            <div className="my-5 h-px bg-white/15" />
-
-            <Link to="/mortgage-calculator" className="text-[13px] font-medium text-white/90 hover:text-white hover:underline">
-              Full mortgage calculator with amortisation →
-            </Link>
-            <p className="mt-3 text-[11px] text-white/55">
-              Estimate only. Not financial advice.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION 2 — Topic pills */}
       <section className="bg-surface">
         <div className="page-shell py-14">
           <h2 className="text-h2 mb-8 text-center">What can we help you with?</h2>
