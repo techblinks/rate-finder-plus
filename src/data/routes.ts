@@ -146,9 +146,9 @@ for (const s of STATE_DEFS) {
   });
 }
 
-import { GUIDES } from "./guides";
+import { ALL_GUIDES } from "./allGuides";
 
-for (const g of GUIDES) {
+for (const g of ALL_GUIDES) {
   ROUTES.push({
     path: `/guides/${g.slug}`,
     title: g.title,

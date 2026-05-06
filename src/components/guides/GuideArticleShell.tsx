@@ -4,14 +4,14 @@ import { SeoHead } from "@/components/seo/SeoHead";
 import { ArticleJsonLd, BreadcrumbJsonLd, FaqJsonLd } from "@/components/seo/JsonLd";
 import FAQ from "@/components/FAQ";
 import type { GuideMeta } from "@/data/guides";
-import { GUIDES } from "@/data/guides";
+import { ALL_GUIDES } from "@/data/allGuides";
 
 const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
 const GuideArticleShell = ({ guide }: { guide: GuideMeta }) => {
   const canonical = `/guides/${guide.slug}`;
   const related = guide.relatedGuides
-    .map((s) => GUIDES.find((g) => g.slug === s))
+    .map((s) => ALL_GUIDES.find((g) => g.slug === s))
     .filter((g): g is GuideMeta => Boolean(g));
 
   return (
