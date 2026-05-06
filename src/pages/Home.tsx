@@ -128,86 +128,113 @@ const Home = () => {
       />
       <BreadcrumbJsonLd items={[{ name: "Home", path: "/" }]} />
 
-      {/* SECTION 1 — HERO */}
+      {/* SECTION 1 — HERO (3-tile rounded layout) */}
       <section className="bg-background">
-        <div className="page-shell pt-20 pb-16">
-          <div className="grid grid-cols-1 gap-10 md:grid-cols-[55%_45%] md:items-start md:gap-12">
-            <div>
-              <span className="badge badge-brand mb-5">
-                Free · No sign-up · Updated May 2026
-              </span>
-              <h1 className="text-h1 mb-4">
-                Make confident<br />mortgage decisions.
-              </h1>
-              <p className="text-body mb-7 max-w-[440px]">
-                Free Australian mortgage, stamp duty, borrowing power and LMI calculators.
-                Bank-grade results — no account required.
-              </p>
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] font-medium" style={{ color: "hsl(var(--text-secondary))" }}>
-                <span>6 calculators</span>
-                <span className="inline-block h-1 w-1 rounded-full bg-border" aria-hidden />
-                <span>All 8 states</span>
-                <span className="inline-block h-1 w-1 rounded-full bg-border" aria-hidden />
-                <span>Updated monthly</span>
-              </div>
-            </div>
-
-            {/* Quick estimate card — solid blue */}
+        <div className="page-shell pt-10 pb-8 md:pt-14 md:pb-10">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
+            {/* Left tile — solid blue */}
             <div
-              className="rounded-xl p-7 text-white"
+              className="rounded-[24px] p-8 text-white md:p-10 flex flex-col justify-between min-h-[320px]"
               style={{ background: "hsl(var(--accent))" }}
             >
-              <p className="text-label mb-5 text-white/75">Quick estimate</p>
-
-              <div className="mb-5 flex items-end gap-3">
-                <label className="flex-1">
-                  <span className="mb-1.5 block text-[12px] text-white/80">Loan amount</span>
-                  <div className="relative">
-                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[15px] text-muted-foreground">$</span>
-                    <input
-                      type="number"
-                      value={loan}
-                      onChange={(e) => setLoan(Number(e.target.value))}
-                      className="input-field pl-7 tnum"
-                      inputMode="numeric"
-                    />
-                  </div>
-                </label>
-                <label className="w-[110px]">
-                  <span className="mb-1.5 block text-[12px] text-white/80">Rate</span>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={rate}
-                      onChange={(e) => setRate(Number(e.target.value))}
-                      className="input-field pr-7 tnum"
-                      inputMode="decimal"
-                    />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[14px] text-muted-foreground">%</span>
-                  </div>
-                </label>
-              </div>
-
               <div>
-                <p className="text-[12px] text-white/75">Fortnightly repayment</p>
-                <p className="mt-1 text-[40px] font-semibold leading-none tnum">
-                  {fmt(repayments.fortnightly)}
-                </p>
-                <p className="mt-1.5 text-[13px] text-white/75 tnum">
-                  Monthly {fmt(repayments.monthly)} · Weekly {fmt(repayments.weekly)}
+                <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold tracking-wide text-white/90 mb-5">
+                  Free · No sign-up · Updated May 2026
+                </span>
+                <h1 className="font-display text-[34px] leading-[1.1] font-extrabold text-white mb-3">
+                  Make confident<br />mortgage decisions.
+                </h1>
+                <p className="text-[14px] text-white/85 max-w-[320px]">
+                  Free Australian mortgage, stamp duty, borrowing power and LMI calculators.
                 </p>
               </div>
-
-              <div className="my-5 h-px bg-white/15" />
-
-              <Link to="/mortgage-calculator" className="text-[13px] font-medium text-white/90 hover:text-white hover:underline">
-                Full mortgage calculator with amortisation →
+              <Link
+                to="/mortgage-calculator"
+                className="mt-6 inline-flex items-center gap-2 self-start rounded-full bg-white px-5 py-2.5 text-[14px] font-semibold text-foreground hover:bg-white/90 transition-colors"
+              >
+                Get started <span aria-hidden>↗</span>
               </Link>
-              <p className="mt-3 text-[11px] text-white/55">
-                Estimate only. Not financial advice.
+            </div>
+
+            {/* Middle tile — gradient illustration */}
+            <div
+              className="rounded-[24px] min-h-[320px] hidden md:block"
+              style={{
+                background:
+                  "linear-gradient(135deg, hsl(var(--accent-light)) 0%, hsl(var(--accent-mid)) 60%, hsl(var(--accent) / 0.35) 100%)",
+              }}
+              aria-hidden
+            />
+
+            {/* Right tile — pale blue trust panel */}
+            <div className="rounded-[24px] p-8 md:p-10 min-h-[320px] flex items-center bg-surface">
+              <p className="text-[17px] leading-[1.55] font-medium" style={{ color: "hsl(var(--text-secondary))" }}>
+                Bank-grade results — no account required.{" "}
+                <span className="text-foreground font-semibold">6 calculators</span>,{" "}
+                <span className="text-foreground font-semibold">all 8 states</span>, updated monthly with current RBA rates to help you make confident money decisions.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 1b — Quick estimate */}
+      <section className="bg-background">
+        <div className="page-shell pb-14">
+          <div
+            className="rounded-[20px] p-7 text-white max-w-[640px] mx-auto"
+            style={{ background: "hsl(var(--accent))" }}
+          >
+            <p className="text-label mb-5 text-white/75">Quick estimate</p>
+
+            <div className="mb-5 flex items-end gap-3">
+              <label className="flex-1">
+                <span className="mb-1.5 block text-[12px] text-white/80">Loan amount</span>
+                <div className="relative">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[15px] text-muted-foreground">$</span>
+                  <input
+                    type="number"
+                    value={loan}
+                    onChange={(e) => setLoan(Number(e.target.value))}
+                    className="input-field pl-7 tnum"
+                    inputMode="numeric"
+                  />
+                </div>
+              </label>
+              <label className="w-[110px]">
+                <span className="mb-1.5 block text-[12px] text-white/80">Rate</span>
+                <div className="relative">
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={rate}
+                    onChange={(e) => setRate(Number(e.target.value))}
+                    className="input-field pr-7 tnum"
+                    inputMode="decimal"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[14px] text-muted-foreground">%</span>
+                </div>
+              </label>
+            </div>
+
+            <div>
+              <p className="text-[12px] text-white/75">Fortnightly repayment</p>
+              <p className="mt-1 text-[40px] font-semibold leading-none tnum">
+                {fmt(repayments.fortnightly)}
+              </p>
+              <p className="mt-1.5 text-[13px] text-white/75 tnum">
+                Monthly {fmt(repayments.monthly)} · Weekly {fmt(repayments.weekly)}
+              </p>
+            </div>
+
+            <div className="my-5 h-px bg-white/15" />
+
+            <Link to="/mortgage-calculator" className="text-[13px] font-medium text-white/90 hover:text-white hover:underline">
+              Full mortgage calculator with amortisation →
+            </Link>
+            <p className="mt-3 text-[11px] text-white/55">
+              Estimate only. Not financial advice.
+            </p>
           </div>
         </div>
       </section>
