@@ -41,3 +41,29 @@ export const FaqJsonLd = ({ faqs }: { faqs: FaqItem[] }) => {
     </Helmet>
   );
 };
+
+interface WebApplicationProps {
+  name: string;
+  description: string;
+  path: string;
+}
+
+export const WebApplicationJsonLd = ({ name, description, path }: WebApplicationProps) => {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name,
+    description,
+    url: `${SITE}${path}`,
+    applicationCategory: "FinanceApplication",
+    operatingSystem: "Any",
+    browserRequirements: "Requires JavaScript",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "AUD" },
+    publisher: { "@type": "Organization", name: "Calcy", url: SITE },
+  };
+  return (
+    <Helmet>
+      <script type="application/ld+json">{JSON.stringify(data)}</script>
+    </Helmet>
+  );
+};
