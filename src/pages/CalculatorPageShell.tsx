@@ -5,6 +5,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import FAQ from "@/components/FAQ";
 import RelatedCalculators from "@/components/RelatedCalculators";
 import AdSlot from "@/components/AdSlot";
+import StickyMobileAd from "@/components/StickyMobileAd";
 import type { FaqItem } from "@/data/faqs";
 
 interface Section {
@@ -60,6 +61,7 @@ const CalculatorPageShell = ({
         <RelatedCalculators items={related} />
       </div>
     </div>
+    <StickyMobileAd />
   </>
 );
 
