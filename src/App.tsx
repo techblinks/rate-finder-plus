@@ -2,11 +2,10 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import Layout from "@/components/layout/Layout";
 import RouteAnalytics from "@/components/RouteAnalytics";
+import FaviconManager from "@/components/FaviconManager";
 import { LocaleProvider } from "@/contexts/LocaleContext";
 import Home from "./pages/Home";
 
-// Route-level code splitting. Home stays eager (it's the LCP path) — every
-// other page is a tiny chunk fetched on first navigation, then cached.
 const MortgageCalculatorPage = lazy(() => import("./pages/MortgageCalculatorPage"));
 const StampDutyPage = lazy(() => import("./pages/StampDutyPage"));
 const StampDutyStatePage = lazy(() => import("./pages/StampDutyStatePage"));
@@ -18,6 +17,8 @@ const About = lazy(() => import("./pages/About"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 
 const STATE_SLUGS = ["nsw", "vic", "qld", "wa", "sa", "tas", "act", "nt"] as const;
 
