@@ -5,6 +5,7 @@ import { AUD } from "@/lib/format";
 import { Card, Field, SelectInput, ResultRow, ResultCard } from "@/components/ui-kit";
 import RangeField from "@/components/RangeField";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 
 interface StampDutyProps {
   lockedState?: StateCode;
