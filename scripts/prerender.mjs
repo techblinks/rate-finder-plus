@@ -115,6 +115,28 @@ function buildJsonLd(route) {
       })),
     });
   }
+
+  if (route.isCalculator) {
+    const today = new Date().toISOString().slice(0, 10);
+    blocks.push({
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: route.metaTitle,
+      description: route.metaDescription,
+      mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE}${route.canonical}` },
+      url: `${SITE}${route.canonical}`,
+      inLanguage: "en-AU",
+      datePublished: "2026-01-01",
+      dateModified: today,
+      author: { "@type": "Organization", name: "Calcy", url: SITE },
+      publisher: {
+        "@type": "Organization",
+        name: "Calcy",
+        url: SITE,
+        logo: { "@type": "ImageObject", url: `${SITE}/icon-512.png` },
+      },
+    });
+  }
   return blocks
     .map((b) => `<script type="application/ld+json">${JSON.stringify(b)}</script>`)
     .join("");
