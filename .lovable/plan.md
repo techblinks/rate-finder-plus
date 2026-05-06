@@ -1,76 +1,77 @@
-## Three new features for Calcy
+## Goal
 
-Implement three independent features in one pass: an admin CMS, shareable calculator URLs, and an "Email me this calculation" flow. All three share the same Lovable Cloud (Supabase) backend.
+Restyle the visual presentation of the site to match the look-and-feel of moneysmart.gov.au — rounded card-based hero, soft pastel section bands, pill-style topic chips, photo-rich content cards, and the same typeface family. **No copy, route, schema, or SEO content changes.** All existing text, FAQs, JSON-LD, canonicals, and calculator logic stay exactly as-is.
 
----
+## Reference design cues (from attachment)
 
-### 1. Admin CMS at `/admin` (Lovable Cloud + admin role)
+- **Typography**: Moneysmart uses a geometric humanist sans (Graphik/Inter-like) with bold weights for headings. We'll switch the heading font to **Plus Jakarta Sans** (close visual match, free on Google Fonts), keep **Inter** for body.
+- **Hero**: Three-tile rounded composition — large solid-blue tile (heading + CTA), center photo tile, light-blue text tile. Heavy border-radius (~24px).
+- **Section bands**: Alternating `#FFFFFF` and very pale blue (`#EAF2FF`-ish) full-width bands.
+- **Topic pills**: White pills with thin border on a pale-blue band (we already have similar — refine sizing/shadow).
+- **Calculator cards**: White cards with soft shadow, big icon at the bottom, "Get started ↗" pill button in brand blue.
+- **Content cards**: Image-led cards with overlay text + bottom CTA pill (we'll use illustrative gradient placeholders since we won't fetch new photography unless requested).
+- **Newsletter strip**: Dark band with inline CTA (we don't currently have one — skipping unless user wants it; not adding new content).
+- **Buttons**: Pill-shaped (full radius), with small ↗ arrow icon.
 
-**Backend (migrations)**
-- Enable Lovable Cloud.
-- `app_role` enum (`admin`, `user`) and `user_roles` table with RLS, plus a `has_role(uuid, app_role)` SECURITY DEFINER function (standard pattern — never store role on profile).
-- `site_content` table — single-row key/value store with columns: `key text primary key`, `value jsonb`, `updated_at`. Three rows seeded:
-  - `rba_rates` → mirrors `src/data/rbaRates.ts`
-  - `faqs` → mirrors `src/data/faqs.ts`
-  - `news_cards` → array of `{ title, summary, url, date, tag }`
-- RLS: anyone can `select`; only `has_role(auth.uid(),'admin')` can `update`.
+## Changes
 
-**Frontend**
-- `/admin/login` — email+password sign in (Supabase auth, `emailRedirectTo: origin + '/admin'`).
-- `/admin` — protected route. On mount: check session + admin role, redirect to login if missing.
-- One page with three tabbed sections (RBA rates form, FAQs editor by calculator key, News cards CRUD).
-- "Save" writes the whole JSON blob back to `site_content` row.
-- Public-side data hooks (`useRbaRates`, `useFaqs`, `useNewsCards`) read from `site_content` with the existing static files as fallback so prerender + first paint never break.
-- Add a small `NewsCards` section to the home page consuming the new content.
+### 1. Fonts (`index.html` + `tailwind.config.ts` + `src/index.css`)
+- Add Google Fonts link for `Plus Jakarta Sans` (400, 500, 600, 700, 800) alongside existing Inter.
+- Add `display` font family in Tailwind: `font-display: 'Plus Jakarta Sans'`.
+- Apply `Plus Jakarta Sans` to all `h1/h2/h3/h4` via `@layer base` in `index.css`.
 
-**Bootstrap admin**: After deploy, the user signs up once, then we run a one-shot SQL insert into `user_roles` granting them `admin`.
+### 2. Color tokens (`src/index.css`)
+- Adjust `--surface` to a softer pale-blue `#EAF2FF` (matches Moneysmart bands) — affects existing `bg-surface` sections automatically. `--background` stays white.
+- Add `--radius-xl: 24px` for hero/feature tiles.
 
----
+### 3. Hero restyle (`src/pages/Home.tsx`)
+- Convert hero into the **3-tile rounded layout**:
+  - Left: solid-blue rounded tile (`rounded-[24px]`) with the existing H1, sub-line, and a white pill CTA "Get started ↗" linking to `/mortgage-calculator`.
+  - Middle: rounded tile with a CSS gradient/illustration block (no new image fetch) — same height.
+  - Right: pale-blue rounded tile containing the existing trust line ("6 calculators · All 8 states · Updated monthly") expanded into a short paragraph using existing words only.
+- Keep the Quick Estimate card but move it to a separate section directly below the hero (so we don't lose functionality), styled as a white rounded-xl card with soft shadow.
 
-### 2. Shareable result URLs
+### 4. Topic pills section
+- Keep content. Restyle pills to match: white background, subtle 1px border, slight shadow on hover, sit on the new pale-blue band.
 
-Pure frontend, zero backend.
+### 5. Calculator grid
+- Restyle `.calc-card`: increase radius to `rounded-2xl`, add soft shadow `shadow-[0_2px_8px_rgba(15,17,23,0.04)]`, hover lifts shadow.
+- Move icon to bottom-left of card, "Get started ↗" becomes a small blue pill button at the bottom.
+- Heading centered or left-aligned matching reference.
 
-- New helper `src/lib/shareLink.ts` with `encodeInputs(obj)` / `decodeInputs(searchParams, schema)` — simple flat key=number/string mapping (no base64; readable URLs).
-- Per calculator, on each calc, replace the URL via `history.replaceState` with `?loan=…&rate=…&term=…` (debounced, no scroll jump, no router re-render).
-- On mount, hydrate state from `URLSearchParams` if any known key is present, clamped to the input's min/max.
-- Add a "Copy link" button beside the existing Print/Email actions in `ResultActions`. Tracks `share_link_copied` GA4 event.
-- Apply to all six calculators (Mortgage, Stamp Duty, LMI, Borrowing Power, Extra Repayments, Loan Comparison) with a per-calculator key map.
+### 6. "Current in home loans" cards
+- Convert to image-led look: top portion uses a tinted gradient block (no new images) with the badge overlay, bottom white area with headline + CTA pill.
+- Rounded `2xl`, soft shadow.
 
----
+### 7. Why Calcy section
+- Keep three columns. Restyle icon chips to larger rounded squares with brand-blue tint, matching reference's iconography style.
 
-### 3. "Email me this calculation" via Resend
+### 8. Header (`src/components/layout/Header.tsx`)
+- Apply heading font to nav-less elements? Nav stays Inter. Add "Search" + menu pill buttons styling tweak only if user wants — **skip for now to preserve current header/logo behavior**.
+- No logo changes.
 
-**Connector**
-- Connect the Resend connector via `standard_connectors--connect`.
+### 9. Footer
+- Light restyle: keep all links and disclaimer text verbatim; switch background to white with thin top border, add a tiny "Calcy" wordmark line. No content change.
 
-**Backend**
-- `email_subscribers` table: `id`, `email citext unique`, `consent_rba_updates bool`, `created_at`. RLS: insert allowed for anon (rate-limited via edge function); select admin-only.
-- Edge function `send-calculation-email`:
-  - Validates body with Zod: `email`, `calculator`, `summaryHtml` (sanitized server-side), `inputs` (record), optional `subscribeToUpdates`.
-  - Simple in-memory IP rate limit (5/min) to deter abuse.
-  - Upserts subscriber row (with consent flag).
-  - Calls Resend gateway `/emails` with branded HTML using the existing fintech palette (#003680 / #0162E3) and includes a "View calculation" link back to the shareable URL from feature #2.
-  - Returns `{ ok: true }` or 4xx on validation/rate-limit failure.
+## Out of scope (explicitly NOT touching)
 
-**Frontend**
-- New `EmailResultModal` component: email input, optional "Send me monthly RBA rate updates" checkbox, mandatory disclaimer line, submit calls the edge function via `supabase.functions.invoke`.
-- Wire `ResultActions`' existing `onEmail` prop in all six calculators to open the modal with a calculator-specific summary builder (small `buildEmailSummary(calculator, result, inputs)` helper). Tracks `email_result_sent` on success.
+- All copy, headings, FAQs, JSON-LD, canonical URLs, sitemap, robots.
+- Calculator math, routes, components in `src/components/calculators/`.
+- Admin pages, auth, Supabase schema.
+- The logo file or favicon set.
 
----
+## Files to edit
 
-### Technical notes
+- `index.html` — add Plus Jakarta Sans link
+- `tailwind.config.ts` — add `display` font family
+- `src/index.css` — surface color tweak, heading font, radius token, card shadow utilities
+- `src/pages/Home.tsx` — restructure hero into 3-tile layout, restyle sections (no copy changes)
+- `src/components/layout/Footer.tsx` — minor visual tweak only
 
-- Files added: `src/pages/admin/AdminLogin.tsx`, `src/pages/admin/AdminDashboard.tsx`, `src/components/admin/{RbaRatesForm,FaqEditor,NewsCardsEditor}.tsx`, `src/components/EmailResultModal.tsx`, `src/components/NewsCards.tsx`, `src/lib/shareLink.ts`, `src/lib/buildEmailSummary.ts`, `src/hooks/{useSiteContent,useAdminGuard}.ts`, edge function `supabase/functions/send-calculation-email/index.ts`.
-- Files edited: `src/App.tsx` (admin + login routes, NotFound stays as catch-all), all six calculator components (URL hydration + share button + modal wiring), `src/pages/Home.tsx` (news cards), `src/components/RbaRateIndicator.tsx` and `src/data/rbaRates.ts` consumers (use hook with static fallback), `src/components/FAQ.tsx` consumers similarly.
-- Robots: `/admin` already excluded via `noindex` meta we'll add to admin pages; also append `Disallow: /admin` to `public/robots.txt`.
-- Prerender script keeps using static data — admin edits only affect runtime, not the prerendered HTML, so build pipeline is unaffected.
-- Security: admin role checked via `has_role()` in RLS, not on the client; client check is only for UX redirect.
+## Verification
 
----
-
-### Out of scope
-
-- Custom domain for Resend (uses `onboarding@resend.dev` until user adds a verified domain — they can swap later).
-- Email template inlining/MJML — straightforward inline-style HTML is sufficient.
-- Versioning/audit log on `site_content` edits.
+After implementing, confirm in preview:
+- All existing text strings are unchanged (will diff `Home.tsx` strings).
+- All routes/links unchanged.
+- SEO components (`SeoHead`, `BreadcrumbJsonLd`) untouched.
+- New typeface loads; sections have alternating white / pale-blue bands; cards are rounded-2xl with soft shadow.
