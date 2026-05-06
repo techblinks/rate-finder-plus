@@ -159,26 +159,25 @@ const Home = () => {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5 md:items-stretch">
             {/* Left tile — solid blue */}
             <div
-              className="rounded-[24px] p-7 text-white sm:p-9 md:p-10 flex flex-col justify-between min-h-[280px] md:min-h-[380px]"
-              style={{ background: "hsl(var(--accent))" }}
+              className="rounded-[24px] p-7 text-foreground sm:p-9 md:p-10 flex flex-col justify-between min-h-[280px] md:min-h-[380px] bg-transparent"
             >
               <div>
-                <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold tracking-wide text-white/90 mb-5">
+                <span className="inline-block rounded-full bg-foreground/10 px-3 py-1 text-[11px] font-semibold tracking-wide text-foreground mb-5">
                   Free · No sign-up · Updated May 2026
                 </span>
-                <h1 className="font-display text-[32px] sm:text-[40px] md:text-[44px] leading-[1.05] font-extrabold text-white mb-4">
+                <h1 className="font-display text-[32px] sm:text-[40px] md:text-[44px] leading-[1.05] font-extrabold text-foreground mb-4">
                   Make confident<br />mortgage decisions.
                 </h1>
-                <p className="text-[14px] sm:text-[15px] text-white/85 max-w-[420px]">
+                <p className="text-[14px] sm:text-[15px] text-foreground/80 max-w-[420px]">
                   Free Australian mortgage, stamp duty, borrowing power and LMI calculators.
                   Bank-grade results — no account required.
                 </p>
               </div>
-              <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] font-medium text-white/80">
+              <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] font-medium text-foreground/70">
                 <span>6 calculators</span>
-                <span className="inline-block h-1 w-1 rounded-full bg-white/40" aria-hidden />
+                <span className="inline-block h-1 w-1 rounded-full bg-foreground/30" aria-hidden />
                 <span>All 8 states</span>
-                <span className="inline-block h-1 w-1 rounded-full bg-white/40" aria-hidden />
+                <span className="inline-block h-1 w-1 rounded-full bg-foreground/30" aria-hidden />
                 <span>Updated monthly</span>
               </div>
             </div>
