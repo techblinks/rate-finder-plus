@@ -9,6 +9,7 @@ import StickyResultsBar from "@/components/StickyResultsBar";
 import DonutChart from "@/components/DonutChart";
 import AmortisationTable from "@/components/AmortisationTable";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 
 type Frequency = "monthly" | "fortnightly" | "weekly";
 type LoanType = "owner" | "investor";
