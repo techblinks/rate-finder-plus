@@ -3,6 +3,7 @@ import Layout from "@/components/layout/Layout";
 import Home from "./pages/Home";
 import MortgageCalculatorPage from "./pages/MortgageCalculatorPage";
 import StampDutyPage from "./pages/StampDutyPage";
+import StampDutyStatePage from "./pages/StampDutyStatePage";
 import BorrowingPowerPage from "./pages/BorrowingPowerPage";
 import ExtraRepaymentsPage from "./pages/ExtraRepaymentsPage";
 import LmiPage from "./pages/LmiPage";
@@ -12,6 +13,8 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
 
+const STATE_SLUGS = ["nsw", "vic", "qld", "wa", "sa", "tas", "act", "nt"] as const;
+
 const App = () => (
   <BrowserRouter>
     <Routes>
@@ -19,6 +22,13 @@ const App = () => (
         <Route path="/" element={<Home />} />
         <Route path="/mortgage-calculator" element={<MortgageCalculatorPage />} />
         <Route path="/stamp-duty-calculator" element={<StampDutyPage />} />
+        {STATE_SLUGS.map((slug) => (
+          <Route
+            key={slug}
+            path={`/stamp-duty-calculator/${slug}`}
+            element={<StampDutyStatePage slug={slug} />}
+          />
+        ))}
         <Route path="/borrowing-power-calculator" element={<BorrowingPowerPage />} />
         <Route path="/extra-repayments-calculator" element={<ExtraRepaymentsPage />} />
         <Route path="/lmi-calculator" element={<LmiPage />} />

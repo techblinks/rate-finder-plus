@@ -3,6 +3,14 @@
   <url><loc>https://calcy.com.au/</loc><priority>1.0</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://calcy.com.au/mortgage-calculator</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://calcy.com.au/stamp-duty-calculator</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/stamp-duty-calculator/nsw</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/stamp-duty-calculator/vic</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/stamp-duty-calculator/qld</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/stamp-duty-calculator/wa</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/stamp-duty-calculator/sa</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/stamp-duty-calculator/tas</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/stamp-duty-calculator/act</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/stamp-duty-calculator/nt</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://calcy.com.au/borrowing-power-calculator</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://calcy.com.au/extra-repayments-calculator</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://calcy.com.au/lmi-calculator</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
