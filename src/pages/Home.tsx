@@ -296,12 +296,23 @@ const Home = () => {
 
               <div className="my-5 h-px bg-white/15" aria-hidden />
 
-              <Link
-                to="/mortgage-calculator"
-                className="text-[13px] font-medium text-white/90 hover:text-white hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] rounded-sm"
-              >
-                Full mortgage calculator with amortisation →
-              </Link>
+              <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
+                <Link
+                  to="/mortgage-calculator"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-5 text-[14px] font-semibold text-foreground shadow-sm hover:bg-white/95 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] w-full sm:w-auto"
+                  aria-label="Open full mortgage calculator with amortisation"
+                >
+                  Full calculator <span aria-hidden>↗</span>
+                </Link>
+                <Link
+                  to="/borrowing-power-calculator"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/40 bg-transparent px-5 text-[14px] font-semibold text-white hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] w-full sm:w-auto"
+                  aria-label="Open borrowing power calculator"
+                >
+                  Borrowing power
+                </Link>
+              </div>
+
               <p className="mt-3 text-[11px] text-white/55">
                 Estimate only. Not financial advice.
               </p>
