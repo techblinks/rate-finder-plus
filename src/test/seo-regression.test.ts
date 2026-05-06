@@ -90,7 +90,7 @@ async function renderHead(
 }
 
 describe("SeoHead invariants under admin settings", () => {
-  it("emits exactly one canonical with absolute https URL regardless of settings", () => {
+  it("emits exactly one canonical with absolute https URL regardless of settings", async () => {
     for (const overrides of [
       {},
       { title_template: "%s — Calcy AU" },
@@ -98,15 +98,15 @@ describe("SeoHead invariants under admin settings", () => {
       { indexing_enabled: false },
       { ga4_id: "G-XXXX", gtm_id: "GTM-YYY", head_html: "<script>x()</script>" },
     ]) {
-      const { link } = renderHead(overrides);
-      const canonicals = [...link.matchAll(/rel="canonical"\s+href="([^"]+)"/g)];
-      expect(canonicals).toHaveLength(1);
+      const { link } = await renderHead(overrides);
+      const canonicals = [...link.matchAll(/rel="canonical"[^>]*href="([^"]+)"/g)];
+      expect(canonicals.length, JSON.stringify(overrides)).toBe(1);
       expect(canonicals[0][1]).toBe("https://calcy.com.au/mortgage-calculator");
     }
   });
 
-  it("title template never double-suffixes", () => {
-    const { title } = renderHead(
+  it("title template never double-suffixes", async () => {
+    const { title } = await renderHead(
       { title_template: "%s | Calcy" },
       {
         title: "Mortgage Calculator | Calcy",
@@ -114,18 +114,17 @@ describe("SeoHead invariants under admin settings", () => {
         canonical: "/mortgage-calculator",
       },
     );
-    // Should NOT become "Mortgage Calculator | Calcy | Calcy"
     expect(title.match(/\| Calcy/g)?.length ?? 0).toBeLessThanOrEqual(1);
   });
 
-  it("OG image falls back to default icon when no admin override", () => {
-    const { meta } = renderHead({});
+  it("OG image falls back to a default when no admin override", async () => {
+    const { meta } = await renderHead({});
     expect(meta).toContain('property="og:image"');
-    expect(meta).toMatch(/og:image"\s+content="https:\/\/[^"]+"/);
+    expect(meta).toMatch(/og:image"[^>]*content="https:\/\/[^"]+"/);
   });
 
-  it("admin OG image override is reflected in og:image and twitter:image", () => {
-    const { meta } = renderHead({ default_og_image: "https://cdn.example/og.png" });
+  it("admin OG image override is reflected in og:image", async () => {
+    const { meta } = await renderHead({ default_og_image: "https://cdn.example/og.png" });
     expect(meta).toContain('content="https://cdn.example/og.png"');
   });
 });
