@@ -374,6 +374,8 @@ const Home = () => {
           </ul>
         </div>
       </section>
+
+      <section className="bg-surface">
         <div className="page-shell py-14">
           <h2 className="text-h2 mb-8 text-center">What can we help you with?</h2>
           <ul className="flex flex-wrap justify-center gap-2.5">
