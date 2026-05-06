@@ -173,7 +173,23 @@ const Home = () => {
                   Bank-grade results — no account required.
                 </p>
               </div>
-              <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] font-medium text-foreground/70">
+
+              <div className="mt-6 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
+                <Link
+                  to="/mortgage-calculator"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-foreground bg-foreground px-5 text-[14px] font-semibold text-background hover:bg-foreground/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background w-full sm:w-auto"
+                >
+                  Get started <span aria-hidden>↗</span>
+                </Link>
+                <Link
+                  to="/loan-comparison-calculator"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-foreground/30 bg-transparent px-5 text-[14px] font-semibold text-foreground hover:bg-foreground/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background w-full sm:w-auto"
+                >
+                  Compare loans
+                </Link>
+              </div>
+
+              <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] font-medium text-foreground/70">
                 <span>6 calculators</span>
                 <span className="inline-block h-1 w-1 rounded-full bg-foreground/30" aria-hidden />
                 <span>All 8 states</span>
