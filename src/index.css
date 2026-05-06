@@ -307,3 +307,13 @@
   .safe-pt { padding-top: env(safe-area-inset-top, 0px); }
   .safe-pb { padding-bottom: env(safe-area-inset-bottom, 0px); }
 }
+
+/* Print styles — strip nav/footer/ads, expand result card to full page */
+@media print {
+  header, footer, nav, .no-print, [role="complementary"] { display: none !important; }
+  body { background: #fff !important; }
+  .page-shell { max-width: 100% !important; padding: 0 !important; }
+  a[href]::after { content: " (" attr(href) ")"; font-size: 11px; color: #555; }
+  .shadow-lg, .shadow-md, .shadow-sm { box-shadow: none !important; }
+  .border, .border-border { border-color: #ddd !important; }
+}
