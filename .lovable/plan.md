@@ -1,67 +1,76 @@
-## Calcy v2 — Phase 1 Implementation Plan
+## Three new features for Calcy
 
-Highest-SEO-ROI work, no calculator math changes.
+Implement three independent features in one pass: an admin CMS, shareable calculator URLs, and an "Email me this calculation" flow. All three share the same Lovable Cloud (Supabase) backend.
 
-### 1. State stamp-duty landing pages (8 routes)
+---
 
-Create `src/pages/StampDutyStatePage.tsx` — a thin wrapper around the existing `StampDuty` calculator that:
-- Accepts a `state` prop (`NSW | VIC | QLD | WA | SA | TAS | ACT | NT`).
-- Pre-selects and locks the state in the calculator (add an optional `lockedState` prop to `StampDuty.tsx`; renders state name + "Change state" link to `/stamp-duty-calculator` instead of the 8 pills).
-- Sets unique `metaTitle`, `metaDescription`, canonical, H1, and a 200-word state-specific content section (rates + FHB threshold + practical buying notes).
+### 1. Admin CMS at `/admin` (Lovable Cloud + admin role)
 
-Add 8 routes in `App.tsx`:
-```
-/stamp-duty-calculator/nsw
-/stamp-duty-calculator/vic
-/stamp-duty-calculator/qld
-/stamp-duty-calculator/wa
-/stamp-duty-calculator/sa
-/stamp-duty-calculator/tas
-/stamp-duty-calculator/act
-/stamp-duty-calculator/nt
-```
+**Backend (migrations)**
+- Enable Lovable Cloud.
+- `app_role` enum (`admin`, `user`) and `user_roles` table with RLS, plus a `has_role(uuid, app_role)` SECURITY DEFINER function (standard pattern — never store role on profile).
+- `site_content` table — single-row key/value store with columns: `key text primary key`, `value jsonb`, `updated_at`. Three rows seeded:
+  - `rba_rates` → mirrors `src/data/rbaRates.ts`
+  - `faqs` → mirrors `src/data/faqs.ts`
+  - `news_cards` → array of `{ title, summary, url, date, tag }`
+- RLS: anyone can `select`; only `has_role(auth.uid(),'admin')` can `update`.
 
-Cross-link: on national `/stamp-duty-calculator`, add a "Jump to your state" row of 8 pill links to the dedicated pages.
+**Frontend**
+- `/admin/login` — email+password sign in (Supabase auth, `emailRedirectTo: origin + '/admin'`).
+- `/admin` — protected route. On mount: check session + admin role, redirect to login if missing.
+- One page with three tabbed sections (RBA rates form, FAQs editor by calculator key, News cards CRUD).
+- "Save" writes the whole JSON blob back to `site_content` row.
+- Public-side data hooks (`useRbaRates`, `useFaqs`, `useNewsCards`) read from `site_content` with the existing static files as fallback so prerender + first paint never break.
+- Add a small `NewsCards` section to the home page consuming the new content.
 
-### 2. AI-discoverability + sitemap
+**Bootstrap admin**: After deploy, the user signs up once, then we run a one-shot SQL insert into `user_roles` granting them `admin`.
 
-- **`public/robots.txt`** — add explicit Allow blocks for `GPTBot`, `ClaudeBot`, `PerplexityBot`, `Google-Extended`, `anthropic-ai`, `cohere-ai`. Keep existing `User-agent: *` and Sitemap line.
-- **`public/llms.txt`** — new file with the exact content from Part 16 (intro, About, list of 6 calculators with descriptions, data sources).
-- **`public/sitemap.xml`** — extend from 7 entries to 15 by adding the 8 state pages at priority 0.7–0.8.
+---
 
-### 3. Data + token polish (minor visual fidelity)
+### 2. Shareable result URLs
 
-- `src/data/rbaRates.ts` — update to `lastUpdated: "May 2026"`, add `cashRate: 4.10`, `averageLoanSize: 736257`.
-- `src/index.css` — bump `h1` and `.text-h1` to weight 700, `.text-result-primary` and `.text-result-hero` to weight 700; widen scale (h1 44px, display 56px) per Part 3; tighten section paddings on Home to a strict `py-[72px]` everywhere (current hero/section-2 are 80/56).
-- Add `.range-filled` runnable-track gradient using a `--fill-pct` CSS variable so slider tracks fill brand-blue up to thumb. Wire it from `RangeField.tsx` via inline `style={{ '--fill-pct': pct + '%' }}`.
+Pure frontend, zero backend.
 
-### 4. Verification
+- New helper `src/lib/shareLink.ts` with `encodeInputs(obj)` / `decodeInputs(searchParams, schema)` — simple flat key=number/string mapping (no base64; readable URLs).
+- Per calculator, on each calc, replace the URL via `history.replaceState` with `?loan=…&rate=…&term=…` (debounced, no scroll jump, no router re-render).
+- On mount, hydrate state from `URLSearchParams` if any known key is present, clamped to the input's min/max.
+- Add a "Copy link" button beside the existing Print/Email actions in `ResultActions`. Tracks `share_link_copied` GA4 event.
+- Apply to all six calculators (Mortgage, Stamp Duty, LMI, Borrowing Power, Extra Repayments, Loan Comparison) with a per-calculator key map.
 
-- Search codebase for `Zune|zunecalculator|United States|Canada|United Kingdom` — must return zero matches.
-- Confirm every nav link, homepage card, and the 8 new state pages resolve to a real route.
-- Build passes.
+---
 
-### Out of scope for this phase
+### 3. "Email me this calculation" via Resend
 
-- GA4 wiring (needs your measurement ID — ask later)
-- Pre-rendering pipeline (`vite-plugin-prerender`) — large engineering lift, defer
-- Amortisation Monthly view + pagination — defer to phase 2
-- Extracting `stampDutyRates.ts` into its own file (current inline location works fine)
+**Connector**
+- Connect the Resend connector via `standard_connectors--connect`.
 
-### Files added
+**Backend**
+- `email_subscribers` table: `id`, `email citext unique`, `consent_rba_updates bool`, `created_at`. RLS: insert allowed for anon (rate-limited via edge function); select admin-only.
+- Edge function `send-calculation-email`:
+  - Validates body with Zod: `email`, `calculator`, `summaryHtml` (sanitized server-side), `inputs` (record), optional `subscribeToUpdates`.
+  - Simple in-memory IP rate limit (5/min) to deter abuse.
+  - Upserts subscriber row (with consent flag).
+  - Calls Resend gateway `/emails` with branded HTML using the existing fintech palette (#003680 / #0162E3) and includes a "View calculation" link back to the shareable URL from feature #2.
+  - Returns `{ ok: true }` or 4xx on validation/rate-limit failure.
 
-- `src/pages/StampDutyStatePage.tsx`
-- `public/llms.txt`
+**Frontend**
+- New `EmailResultModal` component: email input, optional "Send me monthly RBA rate updates" checkbox, mandatory disclaimer line, submit calls the edge function via `supabase.functions.invoke`.
+- Wire `ResultActions`' existing `onEmail` prop in all six calculators to open the modal with a calculator-specific summary builder (small `buildEmailSummary(calculator, result, inputs)` helper). Tracks `email_result_sent` on success.
 
-### Files edited
+---
 
-- `src/App.tsx` (8 new routes)
-- `src/components/calculators/StampDuty.tsx` (add optional `lockedState` prop)
-- `src/pages/StampDutyPage.tsx` (add state-pill jump links)
-- `src/data/rbaRates.ts`
-- `src/index.css`
-- `src/components/RangeField.tsx`
-- `public/robots.txt`
-- `public/sitemap.xml`
+### Technical notes
 
-No calculator math, FAQ data, or existing route URLs change.
+- Files added: `src/pages/admin/AdminLogin.tsx`, `src/pages/admin/AdminDashboard.tsx`, `src/components/admin/{RbaRatesForm,FaqEditor,NewsCardsEditor}.tsx`, `src/components/EmailResultModal.tsx`, `src/components/NewsCards.tsx`, `src/lib/shareLink.ts`, `src/lib/buildEmailSummary.ts`, `src/hooks/{useSiteContent,useAdminGuard}.ts`, edge function `supabase/functions/send-calculation-email/index.ts`.
+- Files edited: `src/App.tsx` (admin + login routes, NotFound stays as catch-all), all six calculator components (URL hydration + share button + modal wiring), `src/pages/Home.tsx` (news cards), `src/components/RbaRateIndicator.tsx` and `src/data/rbaRates.ts` consumers (use hook with static fallback), `src/components/FAQ.tsx` consumers similarly.
+- Robots: `/admin` already excluded via `noindex` meta we'll add to admin pages; also append `Disallow: /admin` to `public/robots.txt`.
+- Prerender script keeps using static data — admin edits only affect runtime, not the prerendered HTML, so build pipeline is unaffected.
+- Security: admin role checked via `has_role()` in RLS, not on the client; client check is only for UX redirect.
+
+---
+
+### Out of scope
+
+- Custom domain for Resend (uses `onboarding@resend.dev` until user adds a verified domain — they can swap later).
+- Email template inlining/MJML — straightforward inline-style HTML is sufficient.
+- Versioning/audit log on `site_content` edits.
