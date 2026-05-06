@@ -1,82 +1,67 @@
-# Calcy Master Build — Implementation Plan
+## Calcy v2 — Phase 1 Implementation Plan
 
-The codebase is already an AU-only, 7-route React + Vite + Tailwind app with helmet SEO, FAQ scaffolding, and a sitemap. The Calcy spec is ~95% aligned. This plan completes the remaining work without breaking calculator math.
+Highest-SEO-ROI work, no calculator math changes.
 
-## 1. Rebrand Zune → Calcy
-- `index.html`: title/description/OG → Calcy + calcy.com.au.
-- `Header.tsx`: logo "Calcy" (single word, 18px weight 600).
-- `Footer.tsx`: © 2026 Calcy — calcy.com.au, link to `/terms-of-use`, updated disclaimer.
-- `public/sitemap.xml` + `public/robots.txt`: zunecalculator.com → calcy.com.au.
-- `SeoHead.tsx` and `JsonLd.tsx`: SITE constant → `https://calcy.com.au`; site_name "Calcy".
-- All 9 page files (Home, About, Privacy, Terms, NotFound, 6 calculator pages): replace "Zune Calculator" / "Zune" in metaTitle/metaDescription/copy with "Calcy".
-- `App.tsx`: rename route `/terms` → `/terms-of-use`; update `Terms.tsx` canonical.
-- Repo verification: `rg -i "zune|zunecalculator"` returns zero matches.
+### 1. State stamp-duty landing pages (8 routes)
 
-## 2. Per-page SEO copy (Parts 8–14)
-Update each page's `metaTitle` and `metaDescription` to the exact strings from the prompt (e.g. "Mortgage Calculator Australia 2026 | Calcy").
+Create `src/pages/StampDutyStatePage.tsx` — a thin wrapper around the existing `StampDuty` calculator that:
+- Accepts a `state` prop (`NSW | VIC | QLD | WA | SA | TAS | ACT | NT`).
+- Pre-selects and locks the state in the calculator (add an optional `lockedState` prop to `StampDuty.tsx`; renders state name + "Change state" link to `/stamp-duty-calculator` instead of the 8 pills).
+- Sets unique `metaTitle`, `metaDescription`, canonical, H1, and a 200-word state-specific content section (rates + FHB threshold + practical buying notes).
 
-## 3. New data file
-- `src/data/rbaRates.ts` — `{ lastUpdated: "March 2026", ownerOccupier: 5.66, investor: 6.12, source: "Reserve Bank of Australia" }`.
-- `src/data/faqs.ts` — replace TODO scaffolding with the full Q&A copy from Part 5 across all six calculator keys.
+Add 8 routes in `App.tsx`:
+```
+/stamp-duty-calculator/nsw
+/stamp-duty-calculator/vic
+/stamp-duty-calculator/qld
+/stamp-duty-calculator/wa
+/stamp-duty-calculator/sa
+/stamp-duty-calculator/tas
+/stamp-duty-calculator/act
+/stamp-duty-calculator/nt
+```
 
-## 4. Mortgage calculator upgrades (`MortgageRepayment.tsx`)
-- Live recalculation (300ms debounce on numeric inputs); remove Calculate button; pre-populate results on mount.
-- Add slider+number paired inputs (new `RangeField` component).
-- RBA Rate Indicator card with "Use this rate →" links setting rate to 5.66 / 6.12.
-- Owner-Occupier / Investor pill toggle (highlights the matching RBA row only — does not override the input).
-- Collapsible extra repayments (closed by default).
-- Interest shock line ("Interest = X% of total repayments", warning colour).
-- Extra repayments savings block when extra > 0 (computes a second `calcMortgage` run).
-- Amortisation table: collapsible with Annual / Monthly tab toggle, monthly view paginated 24 at a time.
-- Sticky mini results bar via `IntersectionObserver` on the calculator card ref.
+Cross-link: on national `/stamp-duty-calculator`, add a "Jump to your state" row of 8 pill links to the dedicated pages.
 
-## 5. Stamp Duty page
-Live recalc (no button); FHB green saving line; "Exempt!" badge when net = 0; existing 8-state brackets unchanged.
+### 2. AI-discoverability + sitemap
 
-## 6. Borrowing Power page
-Keep Calculate button (per spec). Verify existing `borrowingPower.ts` matches Part 6 formula.
+- **`public/robots.txt`** — add explicit Allow blocks for `GPTBot`, `ClaudeBot`, `PerplexityBot`, `Google-Extended`, `anthropic-ai`, `cohere-ai`. Keep existing `User-agent: *` and Sitemap line.
+- **`public/llms.txt`** — new file with the exact content from Part 16 (intro, About, list of 6 calculators with descriptions, data sources).
+- **`public/sitemap.xml`** — extend from 7 entries to 15 by adding the 8 state pages at priority 0.7–0.8.
 
-## 7. Extra Repayments page
-Live recalc; sliders for balance / rate / term / extra; side-by-side With/Without; one-time bar width animation on mount; summary sentence.
+### 3. Data + token polish (minor visual fidelity)
 
-## 8. LMI page
-Live recalc; deposit slider max bound to property value; LVR colour-coded (red >80%, green ≤80%); savings tip showing extra deposit needed for 20%.
+- `src/data/rbaRates.ts` — update to `lastUpdated: "May 2026"`, add `cashRate: 4.10`, `averageLoanSize: 736257`.
+- `src/index.css` — bump `h1` and `.text-h1` to weight 700, `.text-result-primary` and `.text-result-hero` to weight 700; widen scale (h1 44px, display 56px) per Part 3; tighten section paddings on Home to a strict `py-[72px]` everywhere (current hero/section-2 are 80/56).
+- Add `.range-filled` runnable-track gradient using a `--fill-pct` CSS variable so slider tracks fill brand-blue up to thumb. Wire it from `RangeField.tsx` via inline `style={{ '--fill-pct': pct + '%' }}`.
 
-## 9. Loan Comparison page
-Live recalc; shared loan amount field above two columns; result table with Difference column; green "Loan X saves you $… over N years" winner banner.
+### 4. Verification
 
-## 10. Homepage (`Home.tsx`)
-- Hero: eyebrow "CALCY.COM.AU", H1 "Free Australian Mortgage Calculators", subtext from Part 14.
-- 6-card grid (3-col desktop / 1-col mobile) with the exact card copy from Part 14.
-- "Why Calcy" 3-up section (icons + copy from Part 14, no card border).
+- Search codebase for `Zune|zunecalculator|United States|Canada|United Kingdom` — must return zero matches.
+- Confirm every nav link, homepage card, and the 8 new state pages resolve to a real route.
+- Build passes.
 
-## 11. Page-level content
-For each calculator page, expand the "How to use" (120–150 words) and "How it works" (200–250 words with worked example) sections in `CalculatorPageShell` props.
+### Out of scope for this phase
 
-## 12. Cleanup verification
-`rg -i "zune|zunecalculator"` and a search for any leftover multi-country/programmatic SEO files. Existing previous-turn delete list looks complete; this is a verification pass.
+- GA4 wiring (needs your measurement ID — ask later)
+- Pre-rendering pipeline (`vite-plugin-prerender`) — large engineering lift, defer
+- Amortisation Monthly view + pagination — defer to phase 2
+- Extracting `stampDutyRates.ts` into its own file (current inline location works fine)
 
-## Technical notes
-- `useDebouncedValue(value, 300)` hook in `src/hooks/`.
-- `IntersectionObserver` for sticky mini bar.
-- Bar chart: one-time width animation via `useEffect` setting CSS `width` from 0 → final on mount.
-- No new dependencies. No backend. No tracking. No `_redirects`.
+### Files added
 
-## Files added
+- `src/pages/StampDutyStatePage.tsx`
+- `public/llms.txt`
+
+### Files edited
+
+- `src/App.tsx` (8 new routes)
+- `src/components/calculators/StampDuty.tsx` (add optional `lockedState` prop)
+- `src/pages/StampDutyPage.tsx` (add state-pill jump links)
 - `src/data/rbaRates.ts`
+- `src/index.css`
 - `src/components/RangeField.tsx`
-- `src/components/RbaRateIndicator.tsx`
-- `src/components/StickyResultsBar.tsx`
-- `src/hooks/useDebouncedValue.ts`
+- `public/robots.txt`
+- `public/sitemap.xml`
 
-## Files edited
-- `index.html`
-- `src/App.tsx`
-- `src/components/layout/{Header,Footer}.tsx`
-- `src/components/seo/{SeoHead,JsonLd}.tsx`
-- `src/components/calculators/{MortgageRepayment,StampDuty,BorrowingPower,ExtraRepayments,Lmi,LoanComparison}.tsx`
-- `src/pages/{Home,About,PrivacyPolicy,Terms,NotFound,MortgageCalculatorPage,StampDutyPage,BorrowingPowerPage,ExtraRepaymentsPage,LmiPage,LoanComparisonPage}.tsx`
-- `src/data/faqs.ts`
-- `public/{sitemap.xml,robots.txt}`
-
-No existing calculator math is refactored — only UI shell, copy, live-recalc wiring, and rebrand strings.
+No calculator math, FAQ data, or existing route URLs change.

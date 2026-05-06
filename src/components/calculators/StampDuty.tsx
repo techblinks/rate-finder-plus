@@ -1,20 +1,29 @@
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { calcStampDuty, STATES, type BuyerType, type StateCode } from "@/lib/calc/stampDuty";
 import { AUD } from "@/lib/format";
-import { Card, Field, NumberInput, SelectInput, ResultRow, ResultCard } from "@/components/ui-kit";
+import { Card, Field, SelectInput, ResultRow, ResultCard } from "@/components/ui-kit";
 import RangeField from "@/components/RangeField";
-import { useState } from "react";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
-const StampDuty = () => {
+interface StampDutyProps {
+  lockedState?: StateCode;
+}
+
+const StampDuty = ({ lockedState }: StampDutyProps) => {
   const [value, setValue] = useState(700000);
-  const [state, setState] = useState<StateCode>("NSW");
+  const [state, setState] = useState<StateCode>(lockedState ?? "NSW");
   const [buyer, setBuyer] = useState<BuyerType>("owner");
+
+  useEffect(() => {
+    if (lockedState) setState(lockedState);
+  }, [lockedState]);
 
   const dValue = useDebouncedValue(value);
   const result = useMemo(() => calcStampDuty(Math.max(0, dValue), state, buyer), [dValue, state, buyer]);
 
   const exempt = buyer === "fhb" && result.netDuty === 0;
+  const stateName = STATES.find((s) => s.code === state)?.name ?? state;
 
   return (
     <div className="space-y-6">
@@ -29,13 +38,26 @@ const StampDuty = () => {
             step={5000}
             prefix="$"
           />
-          <Field label="State or territory">
-            <SelectInput<StateCode>
-              value={state}
-              onChange={setState}
-              options={STATES.map((s) => ({ value: s.code, label: `${s.code} — ${s.name}` }))}
-            />
-          </Field>
+          {lockedState ? (
+            <Field label="State or territory">
+              <div className="flex items-center justify-between rounded-md border border-border bg-surface px-3.5 py-2.5">
+                <span className="text-[15px] font-medium text-foreground">
+                  {state} — {stateName}
+                </span>
+                <Link to="/stamp-duty-calculator" className="text-[13px] font-medium link-accent">
+                  Change state →
+                </Link>
+              </div>
+            </Field>
+          ) : (
+            <Field label="State or territory">
+              <SelectInput<StateCode>
+                value={state}
+                onChange={setState}
+                options={STATES.map((s) => ({ value: s.code, label: `${s.code} — ${s.name}` }))}
+              />
+            </Field>
+          )}
           <Field label="Buyer type">
             <SelectInput<BuyerType>
               value={buyer}

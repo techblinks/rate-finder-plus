@@ -1,0 +1,35 @@
+# Calcy — Free Australian Mortgage Calculators
+# https://calcy.com.au
+
+> Free, no-signup Australian mortgage and finance calculators. Updated monthly with current RBA rates. Covers all 8 Australian states for stamp duty.
+
+## About
+
+Calcy is a free Australian mortgage calculator website. All calculators are free, require no sign-up, and use current RBA rates and ASIC-compliant methodology. The site is independently operated and is not a lender, broker, or financial adviser.
+
+## Calculators
+
+- [Mortgage Calculator](https://calcy.com.au/mortgage-calculator): Australian mortgage repayment calculator with amortisation schedule. Defaults: $650,000 loan, 5.50% p.a., 30 years.
+- [Stamp Duty Calculator](https://calcy.com.au/stamp-duty-calculator): Stamp duty for all 8 Australian states including FHB exemptions. Updated for 2026.
+- [Borrowing Power Calculator](https://calcy.com.au/borrowing-power-calculator): APRA-compliant borrowing capacity estimate with 3% serviceability buffer.
+- [LMI Calculator](https://calcy.com.au/lmi-calculator): Lender's Mortgage Insurance estimate by LVR and loan size.
+- [Extra Repayments Calculator](https://calcy.com.au/extra-repayments-calculator): Interest and time savings from extra mortgage repayments.
+- [Loan Comparison Calculator](https://calcy.com.au/loan-comparison-calculator): Side-by-side comparison of two Australian home loan scenarios.
+
+## State stamp duty pages
+
+- [NSW](https://calcy.com.au/stamp-duty-calculator/nsw)
+- [VIC](https://calcy.com.au/stamp-duty-calculator/vic)
+- [QLD](https://calcy.com.au/stamp-duty-calculator/qld)
+- [WA](https://calcy.com.au/stamp-duty-calculator/wa)
+- [SA](https://calcy.com.au/stamp-duty-calculator/sa)
+- [TAS](https://calcy.com.au/stamp-duty-calculator/tas)
+- [ACT](https://calcy.com.au/stamp-duty-calculator/act)
+- [NT](https://calcy.com.au/stamp-duty-calculator/nt)
+
+## Data sources
+
+- Reserve Bank of Australia (RBA) for cash rate and average home loan rates
+- ASIC MoneySmart methodology for repayment calculations
+- APRA prudential standards for serviceability assessment
+- State revenue offices for stamp duty bracket tables

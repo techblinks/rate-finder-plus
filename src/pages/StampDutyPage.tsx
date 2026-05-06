@@ -1,6 +1,36 @@
+import { Link } from "react-router-dom";
 import CalculatorPageShell from "./CalculatorPageShell";
 import StampDuty from "@/components/calculators/StampDuty";
 import { FAQS } from "@/data/faqs";
+
+const STATE_LINKS = [
+  { code: "NSW", slug: "nsw" },
+  { code: "VIC", slug: "vic" },
+  { code: "QLD", slug: "qld" },
+  { code: "WA", slug: "wa" },
+  { code: "SA", slug: "sa" },
+  { code: "TAS", slug: "tas" },
+  { code: "ACT", slug: "act" },
+  { code: "NT", slug: "nt" },
+];
+
+const StateJumpLinks = () => (
+  <div className="mb-6 rounded-xl border border-border bg-surface p-5">
+    <p className="mb-3 text-[13px] font-medium text-foreground">Jump to your state:</p>
+    <ul className="flex flex-wrap gap-2">
+      {STATE_LINKS.map((s) => (
+        <li key={s.slug}>
+          <Link
+            to={`/stamp-duty-calculator/${s.slug}`}
+            className="inline-flex h-9 items-center rounded-full border border-border bg-background px-4 text-[13px] font-medium text-foreground transition-colors hover:border-accent hover:bg-accent-light hover:text-accent"
+          >
+            {s.code}
+          </Link>
+        </li>
+      ))}
+    </ul>
+  </div>
+);
 
 const StampDutyPage = () => (
   <CalculatorPageShell
@@ -40,6 +70,7 @@ const StampDutyPage = () => (
       },
     ]}
   >
+    <StateJumpLinks />
     <StampDuty />
   </CalculatorPageShell>
 );
