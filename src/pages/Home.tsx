@@ -125,8 +125,8 @@ const validateRate = (n: number) => {
 const Home = () => {
   const [loan, setLoan] = useState(650000);
   const [rate, setRate] = useState(5.5);
-  const dLoan = useDebouncedValue(loan, 300);
-  const dRate = useDebouncedValue(rate, 300);
+  const dLoan = useDebouncedValue(loan, 150);
+  const dRate = useDebouncedValue(rate, 150);
 
   const loanError = validateLoan(loan);
   const rateError = validateRate(rate);
@@ -243,12 +243,15 @@ const Home = () => {
                 </label>
               </div>
 
-              <div className="mt-3">
+              <div className="mt-3 min-h-[96px]" aria-live="polite">
                 <p className="text-[12px] text-white/75">Fortnightly repayment</p>
-                <p className="mt-1 text-[34px] sm:text-[40px] font-semibold leading-none tnum">
+                <p
+                  className="mt-1 text-[34px] sm:text-[40px] font-semibold leading-none tnum tabular-nums transition-opacity duration-150"
+                  style={{ opacity: hasError ? 0.5 : 1 }}
+                >
                   {hasError ? "—" : fmt(repayments.fortnightly)}
                 </p>
-                <p className="mt-1.5 text-[13px] text-white/75 tnum">
+                <p className="mt-1.5 text-[13px] text-white/75 tnum tabular-nums min-h-[18px]">
                   {hasError
                     ? "Enter valid values to see your estimate"
                     : `Monthly ${fmt(repayments.monthly)} · Weekly ${fmt(repayments.weekly)}`}
