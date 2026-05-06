@@ -2,6 +2,7 @@ import { Link, NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import calcyLogo from "@/assets/calcy-logo.png";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const NAV = [
   { to: "/mortgage-calculator", label: "Mortgage" },
@@ -14,6 +15,9 @@ const NAV = [
 
 const Header = () => {
   const [open, setOpen] = useState(false);
+  const { logo_url, logo_height } = useSiteSettings();
+  const src = logo_url || calcyLogo;
+  const h = Math.max(20, Math.min(72, logo_height || 32));
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
