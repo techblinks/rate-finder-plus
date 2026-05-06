@@ -31,12 +31,9 @@ const Header = () => {
       <div className="page-shell flex h-[60px] items-center justify-between">
         <Link to="/" onClick={() => setOpen(false)} aria-label="Calcy home" className="flex items-center">
           <img
-            src={calcyLogo}
+            src={src}
             alt="Calcy"
-            width={360}
-            height={96}
-            className="h-7 w-auto sm:h-9"
-            style={{ aspectRatio: "360 / 96" }}
+            style={{ height: `${h}px`, width: "auto" }}
             decoding="async"
             fetchPriority="high"
           />
