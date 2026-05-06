@@ -79,3 +79,31 @@ export const WebApplicationJsonLd = ({ name, description, path }: WebApplication
     </Helmet>
   );
 };
+
+interface HowToProps {
+  name: string;
+  description: string;
+  totalTime?: string;
+  steps: { name: string; text: string }[];
+}
+
+export const HowToJsonLd = ({ name, description, totalTime, steps }: HowToProps) => {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name,
+    description,
+    ...(totalTime ? { totalTime } : {}),
+    step: steps.map((s, i) => ({
+      "@type": "HowToStep",
+      position: i + 1,
+      name: s.name,
+      text: s.text,
+    })),
+  };
+  return (
+    <Helmet>
+      <script type="application/ld+json">{JSON.stringify(data)}</script>
+    </Helmet>
+  );
+};
