@@ -61,7 +61,8 @@ function renderHead(settings: Partial<siteSettings.SiteSettings>, props = {
     ...baseSettings,
     ...settings,
   });
-  const helmetContext: { helmet?: { title: { toString(): string }; link: { toString(): string }; meta: { toString(): string } } } = {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const helmetContext: any = {};
   renderToString(
     React.createElement(
       HelmetProvider,
@@ -69,7 +70,7 @@ function renderHead(settings: Partial<siteSettings.SiteSettings>, props = {
       React.createElement(SeoHead, props),
     ),
   );
-  const helmet = helmetContext.helmet!;
+  const helmet = helmetContext.helmet;
   return {
     title: helmet.title.toString(),
     link: helmet.link.toString(),
