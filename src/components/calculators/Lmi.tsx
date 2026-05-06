@@ -4,6 +4,7 @@ import { AUD, pct } from "@/lib/format";
 import { Card, ResultCard, ResultRow } from "@/components/ui-kit";
 import RangeField from "@/components/RangeField";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 
 const Lmi = () => {
   const [propertyValue, setPropertyValue] = useState(700000);
