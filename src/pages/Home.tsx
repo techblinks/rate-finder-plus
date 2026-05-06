@@ -156,11 +156,9 @@ const Home = () => {
       {/* SECTION 1 — HERO (2-tile rounded layout) */}
       <section className="bg-background">
         <div className="page-shell pt-10 pb-10 md:pt-14 md:pb-14">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5 md:items-stretch">
-            {/* Left tile — solid blue */}
-            <div
-              className="rounded-[24px] p-7 text-foreground sm:p-9 md:p-10 flex flex-col justify-between min-h-[280px] md:min-h-[380px] bg-transparent"
-            >
+          <div className="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 md:gap-8">
+            {/* Left tile — transparent, flush with grid edge */}
+            <div className="flex flex-col justify-between py-2 md:py-8 md:pr-4 min-h-[280px] md:min-h-[420px] text-foreground">
               <div>
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-accent-light px-3 py-1 text-[11px] font-semibold tracking-wide text-accent mb-5">
                   <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent" aria-hidden />
@@ -169,13 +167,13 @@ const Home = () => {
                 <h1 className="font-display text-[32px] sm:text-[40px] md:text-[44px] leading-[1.05] font-extrabold text-foreground mb-4">
                   Make confident<br />mortgage decisions.
                 </h1>
-                <p className="text-[14px] sm:text-[15px] text-foreground/80 max-w-[420px]">
+                <p className="text-[14px] sm:text-[15px] text-foreground/80 max-w-[440px]">
                   Free Australian mortgage, stamp duty, borrowing power and LMI calculators.
                   Bank-grade results — no account required.
                 </p>
               </div>
 
-              <div className="mt-6 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
+              <div className="mt-8 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
                 <Link
                   to="/mortgage-calculator"
                   className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-foreground bg-foreground px-5 text-[14px] font-semibold text-background hover:bg-foreground/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background w-full sm:w-auto"
@@ -190,7 +188,7 @@ const Home = () => {
                 </Link>
               </div>
 
-              <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] font-medium text-foreground/70">
+              <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] font-medium text-foreground/70">
                 <span>6 calculators</span>
                 <span className="inline-block h-1 w-1 rounded-full bg-foreground/30" aria-hidden />
                 <span>All 8 states</span>
@@ -199,10 +197,10 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Right tile — Quick estimate (replaces middle + right) */}
+            {/* Right tile — Quick estimate */}
             <section
               aria-labelledby="quick-estimate-heading"
-              className="rounded-[24px] p-7 text-white sm:p-9 md:p-10 min-h-[280px] md:min-h-[380px] flex flex-col"
+              className="rounded-[24px] p-7 text-white sm:p-9 md:p-10 min-h-[280px] md:min-h-[420px] flex flex-col"
               style={{ background: "hsl(var(--accent))" }}
             >
               <h2 id="quick-estimate-heading" className="text-label mb-5 text-white/75 font-semibold">
