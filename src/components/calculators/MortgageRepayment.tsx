@@ -228,7 +228,13 @@ const MortgageRepayment = () => {
         </div>
 
         <div className="mt-5">
-          <AmortisationTable rows={result.yearlySchedule} monthlyRows={result.monthlySchedule} />
+          <Suspense
+            fallback={
+              <div className="h-32 animate-pulse rounded-xl bg-muted/40" aria-hidden="true" />
+            }
+          >
+            <AmortisationTable rows={result.yearlySchedule} monthlyRows={result.monthlySchedule} />
+          </Suspense>
         </div>
       </ResultCard>
     </div>
