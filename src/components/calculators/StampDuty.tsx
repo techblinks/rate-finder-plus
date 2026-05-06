@@ -23,6 +23,13 @@ const StampDuty = ({ lockedState }: StampDutyProps) => {
   const dValue = useDebouncedValue(value);
   const result = useMemo(() => calcStampDuty(Math.max(0, dValue), state, buyer), [dValue, state, buyer]);
 
+  useDebouncedCalculate("stamp_duty", {
+    state,
+    buyer,
+    value: dValue,
+    net_duty: Math.round(result.netDuty),
+  });
+
   const exempt = buyer === "fhb" && result.netDuty === 0;
   const stateName = STATES.find((s) => s.code === state)?.name ?? state;
 
