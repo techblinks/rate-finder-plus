@@ -90,7 +90,38 @@ const GuideArticleShell = ({ guide }: { guide: GuideMeta }) => {
             <section key={s.h2} id={slugify(s.h2)}>
               <h2 className="mb-3">{s.h2}</h2>
               <div className="space-y-4 text-[15px] leading-relaxed text-muted-foreground">
-                {s.paragraphs.map((p, i) => <p key={i}>{p}</p>)}
+                {s.blocks.map((b, i) => {
+                  if (b.type === "p") return <p key={i}>{b.text}</p>;
+                  if (b.type === "h3")
+                    return <h3 key={i} className="mt-4 text-[17px] font-semibold text-foreground">{b.text}</h3>;
+                  if (b.type === "list")
+                    return (
+                      <ul key={i} className="list-disc space-y-1 pl-5">
+                        {b.items.map((it, j) => <li key={j}>{it}</li>)}
+                      </ul>
+                    );
+                  return (
+                    <div key={i} className="overflow-x-auto">
+                      <table className="w-full border-collapse text-[14px]">
+                        <thead>
+                          <tr className="border-b border-border">
+                            {b.headers.map((h) => (
+                              <th key={h} className="px-3 py-2 text-left font-semibold text-foreground">{h}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {b.rows.map((row, ri) => (
+                            <tr key={ri} className="border-b border-border/60">
+                              {row.map((cell, ci) => <td key={ci} className="px-3 py-2">{cell}</td>)}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {b.caption && <p className="mt-2 text-[12px] italic">{b.caption}</p>}
+                    </div>
+                  );
+                })}
               </div>
             </section>
           ))}
