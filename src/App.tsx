@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import Layout from "@/components/layout/Layout";
 import RouteAnalytics from "@/components/RouteAnalytics";
+import { LocaleProvider } from "@/contexts/LocaleContext";
 import Home from "./pages/Home";
 
 // Route-level code splitting. Home stays eager (it's the LCP path) — every
