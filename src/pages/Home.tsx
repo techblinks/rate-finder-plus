@@ -15,7 +15,9 @@ import {
   Minus,
 } from "lucide-react";
 import { SeoHead } from "@/components/seo/SeoHead";
-import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
+import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/seo/JsonLd";
+import FAQ from "@/components/FAQ";
+import { FAQS } from "@/data/faqs";
 import { monthlyPayment } from "@/lib/calc/mortgage";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
@@ -162,11 +164,12 @@ const Home = () => {
   return (
     <>
       <SeoHead
-        title="Free Australian Mortgage Calculators 2026 | Calcy"
-        description="Free mortgage repayment, stamp duty, borrowing power, LMI and loan comparison calculators for Australia. Updated May 2026. No sign-up required."
+        title="Free Australian Mortgage Calculator 2026 | Calcy"
+        description="Calculate home loan repayments, stamp duty, borrowing power and LMI for free. All 8 Australian states. Updated with current RBA rates. No sign-up required."
         canonical="/"
       />
       <BreadcrumbJsonLd items={[{ name: "Home", path: "/" }]} />
+      <FaqJsonLd faqs={FAQS.home} />
 
       {/* SECTION 1 — HERO (2-tile rounded layout) */}
       <section className="bg-background">
