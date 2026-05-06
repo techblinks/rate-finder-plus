@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import type { FaqItem } from "@/data/faqs";
 
-const SITE = "https://zunecalculator.com";
+const SITE = "https://calcy.com.au";
 
 interface BreadcrumbProps {
   items: { name: string; path: string }[];

@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import Home from "./pages/Home";
 import MortgageCalculatorPage from "./pages/MortgageCalculatorPage";
@@ -25,7 +25,8 @@ const App = () => (
         <Route path="/loan-comparison-calculator" element={<LoanComparisonPage />} />
         <Route path="/about" element={<About />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/terms" element={<Terms />} />
+        <Route path="/terms-of-use" element={<Terms />} />
+        <Route path="/terms" element={<Navigate to="/terms-of-use" replace />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
