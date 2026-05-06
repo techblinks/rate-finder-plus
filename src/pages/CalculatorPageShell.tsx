@@ -61,6 +61,7 @@ const CalculatorPageShell = ({
         <RelatedCalculators items={related} />
       </div>
     </div>
+    <StickyMobileAd />
   </>
 );
 
