@@ -12,7 +12,6 @@
  *   - Custom robots_txt admin override is emitted verbatim.
  *   - Sitemap is empty (but still well-formed XML) when indexing is off.
  */
-// @ts-expect-error JS module without types
 import { buildSitemap, buildRobots, priorityFor, changefreqFor } from "../../scripts/lib/sitemapRobots.mjs";
 import { describe, it, expect } from "vitest";
 import { ROUTES, SITE } from "@/data/routes";
