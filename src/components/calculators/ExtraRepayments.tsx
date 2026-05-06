@@ -5,6 +5,7 @@ import { Card, ResultCard } from "@/components/ui-kit";
 import RangeField from "@/components/RangeField";
 import BarCompare from "@/components/BarCompare";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 
 const ExtraRepayments = () => {
   const [balance, setBalance] = useState(500000);
@@ -27,6 +28,15 @@ const ExtraRepayments = () => {
       ),
     [dBalance, dRate, dTerm, dExtra],
   );
+
+  useDebouncedCalculate("extra_repayments", {
+    balance: dBalance,
+    rate: dRate,
+    term: dTerm,
+    extra: dExtra,
+    months_saved: result.monthsSaved,
+    interest_saved: Math.round(result.interestSaved),
+  });
 
   return (
     <div className="space-y-6">

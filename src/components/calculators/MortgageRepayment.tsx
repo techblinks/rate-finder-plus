@@ -9,6 +9,7 @@ import StickyResultsBar from "@/components/StickyResultsBar";
 import DonutChart from "@/components/DonutChart";
 import AmortisationTable from "@/components/AmortisationTable";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 
 type Frequency = "monthly" | "fortnightly" | "weekly";
 type LoanType = "owner" | "investor";
@@ -61,6 +62,16 @@ const MortgageRepayment = () => {
       : null),
     [dAmount, dRate, dTerm, dExtra],
   );
+
+  useDebouncedCalculate("mortgage_repayment", {
+    loan_type: loanType,
+    amount: dAmount,
+    rate: dRate,
+    term: dTerm,
+    extra: dExtra,
+    frequency,
+    monthly: Math.round(result.monthly),
+  });
 
   const display =
     frequency === "monthly" ? result.monthly : frequency === "fortnightly" ? result.fortnightly : result.weekly;

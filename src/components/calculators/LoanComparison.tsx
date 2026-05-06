@@ -4,6 +4,7 @@ import { AUD } from "@/lib/format";
 import { Card, Field, NumberInput, ResultCard } from "@/components/ui-kit";
 import BarCompare from "@/components/BarCompare";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 
 interface ScenarioInput {
   rate: number;
@@ -51,6 +52,18 @@ const LoanComparisonCalc = () => {
       ),
     [dAmount, dA, dB],
   );
+
+  useDebouncedCalculate("loan_comparison", {
+    amount: dAmount,
+    a_rate: dA.rate,
+    a_term: dA.term,
+    a_fees: dA.fees,
+    b_rate: dB.rate,
+    b_term: dB.term,
+    b_fees: dB.fees,
+    monthly_diff: Math.round(result.a.monthly - result.b.monthly),
+    interest_diff: Math.round(result.a.totalInterest - result.b.totalInterest),
+  });
 
   const monthlyDiff = Math.abs(result.a.monthly - result.b.monthly);
   const totalRepaidDiff = Math.abs(result.a.totalRepaid - result.b.totalRepaid);

@@ -4,6 +4,7 @@ import { AUD, pct } from "@/lib/format";
 import { Card, ResultCard, ResultRow } from "@/components/ui-kit";
 import RangeField from "@/components/RangeField";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 
 const Lmi = () => {
   const [propertyValue, setPropertyValue] = useState(700000);
@@ -23,6 +24,15 @@ const Lmi = () => {
     () => calcLmi(Math.max(0, dValue), Math.max(0, dDep), Math.max(1, dTerm), Math.max(0, dRate)),
     [dValue, dDep, dTerm, dRate],
   );
+
+  useDebouncedCalculate("lmi", {
+    property_value: dValue,
+    deposit: dDep,
+    term: dTerm,
+    rate: dRate,
+    lvr: Math.round(result.lvr * 10) / 10,
+    premium: Math.round(result.lmiCost),
+  });
 
   const lvrColor = result.lvr > 80 ? "text-destructive" : "text-success";
   const extraDepositNeeded = Math.max(0, result.depositFor20 - safeDeposit);
