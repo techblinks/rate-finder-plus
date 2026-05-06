@@ -29,6 +29,15 @@ const ExtraRepayments = () => {
     [dBalance, dRate, dTerm, dExtra],
   );
 
+  useDebouncedCalculate("extra_repayments", {
+    balance: dBalance,
+    rate: dRate,
+    term: dTerm,
+    extra: dExtra,
+    months_saved: result.monthsSaved,
+    interest_saved: Math.round(result.interestSaved),
+  });
+
   return (
     <div className="space-y-6">
       <Card>
