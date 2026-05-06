@@ -297,16 +297,32 @@ const Home = () => {
             What's happening in the Australian property market right now.
           </p>
           <ul className="grid grid-cols-1 gap-5 md:grid-cols-2">
-            {CURRENT_CARDS.map((c) => (
+            {CURRENT_CARDS.map((c, i) => (
               <li key={c.headline} className="flex">
                 <Link
                   to={c.to}
-                  className="flex w-full flex-col rounded-xl border border-border bg-background p-7 transition-shadow hover:shadow-[0_4px_12px_hsl(var(--accent)/0.10)]"
+                  className="group flex w-full flex-col overflow-hidden rounded-2xl border border-border bg-background transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_28px_hsl(var(--accent)/0.12)]"
                 >
-                  <span className="badge badge-brand mb-3 self-start">{c.tag}</span>
-                  <h3 className="text-h4 mb-2">{c.headline}</h3>
-                  <p className="text-body text-small mb-5 flex-1">{c.body}</p>
-                  <span className="btn-link mt-auto">{c.cta}</span>
+                  <div
+                    className="relative h-32 p-5 flex items-end"
+                    style={{
+                      background: [
+                        "linear-gradient(135deg, hsl(var(--accent-light)), hsl(var(--accent-mid)))",
+                        "linear-gradient(135deg, #FEF3C7, #FCD34D)",
+                        "linear-gradient(135deg, #DCFCE7, #86EFAC)",
+                        "linear-gradient(135deg, hsl(var(--accent) / 0.25), hsl(var(--accent) / 0.55))",
+                      ][i % 4],
+                    }}
+                  >
+                    <span className="badge badge-brand bg-background/90">{c.tag}</span>
+                  </div>
+                  <div className="flex flex-1 flex-col p-6">
+                    <h3 className="text-h4 mb-2">{c.headline}</h3>
+                    <p className="text-body text-small mb-5 flex-1">{c.body}</p>
+                    <span className="inline-flex items-center gap-1.5 self-start rounded-full bg-accent px-4 py-2 text-[13px] font-semibold text-accent-foreground">
+                      {c.cta.replace(" →", "")} <span aria-hidden>↗</span>
+                    </span>
+                  </div>
                 </Link>
               </li>
             ))}
