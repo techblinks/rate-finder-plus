@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useMemo, useRef, useState } from "react";
 import { calcMortgage } from "@/lib/calc/mortgage";
 import { rbaRates } from "@/data/rbaRates";
 import { AUD, monthName } from "@/lib/format";
@@ -7,7 +7,8 @@ import RangeField from "@/components/RangeField";
 import RbaRateIndicator from "@/components/RbaRateIndicator";
 import StickyResultsBar from "@/components/StickyResultsBar";
 import DonutChart from "@/components/DonutChart";
-import AmortisationTable from "@/components/AmortisationTable";
+
+const AmortisationTable = lazy(() => import("@/components/AmortisationTable"));
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 
@@ -227,7 +228,13 @@ const MortgageRepayment = () => {
         </div>
 
         <div className="mt-5">
-          <AmortisationTable rows={result.yearlySchedule} monthlyRows={result.monthlySchedule} />
+          <Suspense
+            fallback={
+              <div className="h-32 animate-pulse rounded-xl bg-muted/40" aria-hidden="true" />
+            }
+          >
+            <AmortisationTable rows={result.yearlySchedule} monthlyRows={result.monthlySchedule} />
+          </Suspense>
         </div>
       </ResultCard>
     </div>
