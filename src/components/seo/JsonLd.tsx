@@ -117,6 +117,24 @@ interface ArticleProps {
   dateModified?: string;
 }
 
+export const OrganizationJsonLd = () => {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Calcy",
+    url: SITE,
+    logo: `${SITE}/icon-512.png`,
+    description:
+      "Free Australian mortgage, stamp duty, borrowing power and LMI calculators.",
+    areaServed: "AU",
+  };
+  return (
+    <Helmet>
+      <script type="application/ld+json">{JSON.stringify(data)}</script>
+    </Helmet>
+  );
+};
+
 export const ArticleJsonLd = ({
   headline,
   description,
