@@ -162,7 +162,8 @@ const Home = () => {
               className="rounded-[24px] p-7 text-foreground sm:p-9 md:p-10 flex flex-col justify-between min-h-[280px] md:min-h-[380px] bg-transparent"
             >
               <div>
-                <span className="inline-block rounded-full bg-foreground/10 px-3 py-1 text-[11px] font-semibold tracking-wide text-foreground mb-5">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-accent-light px-3 py-1 text-[11px] font-semibold tracking-wide text-accent mb-5">
+                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent" aria-hidden />
                   Free · No sign-up · Updated May 2026
                 </span>
                 <h1 className="font-display text-[32px] sm:text-[40px] md:text-[44px] leading-[1.05] font-extrabold text-foreground mb-4">
