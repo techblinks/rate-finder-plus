@@ -168,12 +168,17 @@ const Home = () => {
             />
 
             {/* Right tile — pale blue trust panel */}
-            <div className="rounded-[24px] p-8 md:p-10 min-h-[320px] flex items-center bg-surface">
-              <p className="text-[17px] leading-[1.55] font-medium" style={{ color: "hsl(var(--text-secondary))" }}>
-                Bank-grade results — no account required.{" "}
-                <span className="text-foreground font-semibold">6 calculators</span>,{" "}
-                <span className="text-foreground font-semibold">all 8 states</span>, updated monthly with current RBA rates to help you make confident money decisions.
+            <div className="rounded-[24px] p-8 md:p-10 min-h-[320px] flex flex-col justify-center bg-surface">
+              <p className="text-[18px] leading-[1.5] font-medium text-foreground mb-4">
+                Confidence in every calculation.
               </p>
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] font-medium" style={{ color: "hsl(var(--text-secondary))" }}>
+                <span>6 calculators</span>
+                <span className="inline-block h-1 w-1 rounded-full bg-border" aria-hidden />
+                <span>All 8 states</span>
+                <span className="inline-block h-1 w-1 rounded-full bg-border" aria-hidden />
+                <span>Updated monthly</span>
+              </div>
             </div>
           </div>
         </div>
