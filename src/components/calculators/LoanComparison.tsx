@@ -4,6 +4,7 @@ import { AUD } from "@/lib/format";
 import { Card, Field, NumberInput, ResultCard } from "@/components/ui-kit";
 import BarCompare from "@/components/BarCompare";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 
 interface ScenarioInput {
   rate: number;
