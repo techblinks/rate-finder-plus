@@ -1,12 +1,10 @@
 import { useEffect, useRef } from "react";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 /**
- * Display-ad placeholder. Until `VITE_ADSENSE_CLIENT` is set, renders a labelled
- * empty container so layout reflects production. With the env var set, mounts
- * an AdSense `<ins>` tag and pushes it to the queue.
- *
- * Slot IDs come from env (`VITE_ADSENSE_SLOT_HEADER`, `VITE_ADSENSE_SLOT_INLINE`,
- * `VITE_ADSENSE_SLOT_SIDEBAR`) so they can be swapped without code changes.
+ * Display-ad placeholder. Reads publisher client ID, slot ID, and per-slot
+ * enable flag from admin-managed site_settings. Renders a labelled empty
+ * container until configured, so layout matches production.
  */
 type SlotName = "header" | "inline" | "sidebar" | "stickyMobile";
 
@@ -14,13 +12,6 @@ interface AdSlotProps {
   slot: SlotName;
   className?: string;
 }
-
-const SLOT_ENV: Record<SlotName, string | undefined> = {
-  header: import.meta.env.VITE_ADSENSE_SLOT_HEADER as string | undefined,
-  inline: import.meta.env.VITE_ADSENSE_SLOT_INLINE as string | undefined,
-  sidebar: import.meta.env.VITE_ADSENSE_SLOT_SIDEBAR as string | undefined,
-  stickyMobile: import.meta.env.VITE_ADSENSE_SLOT_STICKY_MOBILE as string | undefined,
-};
 
 const SLOT_CLASS: Record<SlotName, string> = {
   header: "min-h-[90px]",
@@ -36,20 +27,38 @@ declare global {
 }
 
 const AdSlot = ({ slot, className = "" }: AdSlotProps) => {
-  const client = import.meta.env.VITE_ADSENSE_CLIENT as string | undefined;
-  const slotId = SLOT_ENV[slot];
+  const settings = useSiteSettings();
   const ref = useRef<HTMLModElement>(null);
 
+  const client =
+    settings.adsense_client || (import.meta.env.VITE_ADSENSE_CLIENT as string | undefined);
+
+  const slotIdMap: Record<SlotName, string | null> = {
+    header: settings.adsense_slot_header,
+    inline: settings.adsense_slot_inline,
+    sidebar: settings.adsense_slot_sidebar,
+    stickyMobile: settings.adsense_slot_sticky_mobile,
+  };
+  const enabledMap: Record<SlotName, boolean> = {
+    header: settings.slot_header_enabled,
+    inline: settings.slot_inline_enabled,
+    sidebar: settings.slot_sidebar_enabled,
+    stickyMobile: settings.slot_sticky_mobile_enabled,
+  };
+
+  const slotId = slotIdMap[slot];
+  const enabled = settings.adsense_enabled && enabledMap[slot];
+
   useEffect(() => {
-    if (!client || !slotId) return;
+    if (!client || !slotId || !enabled) return;
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch {
       // adsbygoogle not yet loaded; ignore
     }
-  }, [client, slotId]);
+  }, [client, slotId, enabled]);
 
-  if (!client || !slotId) {
+  if (!client || !slotId || !enabled) {
     return (
       <div
         aria-hidden="true"
