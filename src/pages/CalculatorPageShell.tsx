@@ -5,6 +5,7 @@ import { HOW_TOS } from "@/data/howTos";
 import Breadcrumb from "@/components/Breadcrumb";
 import FAQ from "@/components/FAQ";
 import RelatedCalculators from "@/components/RelatedCalculators";
+import RelatedGuides from "@/components/RelatedGuides";
 import AdSlot from "@/components/AdSlot";
 import StickyMobileAd from "@/components/StickyMobileAd";
 import type { FaqItem } from "@/data/faqs";
