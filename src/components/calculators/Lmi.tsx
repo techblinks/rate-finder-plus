@@ -25,6 +25,15 @@ const Lmi = () => {
     [dValue, dDep, dTerm, dRate],
   );
 
+  useDebouncedCalculate("lmi", {
+    property_value: dValue,
+    deposit: dDep,
+    term: dTerm,
+    rate: dRate,
+    lvr: Math.round(result.lvr * 10) / 10,
+    premium: Math.round(result.premium),
+  });
+
   const lvrColor = result.lvr > 80 ? "text-destructive" : "text-success";
   const extraDepositNeeded = Math.max(0, result.depositFor20 - safeDeposit);
 
