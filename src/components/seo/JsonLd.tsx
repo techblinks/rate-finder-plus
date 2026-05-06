@@ -107,3 +107,49 @@ export const HowToJsonLd = ({ name, description, totalTime, steps }: HowToProps)
     </Helmet>
   );
 };
+
+interface ArticleProps {
+  headline: string;
+  description: string;
+  path: string;
+  sectionHeadings?: string[];
+  datePublished?: string;
+  dateModified?: string;
+}
+
+export const ArticleJsonLd = ({
+  headline,
+  description,
+  path,
+  sectionHeadings,
+  datePublished = "2026-01-01",
+  dateModified = new Date().toISOString().slice(0, 10),
+}: ArticleProps) => {
+  const url = `${SITE}${path}`;
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline,
+    description,
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    url,
+    inLanguage: "en-AU",
+    datePublished,
+    dateModified,
+    ...(sectionHeadings && sectionHeadings.length
+      ? { articleSection: sectionHeadings }
+      : {}),
+    author: { "@type": "Organization", name: "Calcy", url: SITE },
+    publisher: {
+      "@type": "Organization",
+      name: "Calcy",
+      url: SITE,
+      logo: { "@type": "ImageObject", url: `${SITE}/icon-512.png` },
+    },
+  };
+  return (
+    <Helmet>
+      <script type="application/ld+json">{JSON.stringify(data)}</script>
+    </Helmet>
+  );
+};
