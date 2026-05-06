@@ -8,16 +8,12 @@
  *    indexing toggles, title templates, and OG image overrides never break
  *    canonical, og:url, or hreflang invariants.
  */
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { renderToString } from "react-dom/server";
-import { HelmetProvider, Helmet } from "react-helmet-async";
-// react-helmet-async detects jsdom as a browser and skips populating the
-// server context. Force SSR mode for these tests.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-(Helmet as any).canUseDOM = false;
+import { render, cleanup, act } from "@testing-library/react";
+import { HelmetProvider } from "react-helmet-async";
 import React from "react";
 import { SeoHead } from "@/components/seo/SeoHead";
 import * as siteSettings from "@/hooks/useSiteSettings";
@@ -56,29 +52,40 @@ const baseSettings: siteSettings.SiteSettings = {
   indexing_enabled: true,
 };
 
-function renderHead(settings: Partial<siteSettings.SiteSettings>, props = {
-  title: "Mortgage Calculator",
-  description: "Estimate your repayments.",
-  canonical: "/mortgage-calculator",
-}) {
+afterEach(() => {
+  cleanup();
+  // Helmet writes to document.head asynchronously; fully reset between tests.
+  document.head.querySelectorAll("[data-rh]").forEach((n) => n.remove());
+  vi.restoreAllMocks();
+});
+
+async function renderHead(
+  settings: Partial<siteSettings.SiteSettings>,
+  props = {
+    title: "Mortgage Calculator",
+    description: "Estimate your repayments.",
+    canonical: "/mortgage-calculator",
+  },
+) {
   vi.spyOn(siteSettings, "useSiteSettings").mockReturnValue({
     ...baseSettings,
     ...settings,
   });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const helmetContext: any = {};
-  renderToString(
-    React.createElement(
-      HelmetProvider,
-      { context: helmetContext },
-      React.createElement(SeoHead, props),
-    ),
-  );
-  const helmet = helmetContext.helmet;
+  await act(async () => {
+    render(
+      React.createElement(
+        HelmetProvider,
+        null,
+        React.createElement(SeoHead, props),
+      ),
+    );
+    // Helmet schedules its DOM mutations via requestAnimationFrame/microtasks.
+    await new Promise((r) => setTimeout(r, 0));
+  });
   return {
-    title: helmet.title.toString(),
-    link: helmet.link.toString(),
-    meta: helmet.meta.toString(),
+    title: document.title,
+    link: document.head.innerHTML,
+    meta: document.head.innerHTML,
   };
 }
 
