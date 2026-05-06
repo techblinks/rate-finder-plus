@@ -27,6 +27,8 @@ if (!existsSync(indexPath)) {
 // self-contained, we re-declare routes here from a generated .mjs.
 const routesModuleUrl = pathToFileURL(join(__dirname, "routes.generated.mjs")).href;
 const { ROUTES } = await import(routesModuleUrl);
+const howTosModuleUrl = pathToFileURL(join(__dirname, "howTos.generated.mjs")).href;
+const { HOW_TOS } = await import(howTosModuleUrl);
 
 const baseHtml = readFileSync(indexPath, "utf8");
 
@@ -93,6 +95,23 @@ function buildJsonLd(route) {
         "@type": "Question",
         name: f.question,
         acceptedAnswer: { "@type": "Answer", text: f.answer },
+      })),
+    });
+  }
+
+  const howTo = HOW_TOS[route.canonical];
+  if (howTo) {
+    blocks.push({
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      name: howTo.name,
+      description: howTo.description,
+      ...(howTo.totalTime ? { totalTime: howTo.totalTime } : {}),
+      step: howTo.steps.map((s, i) => ({
+        "@type": "HowToStep",
+        position: i + 1,
+        name: s.name,
+        text: s.text,
       })),
     });
   }
