@@ -1,0 +1,149 @@
+import { Link } from "react-router-dom";
+import { ChevronRight, Clock, Tag, ArrowRight } from "lucide-react";
+import { SeoHead } from "@/components/seo/SeoHead";
+import { ArticleJsonLd, BreadcrumbJsonLd, FaqJsonLd } from "@/components/seo/JsonLd";
+import FAQ from "@/components/FAQ";
+import type { GuideMeta } from "@/data/guides";
+import { GUIDES } from "@/data/guides";
+
+const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+const GuideArticleShell = ({ guide }: { guide: GuideMeta }) => {
+  const canonical = `/guides/${guide.slug}`;
+  const related = guide.relatedGuides
+    .map((s) => GUIDES.find((g) => g.slug === s))
+    .filter((g): g is GuideMeta => Boolean(g));
+
+  return (
+    <>
+      <SeoHead
+        title={guide.metaTitle}
+        description={guide.metaDescription}
+        canonical={canonical}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", path: "/" },
+          { name: "Guides", path: "/guides" },
+          { name: guide.title, path: canonical },
+        ]}
+      />
+      <ArticleJsonLd
+        headline={guide.title}
+        description={guide.metaDescription}
+        path={canonical}
+        sectionHeadings={guide.sections.map((s) => s.h2)}
+        datePublished={guide.datePublished}
+        dateModified={guide.dateModified}
+      />
+      <FaqJsonLd faqs={guide.faqs} />
+
+      <article className="page-shell py-8 md:py-10">
+        <nav aria-label="Breadcrumb" className="mb-5 text-[13px] text-muted-foreground">
+          <ol className="flex flex-wrap items-center gap-1">
+            <li><Link to="/" className="link-accent">Home</Link></li>
+            <li className="flex items-center gap-1">
+              <ChevronRight className="h-3.5 w-3.5 opacity-60" />
+              <Link to="/guides" className="link-accent">Guides</Link>
+            </li>
+            <li className="flex items-center gap-1">
+              <ChevronRight className="h-3.5 w-3.5 opacity-60" />
+              <span aria-current="page" className="text-foreground">{guide.title}</span>
+            </li>
+          </ol>
+        </nav>
+
+        <div className="mb-4 flex flex-wrap items-center gap-2 text-[12px] font-medium text-muted-foreground">
+          <span className="inline-flex items-center gap-1 rounded-full bg-accent-light px-3 py-1 text-accent">
+            <Tag className="h-3 w-3" /> {guide.category}
+          </span>
+          <span className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1">
+            <Clock className="h-3 w-3" /> {guide.readMins} min read
+          </span>
+        </div>
+
+        <h1 className="mb-3">{guide.title}</h1>
+
+        <p className="mb-6 text-[13px] text-muted-foreground">
+          Last updated: May 2026 · By Calcy Editorial Team
+        </p>
+
+        <p className="mb-8 text-[16px] leading-relaxed text-foreground/90">{guide.intro}</p>
+
+        {/* TOC */}
+        <nav aria-label="Table of contents" className="mb-10 rounded-lg border border-border bg-surface p-5">
+          <h2 className="mb-3 text-[14px] font-semibold uppercase tracking-wide text-muted-foreground">
+            On this page
+          </h2>
+          <ul className="space-y-2 text-[14px]">
+            {guide.sections.map((s) => (
+              <li key={s.h2}>
+                <a href={`#${slugify(s.h2)}`} className="link-accent">{s.h2}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        {/* Body */}
+        <div className="space-y-10">
+          {guide.sections.map((s) => (
+            <section key={s.h2} id={slugify(s.h2)}>
+              <h2 className="mb-3">{s.h2}</h2>
+              <div className="space-y-4 text-[15px] leading-relaxed text-muted-foreground">
+                {s.paragraphs.map((p, i) => <p key={i}>{p}</p>)}
+              </div>
+            </section>
+          ))}
+        </div>
+
+        {/* Key takeaways */}
+        <aside className="mt-12 rounded-2xl border border-accent/30 bg-accent-light p-6">
+          <h2 className="mb-3 text-[18px]">Key takeaways</h2>
+          <ul className="list-disc space-y-2 pl-5 text-[15px] text-foreground/90">
+            {guide.keyTakeaways.map((k) => <li key={k}>{k}</li>)}
+          </ul>
+        </aside>
+
+        {/* Calculator CTA */}
+        <div className="mt-10 rounded-2xl bg-foreground p-6 text-background">
+          <p className="mb-3 text-[14px] uppercase tracking-wide opacity-70">Try the calculator</p>
+          <Link
+            to={guide.relatedCalculator.to}
+            className="inline-flex h-12 items-center gap-2 rounded-full bg-background px-6 text-[14px] font-semibold text-foreground hover:bg-background/90"
+          >
+            {guide.relatedCalculator.label} <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+
+        {/* Related guides */}
+        {related.length > 0 && (
+          <section className="mt-12" aria-labelledby="related-guides">
+            <h2 id="related-guides" className="mb-4">Related guides</h2>
+            <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {related.map((g) => (
+                <li key={g.slug}>
+                  <Link
+                    to={`/guides/${g.slug}`}
+                    className="block rounded-lg border border-border bg-surface p-5 transition-colors hover:border-accent/50"
+                  >
+                    <p className="text-[12px] font-medium uppercase tracking-wide text-accent">
+                      {g.category}
+                    </p>
+                    <p className="mt-2 text-[15px] font-semibold text-foreground">{g.title}</p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* Topic FAQ */}
+        <div className="mt-12">
+          <FAQ items={guide.faqs} />
+        </div>
+      </article>
+    </>
+  );
+};
+
+export default GuideArticleShell;
