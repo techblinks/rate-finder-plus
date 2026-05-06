@@ -55,8 +55,9 @@ const App = () => (
           <Route path="/terms" element={<Navigate to="/terms-of-use" replace />} />
           <Route path="*" element={<NotFound />} />
         </Route>
-      </Routes>
-    </Suspense>
+        </Routes>
+      </Suspense>
+    </LocaleProvider>
   </BrowserRouter>
 );
 
