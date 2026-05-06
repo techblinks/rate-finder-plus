@@ -3,6 +3,7 @@ import { lazy, Suspense } from "react";
 import Layout from "@/components/layout/Layout";
 import RouteAnalytics from "@/components/RouteAnalytics";
 import FaviconManager from "@/components/FaviconManager";
+import CustomScripts from "@/components/CustomScripts";
 import { LocaleProvider } from "@/contexts/LocaleContext";
 import Home from "./pages/Home";
 
@@ -34,6 +35,7 @@ const App = () => (
     <LocaleProvider>
       <RouteAnalytics />
       <FaviconManager />
+      <CustomScripts />
       <Suspense fallback={<RouteFallback />}>
         <Routes>
         <Route element={<Layout />}>

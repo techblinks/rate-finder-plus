@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { activeLocales, LOCALES } from "@/lib/locale";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const SITE = "https://calcy.com.au";
 
@@ -9,25 +10,42 @@ interface SeoHeadProps {
   canonical: string;
 }
 
+/**
+ * Per-page SEO head. Page-supplied title/description/canonical always win —
+ * admin settings only fill in cross-cutting defaults (title template suffix,
+ * fallback description if a page passes empty, OG image).
+ */
 export const SeoHead = ({ title, description, canonical }: SeoHeadProps) => {
   const url = `${SITE}${canonical}`;
   const enabled = activeLocales();
+  const settings = useSiteSettings();
+
+  // Apply title template only if it includes %s and the page title doesn't
+  // already match the template (avoid double-suffixing prerendered titles).
+  const tpl = settings.title_template || "%s | Calcy";
+  const finalTitle =
+    tpl.includes("%s") && !title.includes(" | Calcy") ? tpl.replace("%s", title) : title;
+
+  const finalDescription = description || settings.default_meta_description || "";
+  const ogImage = settings.default_og_image || `${SITE}/icon-512.png`;
 
   return (
     <Helmet>
       <html lang={LOCALES.au.htmlLang} />
-      <title>{title}</title>
-      <meta name="description" content={description} />
+      <title>{finalTitle}</title>
+      <meta name="description" content={finalDescription} />
       <link rel="canonical" href={url} />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
+      <meta property="og:title" content={finalTitle} />
+      <meta property="og:description" content={finalDescription} />
       <meta property="og:url" content={url} />
       <meta property="og:type" content="website" />
       <meta property="og:site_name" content="Calcy" />
       <meta property="og:locale" content={LOCALES.au.htmlLang.replace("-", "_")} />
-      <meta name="twitter:card" content="summary" />
-      <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={description} />
+      <meta property="og:image" content={ogImage} />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={finalTitle} />
+      <meta name="twitter:description" content={finalDescription} />
+      <meta name="twitter:image" content={ogImage} />
       {/* hreflang — emitted only for enabled locales so we never advertise unbuilt pages. */}
       {enabled.length > 1 &&
         enabled.map((l) => (
