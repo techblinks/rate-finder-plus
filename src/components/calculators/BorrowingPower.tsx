@@ -17,18 +17,22 @@ const BorrowingPower = () => {
 
   const handle = (e: React.FormEvent) => {
     e.preventDefault();
-    setResult(
-      calcBorrowingPower({
-        income1,
-        income2,
-        monthlyExpenses: expenses,
-        otherRepayments,
-        creditCardLimit: creditLimit,
-        dependants: Number(dependants),
-        ratePct: rate,
-        termYears: term,
-      }),
-    );
+    const r = calcBorrowingPower({
+      income1,
+      income2,
+      monthlyExpenses: expenses,
+      otherRepayments,
+      creditCardLimit: creditLimit,
+      dependants: Number(dependants),
+      ratePct: rate,
+      termYears: term,
+    });
+    setResult(r);
+    trackEvent("calculate", {
+      calculator: "borrowing_power",
+      maximum: Math.round(r.maximum),
+      conservative: Math.round(r.conservative),
+    });
   };
 
   return (
