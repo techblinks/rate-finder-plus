@@ -146,6 +146,7 @@ const Home = () => {
                 </h1>
                 <p className="text-[14px] text-white/85 max-w-[320px]">
                   Free Australian mortgage, stamp duty, borrowing power and LMI calculators.
+                  Bank-grade results — no account required.
                 </p>
               </div>
               <Link
