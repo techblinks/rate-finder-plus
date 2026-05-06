@@ -18,6 +18,7 @@ const STATE_SLUGS = ["nsw", "vic", "qld", "wa", "sa", "tas", "act", "nt"] as con
 
 const App = () => (
   <BrowserRouter>
+    <RouteAnalytics />
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
