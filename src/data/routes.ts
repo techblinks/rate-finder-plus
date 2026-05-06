@@ -156,5 +156,6 @@ for (const g of GUIDES) {
     metaDescription: g.metaDescription,
     canonical: `/guides/${g.slug}`,
     faqs: g.faqs,
+    isArticle: true,
   });
 }
