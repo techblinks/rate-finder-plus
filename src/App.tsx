@@ -29,9 +29,10 @@ const RouteFallback = () => (
 
 const App = () => (
   <BrowserRouter>
-    <RouteAnalytics />
-    <Suspense fallback={<RouteFallback />}>
-      <Routes>
+    <LocaleProvider>
+      <RouteAnalytics />
+      <Suspense fallback={<RouteFallback />}>
+        <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/mortgage-calculator" element={<MortgageCalculatorPage />} />
