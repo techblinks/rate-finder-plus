@@ -125,8 +125,8 @@ const validateRate = (n: number) => {
 const Home = () => {
   const [loan, setLoan] = useState(650000);
   const [rate, setRate] = useState(5.5);
-  const dLoan = useDebouncedValue(loan, 300);
-  const dRate = useDebouncedValue(rate, 300);
+  const dLoan = useDebouncedValue(loan, 150);
+  const dRate = useDebouncedValue(rate, 150);
 
   const loanError = validateLoan(loan);
   const rateError = validateRate(rate);
