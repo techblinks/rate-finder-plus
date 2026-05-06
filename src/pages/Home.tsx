@@ -76,6 +76,9 @@ const TOPIC_PILLS = [
 const CURRENT_CARDS = [
   {
     tag: "Rate update",
+    stat: "4.10%",
+    statLabel: "RBA cash rate · May 2026",
+    trend: "down" as const,
     headline: "The RBA cut rates in February and March 2026.",
     body: "The cash rate is now 4.10%. See how the recent cuts affect your monthly mortgage repayments on your current loan.",
     cta: "Calculate now →",
@@ -83,6 +86,9 @@ const CURRENT_CARDS = [
   },
   {
     tag: "First home buyers",
+    stat: "$800k",
+    statLabel: "NSW stamp duty exemption cap",
+    trend: "neutral" as const,
     headline: "Stamp duty exemptions for first home buyers in 2026.",
     body: "NSW exempts FHBs up to $800k. VIC up to $600k. QLD up to $500k. Calculate your exact saving for your state.",
     cta: "Calculate stamp duty →",
@@ -90,6 +96,9 @@ const CURRENT_CARDS = [
   },
   {
     tag: "Buying costs",
+    stat: "20%",
+    statLabel: "Deposit to avoid LMI",
+    trend: "neutral" as const,
     headline: "How much deposit do you really need to avoid LMI?",
     body: "A 20% deposit eliminates LMI entirely. At 10% deposit on a $700k property, LMI can add $9,100 to your loan.",
     cta: "Calculate LMI →",
@@ -97,6 +106,9 @@ const CURRENT_CARDS = [
   },
   {
     tag: "Refinancing",
+    stat: "$74,880",
+    statLabel: "Saved on a $650k loan over 30 years",
+    trend: "up" as const,
     headline: "Even 0.50% less on your rate saves tens of thousands.",
     body: "On a $650,000 loan over 30 years, refinancing from 5.99% to 5.50% saves $74,880 in total interest paid.",
     cta: "Compare loans →",
