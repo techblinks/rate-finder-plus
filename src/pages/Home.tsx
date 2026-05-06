@@ -10,6 +10,9 @@ import {
   MapPin,
   Zap,
   Table,
+  TrendingDown,
+  TrendingUp,
+  Minus,
 } from "lucide-react";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
@@ -73,6 +76,9 @@ const TOPIC_PILLS = [
 const CURRENT_CARDS = [
   {
     tag: "Rate update",
+    stat: "4.10%",
+    statLabel: "RBA cash rate · May 2026",
+    trend: "down" as const,
     headline: "The RBA cut rates in February and March 2026.",
     body: "The cash rate is now 4.10%. See how the recent cuts affect your monthly mortgage repayments on your current loan.",
     cta: "Calculate now →",
@@ -80,6 +86,9 @@ const CURRENT_CARDS = [
   },
   {
     tag: "First home buyers",
+    stat: "$800k",
+    statLabel: "NSW stamp duty exemption cap",
+    trend: "neutral" as const,
     headline: "Stamp duty exemptions for first home buyers in 2026.",
     body: "NSW exempts FHBs up to $800k. VIC up to $600k. QLD up to $500k. Calculate your exact saving for your state.",
     cta: "Calculate stamp duty →",
@@ -87,6 +96,9 @@ const CURRENT_CARDS = [
   },
   {
     tag: "Buying costs",
+    stat: "20%",
+    statLabel: "Deposit to avoid LMI",
+    trend: "neutral" as const,
     headline: "How much deposit do you really need to avoid LMI?",
     body: "A 20% deposit eliminates LMI entirely. At 10% deposit on a $700k property, LMI can add $9,100 to your loan.",
     cta: "Calculate LMI →",
@@ -94,6 +106,9 @@ const CURRENT_CARDS = [
   },
   {
     tag: "Refinancing",
+    stat: "$74,880",
+    statLabel: "Saved on a $650k loan over 30 years",
+    trend: "up" as const,
     headline: "Even 0.50% less on your rate saves tens of thousands.",
     body: "On a $650,000 loan over 30 years, refinancing from 5.99% to 5.50% saves $74,880 in total interest paid.",
     cta: "Compare loans →",
@@ -391,35 +406,45 @@ const Home = () => {
             What's happening in the Australian property market right now.
           </p>
           <ul className="grid grid-cols-1 gap-5 md:grid-cols-2">
-            {CURRENT_CARDS.map((c, i) => (
-              <li key={c.headline} className="flex">
-                <Link
-                  to={c.to}
-                  className="group flex w-full flex-col overflow-hidden rounded-2xl border border-border bg-background transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_28px_hsl(var(--accent)/0.12)]"
-                >
-                  <div
-                    className="relative h-32 p-5 flex items-end"
-                    style={{
-                      background: [
-                        "linear-gradient(135deg, hsl(var(--accent-light)), hsl(var(--accent-mid)))",
-                        "linear-gradient(135deg, #FEF3C7, #FCD34D)",
-                        "linear-gradient(135deg, #DCFCE7, #86EFAC)",
-                        "linear-gradient(135deg, hsl(var(--accent) / 0.25), hsl(var(--accent) / 0.55))",
-                      ][i % 4],
-                    }}
+            {CURRENT_CARDS.map((c) => {
+              const TrendIcon = c.trend === "down" ? TrendingDown : c.trend === "up" ? TrendingUp : Minus;
+              const trendStyles =
+                c.trend === "down"
+                  ? "bg-[#DCFCE7] text-[#166534]"
+                  : c.trend === "up"
+                  ? "bg-accent-light text-accent"
+                  : "bg-surface text-muted-foreground";
+              return (
+                <li key={c.headline} className="flex">
+                  <Link
+                    to={c.to}
+                    className="group flex w-full flex-col overflow-hidden rounded-2xl border border-border bg-background transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_28px_hsl(var(--accent)/0.12)]"
                   >
-                    <span className="badge badge-brand bg-background/90">{c.tag}</span>
-                  </div>
-                  <div className="flex flex-1 flex-col p-6">
-                    <h3 className="text-h4 mb-2">{c.headline}</h3>
-                    <p className="text-body text-small mb-5 flex-1">{c.body}</p>
-                    <span className="inline-flex items-center gap-1.5 self-start rounded-full bg-accent px-4 py-2 text-[13px] font-semibold text-accent-foreground">
-                      {c.cta}
-                    </span>
-                  </div>
-                </Link>
-              </li>
-            ))}
+                    <div className="relative bg-surface p-6 border-b border-border">
+                      <div className="flex items-start justify-between mb-4">
+                        <span className="badge badge-brand">{c.tag}</span>
+                        <span className={`inline-flex h-8 w-8 items-center justify-center rounded-full ${trendStyles}`} aria-hidden>
+                          <TrendIcon className="h-4 w-4" strokeWidth={2.25} />
+                        </span>
+                      </div>
+                      <p className="font-display text-[36px] font-extrabold leading-none tracking-tight text-foreground tnum">
+                        {c.stat}
+                      </p>
+                      <p className="mt-2 text-[12px] font-medium text-muted-foreground">
+                        {c.statLabel}
+                      </p>
+                    </div>
+                    <div className="flex flex-1 flex-col p-6">
+                      <h3 className="text-h4 mb-2">{c.headline}</h3>
+                      <p className="text-body text-small mb-5 flex-1">{c.body}</p>
+                      <span className="inline-flex items-center gap-1.5 self-start rounded-full bg-accent px-4 py-2 text-[13px] font-semibold text-accent-foreground">
+                        {c.cta}
+                      </span>
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </section>
