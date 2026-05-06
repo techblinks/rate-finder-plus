@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { AUD } from "@/lib/format";
 
 interface BarCompareProps {
@@ -8,6 +9,14 @@ interface BarCompareProps {
 
 const BarCompare = ({ a, b, caption }: BarCompareProps) => {
   const max = Math.max(a.value, b.value, 1);
+  const [animated, setAnimated] = useState(false);
+
+  // One-time mount animation: bars start at 0 width, animate to final on next frame.
+  useEffect(() => {
+    const t = requestAnimationFrame(() => setAnimated(true));
+    return () => cancelAnimationFrame(t);
+  }, []);
+
   return (
     <div>
       {caption && <p className="mb-3 text-[13px] font-medium text-muted-foreground">{caption}</p>}
@@ -22,8 +31,10 @@ const BarCompare = ({ a, b, caption }: BarCompareProps) => {
               </div>
               <div className="h-3 w-full rounded-full bg-surface">
                 <div
-                  className={i === 0 ? "h-3 rounded-full bg-accent" : "h-3 rounded-full bg-success"}
-                  style={{ width: `${pct}%` }}
+                  className={`h-3 rounded-full transition-[width] duration-700 ease-out ${
+                    i === 0 ? "bg-accent" : "bg-success"
+                  }`}
+                  style={{ width: animated ? `${pct}%` : "0%" }}
                 />
               </div>
             </div>
