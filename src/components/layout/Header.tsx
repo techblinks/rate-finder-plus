@@ -2,6 +2,7 @@ import { Link, NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import calcyLogo from "@/assets/calcy-logo.png";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const NAV = [
   { to: "/mortgage-calculator", label: "Mortgage" },
@@ -14,6 +15,9 @@ const NAV = [
 
 const Header = () => {
   const [open, setOpen] = useState(false);
+  const { logo_url, logo_height } = useSiteSettings();
+  const src = logo_url || calcyLogo;
+  const h = Math.max(20, Math.min(72, logo_height || 32));
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -27,12 +31,9 @@ const Header = () => {
       <div className="page-shell flex h-[60px] items-center justify-between">
         <Link to="/" onClick={() => setOpen(false)} aria-label="Calcy home" className="flex items-center">
           <img
-            src={calcyLogo}
+            src={src}
             alt="Calcy"
-            width={360}
-            height={96}
-            className="h-7 w-auto sm:h-9"
-            style={{ aspectRatio: "360 / 96" }}
+            style={{ height: `${h}px`, width: "auto" }}
             decoding="async"
             fetchPriority="high"
           />
