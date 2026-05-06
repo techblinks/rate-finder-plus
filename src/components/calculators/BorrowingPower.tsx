@@ -74,16 +74,34 @@ const BorrowingPower = () => {
 
       {result && (
         <ResultCard>
-          <div className="border-b border-border pb-3">
-            <p className="text-[13px] uppercase tracking-wide text-muted-foreground">
+          <div className="border-b border-border pb-4">
+            <p className="text-[13px] uppercase tracking-wide text-muted-foreground mb-3">
               Estimated borrowing power
             </p>
-            <p className="tnum text-[28px] font-semibold leading-tight text-success">
-              {AUD(result.maximum)}
-            </p>
-            <p className="text-[13px] text-muted-foreground">
-              Conservative estimate: <span className="tnum font-medium text-foreground">{AUD(result.conservative)}</span>
-            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-xl border border-border bg-muted/30 p-3">
+                <p className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                  Conservative
+                </p>
+                <p className="tnum text-[22px] font-bold leading-tight text-foreground">
+                  {AUD(result.conservative)}
+                </p>
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  Lower-risk buffer
+                </p>
+              </div>
+              <div className="rounded-xl border border-success/30 bg-success/5 p-3">
+                <p className="text-[11px] uppercase tracking-wide text-success">
+                  Maximum
+                </p>
+                <p className="tnum text-[22px] font-bold leading-tight text-success">
+                  {AUD(result.maximum)}
+                </p>
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  Lender ceiling estimate
+                </p>
+              </div>
+            </div>
           </div>
           <div className="divide-y divide-border">
             <ResultRow
