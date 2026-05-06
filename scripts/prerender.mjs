@@ -123,6 +123,7 @@ function buildJsonLd(route) {
       "@type": "Article",
       headline: route.metaTitle,
       description: route.metaDescription,
+      image: [`${SITE}/icon-512.png`],
       mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE}${route.canonical}` },
       url: `${SITE}${route.canonical}`,
       inLanguage: "en-AU",
