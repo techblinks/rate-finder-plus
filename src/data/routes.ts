@@ -144,3 +144,16 @@ for (const s of STATE_DEFS) {
     isCalculator: true,
   });
 }
+
+import { GUIDES } from "./guides";
+
+for (const g of GUIDES) {
+  ROUTES.push({
+    path: `/guides/${g.slug}`,
+    title: g.title,
+    metaTitle: g.metaTitle,
+    metaDescription: g.metaDescription,
+    canonical: `/guides/${g.slug}`,
+    faqs: g.faqs,
+  });
+}
