@@ -5,8 +5,8 @@ import { FAQS } from "@/data/faqs";
 const BorrowingPowerPage = () => (
   <CalculatorPageShell
     title="Borrowing Power Calculator"
-    metaTitle="Borrowing Power Calculator Australia | How Much Can I Borrow? | Zune"
-    metaDescription="Estimate how much you can borrow for a home loan in Australia. Based on your income, expenses, and APRA's 3% serviceability buffer."
+    metaTitle="Borrowing Power Calculator Australia | How Much Can I Borrow? | Calcy"
+    metaDescription="Estimate your home loan borrowing capacity based on income, expenses, and APRA's 3% serviceability buffer. Free Australian calculator."
     canonical="/borrowing-power-calculator"
     faqs={FAQS.borrowingPower}
     related={[

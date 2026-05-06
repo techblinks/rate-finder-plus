@@ -24,9 +24,8 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
       <div className="page-shell flex h-14 items-center justify-between">
-        <Link to="/" className="flex items-baseline gap-1.5" onClick={() => setOpen(false)}>
-          <span className="text-[18px] font-bold tracking-tight text-foreground">Zune</span>
-          <span className="text-[14px] font-normal text-muted-foreground">Calculator</span>
+        <Link to="/" className="flex items-baseline" onClick={() => setOpen(false)}>
+          <span className="text-[18px] font-semibold tracking-tight text-foreground">Calcy</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-6" aria-label="Primary">

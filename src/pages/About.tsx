@@ -5,8 +5,8 @@ import Breadcrumb from "@/components/Breadcrumb";
 const About = () => (
   <>
     <SeoHead
-      title="About Zune Calculator"
-      description="Zune Calculator provides free Australian mortgage and finance calculators with bank-grade accuracy and no sign-up."
+      title="About Calcy | Free Australian Mortgage Calculators"
+      description="Calcy provides free Australian mortgage and finance calculators with bank-grade accuracy and no sign-up."
       canonical="/about"
     />
     <BreadcrumbJsonLd
@@ -17,12 +17,12 @@ const About = () => (
     />
     <div className="page-shell py-8 md:py-10">
       <Breadcrumb current="About" />
-      <h1 className="mb-6">About Zune Calculator</h1>
+      <h1 className="mb-6">About Calcy</h1>
       <div className="space-y-4 text-[15px] leading-relaxed text-muted-foreground">
         <p>
-          Zune Calculator is a free Australian mortgage and finance calculator suite. We build
-          tools that give clear, honest answers to common questions about home loans, stamp duty,
-          borrowing power, extra repayments, lender's mortgage insurance, and loan comparisons.
+          Calcy is a free Australian mortgage and finance calculator suite. We build tools that give
+          clear, honest answers to common questions about home loans, stamp duty, borrowing power,
+          extra repayments, lender's mortgage insurance, and loan comparisons.
         </p>
         <p>
           We don't sell loans, take referrals, or share your data. Every calculation runs in your

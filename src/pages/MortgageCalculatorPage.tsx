@@ -5,8 +5,8 @@ import { FAQS } from "@/data/faqs";
 const MortgageCalculatorPage = () => (
   <CalculatorPageShell
     title="Mortgage Repayment Calculator"
-    metaTitle="Mortgage Calculator Australia 2026 | Zune Calculator"
-    metaDescription="Free Australian mortgage repayment calculator. See monthly and fortnightly repayments, total interest, and full amortisation schedule. Updated for 2026."
+    metaTitle="Mortgage Calculator Australia 2026 | Calcy"
+    metaDescription="Free Australian mortgage repayment calculator. See fortnightly and monthly repayments, total interest, and full amortisation schedule. Updated for 2026."
     canonical="/mortgage-calculator"
     faqs={FAQS.mortgage}
     related={[

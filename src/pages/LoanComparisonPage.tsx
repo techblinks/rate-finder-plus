@@ -5,8 +5,8 @@ import { FAQS } from "@/data/faqs";
 const LoanComparisonPage = () => (
   <CalculatorPageShell
     title="Loan Comparison Calculator"
-    metaTitle="Loan Comparison Calculator Australia | Compare Two Mortgages | Zune"
-    metaDescription="Compare two Australian home loans side-by-side. See which mortgage saves you more in repayments and total interest."
+    metaTitle="Loan Comparison Calculator Australia | Compare Two Mortgages | Calcy"
+    metaDescription="Compare two Australian home loans side-by-side. See which mortgage has lower repayments and saves you more in total interest."
     canonical="/loan-comparison-calculator"
     faqs={FAQS.loanComparison}
     related={[

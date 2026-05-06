@@ -5,8 +5,8 @@ import { FAQS } from "@/data/faqs";
 const StampDutyPage = () => (
   <CalculatorPageShell
     title="Stamp Duty Calculator"
-    metaTitle="Stamp Duty Calculator Australia 2026 — All States | Zune Calculator"
-    metaDescription="Calculate stamp duty for every Australian state and territory. Includes first home buyer concessions. Updated for 2026."
+    metaTitle="Stamp Duty Calculator Australia 2026 — All States | Calcy"
+    metaDescription="Calculate stamp duty for every Australian state and territory. Includes first home buyer exemptions and concessions. Updated for 2026."
     canonical="/stamp-duty-calculator"
     faqs={FAQS.stampDuty}
     related={[

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://zunecalculator.com/sitemap.xml
+Sitemap: https://calcy.com.au/sitemap.xml

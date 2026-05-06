@@ -5,8 +5,8 @@ import { FAQS } from "@/data/faqs";
 const ExtraRepaymentsPage = () => (
   <CalculatorPageShell
     title="Extra Repayments Calculator"
-    metaTitle="Extra Repayments Calculator Australia | Save on Your Mortgage | Zune"
-    metaDescription="See how extra mortgage repayments reduce your loan term and total interest. Find out exactly how much you could save."
+    metaTitle="Extra Repayments Calculator Australia | Save on Your Mortgage | Calcy"
+    metaDescription="See exactly how much extra mortgage repayments save you in interest and years. Free Australian calculator updated for 2026."
     canonical="/extra-repayments-calculator"
     faqs={FAQS.extraRepayments}
     related={[
