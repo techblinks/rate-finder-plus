@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { calcBorrowingPower, type BorrowingResult } from "@/lib/calc/borrowingPower";
 import { AUD, pct } from "@/lib/format";
+import { trackEvent } from "@/lib/analytics";
 import { Card, Field, NumberInput, SelectInput, PrimaryButton, ResultRow, ResultCard } from "@/components/ui-kit";
 
 const BorrowingPower = () => {
@@ -16,18 +17,22 @@ const BorrowingPower = () => {
 
   const handle = (e: React.FormEvent) => {
     e.preventDefault();
-    setResult(
-      calcBorrowingPower({
-        income1,
-        income2,
-        monthlyExpenses: expenses,
-        otherRepayments,
-        creditCardLimit: creditLimit,
-        dependants: Number(dependants),
-        ratePct: rate,
-        termYears: term,
-      }),
-    );
+    const r = calcBorrowingPower({
+      income1,
+      income2,
+      monthlyExpenses: expenses,
+      otherRepayments,
+      creditCardLimit: creditLimit,
+      dependants: Number(dependants),
+      ratePct: rate,
+      termYears: term,
+    });
+    setResult(r);
+    trackEvent("calculate", {
+      calculator: "borrowing_power",
+      maximum: Math.round(r.maximum),
+      conservative: Math.round(r.conservative),
+    });
   };
 
   return (

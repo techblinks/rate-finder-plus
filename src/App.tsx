@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
+import RouteAnalytics from "@/components/RouteAnalytics";
 import Home from "./pages/Home";
 import MortgageCalculatorPage from "./pages/MortgageCalculatorPage";
 import StampDutyPage from "./pages/StampDutyPage";
@@ -17,6 +18,7 @@ const STATE_SLUGS = ["nsw", "vic", "qld", "wa", "sa", "tas", "act", "nt"] as con
 
 const App = () => (
   <BrowserRouter>
+    <RouteAnalytics />
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
