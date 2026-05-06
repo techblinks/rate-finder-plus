@@ -570,24 +570,43 @@ const AdminDashboard = () => {
               />
             </Field>
 
-            <button
-              onClick={() =>
-                saveSection(
-                  [
-                    "indexing_enabled",
-                    "title_template",
-                    "default_meta_description",
-                    "gsc_verification",
-                    "bing_verification",
-                    "robots_txt",
-                  ],
-                  "SEO",
-                )
-              }
-              className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
-            >
-              Save SEO
-            </button>
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={() =>
+                  saveSection(
+                    [
+                      "indexing_enabled",
+                      "title_template",
+                      "default_meta_description",
+                      "gsc_verification",
+                      "bing_verification",
+                      "robots_txt",
+                    ],
+                    "SEO",
+                  )
+                }
+                className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
+              >
+                Save SEO
+              </button>
+              <button
+                onClick={async () => {
+                  const { runRuntimeSeoCheck } = await import("@/lib/seoCheck");
+                  const r = runRuntimeSeoCheck();
+                  const msg = r.ok
+                    ? `✅ SEO check passed${r.warnings.length ? ` (${r.warnings.length} warning${r.warnings.length === 1 ? "" : "s"})` : ""}`
+                    : `❌ ${r.errors.length} error${r.errors.length === 1 ? "" : "s"}:\n• ${r.errors.join("\n• ")}`;
+                  alert(
+                    msg +
+                      (r.warnings.length ? `\n\nWarnings:\n• ${r.warnings.join("\n• ")}` : "") +
+                      `\n\nFull regression suite: run \`npm run test:seo\` after build.`,
+                  );
+                }}
+                className="rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground hover:bg-muted"
+              >
+                Run SEO check
+              </button>
+            </div>
           </section>
         )}
       </fieldset>

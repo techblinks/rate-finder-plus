@@ -7,11 +7,12 @@
     "dev": "vite",
     "build": "vite build && npm run prerender",
     "build:dev": "vite build --mode development && npm run prerender",
-    "prerender": "node scripts/build-route-manifest.mjs && node scripts/prerender.mjs && node scripts/build-sitemap.mjs",
+    "prerender": "node scripts/build-route-manifest.mjs && node scripts/prerender.mjs && node scripts/build-sitemap.mjs && node scripts/validate-seo.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:seo": "vitest run src/test/seo-regression.test.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

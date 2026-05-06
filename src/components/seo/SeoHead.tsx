@@ -1,6 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { activeLocales, LOCALES } from "@/lib/locale";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import type { SiteSettings } from "@/hooks/useSiteSettings";
 
 const SITE = "https://calcy.com.au";
 
@@ -11,23 +12,35 @@ interface SeoHeadProps {
 }
 
 /**
+ * Pure derivation of the SEO tags emitted by <SeoHead/>. Exposed so the
+ * regression suite can assert invariants without depending on Helmet's DOM
+ * mutations (which jsdom doesn't observe reliably).
+ */
+export function deriveSeoTags(
+  { title, description, canonical }: SeoHeadProps,
+  settings: SiteSettings,
+) {
+  const url = `${SITE}${canonical}`;
+  const tpl = settings.title_template || "%s | Calcy";
+  const finalTitle =
+    tpl.includes("%s") && !title.includes(" | Calcy") ? tpl.replace("%s", title) : title;
+  const finalDescription = description || settings.default_meta_description || "";
+  const ogImage = settings.default_og_image || `${SITE}/icon-512.png`;
+  return { url, finalTitle, finalDescription, ogImage };
+}
+
+/**
  * Per-page SEO head. Page-supplied title/description/canonical always win —
  * admin settings only fill in cross-cutting defaults (title template suffix,
  * fallback description if a page passes empty, OG image).
  */
 export const SeoHead = ({ title, description, canonical }: SeoHeadProps) => {
-  const url = `${SITE}${canonical}`;
   const enabled = activeLocales();
   const settings = useSiteSettings();
-
-  // Apply title template only if it includes %s and the page title doesn't
-  // already match the template (avoid double-suffixing prerendered titles).
-  const tpl = settings.title_template || "%s | Calcy";
-  const finalTitle =
-    tpl.includes("%s") && !title.includes(" | Calcy") ? tpl.replace("%s", title) : title;
-
-  const finalDescription = description || settings.default_meta_description || "";
-  const ogImage = settings.default_og_image || `${SITE}/icon-512.png`;
+  const { url, finalTitle, finalDescription, ogImage } = deriveSeoTags(
+    { title, description, canonical },
+    settings,
+  );
 
   return (
     <Helmet>
