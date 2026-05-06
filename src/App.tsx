@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import Layout from "@/components/layout/Layout";
 import RouteAnalytics from "@/components/RouteAnalytics";
+import { LocaleProvider } from "@/contexts/LocaleContext";
 import Home from "./pages/Home";
 
 // Route-level code splitting. Home stays eager (it's the LCP path) — every
@@ -29,9 +30,10 @@ const RouteFallback = () => (
 
 const App = () => (
   <BrowserRouter>
-    <RouteAnalytics />
-    <Suspense fallback={<RouteFallback />}>
-      <Routes>
+    <LocaleProvider>
+      <RouteAnalytics />
+      <Suspense fallback={<RouteFallback />}>
+        <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/mortgage-calculator" element={<MortgageCalculatorPage />} />
@@ -53,8 +55,9 @@ const App = () => (
           <Route path="/terms" element={<Navigate to="/terms-of-use" replace />} />
           <Route path="*" element={<NotFound />} />
         </Route>
-      </Routes>
-    </Suspense>
+        </Routes>
+      </Suspense>
+    </LocaleProvider>
   </BrowserRouter>
 );
 
