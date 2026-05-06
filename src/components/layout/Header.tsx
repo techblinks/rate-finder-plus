@@ -1,6 +1,7 @@
 import { Link, NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import calcyLogo from "@/assets/calcy-logo.png";
 
 const NAV = [
   { to: "/mortgage-calculator", label: "Mortgage" },
@@ -24,8 +25,8 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
       <div className="page-shell flex h-[60px] items-center justify-between">
-        <Link to="/" onClick={() => setOpen(false)} aria-label="Calcy home">
-          <span className="text-[20px] font-semibold tracking-tight text-foreground">Calcy</span>
+        <Link to="/" onClick={() => setOpen(false)} aria-label="Calcy home" className="flex items-center">
+          <img src={calcyLogo} alt="Calcy" className="h-8 w-auto" width={120} height={32} />
         </Link>
 
         <nav className="hidden md:flex items-center gap-6" aria-label="Primary">
