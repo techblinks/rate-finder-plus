@@ -3,6 +3,7 @@ import { calcBorrowingPower, type BorrowingResult } from "@/lib/calc/borrowingPo
 import { AUD, pct } from "@/lib/format";
 import { trackEvent } from "@/lib/analytics";
 import { Card, Field, NumberInput, SelectInput, PrimaryButton, ResultRow, ResultCard } from "@/components/ui-kit";
+import ResultActions from "@/components/ResultActions";
 
 const BorrowingPower = () => {
   const [income1, setIncome1] = useState(100000);
@@ -122,7 +123,8 @@ const BorrowingPower = () => {
             credit policy, living expenses assessment, and full credit history. Speak to a mortgage
             broker for a precise figure.
           </p>
-        </ResultCard>
+                <ResultActions calculator="borrowing_power" />
+      </ResultCard>
       )}
     </div>
   );

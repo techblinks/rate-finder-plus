@@ -11,6 +11,7 @@ import DonutChart from "@/components/DonutChart";
 const AmortisationTable = lazy(() => import("@/components/AmortisationTable"));
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
+import ResultActions from "@/components/ResultActions";
 
 type Frequency = "monthly" | "fortnightly" | "weekly";
 type LoanType = "owner" | "investor";
@@ -236,6 +237,7 @@ const MortgageRepayment = () => {
             <AmortisationTable rows={result.yearlySchedule} monthlyRows={result.monthlySchedule} />
           </Suspense>
         </div>
+              <ResultActions calculator="mortgage_repayment" />
       </ResultCard>
     </div>
   );

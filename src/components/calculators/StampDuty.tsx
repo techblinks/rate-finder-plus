@@ -6,6 +6,7 @@ import { Card, Field, SelectInput, ResultRow, ResultCard } from "@/components/ui
 import RangeField from "@/components/RangeField";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
+import ResultActions from "@/components/ResultActions";
 
 interface StampDutyProps {
   lockedState?: StateCode;
@@ -120,6 +121,7 @@ const StampDuty = ({ lockedState }: StampDutyProps) => {
           Stamp duty rates are indicative for 2026. Confirm with your state revenue office before
           settlement. First home buyer thresholds subject to change.
         </p>
+              <ResultActions calculator="stamp_duty" />
       </ResultCard>
     </div>
   );
