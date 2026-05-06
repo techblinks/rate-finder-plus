@@ -320,7 +320,7 @@ const Home = () => {
                     <h3 className="text-h4 mb-2">{c.headline}</h3>
                     <p className="text-body text-small mb-5 flex-1">{c.body}</p>
                     <span className="inline-flex items-center gap-1.5 self-start rounded-full bg-accent px-4 py-2 text-[13px] font-semibold text-accent-foreground">
-                      {c.cta.replace(" →", "")} <span aria-hidden>↗</span>
+                      {c.cta}
                     </span>
                   </div>
                 </Link>
