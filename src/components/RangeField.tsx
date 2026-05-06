@@ -48,6 +48,12 @@ const RangeField = ({
       onChange={(e) => onChange(Number(e.target.value))}
       aria-label={`${label} slider`}
       className="range-slider mt-1 w-full"
+      style={{
+        ["--fill-pct" as string]:
+          max > min
+            ? `${Math.min(100, Math.max(0, ((Number(value) - min) / (max - min)) * 100))}%`
+            : "0%",
+      }}
     />
     {hint && <span className="text-[12px] text-muted-foreground">{hint}</span>}
   </div>
