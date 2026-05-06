@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { calcBorrowingPower, type BorrowingResult } from "@/lib/calc/borrowingPower";
 import { AUD, pct } from "@/lib/format";
+import { trackEvent } from "@/lib/analytics";
 import { Card, Field, NumberInput, SelectInput, PrimaryButton, ResultRow, ResultCard } from "@/components/ui-kit";
 
 const BorrowingPower = () => {
