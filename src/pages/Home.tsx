@@ -149,12 +149,6 @@ const Home = () => {
                   Bank-grade results — no account required.
                 </p>
               </div>
-              <Link
-                to="/mortgage-calculator"
-                className="mt-6 inline-flex items-center gap-2 self-start rounded-full bg-white px-5 py-2.5 text-[14px] font-semibold text-foreground hover:bg-white/90 transition-colors"
-              >
-                Get started <span aria-hidden>↗</span>
-              </Link>
             </div>
 
             {/* Middle tile — gradient illustration */}
