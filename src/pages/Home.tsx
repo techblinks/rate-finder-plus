@@ -15,7 +15,9 @@ import {
   Minus,
 } from "lucide-react";
 import { SeoHead } from "@/components/seo/SeoHead";
-import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
+import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/seo/JsonLd";
+import FAQ from "@/components/FAQ";
+import { FAQS } from "@/data/faqs";
 import { monthlyPayment } from "@/lib/calc/mortgage";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
@@ -162,11 +164,12 @@ const Home = () => {
   return (
     <>
       <SeoHead
-        title="Free Australian Mortgage Calculators 2026 | Calcy"
-        description="Free mortgage repayment, stamp duty, borrowing power, LMI and loan comparison calculators for Australia. Updated May 2026. No sign-up required."
+        title="Free Australian Mortgage Calculator 2026 | Calcy"
+        description="Calculate home loan repayments, stamp duty, borrowing power and LMI for free. All 8 Australian states. Updated with current RBA rates. No sign-up required."
         canonical="/"
       />
       <BreadcrumbJsonLd items={[{ name: "Home", path: "/" }]} />
+      <FaqJsonLd faqs={FAQS.home} />
 
       {/* SECTION 1 — HERO (2-tile rounded layout) */}
       <section className="bg-background">
@@ -349,6 +352,29 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Trust signals bar */}
+      <section aria-label="Trust signals" className="border-y border-border bg-surface">
+        <div className="page-shell py-4">
+          <ul className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[12px] font-medium text-muted-foreground">
+            {[
+              "Updated May 2026",
+              "All 8 states & territories",
+              "6 free calculators",
+              "RBA rate: 4.10%",
+              "No sign-up required",
+            ].map((t, i) => (
+              <li key={t} className="flex items-center gap-3">
+                <span className="inline-flex items-center rounded-full bg-background px-3 py-1 ring-1 ring-border">
+                  {t}
+                </span>
+                {i < 4 && <span aria-hidden className="hidden h-1 w-1 rounded-full bg-border sm:block" />}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       <section className="bg-surface">
         <div className="page-shell py-14">
           <h2 className="text-h2 mb-8 text-center">What can we help you with?</h2>
@@ -395,6 +421,13 @@ const Home = () => {
               );
             })}
           </ul>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="bg-background border-t border-border">
+        <div className="page-shell py-[72px]">
+          <FAQ items={FAQS.home} />
         </div>
       </section>
 

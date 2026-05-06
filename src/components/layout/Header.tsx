@@ -8,9 +8,9 @@ const NAV = [
   { to: "/mortgage-calculator", label: "Mortgage" },
   { to: "/stamp-duty-calculator", label: "Stamp Duty" },
   { to: "/borrowing-power-calculator", label: "Borrowing" },
-  { to: "/extra-repayments-calculator", label: "Extra" },
   { to: "/lmi-calculator", label: "LMI" },
   { to: "/loan-comparison-calculator", label: "Compare" },
+  { to: "/guides", label: "Guides" },
 ];
 
 const Header = () => {

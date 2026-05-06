@@ -16,6 +16,36 @@ export interface FaqItem {
 }
 
 export const FAQS: Record<string, FaqItem[]> = {
+  home: [
+    {
+      question: "How accurate is the mortgage calculator?",
+      answer:
+        "Calcy's mortgage calculator uses your loan amount, interest rate, and loan term to calculate principal and interest repayments. Results are estimates — your actual repayments may vary based on your lender's fees and rate adjustments.",
+      links: [{ text: "mortgage calculator", href: "/mortgage-calculator" }],
+    },
+    {
+      question: "Does Calcy cover all Australian states?",
+      answer:
+        "Yes. Calcy supports all 8 Australian states and territories for stamp duty calculations, including state-specific first home buyer exemptions and concessions.",
+      links: [{ text: "stamp duty calculations", href: "/stamp-duty-calculator" }],
+    },
+    {
+      question: "Is Calcy free to use?",
+      answer:
+        "Yes, all Calcy calculators are completely free. No account, no email address, and no subscription required.",
+    },
+    {
+      question: "What is the current RBA cash rate?",
+      answer:
+        "The current RBA cash rate is 4.10% as of May 2026, following cuts in February and March 2026.",
+    },
+    {
+      question: "What is LMI?",
+      answer:
+        "Lender's Mortgage Insurance (LMI) is a one-off insurance premium charged by lenders when your deposit is less than 20% of the property value. It protects the lender — not you — if you default on the loan.",
+      links: [{ text: "Lender's Mortgage Insurance (LMI)", href: "/lmi-calculator" }],
+    },
+  ],
   mortgage: [
     {
       question: "What is the average mortgage repayment in Australia in 2026?",

@@ -11,6 +11,10 @@ const Footer = () => (
       <nav className="mt-3 flex flex-wrap items-center justify-center gap-4 text-[13px]">
         <Link to="/about" className="link-accent">About</Link>
         <span className="text-muted-foreground">·</span>
+        <Link to="/guides" className="link-accent">Guides</Link>
+        <span className="text-muted-foreground">·</span>
+        <Link to="/contact" className="link-accent">Contact</Link>
+        <span className="text-muted-foreground">·</span>
         <Link to="/privacy-policy" className="link-accent">Privacy Policy</Link>
         <span className="text-muted-foreground">·</span>
         <Link to="/terms-of-use" className="link-accent">Terms of Use</Link>

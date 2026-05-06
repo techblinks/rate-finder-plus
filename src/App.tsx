@@ -15,6 +15,9 @@ const ExtraRepaymentsPage = lazy(() => import("./pages/ExtraRepaymentsPage"));
 const LmiPage = lazy(() => import("./pages/LmiPage"));
 const LoanComparisonPage = lazy(() => import("./pages/LoanComparisonPage"));
 const About = lazy(() => import("./pages/About"));
+const Contact = lazy(() => import("./pages/Contact"));
+const GuidesIndex = lazy(() => import("./pages/GuidesIndex"));
+const GuidePage = lazy(() => import("./pages/GuidePage"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -54,9 +57,18 @@ const App = () => (
           <Route path="/lmi-calculator" element={<LmiPage />} />
           <Route path="/loan-comparison-calculator" element={<LoanComparisonPage />} />
           <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/guides" element={<GuidesIndex />} />
+          <Route path="/guides/:slug" element={<GuidePage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-use" element={<Terms />} />
           <Route path="/terms" element={<Navigate to="/terms-of-use" replace />} />
+          <Route path="/mortgage" element={<Navigate to="/mortgage-calculator" replace />} />
+          <Route path="/stamp-duty" element={<Navigate to="/stamp-duty-calculator" replace />} />
+          <Route path="/borrowing" element={<Navigate to="/borrowing-power-calculator" replace />} />
+          <Route path="/lmi" element={<Navigate to="/lmi-calculator" replace />} />
+          <Route path="/extra" element={<Navigate to="/extra-repayments-calculator" replace />} />
+          <Route path="/compare" element={<Navigate to="/loan-comparison-calculator" replace />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route path="/admin/login" element={<AdminLogin />} />

@@ -83,6 +83,21 @@ describe("sitemap.xml — every route accounted for", () => {
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
     expect(new Set(locs).size).toBe(locs.length);
   });
+
+  it("includes the guides hub, all 5 guide articles, and contact page", () => {
+    const expected = [
+      "/guides",
+      "/guides/stamp-duty-australia-2026",
+      "/guides/what-is-lmi",
+      "/guides/borrowing-power-australia",
+      "/guides/first-home-buyer-grants-2026",
+      "/guides/fixed-vs-variable-rate",
+      "/contact",
+    ];
+    for (const path of expected) {
+      expect(xml).toContain(`<loc>${SITE}${path}</loc>`);
+    }
+  });
 });
 
 describe("sitemap.xml — admin indexing toggle", () => {

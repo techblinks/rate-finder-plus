@@ -42,6 +42,16 @@ function escapeHtml(s) {
 
 function buildJsonLd(route) {
   const blocks = [];
+  blocks.push({
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Calcy",
+    url: SITE,
+    logo: `${SITE}/icon-512.png`,
+    description:
+      "Free Australian mortgage, stamp duty, borrowing power and LMI calculators.",
+    areaServed: "AU",
+  });
   const breadcrumbItems =
     route.canonical === "/"
       ? [{ name: "Home", path: "/" }]

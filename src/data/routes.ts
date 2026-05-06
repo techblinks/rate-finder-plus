@@ -8,6 +8,7 @@ export interface RouteMeta {
   canonical: string;
   faqs?: FaqItem[];
   isCalculator?: boolean;
+  isArticle?: boolean;
 }
 
 export const SITE = "https://calcy.com.au";
@@ -16,10 +17,11 @@ export const ROUTES: RouteMeta[] = [
   {
     path: "/",
     title: "Calcy",
-    metaTitle: "Calcy | Free Australian Mortgage Calculators",
+    metaTitle: "Free Australian Mortgage Calculator 2026 | Calcy",
     metaDescription:
-      "Free Australian mortgage repayment, stamp duty, borrowing power, LMI and loan comparison calculators. Bank-grade, no sign-up. Updated for 2026.",
+      "Calculate home loan repayments, stamp duty, borrowing power and LMI for free. All 8 Australian states. Updated with current RBA rates. No sign-up required.",
     canonical: "/",
+    faqs: FAQS.home,
   },
   {
     path: "/mortgage-calculator",
@@ -82,12 +84,28 @@ export const ROUTES: RouteMeta[] = [
     isCalculator: true,
   },
   {
+    path: "/guides",
+    title: "Guides",
+    metaTitle: "Mortgage & Property Guides Australia 2026 | Calcy",
+    metaDescription:
+      "Plain-English Australian guides on stamp duty, LMI, borrowing power, first home buyer grants, and fixed vs variable rates. Updated 2026.",
+    canonical: "/guides",
+  },
+  {
     path: "/about",
     title: "About",
     metaTitle: "About Calcy | Free Australian Mortgage Calculators",
     metaDescription:
       "Calcy provides free, bank-grade Australian mortgage and property calculators. No sign-up, no data collection.",
     canonical: "/about",
+  },
+  {
+    path: "/contact",
+    title: "Contact",
+    metaTitle: "Contact Calcy | Australian Mortgage Calculators",
+    metaDescription:
+      "Get in touch with Calcy. Send feedback, suggestions, or report an issue with our free Australian mortgage and property calculators.",
+    canonical: "/contact",
   },
   {
     path: "/privacy-policy",
@@ -125,5 +143,19 @@ for (const s of STATE_DEFS) {
     canonical: `/stamp-duty-calculator/${s.slug}`,
     faqs: FAQS.stampDuty,
     isCalculator: true,
+  });
+}
+
+import { GUIDES } from "./guides";
+
+for (const g of GUIDES) {
+  ROUTES.push({
+    path: `/guides/${g.slug}`,
+    title: g.title,
+    metaTitle: g.metaTitle,
+    metaDescription: g.metaDescription,
+    canonical: `/guides/${g.slug}`,
+    faqs: g.faqs,
+    isArticle: true,
   });
 }
