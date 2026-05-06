@@ -5,6 +5,7 @@ import { Card, ResultCard } from "@/components/ui-kit";
 import RangeField from "@/components/RangeField";
 import BarCompare from "@/components/BarCompare";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 
 const ExtraRepayments = () => {
   const [balance, setBalance] = useState(500000);
