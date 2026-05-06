@@ -79,8 +79,8 @@ async function renderHead(
         React.createElement(SeoHead, props),
       ),
     );
-    // Helmet schedules its DOM mutations via requestAnimationFrame/microtasks.
-    await new Promise((r) => setTimeout(r, 0));
+    // Helmet flushes via requestAnimationFrame; wait two frames + microtasks.
+    await new Promise((r) => setTimeout(r, 50));
   });
   return {
     title: document.title,
