@@ -83,12 +83,28 @@ export const ROUTES: RouteMeta[] = [
     isCalculator: true,
   },
   {
+    path: "/guides",
+    title: "Guides",
+    metaTitle: "Mortgage & Property Guides Australia 2026 | Calcy",
+    metaDescription:
+      "Plain-English Australian guides on stamp duty, LMI, borrowing power, first home buyer grants, and fixed vs variable rates. Updated 2026.",
+    canonical: "/guides",
+  },
+  {
     path: "/about",
     title: "About",
     metaTitle: "About Calcy | Free Australian Mortgage Calculators",
     metaDescription:
       "Calcy provides free, bank-grade Australian mortgage and property calculators. No sign-up, no data collection.",
     canonical: "/about",
+  },
+  {
+    path: "/contact",
+    title: "Contact",
+    metaTitle: "Contact Calcy | Australian Mortgage Calculators",
+    metaDescription:
+      "Get in touch with Calcy. Send feedback, suggestions, or report an issue with our free Australian mortgage and property calculators.",
+    canonical: "/contact",
   },
   {
     path: "/privacy-policy",
