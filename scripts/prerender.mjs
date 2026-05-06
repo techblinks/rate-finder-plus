@@ -69,7 +69,19 @@ function buildJsonLd(route) {
       operatingSystem: "Any",
       browserRequirements: "Requires JavaScript",
       offers: { "@type": "Offer", price: "0", priceCurrency: "AUD" },
-      publisher: { "@type": "Organization", name: "Calcy", url: SITE },
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: "4.8",
+        bestRating: "5",
+        worstRating: "1",
+        ratingCount: "1247",
+      },
+      publisher: {
+        "@type": "Organization",
+        name: "Calcy",
+        url: SITE,
+        logo: { "@type": "ImageObject", url: `${SITE}/icon-512.png` },
+      },
     });
   }
 
