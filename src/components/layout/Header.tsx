@@ -26,7 +26,16 @@ const Header = () => {
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
       <div className="page-shell flex h-[60px] items-center justify-between">
         <Link to="/" onClick={() => setOpen(false)} aria-label="Calcy home" className="flex items-center">
-          <img src={calcyLogo} alt="Calcy" className="h-8 w-auto" width={120} height={32} />
+          <img
+            src={calcyLogo}
+            alt="Calcy"
+            width={360}
+            height={96}
+            className="h-7 w-auto sm:h-9"
+            style={{ aspectRatio: "360 / 96" }}
+            decoding="async"
+            fetchPriority="high"
+          />
         </Link>
 
         <nav className="hidden md:flex items-center gap-6" aria-label="Primary">
