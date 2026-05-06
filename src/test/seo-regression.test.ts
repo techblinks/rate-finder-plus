@@ -84,8 +84,9 @@ async function renderHead(
   });
   return {
     title: document.title,
-    link: document.head.innerHTML,
-    meta: document.head.innerHTML,
+    link: document.head.innerHTML + document.documentElement.innerHTML,
+    meta: document.head.innerHTML + document.documentElement.innerHTML,
+    debug: document.documentElement.innerHTML,
   };
 }
 
