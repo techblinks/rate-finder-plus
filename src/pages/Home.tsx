@@ -424,6 +424,13 @@ const Home = () => {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section className="bg-background border-t border-border">
+        <div className="page-shell py-[72px]">
+          <FAQ items={FAQS.home} />
+        </div>
+      </section>
+
       {/* SECTION 4 — Current in home loans */}
       <section className="bg-surface">
         <div className="page-shell py-[72px]">
