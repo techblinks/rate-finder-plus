@@ -1,30 +1,27 @@
-import { useState } from "react";
-import { compareLoans, type LoanComparison } from "@/lib/calc/loanComparison";
+import { useMemo, useState } from "react";
+import { compareLoans } from "@/lib/calc/loanComparison";
 import { AUD } from "@/lib/format";
-import { Card, Field, NumberInput, PrimaryButton, ResultCard } from "@/components/ui-kit";
+import { Card, Field, NumberInput, ResultCard } from "@/components/ui-kit";
 import BarCompare from "@/components/BarCompare";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
-interface Scenario {
-  amount: number;
+interface ScenarioInput {
   rate: number;
   term: number;
   fees: number;
 }
 
-const ScenarioFields = ({
+const ScenarioCol = ({
   label,
   s,
   setS,
 }: {
   label: string;
-  s: Scenario;
-  setS: (s: Scenario) => void;
+  s: ScenarioInput;
+  setS: (s: ScenarioInput) => void;
 }) => (
   <div className="space-y-3">
     <h3 className="text-[14px] font-semibold text-foreground">{label}</h3>
-    <Field label="Loan amount">
-      <NumberInput value={s.amount} onChange={(v) => setS({ ...s, amount: v })} min={0} step={1000} prefix="$" />
-    </Field>
     <Field label="Interest rate">
       <NumberInput value={s.rate} onChange={(v) => setS({ ...s, rate: v })} min={0} max={20} step={0.01} suffix="%" />
     </Field>
@@ -38,93 +35,114 @@ const ScenarioFields = ({
 );
 
 const LoanComparisonCalc = () => {
-  const [a, setA] = useState<Scenario>({ amount: 650000, rate: 5.5, term: 30, fees: 0 });
-  const [b, setB] = useState<Scenario>({ amount: 650000, rate: 5.99, term: 30, fees: 0 });
-  const [result, setResult] = useState<LoanComparison | null>(null);
+  const [amount, setAmount] = useState(650000);
+  const [a, setA] = useState<ScenarioInput>({ rate: 5.5, term: 30, fees: 0 });
+  const [b, setB] = useState<ScenarioInput>({ rate: 5.99, term: 30, fees: 800 });
 
-  const handle = (e: React.FormEvent) => {
-    e.preventDefault();
-    setResult(
+  const dAmount = useDebouncedValue(amount);
+  const dA = useDebouncedValue(a);
+  const dB = useDebouncedValue(b);
+
+  const result = useMemo(
+    () =>
       compareLoans(
-        { amount: a.amount, ratePct: a.rate, termYears: a.term, upfrontFees: a.fees, label: "Loan A" },
-        { amount: b.amount, ratePct: b.rate, termYears: b.term, upfrontFees: b.fees, label: "Loan B" },
+        { amount: dAmount, ratePct: dA.rate, termYears: dA.term, upfrontFees: dA.fees, label: "Loan A" },
+        { amount: dAmount, ratePct: dB.rate, termYears: dB.term, upfrontFees: dB.fees, label: "Loan B" },
       ),
-    );
-  };
+    [dAmount, dA, dB],
+  );
+
+  const monthlyDiff = Math.abs(result.a.monthly - result.b.monthly);
+  const totalRepaidDiff = Math.abs(result.a.totalRepaid - result.b.totalRepaid);
+  const interestDiff = Math.abs(result.a.totalInterest - result.b.totalInterest);
 
   return (
     <div className="space-y-6">
       <Card>
-        <form onSubmit={handle} className="space-y-5">
+        <div className="space-y-5">
+          <Field label="Loan amount (shared)">
+            <NumberInput value={amount} onChange={setAmount} min={0} step={1000} prefix="$" />
+          </Field>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <ScenarioFields label="Loan A" s={a} setS={setA} />
-            <ScenarioFields label="Loan B" s={b} setS={setB} />
+            <ScenarioCol label="Loan A" s={a} setS={setA} />
+            <ScenarioCol label="Loan B" s={b} setS={setB} />
           </div>
-          <PrimaryButton>Compare</PrimaryButton>
-        </form>
+        </div>
       </Card>
 
-      {result && (
-        <ResultCard>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[520px] text-[14px]">
-              <thead>
-                <tr className="text-left text-[13px] text-muted-foreground">
-                  <th className="py-2 font-semibold"></th>
-                  <th className="py-2 font-semibold">Loan A</th>
-                  <th className="py-2 font-semibold">Loan B</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                <tr>
-                  <td className="py-2 text-muted-foreground">Monthly repayment</td>
-                  <td className="py-2 tnum">{AUD(result.a.monthly)}</td>
-                  <td className="py-2 tnum">{AUD(result.b.monthly)}</td>
-                </tr>
-                <tr>
-                  <td className="py-2 text-muted-foreground">Total repaid</td>
-                  <td className="py-2 tnum">{AUD(result.a.totalRepaid)}</td>
-                  <td className="py-2 tnum">{AUD(result.b.totalRepaid)}</td>
-                </tr>
-                <tr>
-                  <td className="py-2 text-muted-foreground">Total interest</td>
-                  <td className="py-2 tnum">{AUD(result.a.totalInterest)}</td>
-                  <td className="py-2 tnum">{AUD(result.b.totalInterest)}</td>
-                </tr>
-                <tr>
-                  <td className="py-2 text-muted-foreground">Upfront fees</td>
-                  <td className="py-2 tnum">{AUD(a.fees)}</td>
-                  <td className="py-2 tnum">{AUD(b.fees)}</td>
-                </tr>
-                <tr>
-                  <td className="py-2 text-muted-foreground">True cost</td>
-                  <td className="py-2 tnum font-semibold">{AUD(result.a.trueCost)}</td>
-                  <td className="py-2 tnum font-semibold">{AUD(result.b.trueCost)}</td>
-                </tr>
-              </tbody>
-            </table>
+      <ResultCard>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[560px] text-[14px]">
+            <thead>
+              <tr className="text-left text-[13px] text-muted-foreground">
+                <th className="py-2 font-semibold"></th>
+                <th className="py-2 font-semibold">Loan A</th>
+                <th className="py-2 font-semibold">Loan B</th>
+                <th className="py-2 font-semibold">Difference</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              <tr>
+                <td className="py-2 text-muted-foreground">Monthly repayment</td>
+                <td className="py-2 tnum">{AUD(result.a.monthly)}</td>
+                <td className="py-2 tnum">{AUD(result.b.monthly)}</td>
+                <td className="py-2 text-[13px]">
+                  {result.a.monthly < result.b.monthly ? "Loan A" : "Loan B"} saves {AUD(monthlyDiff)}/mo
+                </td>
+              </tr>
+              <tr>
+                <td className="py-2 text-muted-foreground">Total repaid</td>
+                <td className="py-2 tnum">{AUD(result.a.totalRepaid)}</td>
+                <td className="py-2 tnum">{AUD(result.b.totalRepaid)}</td>
+                <td className="py-2 text-[13px]">
+                  {result.a.totalRepaid < result.b.totalRepaid ? "Loan A" : "Loan B"} saves {AUD(totalRepaidDiff)}
+                </td>
+              </tr>
+              <tr>
+                <td className="py-2 text-muted-foreground">Total interest</td>
+                <td className="py-2 tnum">{AUD(result.a.totalInterest)}</td>
+                <td className="py-2 tnum">{AUD(result.b.totalInterest)}</td>
+                <td className="py-2 text-[13px]">
+                  {result.a.totalInterest < result.b.totalInterest ? "Loan A" : "Loan B"} saves {AUD(interestDiff)}
+                </td>
+              </tr>
+              <tr>
+                <td className="py-2 text-muted-foreground">Upfront fees</td>
+                <td className="py-2 tnum">{AUD(a.fees)}</td>
+                <td className="py-2 tnum">{AUD(b.fees)}</td>
+                <td className="py-2"></td>
+              </tr>
+              <tr>
+                <td className="py-2 text-muted-foreground">True total cost</td>
+                <td className="py-2 tnum font-semibold">{AUD(result.a.trueCost)}</td>
+                <td className="py-2 tnum font-semibold">{AUD(result.b.trueCost)}</td>
+                <td className="py-2 text-[13px]">
+                  {result.winner === "tie"
+                    ? "Tie"
+                    : `Loan ${result.winner.toUpperCase()} saves ${AUD(result.totalDiff)}`}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        {result.winner !== "tie" && (
+          <div
+            className="mt-5 rounded-md p-4 text-[14px] font-semibold"
+            style={{ background: "#EAF3DE", color: "#27500A" }}
+          >
+            Loan {result.winner.toUpperCase()} saves you {AUD(result.totalDiff)} over {dA.term} years
           </div>
-          <div className="mt-5 rounded-md bg-surface p-4">
-            {result.winner === "tie" ? (
-              <p className="text-[14px] font-semibold text-foreground">
-                Both loans have the same true cost.
-              </p>
-            ) : (
-              <p className="text-[14px] font-semibold text-success">
-                Winner: Loan {result.winner.toUpperCase()} saves you{" "}
-                <span className="tnum">{AUD(result.totalDiff)}</span> over the loan term.
-              </p>
-            )}
-          </div>
-          <div className="mt-5">
-            <BarCompare
-              caption="Total interest"
-              a={{ label: "Loan A", value: result.a.totalInterest }}
-              b={{ label: "Loan B", value: result.b.totalInterest }}
-            />
-          </div>
-        </ResultCard>
-      )}
+        )}
+
+        <div className="mt-5">
+          <BarCompare
+            caption="Total interest"
+            a={{ label: "Loan A", value: result.a.totalInterest }}
+            b={{ label: "Loan B", value: result.b.totalInterest }}
+          />
+        </div>
+      </ResultCard>
     </div>
   );
 };
