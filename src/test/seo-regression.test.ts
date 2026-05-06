@@ -1,28 +1,29 @@
 /**
  * SEO regression suite.
  *
- * 1. Re-runs the static validator against dist/ (JSON-LD, canonical, hreflang,
- *    sitemap). Skipped automatically when dist/ hasn't been built — local
- *    `npm test` after `npm run build` and CI both exercise it.
- * 2. Renders <SeoHead /> with several admin-setting permutations to ensure
- *    indexing toggles, title templates, and OG image overrides never break
- *    canonical, og:url, or hreflang invariants.
+ * 1. Asserts pure invariants of <SeoHead/>'s tag derivation under a matrix of
+ *    admin setting permutations (indexing toggle, title template, OG image,
+ *    analytics IDs, custom head HTML, fallback description).
+ *
+ * 2. Re-runs the static validator (scripts/validate-seo.mjs) against dist/ so
+ *    JSON-LD, canonical, hreflang, and sitemap output are verified end-to-end
+ *    after every build. Skipped when dist/ hasn't been built.
+ *
+ * Run with:   npm test  -- src/test/seo-regression
+ *           or  npm run test:seo
  */
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { render, cleanup, act } from "@testing-library/react";
-import { HelmetProvider } from "react-helmet-async";
-import React from "react";
-import { SeoHead } from "@/components/seo/SeoHead";
-import * as siteSettings from "@/hooks/useSiteSettings";
+import { deriveSeoTags } from "@/components/seo/SeoHead";
+import type { SiteSettings } from "@/hooks/useSiteSettings";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST = join(__dirname, "..", "..", "dist");
 const HAS_DIST = existsSync(join(DIST, "index.html"));
 
-const baseSettings: siteSettings.SiteSettings = {
+const baseSettings: SiteSettings = {
   logo_url: null,
   favicon_url: null,
   logo_height: 32,
@@ -52,81 +53,78 @@ const baseSettings: siteSettings.SiteSettings = {
   indexing_enabled: true,
 };
 
-afterEach(() => {
-  cleanup();
-  // Helmet writes to document.head asynchronously; fully reset between tests.
-  document.head.querySelectorAll("[data-rh]").forEach((n) => n.remove());
-  vi.restoreAllMocks();
-});
-
-async function renderHead(
-  settings: Partial<siteSettings.SiteSettings>,
-  props = {
-    title: "Mortgage Calculator",
-    description: "Estimate your repayments.",
-    canonical: "/mortgage-calculator",
-  },
-) {
-  vi.spyOn(siteSettings, "useSiteSettings").mockReturnValue({
-    ...baseSettings,
-    ...settings,
-  });
-  await act(async () => {
-    render(
-      React.createElement(
-        HelmetProvider,
-        null,
-        React.createElement(SeoHead, props),
-      ),
-    );
-    // Helmet flushes via requestAnimationFrame; wait two frames + microtasks.
-    await new Promise((r) => setTimeout(r, 50));
-  });
-  return {
-    title: document.title,
-    link: document.head.innerHTML + document.documentElement.innerHTML,
-    meta: document.head.innerHTML + document.documentElement.innerHTML,
-    debug: document.documentElement.innerHTML,
-  };
-}
+const PAGE = {
+  title: "Mortgage Calculator",
+  description: "Estimate your repayments.",
+  canonical: "/mortgage-calculator",
+};
 
 describe("SeoHead invariants under admin settings", () => {
-  it("emits exactly one canonical with absolute https URL regardless of settings", async () => {
-    for (const overrides of [
-      {},
-      { title_template: "%s — Calcy AU" },
-      { default_og_image: "https://cdn.example/og.png" },
-      { indexing_enabled: false },
-      { ga4_id: "G-XXXX", gtm_id: "GTM-YYY", head_html: "<script>x()</script>" },
-    ]) {
-      const { link } = await renderHead(overrides);
-      const canonicals = [...link.matchAll(/rel="canonical"[^>]*href="([^"]+)"/g)];
-      expect(canonicals.length, JSON.stringify(overrides)).toBe(1);
-      expect(canonicals[0][1]).toBe("https://calcy.com.au/mortgage-calculator");
-    }
-  });
-
-  it("title template never double-suffixes", async () => {
-    const { title } = await renderHead(
-      { title_template: "%s | Calcy" },
+  const permutations: Array<[string, Partial<SiteSettings>]> = [
+    ["defaults", {}],
+    ["custom title template", { title_template: "%s — Calcy AU" }],
+    ["empty title template falls back", { title_template: "" }],
+    ["template without %s passes title through", { title_template: "Calcy" }],
+    ["admin OG image", { default_og_image: "https://cdn.example/og.png" }],
+    ["indexing disabled", { indexing_enabled: false }],
+    [
+      "analytics + custom head HTML",
       {
-        title: "Mortgage Calculator | Calcy",
-        description: "x",
-        canonical: "/mortgage-calculator",
+        ga4_id: "G-XXXX",
+        gtm_id: "GTM-YYY",
+        fb_pixel_id: "12345",
+        head_html: "<script>noop()</script>",
       },
+    ],
+    ["adsense disabled", { adsense_enabled: false, slot_header_enabled: false }],
+  ];
+
+  it.each(permutations)("canonical URL is absolute https for %s", (_, overrides) => {
+    const { url } = deriveSeoTags(PAGE, { ...baseSettings, ...overrides });
+    expect(url).toBe("https://calcy.com.au/mortgage-calculator");
+    expect(url.startsWith("https://")).toBe(true);
+  });
+
+  it("never double-suffixes a title that already matches the template", () => {
+    const { finalTitle } = deriveSeoTags(
+      { ...PAGE, title: "Mortgage Calculator | Calcy" },
+      baseSettings,
     );
-    expect(title.match(/\| Calcy/g)?.length ?? 0).toBeLessThanOrEqual(1);
+    expect(finalTitle.match(/\| Calcy/g)?.length).toBe(1);
   });
 
-  it("OG image falls back to a default when no admin override", async () => {
-    const { meta } = await renderHead({});
-    expect(meta).toContain('property="og:image"');
-    expect(meta).toMatch(/og:image"[^>]*content="https:\/\/[^"]+"/);
+  it("applies the template when title is bare", () => {
+    const { finalTitle } = deriveSeoTags(PAGE, baseSettings);
+    expect(finalTitle).toBe("Mortgage Calculator | Calcy");
   });
 
-  it("admin OG image override is reflected in og:image", async () => {
-    const { meta } = await renderHead({ default_og_image: "https://cdn.example/og.png" });
-    expect(meta).toContain('content="https://cdn.example/og.png"');
+  it("uses admin default description when page passes empty", () => {
+    const { finalDescription } = deriveSeoTags(
+      { ...PAGE, description: "" },
+      { ...baseSettings, default_meta_description: "Calcy: free Aussie finance tools." },
+    );
+    expect(finalDescription).toBe("Calcy: free Aussie finance tools.");
+  });
+
+  it("page description always wins over admin default when both present", () => {
+    const { finalDescription } = deriveSeoTags(PAGE, {
+      ...baseSettings,
+      default_meta_description: "Should not appear.",
+    });
+    expect(finalDescription).toBe(PAGE.description);
+  });
+
+  it("falls back to icon-512 when no admin OG image configured", () => {
+    const { ogImage } = deriveSeoTags(PAGE, baseSettings);
+    expect(ogImage).toBe("https://calcy.com.au/icon-512.png");
+  });
+
+  it("admin OG image override is reflected", () => {
+    const { ogImage } = deriveSeoTags(PAGE, {
+      ...baseSettings,
+      default_og_image: "https://cdn.example/og.png",
+    });
+    expect(ogImage).toBe("https://cdn.example/og.png");
   });
 });
 
@@ -135,6 +133,6 @@ describe.skipIf(!HAS_DIST)("Prerendered output (dist/)", () => {
     const { runValidation } = await import("../../scripts/validate-seo.mjs");
     const { errors, routeCount } = await runValidation();
     expect(routeCount).toBeGreaterThan(0);
-    expect(errors, errors.join("\n")).toEqual([]);
+    expect(errors, "SEO regression errors:\n" + errors.join("\n")).toEqual([]);
   });
 });
