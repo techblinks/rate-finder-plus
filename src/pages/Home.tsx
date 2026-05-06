@@ -171,11 +171,6 @@ const Home = () => {
                 <span>Updated monthly</span>
               </div>
             </div>
-                <span>All 8 states</span>
-                <span className="inline-block h-1 w-1 rounded-full bg-border" aria-hidden />
-                <span>Updated monthly</span>
-              </div>
-            </div>
           </div>
         </div>
       </section>
