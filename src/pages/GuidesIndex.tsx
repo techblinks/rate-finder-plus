@@ -3,13 +3,14 @@ import { SeoHead } from "@/components/seo/SeoHead";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import Breadcrumb from "@/components/Breadcrumb";
 import { GUIDES } from "@/data/guides";
-import { CITIES, CITY_GUIDES } from "@/data/cityGuides";
+import { CITY_GUIDES } from "@/data/cityGuides";
+import { COUNTRIES } from "@/data/countryCatalogue";
 
 const GuidesIndex = () => (
   <>
     <SeoHead
       title="Mortgage & Property Guides Australia 2026 | Calcy"
-      description="Plain-English Australian guides on stamp duty, LMI, borrowing power, first home buyer grants, plus city-specific guides for Sydney, Melbourne, Brisbane, Perth and more."
+      description="Plain-English Australian guides on stamp duty, LMI, borrowing power, first home buyer grants, plus city-specific guides for 50 Australian markets."
       canonical="/guides"
     />
     <BreadcrumbJsonLd
@@ -20,10 +21,10 @@ const GuidesIndex = () => (
     />
     <div className="page-shell py-8 md:py-10">
       <Breadcrumb current="Guides" />
-      <h1 className="mb-3">Australian mortgage & property guides</h1>
+      <h1 className="mb-3">Mortgage & property guides</h1>
       <p className="mb-10 max-w-2xl text-[15px] text-muted-foreground">
         Plain-English explainers covering stamp duty, LMI, borrowing power, first home buyer
-        grants and rate strategy — plus city-specific guides for every Australian capital,
+        grants and rate strategy — plus city-specific guides for 50 Australian markets,
         updated for 2026.
       </p>
 
@@ -50,35 +51,59 @@ const GuidesIndex = () => (
         ))}
       </ul>
 
-      <h2 className="mb-4 text-[20px] font-semibold">Guides by Australian capital city</h2>
-      <p className="mb-6 text-[14px] text-muted-foreground">
-        City-specific mortgage, LMI and stamp duty guides with local median prices,
-        state rules and worked examples.
-      </p>
-      {CITIES.map((c) => {
-        const cityGuides = CITY_GUIDES.filter((g) => g.slug.endsWith(`-${c.slug}`));
+      {COUNTRIES.map((country) => {
+        const grouped = country.cities.reduce<Record<string, typeof country.cities>>(
+          (acc, c) => {
+            (acc[c.state] ||= []).push(c);
+            return acc;
+          },
+          {},
+        );
         return (
-          <section key={c.slug} className="mb-8">
-            <h3 className="mb-3 text-[16px] font-semibold text-foreground">
-              {c.name} ({c.state})
-            </h3>
-            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-              {cityGuides.map((g) => (
-                <li key={g.slug}>
-                  <Link
-                    to={`/guides/${g.slug}`}
-                    className="block h-full rounded-xl border border-border bg-card p-4 transition hover:border-primary/40"
-                  >
-                    <p className="text-[12px] font-medium uppercase tracking-wide text-accent">
-                      {g.category}
-                    </p>
-                    <p className="mt-1 text-[14px] font-semibold text-foreground">
-                      {g.title}
-                    </p>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <section key={country.code} className="mb-10">
+            <h2 className="mb-2 text-[20px] font-semibold">
+              City guides — {country.name} ({country.cities.length} markets)
+            </h2>
+            <p className="mb-6 text-[14px] text-muted-foreground">
+              Mortgage, LMI and stamp duty guides with local median prices,
+              state rules and worked examples.
+            </p>
+            {Object.entries(grouped).map(([stateCode, cities]) => (
+              <div key={stateCode} className="mb-8">
+                <h3 className="mb-3 text-[15px] font-semibold uppercase tracking-wide text-muted-foreground">
+                  {cities[0].stateName} ({stateCode})
+                </h3>
+                <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                  {cities.map((c) => {
+                    const cityGuides = CITY_GUIDES.filter((g) =>
+                      g.slug.endsWith(`-${c.slug}`),
+                    );
+                    return (
+                      <li
+                        key={c.slug}
+                        className="rounded-xl border border-border bg-card p-3"
+                      >
+                        <p className="mb-2 text-[14px] font-semibold text-foreground">
+                          {c.name}
+                        </p>
+                        <ul className="space-y-1 text-[13px]">
+                          {cityGuides.map((g) => (
+                            <li key={g.slug}>
+                              <Link
+                                to={`/guides/${g.slug}`}
+                                className="link-accent"
+                              >
+                                {g.category.replace(`${c.name} `, "")}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
           </section>
         );
       })}

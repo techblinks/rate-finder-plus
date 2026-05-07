@@ -1,99 +1,45 @@
 /**
- * City-specific versions of the key AU mortgage guides.
+ * Programmatic city-specific guides for every country in COUNTRIES.
  *
- * For each capital city × {mortgage, LMI, stamp duty} we generate a long-form
- * guide localised with city/state data: median price, state stamp duty rules,
- * grants, suburb context, RBA rate. These are appended to GUIDES so they:
- *  - render through GuidePage / GuideArticleShell unchanged
- *  - get added to routes.ts → sitemap.xml → prerender → SEO validator
+ * For each (country, city) we generate three articles: Mortgage, LMI, and
+ * Stamp Duty (or country equivalent). Today this produces 50 cities × 3
+ * topics = 150 AU guides. Adding a country to countryCatalogue.ts auto-
+ * generates the same 150-page programmatic surface for that country.
  *
- * Scalable: add a new city or new topic by extending the arrays below.
+ * Slugs:
+ *   - AU (default country): `/guides/<topic>-<city>`
+ *   - Other countries:      `/guides/<topic>-<countryCode>-<city>`
+ * This preserves existing AU URLs and reserves clean namespaces for future.
  */
 import type { GuideMeta, GuideBlock, GuideSection } from "./guides";
-
-interface City {
-  slug: string;       // url segment: "sydney"
-  name: string;       // "Sydney"
-  state: string;      // "NSW"
-  stateName: string;  // "New South Wales"
-  median: number;     // current median dwelling value (AUD)
-  medianHouse: number;
-  medianUnit: number;
-  exampleSuburbs: string[];
-  fhbCap: number;     // first-home buyer stamp duty exemption cap (state)
-  notes: string;      // short city colour
-}
-
-export const CITIES: City[] = [
-  {
-    slug: "sydney", name: "Sydney", state: "NSW", stateName: "New South Wales",
-    median: 1190000, medianHouse: 1480000, medianUnit: 845000,
-    exampleSuburbs: ["Parramatta", "Blacktown", "Liverpool", "Bondi", "Chatswood"],
-    fhbCap: 800000,
-    notes: "Australia's most expensive capital, where typical buyers face full LMI exposure and significant stamp duty.",
-  },
-  {
-    slug: "melbourne", name: "Melbourne", state: "VIC", stateName: "Victoria",
-    median: 780000, medianHouse: 935000, medianUnit: 615000,
-    exampleSuburbs: ["Footscray", "Sunshine", "Dandenong", "Frankston", "Reservoir"],
-    fhbCap: 600000,
-    notes: "Victoria's First Home Owner Grant ($10,000 in regional VIC) and concessional duty up to $750k make Melbourne's outer suburbs FHB-friendly.",
-  },
-  {
-    slug: "brisbane", name: "Brisbane", state: "QLD", stateName: "Queensland",
-    median: 880000, medianHouse: 990000, medianUnit: 615000,
-    exampleSuburbs: ["Logan", "Ipswich", "Redcliffe", "Moreton Bay", "Carindale"],
-    fhbCap: 800000,
-    notes: "QLD raised the FHB stamp duty exemption to $800k in 2024 — Brisbane buyers under that threshold pay $0 duty.",
-  },
-  {
-    slug: "perth", name: "Perth", state: "WA", stateName: "Western Australia",
-    median: 770000, medianHouse: 825000, medianUnit: 510000,
-    exampleSuburbs: ["Joondalup", "Mandurah", "Rockingham", "Armadale", "Midland"],
-    fhbCap: 450000,
-    notes: "Perth's median has surged 70% since 2020 but remains below Sydney/Melbourne, with WA's REBA First Home Owner Grant of $10,000 still available.",
-  },
-  {
-    slug: "adelaide", name: "Adelaide", state: "SA", stateName: "South Australia",
-    median: 790000, medianHouse: 855000, medianUnit: 525000,
-    exampleSuburbs: ["Salisbury", "Elizabeth", "Marion", "Tea Tree Gully", "Norwood"],
-    fhbCap: 650000,
-    notes: "SA abolished stamp duty entirely for eligible first-home buyers on new homes from June 2024 — a significant Adelaide advantage.",
-  },
-  {
-    slug: "hobart", name: "Hobart", state: "TAS", stateName: "Tasmania",
-    median: 660000, medianHouse: 705000, medianUnit: 555000,
-    exampleSuburbs: ["Glenorchy", "Kingston", "Sandy Bay", "Bellerive", "New Town"],
-    fhbCap: 750000,
-    notes: "Tasmania offers a 50% stamp duty discount for established homes up to $750k and a $10k FHOG for new builds.",
-  },
-  {
-    slug: "canberra", name: "Canberra", state: "ACT", stateName: "Australian Capital Territory",
-    median: 845000, medianHouse: 985000, medianUnit: 580000,
-    exampleSuburbs: ["Belconnen", "Tuggeranong", "Gungahlin", "Woden", "Inner North"],
-    fhbCap: 1000000,
-    notes: "ACT uses the Home Buyer Concession Scheme — income-tested $0 stamp duty for properties under ~$1m.",
-  },
-  {
-    slug: "darwin", name: "Darwin", state: "NT", stateName: "Northern Territory",
-    median: 510000, medianHouse: 590000, medianUnit: 365000,
-    exampleSuburbs: ["Palmerston", "Casuarina", "Nightcliff", "Karama", "Coconut Grove"],
-    fhbCap: 650000,
-    notes: "Australia's most affordable capital; the NT BuildBonus and HomeGrown Territory Grants stack with the FHOG for new builds.",
-  },
-];
-
-const fmt = (n: number) =>
-  "$" + Math.round(n).toLocaleString("en-AU");
+import { COUNTRIES, type CountryRecord, type CityRecord } from "./countryCatalogue";
 
 const p = (text: string): GuideBlock => ({ type: "p", text });
 const h3 = (text: string): GuideBlock => ({ type: "h3", text });
 const ul = (...items: string[]): GuideBlock => ({ type: "list", items });
 
+const money = (country: CountryRecord, n: number) =>
+  new Intl.NumberFormat(country.currencyLocale, {
+    style: "currency",
+    currency: country.currency,
+    maximumFractionDigits: 0,
+  }).format(Math.round(n));
+
+const slugBase = (country: CountryRecord, topic: string, city: CityRecord) =>
+  country.code === "au"
+    ? `${topic}-${city.slug}`
+    : `${topic}-${country.code}-${city.slug}`;
+
 // ---------------- MORTGAGE ----------------
-function mortgageGuide(c: City): GuideMeta {
-  const slug = `mortgage-calculator-${c.slug}`;
-  const repay = Math.round((c.median * 0.8 * 0.041 / 12) / (1 - Math.pow(1 + 0.041/12, -360)));
+function mortgageGuide(country: CountryRecord, c: CityRecord): GuideMeta {
+  const slug = slugBase(country, "mortgage-calculator", c);
+  const r = country.avgMortgageRate;
+  const monthly = c.median * 0.8 * (r / 12) /
+    (1 - Math.pow(1 + r / 12, -360));
+  const repay = Math.round(monthly);
+  const fhbCap = country.fhbCapByState[c.state] ?? 0;
+  const fmt = (n: number) => money(country, n);
+
   const sections: GuideSection[] = [
     {
       h2: `${c.name} property market in 2026`,
@@ -105,9 +51,9 @@ function mortgageGuide(c: City): GuideMeta {
     {
       h2: `Typical mortgage repayments in ${c.name}`,
       blocks: [
-        p(`Assuming a 20% deposit, a 30-year principal-and-interest loan at the current average owner-occupier rate of 6.14% on the ${c.name} median (${fmt(c.median)}) produces a monthly repayment near ${fmt(repay)} — equivalent to roughly ${fmt(repay/2)} fortnightly.`),
-        h3("How RBA cash rate moves change your repayment"),
-        p(`Every 0.25% RBA cash rate move shifts a typical ${c.name} mortgage by roughly $40–$70 per month per $100k borrowed. Use the mortgage calculator with the “rate change” toggle to model future scenarios.`),
+        p(`Assuming a 20% deposit, a 30-year principal-and-interest loan at the current average owner-occupier rate of ${(r * 100).toFixed(2)}% on the ${c.name} median (${fmt(c.median)}) produces a monthly repayment near ${fmt(repay)} — equivalent to roughly ${fmt(repay / 2)} fortnightly.`),
+        h3(`How central-bank rate moves change your repayment`),
+        p(`Every 0.25% policy rate move shifts a typical ${c.name} mortgage by roughly $40–$70 per month per $100k borrowed. Use the mortgage calculator with the “rate change” toggle to model future scenarios.`),
         ul(
           `Stress-test repayments at +3% above today's rate — APRA's serviceability buffer.`,
           `Compare fortnightly vs monthly schedules: fortnightly cuts ~5 years off a typical ${c.name} 30-year loan.`,
@@ -143,28 +89,29 @@ function mortgageGuide(c: City): GuideMeta {
     sections,
     keyTakeaways: [
       `${c.name} median dwelling value: ${fmt(c.median)} (houses ${fmt(c.medianHouse)}, units ${fmt(c.medianUnit)}).`,
-      `Typical 30-yr P&I monthly repayment at 6.14%: ~${fmt(repay)}.`,
-      `${c.state} FHB stamp duty exemption applies up to ${fmt(c.fhbCap)}.`,
-      `Stress-test at APRA's +3% serviceability buffer before signing.`,
+      `Typical 30-yr P&I monthly repayment at ${(r * 100).toFixed(2)}%: ~${fmt(repay)}.`,
+      `${c.state} FHB stamp duty exemption applies up to ${fmt(fhbCap)}.`,
+      `Stress-test at +3% above today's rate before signing.`,
     ],
     relatedCalculator: { to: "/mortgage-calculator", label: "Open the mortgage calculator" },
     relatedGuides: ["fixed-vs-variable-rate", "borrowing-power-australia"],
     faqs: [
       { question: `What is the average mortgage repayment in ${c.name}?`,
-        answer: `On the ${c.name} median dwelling value (${fmt(c.median)}) with a 20% deposit and a 30-year loan at 6.14%, the monthly repayment is around ${fmt(repay)}.` },
+        answer: `On the ${c.name} median dwelling value (${fmt(c.median)}) with a 20% deposit and a 30-year loan at ${(r * 100).toFixed(2)}%, the monthly repayment is around ${fmt(repay)}.` },
       { question: `How much deposit do I need to buy in ${c.name}?`,
         answer: `A 20% deposit on the ${c.name} median is ${fmt(c.median * 0.2)}. Buyers entering with 5–10% can use the federal Home Guarantee Scheme to avoid LMI, subject to caps.` },
-      { question: `Are mortgage rates different in ${c.name} vs the rest of Australia?`,
+      { question: `Are mortgage rates different in ${c.name} vs the rest of ${country.name}?`,
         answer: `Lender rates are set nationally, not by city. However loan size, LVR, and ${c.state}-specific incentives can change your effective cost in ${c.name}.` },
     ],
   };
 }
 
 // ---------------- LMI ----------------
-function lmiGuide(c: City): GuideMeta {
-  const slug = `lmi-calculator-${c.slug}`;
+function lmiGuide(country: CountryRecord, c: CityRecord): GuideMeta {
+  const slug = slugBase(country, "lmi-calculator", c);
   const lmi5 = Math.round(c.median * 0.95 * 0.038);
   const lmi10 = Math.round(c.median * 0.90 * 0.022);
+  const fmt = (n: number) => money(country, n);
   const sections: GuideSection[] = [
     {
       h2: `Why LMI matters more in ${c.name}`,
@@ -229,10 +176,11 @@ function lmiGuide(c: City): GuideMeta {
 }
 
 // ---------------- STAMP DUTY ----------------
-function stampDutyGuide(c: City): GuideMeta {
-  const slug = `stamp-duty-calculator-${c.slug}`;
-  // Rough state-aware ballpark for owner-occupier on median
+function stampDutyGuide(country: CountryRecord, c: CityRecord): GuideMeta {
+  const slug = slugBase(country, "stamp-duty-calculator", c);
+  const fhbCap = country.fhbCapByState[c.state] ?? 0;
   const dutyMedian = Math.round(c.median * 0.045);
+  const fmt = (n: number) => money(country, n);
   const sections: GuideSection[] = [
     {
       h2: `${c.state} stamp duty rules that apply in ${c.name}`,
@@ -246,7 +194,7 @@ function stampDutyGuide(c: City): GuideMeta {
       blocks: [
         p(`The ${c.state} government offers concessions for first-home buyers in ${c.name}:`),
         ul(
-          `Full exemption typically applies up to ${fmt(c.fhbCap)} (purchase price thresholds vary by year).`,
+          `Full exemption typically applies up to ${fmt(fhbCap)} (purchase price thresholds vary by year).`,
           `Partial concessions usually phase out shortly above that cap.`,
           `Off-the-plan and new-build purchases often attract additional discounts.`,
         ),
@@ -259,7 +207,7 @@ function stampDutyGuide(c: City): GuideMeta {
         p(`Buying a ${fmt(c.median)} home in ${c.exampleSuburbs[0]}:`),
         ul(
           `Standard owner-occupier duty: ~${fmt(dutyMedian)}.`,
-          `Eligible FHB under ${fmt(c.fhbCap)}: $0 (or close to it).`,
+          `Eligible FHB under ${fmt(fhbCap)}: $0 (or close to it).`,
           `Investor purchase: same as standard duty plus surcharge if foreign resident.`,
           `Mortgage registration & transfer fees in ${c.state}: ~$300–$500.`,
         ),
@@ -277,7 +225,7 @@ function stampDutyGuide(c: City): GuideMeta {
     slug,
     title: `${c.name} stamp duty 2026: ${c.state} rules, FHB exemptions & worked examples`,
     metaTitle: `${c.name} Stamp Duty Calculator 2026 (${c.state}) | Calcy`,
-    metaDescription: `Calculate ${c.name} stamp duty in 2026. ${c.state} rates, FHB exemptions up to ${fmt(c.fhbCap)}, worked examples on the ${fmt(c.median)} ${c.name} median.`,
+    metaDescription: `Calculate ${c.name} stamp duty in 2026. ${c.state} rates, FHB exemptions up to ${fmt(fhbCap)}, worked examples on the ${fmt(c.median)} ${c.name} median.`,
     category: `${c.name} stamp duty`,
     readMins: 8,
     datePublished: "2026-05-01",
@@ -286,25 +234,37 @@ function stampDutyGuide(c: City): GuideMeta {
     sections,
     keyTakeaways: [
       `${c.name} owner-occupier duty on the median: ~${fmt(dutyMedian)}.`,
-      `${c.state} FHB exemption typically applies up to ${fmt(c.fhbCap)}.`,
+      `${c.state} FHB exemption typically applies up to ${fmt(fhbCap)}.`,
       `Duty is generally payable within 30 days of ${c.state} settlement.`,
       `Always use a ${c.state}-specific stamp duty calculator — rates differ across states.`,
     ],
-    relatedCalculator: { to: `/stamp-duty-calculator/${c.state.toLowerCase()}`, label: `${c.state} stamp duty calculator` },
+    relatedCalculator: {
+      to: `/stamp-duty-calculator/${c.state.toLowerCase()}`,
+      label: `${c.state} stamp duty calculator`,
+    },
     relatedGuides: ["stamp-duty-australia-2026", "first-home-buyer-grants-2026"],
     faqs: [
       { question: `How much is stamp duty in ${c.name}?`,
-        answer: `On the ${c.name} median (${fmt(c.median)}), an owner-occupier pays approximately ${fmt(dutyMedian)} in ${c.state} transfer duty. First-home buyers under ${fmt(c.fhbCap)} typically pay $0.` },
+        answer: `On the ${c.name} median (${fmt(c.median)}), an owner-occupier pays approximately ${fmt(dutyMedian)} in ${c.state} transfer duty. First-home buyers under ${fmt(fhbCap)} typically pay $0.` },
       { question: `Do first-home buyers pay stamp duty in ${c.name}?`,
-        answer: `Eligible ${c.name} first-home buyers usually pay no stamp duty under the ${c.state} threshold of ${fmt(c.fhbCap)}, with phased concessions just above that cap.` },
+        answer: `Eligible ${c.name} first-home buyers usually pay no stamp duty under the ${c.state} threshold of ${fmt(fhbCap)}, with phased concessions just above that cap.` },
       { question: `When do I have to pay stamp duty after settlement in ${c.state}?`,
         answer: `${c.stateName} requires stamp duty to be paid within 30 days of settlement. Your conveyancer normally arranges this through PEXA at settlement.` },
     ],
   };
 }
 
-export const CITY_GUIDES: GuideMeta[] = CITIES.flatMap((c) => [
-  mortgageGuide(c),
-  lmiGuide(c),
-  stampDutyGuide(c),
-]);
+// Build the full city-guide catalogue for every country.
+export const CITY_GUIDES: GuideMeta[] = COUNTRIES.flatMap((country) =>
+  country.cities.flatMap((c) => [
+    mortgageGuide(country, c),
+    lmiGuide(country, c),
+    stampDutyGuide(country, c),
+  ]),
+);
+
+// Re-export for legacy callers (GuidesIndex.tsx).
+export { COUNTRIES, type CityRecord as City } from "./countryCatalogue";
+export const CITIES = COUNTRIES.flatMap((country) =>
+  country.cities.map((c) => ({ ...c, country: country.code })),
+);
