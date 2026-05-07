@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import CalculatorPageShell from "./CalculatorPageShell";
 import StampDuty from "@/components/calculators/StampDuty";
 import { FAQS } from "@/data/faqs";
+import { SEO_FAQS } from "@/data/seoFaqs";
 
 const STATE_LINKS = [
   { code: "NSW", slug: "nsw" },
