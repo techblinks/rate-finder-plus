@@ -101,7 +101,14 @@ function mortgageGuide(country: CountryRecord, c: CityRecord): GuideMeta {
     slug,
     title: `${c.name} mortgage guide 2026: repayments, deposits & ${c.state} rules`,
     metaTitle: `${c.name} Mortgage Calculator & Guide 2026 (${c.state}) | Calcy`,
-    metaDescription: `2026 ${c.name} mortgage guide: repayments on the ${fmt(c.median)} median, ${c.state} stamp duty, LMI and grants. Free ${c.name} mortgage calculator.`,
+    metaDescription: tuneDesc(
+      `2026 ${c.name} mortgage guide: repayments on the ${fmt(c.median)} median, ${c.state} stamp duty, LMI and grants. Free ${c.name} mortgage calculator.`,
+      [
+        `Updated for current ${country.name} rates.`,
+        `Includes deposit, repayment and serviceability tips for ${c.name} buyers.`,
+        `See worked examples for ${c.exampleSuburbs[0]} and ${c.exampleSuburbs[1] || c.name}.`,
+      ],
+    ),
     category: `${c.name} mortgages`,
     readMins: 9,
     datePublished: "2026-05-01",
@@ -170,7 +177,14 @@ function lmiGuide(country: CountryRecord, c: CityRecord): GuideMeta {
     slug,
     title: `LMI in ${c.name} 2026: how much it costs & how to avoid it`,
     metaTitle: `${c.name} LMI Calculator 2026 — Lender's Mortgage Insurance | Calcy`,
-    metaDescription: `Estimate Lender's Mortgage Insurance for a ${c.name} home loan in 2026. See LMI on the ${fmt(c.median)} ${c.state} median at 5%, 10% and 15% deposits.`,
+    metaDescription: tuneDesc(
+      `Estimate Lender's Mortgage Insurance for a ${c.name} home loan in 2026. See LMI on the ${fmt(c.median)} ${c.state} median at 5%, 10% and 15% deposits.`,
+      [
+        `Includes ways ${c.name} first-home buyers can avoid LMI entirely.`,
+        `Compare lender premiums for ${c.exampleSuburbs[0]} and ${c.exampleSuburbs[1] || c.name}.`,
+        `Free ${c.name} LMI calculator updated for ${country.name} buyers.`,
+      ],
+    ),
     category: `${c.name} LMI`,
     readMins: 7,
     datePublished: "2026-05-01",
@@ -246,7 +260,14 @@ function stampDutyGuide(country: CountryRecord, c: CityRecord): GuideMeta {
     slug,
     title: `${c.name} stamp duty 2026: ${c.state} rules, FHB exemptions & worked examples`,
     metaTitle: `${c.name} Stamp Duty Calculator 2026 (${c.state}) | Calcy`,
-    metaDescription: `Calculate ${c.name} stamp duty in 2026. ${c.state} rates, FHB exemptions up to ${fmt(fhbCap)}, worked examples on the ${fmt(c.median)} ${c.name} median.`,
+    metaDescription: tuneDesc(
+      `Calculate ${c.name} stamp duty in 2026. ${c.state} rates, FHB exemptions up to ${fmt(fhbCap)}, worked examples on the ${fmt(c.median)} ${c.name} median.`,
+      [
+        `Free ${c.name} stamp duty calculator for owner-occupiers and investors.`,
+        `Includes ${c.exampleSuburbs[0]} pricing and ${c.state} concession rules.`,
+        `Updated for ${country.name} buyers in 2026.`,
+      ],
+    ),
     category: `${c.name} stamp duty`,
     readMins: 8,
     datePublished: "2026-05-01",
