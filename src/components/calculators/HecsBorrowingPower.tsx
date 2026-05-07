@@ -213,6 +213,8 @@ const HecsBorrowingPower = () => {
             income: Math.round(income),
             hecs: Math.round(hecs),
             rate: rate.toFixed(2),
+            exp: Math.round(expenses),
+            dti,
           }}
           shareText={`My borrowing power with HECS: ${AUD(result.borrowingPower)}`}
         />
