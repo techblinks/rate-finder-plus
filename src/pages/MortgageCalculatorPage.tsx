@@ -1,14 +1,16 @@
 import CalculatorPageShell from "./CalculatorPageShell";
 import MortgageCalculatorRedesign from "@/components/calculators/MortgageCalculatorRedesign";
 import { FAQS } from "@/data/faqs";
+import { SEO_FAQS } from "@/data/seoFaqs";
 
 const MortgageCalculatorPage = () => (
   <CalculatorPageShell
     title="Mortgage repayment calculator"
     metaTitle="Mortgage Repayment Calculator Australia 2026 | Calcy"
-    metaDescription="Calculate your exact Australian mortgage repayments weekly, fortnightly or monthly. Includes amortisation schedule, extra repayments calculator, and shareable results. Free, no sign-up."
+    metaDescription="Calculate your exact Australian mortgage repayment, total interest, amortisation schedule. Free, no sign-up, updated with May 2026 RBA rate."
     canonical="/mortgage-calculator"
     faqs={FAQS.mortgage}
+    seoFaqs={SEO_FAQS.mortgage}
     related={[
       { to: "/borrowing-power-calculator", label: "Borrowing Power Calculator" },
       { to: "/extra-repayments-calculator", label: "Extra Repayments Calculator" },
