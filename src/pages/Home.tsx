@@ -353,28 +353,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Trust signals bar */}
-      <section aria-label="Trust signals" className="border-y border-border bg-surface">
-        <div className="page-shell py-4">
-          <ul className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[12px] font-medium text-muted-foreground">
-            {[
-              "Updated May 2026",
-              "All 8 states & territories",
-              "6 free calculators",
-              "RBA rate: 4.10%",
-              "No sign-up required",
-            ].map((t, i) => (
-              <li key={t} className="flex items-center gap-3">
-                <span className="inline-flex items-center rounded-full bg-background px-3 py-1 ring-1 ring-border">
-                  {t}
-                </span>
-                {i < 4 && <span aria-hidden className="hidden h-1 w-1 rounded-full bg-border sm:block" />}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
       <section className="bg-surface">
         <div className="page-shell py-14">
           <h2 className="text-h2 mb-8 text-center">What can we help you with?</h2>
