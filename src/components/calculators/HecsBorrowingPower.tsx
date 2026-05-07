@@ -141,6 +141,22 @@ const HecsBorrowingPower = () => {
           />
         </div>
 
+        <div className="mt-5">
+          <div className="mb-2 flex flex-wrap items-end justify-between gap-2">
+            <h3 className="text-[15px] font-semibold">Borrowing power vs HECS balance</h3>
+            <p className="text-[12px] text-muted-foreground">
+              Holds income, rate & expenses constant
+            </p>
+          </div>
+          <HecsImpactChart
+            grossIncome={dIncome}
+            ratePct={dRate}
+            monthlyExpenses={dExpenses}
+            dtiPct={dDti}
+            currentHecs={dHecs}
+          />
+        </div>
+
         {result.hecsImpact > 0 && (
           <div className="mt-4 rounded-md bg-warning/10 p-3 text-[13px] leading-relaxed text-foreground">
             HECS reduces your borrowing power by{" "}
