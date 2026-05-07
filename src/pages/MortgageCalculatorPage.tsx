@@ -1,12 +1,12 @@
 import CalculatorPageShell from "./CalculatorPageShell";
-import MortgageRepayment from "@/components/calculators/MortgageRepayment";
+import MortgageCalculatorRedesign from "@/components/calculators/MortgageCalculatorRedesign";
 import { FAQS } from "@/data/faqs";
 
 const MortgageCalculatorPage = () => (
   <CalculatorPageShell
-    title="Mortgage Repayment Calculator"
-    metaTitle="Mortgage Calculator Australia 2026 | Calcy"
-    metaDescription="Free Australian mortgage repayment calculator. See fortnightly and monthly repayments, total interest, and full amortisation schedule. Updated for 2026."
+    title="Mortgage repayment calculator"
+    metaTitle="Mortgage Repayment Calculator Australia 2026 | Calcy"
+    metaDescription="Calculate your exact Australian mortgage repayments weekly, fortnightly or monthly. Includes amortisation schedule, extra repayments calculator, and shareable results. Free, no sign-up."
     canonical="/mortgage-calculator"
     faqs={FAQS.mortgage}
     related={[
@@ -19,27 +19,70 @@ const MortgageCalculatorPage = () => (
         heading: "How to use this calculator",
         body: (
           <p>
-            Enter your loan amount, interest rate, and loan term, then choose how often you plan to
-            repay. The calculator returns your repayment for each frequency, total interest paid,
-            and a yearly amortisation schedule. Adding an optional extra monthly repayment shows
-            how much faster the loan is paid off.
+            Enter your loan amount, interest rate, and loan term to see your repayments instantly.
+            Use the frequency toggle to switch between weekly, fortnightly, and monthly
+            repayments. Add extra repayments to see how much time and interest you can save. Save
+            up to three scenarios to compare side-by-side, or share your calculation with your
+            partner or broker via a unique URL.
           </p>
         ),
       },
       {
-        heading: "How it's calculated",
+        heading: "Understanding your results",
+        body: (
+          <div className="space-y-4">
+            <div>
+              <h3 className="mb-1 text-[16px] font-semibold">Repayment amount</h3>
+              <p>
+                This is the minimum amount you need to pay each period to repay your loan in full
+                by the end of your term. Your actual lender repayment may vary slightly based on
+                fees and how your lender rounds figures.
+              </p>
+            </div>
+            <div>
+              <h3 className="mb-1 text-[16px] font-semibold">Total interest paid</h3>
+              <p>
+                The total amount of interest you'll pay over the life of the loan — in addition to
+                repaying the original loan amount. For most 30-year loans, total interest exceeds
+                the original loan amount. This is why extra repayments and a lower interest rate
+                have such a significant impact.
+              </p>
+            </div>
+            <div>
+              <h3 className="mb-1 text-[16px] font-semibold">The amortisation chart</h3>
+              <p>
+                The chart shows how each repayment is split between principal (reducing your loan
+                balance) and interest (the cost of borrowing). In the early years, most of each
+                repayment goes toward interest. As your balance reduces, more goes toward
+                principal.
+              </p>
+            </div>
+            <div>
+              <h3 className="mb-1 text-[16px] font-semibold">Extra repayments</h3>
+              <p>
+                Even a small amount of extra repayment each month significantly reduces the total
+                interest paid. Every extra dollar reduces your principal, which reduces the
+                interest charged in every future period — the effect compounds over time.
+              </p>
+            </div>
+          </div>
+        ),
+      },
+      {
+        heading: "Fortnightly vs monthly repayments",
         body: (
           <p>
-            Repayments use the standard amortisation formula with monthly compounding, the default
-            method used by Australian lenders. Fortnightly repayments are calculated as monthly ÷
-            2, and weekly repayments as monthly ÷ (52/12). Extra repayments reduce the principal
-            each month, shortening the term and reducing total interest.
+            Choosing fortnightly repayments instead of monthly is one of the simplest ways to pay
+            off your loan faster at no extra cost. Because there are 26 fortnights in a year, you
+            make the equivalent of 13 monthly repayments per year rather than 12. On a $650,000
+            loan at 6.14%, this saves approximately $45,000 in interest and cuts around 2.5 years
+            off the loan.
           </p>
         ),
       },
     ]}
   >
-    <MortgageRepayment />
+    <MortgageCalculatorRedesign />
   </CalculatorPageShell>
 );
 
