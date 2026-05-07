@@ -17,6 +17,8 @@ export interface HecsBorrowingInput {
   grossIncome: number;
   hecsBalance: number;
   ratePct: number; // e.g. 6.0
+  monthlyExpenses?: number; // optional living expenses (per month)
+  dtiPct?: number; // optional serviceability DTI as percent (e.g. 30 = 30%)
 }
 
 export interface HecsTimelineRow {
