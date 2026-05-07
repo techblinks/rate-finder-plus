@@ -7,6 +7,7 @@ import BarCompare from "@/components/BarCompare";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import ResultActions from "@/components/ResultActions";
+import ShareResult from "@/components/ShareResult";
 
 const ExtraRepayments = () => {
   const [balance, setBalance] = useState(500000);
@@ -103,6 +104,16 @@ const ExtraRepayments = () => {
           />
         </div>
               <ResultActions calculator="extra_repayments" />
+        <ShareResult
+          calculator="extra_repayments"
+          params={{
+            balance: Math.round(balance),
+            rate: rate.toFixed(2),
+            term,
+            extra: Math.round(extra),
+          }}
+          shareText={`I'd save ${AUD(result.interestSaved)} by paying ${AUD(extra)} extra/month`}
+        />
       </ResultCard>
     </div>
   );

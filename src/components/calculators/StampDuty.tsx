@@ -7,6 +7,7 @@ import RangeField from "@/components/RangeField";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import ResultActions from "@/components/ResultActions";
+import ShareResult from "@/components/ShareResult";
 
 interface StampDutyProps {
   lockedState?: StateCode;
@@ -122,6 +123,11 @@ const StampDuty = ({ lockedState }: StampDutyProps) => {
           settlement. First home buyer thresholds subject to change.
         </p>
               <ResultActions calculator="stamp_duty" />
+        <ShareResult
+          calculator="stamp_duty"
+          params={{ value: Math.round(value), state, buyer }}
+          shareText={`I calculated my stamp duty at ${AUD(result.netDuty)} (${state})`}
+        />
       </ResultCard>
     </div>
   );

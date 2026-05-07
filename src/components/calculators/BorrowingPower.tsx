@@ -4,6 +4,7 @@ import { AUD, pct } from "@/lib/format";
 import { trackEvent } from "@/lib/analytics";
 import { Card, Field, NumberInput, SelectInput, PrimaryButton, ResultRow, ResultCard } from "@/components/ui-kit";
 import ResultActions from "@/components/ResultActions";
+import ShareResult from "@/components/ShareResult";
 
 const BorrowingPower = () => {
   const [income1, setIncome1] = useState(100000);
@@ -124,6 +125,20 @@ const BorrowingPower = () => {
             broker for a precise figure.
           </p>
                 <ResultActions calculator="borrowing_power" />
+          <ShareResult
+            calculator="borrowing_power"
+            params={{
+              i1: Math.round(income1),
+              i2: Math.round(income2),
+              exp: Math.round(expenses),
+              other: Math.round(otherRepayments),
+              cc: Math.round(creditLimit),
+              dep: dependants,
+              rate: rate.toFixed(2),
+              term,
+            }}
+            shareText={`My borrowing power: up to ${AUD(result.maximum)}`}
+          />
       </ResultCard>
       )}
     </div>

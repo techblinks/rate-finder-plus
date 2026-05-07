@@ -16,6 +16,7 @@ import {
 } from "@/lib/mortgageState";
 import RangeField from "@/components/RangeField";
 import ResultActions from "@/components/ResultActions";
+import ShareResult from "@/components/ShareResult";
 
 const AmortChart = lazy(() => import("@/components/MortgageAmortChart"));
 const AmortTable = lazy(() => import("@/components/MortgageAmortTable"));
@@ -574,6 +575,19 @@ const MortgageCalculatorRedesign = () => {
           </Suspense>
 
           <ResultActions calculator="mortgage_repayment" />
+
+          <ShareResult
+            calculator="mortgage_repayment"
+            params={{
+              loan: Math.round(loan),
+              rate: rate.toFixed(2),
+              term,
+              freq,
+              extra: Math.round(extra),
+              pv: propValue > 0 ? Math.round(propValue) : undefined,
+            }}
+            shareText={`I calculated my mortgage repayment at ${fmt0(headline)} per ${freq}`}
+          />
 
           <p className="text-[12px] text-muted-foreground">
             All calculations use {fmt2(result.monthly)} monthly base. Estimates only — confirm with

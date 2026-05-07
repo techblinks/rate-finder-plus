@@ -6,6 +6,7 @@ import BarCompare from "@/components/BarCompare";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import ResultActions from "@/components/ResultActions";
+import ShareResult from "@/components/ShareResult";
 
 interface ScenarioInput {
   rate: number;
@@ -157,6 +158,23 @@ const LoanComparisonCalc = () => {
           />
         </div>
               <ResultActions calculator="loan_comparison" />
+        <ShareResult
+          calculator="loan_comparison"
+          params={{
+            amount: Math.round(amount),
+            ar: a.rate.toFixed(2),
+            at: a.term,
+            af: Math.round(a.fees),
+            br: b.rate.toFixed(2),
+            bt: b.term,
+            bf: Math.round(b.fees),
+          }}
+          shareText={
+            result.winner === "tie"
+              ? "I compared two home loans on Calcy"
+              : `Loan ${result.winner.toUpperCase()} saves ${AUD(result.totalDiff)} vs the alternative`
+          }
+        />
       </ResultCard>
     </div>
   );
