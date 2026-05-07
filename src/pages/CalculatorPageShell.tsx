@@ -21,6 +21,8 @@ interface CalculatorPageShellProps {
   metaDescription: string;
   canonical: string;
   faqs: FaqItem[];
+  /** Optional override for FAQPage JSON-LD only. Visible FAQ section still uses `faqs`. */
+  seoFaqs?: FaqItem[];
   sections: Section[];
   related: { to: string; label: string }[];
   children: ReactNode;
@@ -32,6 +34,7 @@ const CalculatorPageShell = ({
   metaDescription,
   canonical,
   faqs,
+  seoFaqs,
   sections,
   related,
   children,
@@ -44,7 +47,7 @@ const CalculatorPageShell = ({
         { name: title, path: canonical },
       ]}
     />
-    <FaqJsonLd faqs={faqs} />
+    <FaqJsonLd faqs={seoFaqs ?? faqs} />
     <WebApplicationJsonLd name={title} description={metaDescription} path={canonical} />
     {HOW_TOS[canonical] && <HowToJsonLd {...HOW_TOS[canonical]} />}
     <ArticleJsonLd

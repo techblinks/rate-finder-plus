@@ -1,6 +1,7 @@
 import CalculatorPageShell from "./CalculatorPageShell";
 import LoanComparison from "@/components/calculators/LoanComparison";
 import { FAQS } from "@/data/faqs";
+import { SEO_FAQS } from "@/data/seoFaqs";
 
 const LoanComparisonPage = () => (
   <CalculatorPageShell
@@ -9,6 +10,7 @@ const LoanComparisonPage = () => (
     metaDescription="Compare two Australian home loans side-by-side. See which mortgage has lower repayments and saves you more in total interest."
     canonical="/loan-comparison-calculator"
     faqs={FAQS.loanComparison}
+    seoFaqs={SEO_FAQS.loanComparison}
     related={[
       { to: "/mortgage-calculator", label: "Mortgage Repayment Calculator" },
       { to: "/extra-repayments-calculator", label: "Extra Repayments Calculator" },

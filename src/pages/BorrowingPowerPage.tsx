@@ -1,6 +1,7 @@
 import CalculatorPageShell from "./CalculatorPageShell";
 import BorrowingPower from "@/components/calculators/BorrowingPower";
 import { FAQS } from "@/data/faqs";
+import { SEO_FAQS } from "@/data/seoFaqs";
 
 const BorrowingPowerPage = () => (
   <CalculatorPageShell
@@ -9,6 +10,7 @@ const BorrowingPowerPage = () => (
     metaDescription="Estimate your home loan borrowing capacity based on income, expenses, and APRA's 3% serviceability buffer. Free Australian calculator."
     canonical="/borrowing-power-calculator"
     faqs={FAQS.borrowingPower}
+    seoFaqs={SEO_FAQS.borrowingPower}
     related={[
       { to: "/mortgage-calculator", label: "Mortgage Repayment Calculator" },
       { to: "/stamp-duty-calculator", label: "Stamp Duty Calculator" },

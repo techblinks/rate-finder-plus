@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import CalculatorPageShell from "./CalculatorPageShell";
 import StampDuty from "@/components/calculators/StampDuty";
 import { FAQS } from "@/data/faqs";
+import { SEO_FAQS } from "@/data/seoFaqs";
 
 const STATE_LINKS = [
   { code: "NSW", slug: "nsw" },
@@ -39,6 +40,7 @@ const StampDutyPage = () => (
     metaDescription="Calculate stamp duty for every Australian state and territory. Includes first home buyer exemptions and concessions. Updated for 2026."
     canonical="/stamp-duty-calculator"
     faqs={FAQS.stampDuty}
+    seoFaqs={SEO_FAQS.stampDuty}
     related={[
       { to: "/mortgage-calculator", label: "Mortgage Repayment Calculator" },
       { to: "/borrowing-power-calculator", label: "Borrowing Power Calculator" },

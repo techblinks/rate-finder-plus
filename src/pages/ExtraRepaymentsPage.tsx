@@ -1,6 +1,7 @@
 import CalculatorPageShell from "./CalculatorPageShell";
 import ExtraRepayments from "@/components/calculators/ExtraRepayments";
 import { FAQS } from "@/data/faqs";
+import { SEO_FAQS } from "@/data/seoFaqs";
 
 const ExtraRepaymentsPage = () => (
   <CalculatorPageShell
@@ -9,6 +10,7 @@ const ExtraRepaymentsPage = () => (
     metaDescription="See exactly how much extra mortgage repayments save you in interest and years. Free Australian calculator updated for 2026."
     canonical="/extra-repayments-calculator"
     faqs={FAQS.extraRepayments}
+    seoFaqs={SEO_FAQS.extraRepayments}
     related={[
       { to: "/mortgage-calculator", label: "Mortgage Repayment Calculator" },
       { to: "/loan-comparison-calculator", label: "Loan Comparison Calculator" },
