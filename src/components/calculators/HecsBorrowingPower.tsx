@@ -12,14 +12,25 @@ const HecsBorrowingPower = () => {
   const [income, setIncome] = useState(95000);
   const [hecs, setHecs] = useState(28000);
   const [rate, setRate] = useState(6.0);
+  const [expenses, setExpenses] = useState(2500);
+  const [dti, setDti] = useState(30);
 
   const dIncome = useDebouncedValue(income);
   const dHecs = useDebouncedValue(hecs);
   const dRate = useDebouncedValue(rate);
+  const dExpenses = useDebouncedValue(expenses);
+  const dDti = useDebouncedValue(dti);
 
   const result = useMemo(
-    () => calcHecsBorrowing({ grossIncome: dIncome, hecsBalance: dHecs, ratePct: dRate }),
-    [dIncome, dHecs, dRate],
+    () =>
+      calcHecsBorrowing({
+        grossIncome: dIncome,
+        hecsBalance: dHecs,
+        ratePct: dRate,
+        monthlyExpenses: dExpenses,
+        dtiPct: dDti,
+      }),
+    [dIncome, dHecs, dRate, dExpenses, dDti],
   );
 
   const timeline = useMemo(
@@ -32,6 +43,8 @@ const HecsBorrowingPower = () => {
     income: dIncome,
     hecs: dHecs,
     rate: dRate,
+    expenses: dExpenses,
+    dti: dDti,
     borrowing_power: Math.round(result.borrowingPower),
     hecs_impact: Math.round(result.hecsImpact),
   });
