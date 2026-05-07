@@ -115,6 +115,60 @@ const HecsBorrowingPower = () => {
           </div>
         )}
 
+        {timeline.length > 0 && (
+          <div className="mt-5">
+            <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
+              <h3 className="text-[15px] font-semibold">HECS payoff timeline</h3>
+              <p className="text-[12px] text-muted-foreground">
+                Cleared in{" "}
+                <span className="font-semibold text-foreground">
+                  {timeline.length} {timeline.length === 1 ? "year" : "years"}
+                </span>{" "}
+                · Total repaid{" "}
+                <span className="tnum font-semibold text-foreground">{AUD(totalRepaid)}</span>
+              </p>
+            </div>
+            <div className="overflow-x-auto rounded-lg border border-border">
+              <table className="w-full min-w-[480px] text-[13px]">
+                <thead className="bg-surface text-left text-muted-foreground">
+                  <tr>
+                    <th className="px-3 py-2 font-semibold">Year</th>
+                    <th className="px-3 py-2 font-semibold">Repayment</th>
+                    <th className="px-3 py-2 font-semibold">Cumulative repaid</th>
+                    <th className="px-3 py-2 font-semibold">Remaining balance</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {timeline.map((row) => {
+                    const progress = dHecs > 0 ? (row.cumulativeRepaid / dHecs) * 100 : 0;
+                    return (
+                      <tr key={row.year}>
+                        <td className="px-3 py-2 tnum font-medium text-foreground">
+                          Year {row.year}
+                        </td>
+                        <td className="px-3 py-2 tnum">{AUD(row.repayment)}</td>
+                        <td className="px-3 py-2 tnum">{AUD(row.cumulativeRepaid)}</td>
+                        <td className="px-3 py-2">
+                          <div className="flex items-center gap-2">
+                            <span className="tnum">{AUD(row.closingBalance)}</span>
+                            <div className="h-1.5 w-16 flex-shrink-0 rounded-full bg-muted">
+                              <div
+                                className="h-full rounded-full bg-accent"
+                                style={{ width: `${Math.min(100, progress)}%` }}
+                              />
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+
         <p className="mt-3 text-[12px] leading-relaxed text-muted-foreground">
           Estimate only. Lenders treat HECS differently — some include the full repayment in
           serviceability, others apply discounted treatments. Confirm with a broker.
