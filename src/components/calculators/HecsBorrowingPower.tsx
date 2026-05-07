@@ -7,6 +7,7 @@ import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import ResultActions from "@/components/ResultActions";
 import ShareResult from "@/components/ShareResult";
+import HecsImpactChart from "@/components/HecsImpactChart";
 
 const HecsBorrowingPower = () => {
   const [income, setIncome] = useState(95000);
