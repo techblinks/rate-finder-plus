@@ -353,9 +353,9 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="bg-surface">
-        <div className="page-shell py-14">
-          <h2 className="text-h2 mb-8 text-center">What can we help you with?</h2>
+      <section className="border-t border-border bg-surface">
+        <div className="page-shell py-10 md:py-14">
+          <h2 className="text-h2 mb-6 text-center md:mb-8">What can we help you with?</h2>
           <ul className="flex flex-wrap justify-center gap-2.5">
             {TOPIC_PILLS.map((p) => (
               <li key={p.label}>
