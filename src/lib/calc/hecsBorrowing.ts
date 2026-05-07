@@ -19,6 +19,48 @@ export interface HecsBorrowingInput {
   ratePct: number; // e.g. 6.0
 }
 
+export interface HecsTimelineRow {
+  year: number;
+  openingBalance: number;
+  repayment: number;
+  rate: number;
+  closingBalance: number;
+  cumulativeRepaid: number;
+}
+
+/**
+ * Year-by-year HECS payoff projection. Holds income constant, recomputes the
+ * compulsory repayment rate each year against the current bracket. Caps the
+ * final repayment at the remaining balance. Returns up to `maxYears`.
+ */
+export function buildHecsTimeline(
+  grossIncome: number,
+  startingBalance: number,
+  maxYears = 40,
+): HecsTimelineRow[] {
+  const rows: HecsTimelineRow[] = [];
+  let balance = Math.max(0, startingBalance);
+  let cumulative = 0;
+  const rate = getHecsRate(grossIncome);
+  if (balance === 0 || rate === 0) return rows;
+  for (let y = 1; y <= maxYears && balance > 0; y++) {
+    const opening = balance;
+    const annual = grossIncome * rate;
+    const repayment = Math.min(annual, balance);
+    balance = Math.max(0, balance - repayment);
+    cumulative += repayment;
+    rows.push({
+      year: y,
+      openingBalance: opening,
+      repayment,
+      rate,
+      closingBalance: balance,
+      cumulativeRepaid: cumulative,
+    });
+  }
+  return rows;
+}
+
 export interface HecsBorrowingResult {
   hecsRate: number; // e.g. 0.045
   hecsAnnual: number;

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { calcHecsBorrowing, HECS_BRACKETS_2025_26 } from "@/lib/calc/hecsBorrowing";
+import { calcHecsBorrowing, HECS_BRACKETS_2025_26, buildHecsTimeline } from "@/lib/calc/hecsBorrowing";
 import { AUD, pct } from "@/lib/format";
 import { Card, ResultCard, ResultRow } from "@/components/ui-kit";
 import RangeField from "@/components/RangeField";
