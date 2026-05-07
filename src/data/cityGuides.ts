@@ -30,6 +30,27 @@ const slugBase = (country: CountryRecord, topic: string, city: CityRecord) =>
     ? `${topic}-${city.slug}`
     : `${topic}-${country.code}-${city.slug}`;
 
+/**
+ * Ensure meta descriptions land in the 150–160 char SEO sweet spot.
+ * Trims if too long, appends compact keyword-rich tails until in-range.
+ */
+function tuneDesc(base: string, tails: string[]): string {
+  let out = base.trim().replace(/\s+/g, " ");
+  if (out.length > 160) {
+    return out.slice(0, 157).replace(/[\s,;:.\-—]+$/, "") + "…";
+  }
+  for (const tail of tails) {
+    if (out.length >= 150) break;
+    const candidate = (out + " " + tail.trim()).replace(/\s+/g, " ");
+    if (candidate.length <= 160) out = candidate;
+    else if (out.length < 150) {
+      const room = 160 - out.length - 1;
+      if (room > 8) out = out + " " + tail.slice(0, room).trim();
+    }
+  }
+  return out;
+}
+
 // ---------------- MORTGAGE ----------------
 function mortgageGuide(country: CountryRecord, c: CityRecord): GuideMeta {
   const slug = slugBase(country, "mortgage-calculator", c);
