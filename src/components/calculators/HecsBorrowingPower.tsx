@@ -81,6 +81,26 @@ const HecsBorrowingPower = () => {
             suffix="%"
             hint="Adds 3% APRA buffer for serviceability assessment"
           />
+          <RangeField
+            label="Monthly living expenses"
+            value={expenses}
+            onChange={setExpenses}
+            min={0}
+            max={15000}
+            step={50}
+            prefix="$"
+            hint="Your real budget — rent/groceries/utilities/transport (excl. loan repayments)"
+          />
+          <RangeField
+            label="Serviceability DTI"
+            value={dti}
+            onChange={setDti}
+            min={10}
+            max={50}
+            step={1}
+            suffix="%"
+            hint="Share of net income lenders allow toward repayments (typical 30%)"
+          />
         </div>
       </Card>
 
