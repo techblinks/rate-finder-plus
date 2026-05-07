@@ -7,6 +7,7 @@ import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import ResultActions from "@/components/ResultActions";
 import ShareResult from "@/components/ShareResult";
+import HecsImpactChart from "@/components/HecsImpactChart";
 
 const HecsBorrowingPower = () => {
   const [income, setIncome] = useState(95000);
@@ -137,6 +138,22 @@ const HecsBorrowingPower = () => {
           <ResultRow
             label="Borrowing power without HECS"
             value={AUD(result.borrowingPowerWithoutHecs)}
+          />
+        </div>
+
+        <div className="mt-5">
+          <div className="mb-2 flex flex-wrap items-end justify-between gap-2">
+            <h3 className="text-[15px] font-semibold">Borrowing power vs HECS balance</h3>
+            <p className="text-[12px] text-muted-foreground">
+              Holds income, rate & expenses constant
+            </p>
+          </div>
+          <HecsImpactChart
+            grossIncome={dIncome}
+            ratePct={dRate}
+            monthlyExpenses={dExpenses}
+            dtiPct={dDti}
+            currentHecs={dHecs}
           />
         </div>
 
