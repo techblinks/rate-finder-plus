@@ -12,14 +12,25 @@ const HecsBorrowingPower = () => {
   const [income, setIncome] = useState(95000);
   const [hecs, setHecs] = useState(28000);
   const [rate, setRate] = useState(6.0);
+  const [expenses, setExpenses] = useState(2500);
+  const [dti, setDti] = useState(30);
 
   const dIncome = useDebouncedValue(income);
   const dHecs = useDebouncedValue(hecs);
   const dRate = useDebouncedValue(rate);
+  const dExpenses = useDebouncedValue(expenses);
+  const dDti = useDebouncedValue(dti);
 
   const result = useMemo(
-    () => calcHecsBorrowing({ grossIncome: dIncome, hecsBalance: dHecs, ratePct: dRate }),
-    [dIncome, dHecs, dRate],
+    () =>
+      calcHecsBorrowing({
+        grossIncome: dIncome,
+        hecsBalance: dHecs,
+        ratePct: dRate,
+        monthlyExpenses: dExpenses,
+        dtiPct: dDti,
+      }),
+    [dIncome, dHecs, dRate, dExpenses, dDti],
   );
 
   const timeline = useMemo(
@@ -32,6 +43,8 @@ const HecsBorrowingPower = () => {
     income: dIncome,
     hecs: dHecs,
     rate: dRate,
+    expenses: dExpenses,
+    dti: dDti,
     borrowing_power: Math.round(result.borrowingPower),
     hecs_impact: Math.round(result.hecsImpact),
   });
@@ -67,6 +80,26 @@ const HecsBorrowingPower = () => {
             step={0.05}
             suffix="%"
             hint="Adds 3% APRA buffer for serviceability assessment"
+          />
+          <RangeField
+            label="Monthly living expenses"
+            value={expenses}
+            onChange={setExpenses}
+            min={0}
+            max={15000}
+            step={50}
+            prefix="$"
+            hint="Your real budget — rent/groceries/utilities/transport (excl. loan repayments)"
+          />
+          <RangeField
+            label="Serviceability DTI"
+            value={dti}
+            onChange={setDti}
+            min={10}
+            max={50}
+            step={1}
+            suffix="%"
+            hint="Share of net income lenders allow toward repayments (typical 30%)"
           />
         </div>
       </Card>
@@ -180,6 +213,8 @@ const HecsBorrowingPower = () => {
             income: Math.round(income),
             hecs: Math.round(hecs),
             rate: rate.toFixed(2),
+            exp: Math.round(expenses),
+            dti,
           }}
           shareText={`My borrowing power with HECS: ${AUD(result.borrowingPower)}`}
         />
