@@ -40,6 +40,7 @@ const StampDutyPage = () => (
     metaDescription="Calculate stamp duty for every Australian state and territory. Includes first home buyer exemptions and concessions. Updated for 2026."
     canonical="/stamp-duty-calculator"
     faqs={FAQS.stampDuty}
+    seoFaqs={SEO_FAQS.stampDuty}
     related={[
       { to: "/mortgage-calculator", label: "Mortgage Repayment Calculator" },
       { to: "/borrowing-power-calculator", label: "Borrowing Power Calculator" },
