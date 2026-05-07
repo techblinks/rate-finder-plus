@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build && npm run prerender",
     "build:dev": "vite build --mode development && npm run prerender",
-    "prerender": "node scripts/build-route-manifest.mjs && node scripts/prerender.mjs && node scripts/build-sitemap.mjs && node scripts/validate-seo.mjs",
+    "prerender": "node scripts/build-route-manifest.mjs && node scripts/prerender.mjs && node scripts/build-sitemap.mjs && node scripts/validate-seo.mjs && node scripts/validate-city-seo.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
