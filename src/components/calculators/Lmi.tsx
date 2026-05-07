@@ -6,6 +6,7 @@ import RangeField from "@/components/RangeField";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import ResultActions from "@/components/ResultActions";
+import ShareResult from "@/components/ShareResult";
 
 const Lmi = () => {
   const [propertyValue, setPropertyValue] = useState(700000);
@@ -93,6 +94,16 @@ const Lmi = () => {
           LMI estimates are indicative. Actual costs depend on your lender and insurer (Helia or QBE).
         </p>
               <ResultActions calculator="lmi" />
+        <ShareResult
+          calculator="lmi"
+          params={{
+            value: Math.round(propertyValue),
+            deposit: Math.round(safeDeposit),
+            term,
+            rate: rate.toFixed(2),
+          }}
+          shareText={`I calculated my LMI at ${AUD(result.lmiCost)} (LVR ${pct(result.lvr, 1)})`}
+        />
       </ResultCard>
     </div>
   );
