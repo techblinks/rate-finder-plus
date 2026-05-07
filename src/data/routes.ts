@@ -84,6 +84,15 @@ export const ROUTES: RouteMeta[] = [
     isCalculator: true,
   },
   {
+    path: "/hecs-borrowing-power",
+    title: "HECS & Borrowing Power Calculator",
+    metaTitle: "HECS & Borrowing Power Calculator Australia 2026 | Calcy",
+    metaDescription:
+      "See exactly how your HECS/HELP debt reduces your home loan borrowing power. Uses 2025-26 ATO thresholds and APRA's 3% serviceability buffer.",
+    canonical: "/hecs-borrowing-power",
+    isCalculator: true,
+  },
+  {
     path: "/guides",
     title: "Guides",
     metaTitle: "Mortgage & Property Guides Australia 2026 | Calcy",
