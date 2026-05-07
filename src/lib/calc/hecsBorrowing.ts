@@ -127,9 +127,13 @@ export function calcHecsBorrowing(input: HecsBorrowingInput): HecsBorrowingResul
   const monthlyFactor = monthlyRepaymentFactor(assessmentRate, 360);
 
   // Lenders allow ~30% of net monthly income toward repayments (DTI-style estimate).
-  const dti = 0.3;
-  const monthlyCapacityWithHecs = netMonthlyAfterHecs * dti;
-  const monthlyCapacityNoHecs = netMonthlyWithoutHecs * dti;
+  // User can override DTI; living expenses are subtracted from net before applying DTI.
+  const dti = Math.min(1, Math.max(0, (input.dtiPct ?? 30) / 100));
+  const expenses = Math.max(0, input.monthlyExpenses ?? 0);
+  const availableWithHecs = Math.max(0, netMonthlyAfterHecs - expenses);
+  const availableNoHecs = Math.max(0, netMonthlyWithoutHecs - expenses);
+  const monthlyCapacityWithHecs = availableWithHecs * dti;
+  const monthlyCapacityNoHecs = availableNoHecs * dti;
 
   const borrowingPower = monthlyFactor > 0 ? monthlyCapacityWithHecs / monthlyFactor : 0;
   const borrowingPowerWithoutHecs =
