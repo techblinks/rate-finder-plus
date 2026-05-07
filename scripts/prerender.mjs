@@ -126,7 +126,7 @@ function buildJsonLd(route) {
     });
   }
 
-  if (route.isCalculator) {
+  if (route.isCalculator || route.isArticle) {
     const today = new Date().toISOString().slice(0, 10);
     blocks.push({
       "@context": "https://schema.org",
