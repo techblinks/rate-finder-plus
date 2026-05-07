@@ -22,6 +22,12 @@ const HecsBorrowingPower = () => {
     [dIncome, dHecs, dRate],
   );
 
+  const timeline = useMemo(
+    () => buildHecsTimeline(dIncome, dHecs),
+    [dIncome, dHecs],
+  );
+  const totalRepaid = timeline.length ? timeline[timeline.length - 1].cumulativeRepaid : 0;
+
   useDebouncedCalculate("hecs_borrowing_power", {
     income: dIncome,
     hecs: dHecs,
