@@ -1,0 +1,483 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Home visual regression > matches desktop (1280px) snapshot 1`] = `
+<section
+  class="bg-background"
+>
+  <div
+    class="page-shell pt-10 pb-10 md:pt-14 md:pb-14"
+  >
+    <div
+      class="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 md:gap-8"
+    >
+      <div
+        class="flex flex-col justify-between py-2 md:py-8 md:pr-4 min-h-[280px] md:min-h-[420px] text-foreground"
+      >
+        <div>
+          <span
+            class="inline-flex items-center gap-1.5 rounded-full border border-border bg-accent-light px-3 py-1 text-[11px] font-semibold tracking-wide text-accent mb-5"
+          >
+            <span
+              aria-hidden="true"
+              class="inline-block h-1.5 w-1.5 rounded-full bg-accent"
+            />
+            Free · No sign-up · Updated May 2026
+          </span>
+          <h1
+            class="font-display text-[32px] sm:text-[40px] md:text-[44px] leading-[1.05] font-extrabold text-foreground mb-4"
+          >
+            Make confident
+            <br />
+            mortgage decisions.
+          </h1>
+          <p
+            class="text-[14px] sm:text-[15px] text-foreground/80 max-w-[440px]"
+          >
+            Free Australian mortgage, stamp duty, borrowing power and LMI calculators. Bank-grade results — no account required.
+          </p>
+        </div>
+        <div
+          class="mt-8 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap"
+        >
+          <a
+            class="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-foreground bg-foreground px-5 text-[14px] font-semibold text-background hover:bg-foreground/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background w-full sm:w-auto"
+            href="/mortgage-calculator"
+          >
+            Get started 
+            <span
+              aria-hidden="true"
+            >
+              ↗
+            </span>
+          </a>
+          <a
+            class="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-foreground/30 bg-transparent px-5 text-[14px] font-semibold text-foreground hover:bg-foreground/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background w-full sm:w-auto"
+            href="/loan-comparison-calculator"
+          >
+            Compare loans
+          </a>
+        </div>
+        <div
+          class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] font-medium text-foreground/70"
+        >
+          <span>
+            6 calculators
+          </span>
+          <span
+            aria-hidden="true"
+            class="inline-block h-1 w-1 rounded-full bg-foreground/30"
+          />
+          <span>
+            All 8 states
+          </span>
+          <span
+            aria-hidden="true"
+            class="inline-block h-1 w-1 rounded-full bg-foreground/30"
+          />
+          <span>
+            Updated monthly
+          </span>
+        </div>
+      </div>
+      <section
+        aria-labelledby="quick-estimate-heading"
+        class="rounded-[24px] p-7 text-white sm:p-9 md:p-10 min-h-[280px] md:min-h-[420px] flex flex-col"
+      >
+        <h2
+          class="text-label mb-5 text-white/75 font-semibold"
+          id="quick-estimate-heading"
+        >
+          Quick estimate
+        </h2>
+        <div
+          class="mb-2 flex flex-col gap-3 sm:flex-row sm:items-start"
+        >
+          <div
+            class="flex-1 min-w-0"
+          >
+            <label
+              class="mb-1.5 block text-[12px] text-white/80"
+              for="qe-loan"
+            >
+              Loan amount
+            </label>
+            <div
+              class="relative"
+            >
+              <span
+                aria-hidden="true"
+                class="absolute left-3.5 top-[22px] -translate-y-1/2 text-[15px] text-muted-foreground"
+              >
+                $
+              </span>
+              <input
+                aria-describedby="qe-loan-hint"
+                aria-invalid="false"
+                autocomplete="off"
+                class="input-field pl-7 tnum focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] "
+                id="qe-loan"
+                inputmode="numeric"
+                max="10000000"
+                min="10000"
+                step="1000"
+                type="number"
+                value="650000"
+              />
+            </div>
+            <span
+              aria-live="off"
+              class="mt-1.5 block text-[11px] min-h-[14px] text-white/55"
+              id="qe-loan-hint"
+            >
+              Range: $10,000 to $10,000,000
+            </span>
+          </div>
+          <div
+            class="w-full sm:w-[130px]"
+          >
+            <label
+              class="mb-1.5 block text-[12px] text-white/80"
+              for="qe-rate"
+            >
+              Rate
+            </label>
+            <div
+              class="relative"
+            >
+              <input
+                aria-describedby="qe-rate-hint"
+                aria-invalid="false"
+                autocomplete="off"
+                class="input-field pr-7 tnum focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] "
+                id="qe-rate"
+                inputmode="decimal"
+                max="20"
+                min="0.1"
+                step="0.01"
+                type="number"
+                value="5.5"
+              />
+              <span
+                aria-hidden="true"
+                class="absolute right-3 top-[22px] -translate-y-1/2 text-[14px] text-muted-foreground"
+              >
+                %
+              </span>
+            </div>
+            <span
+              aria-live="off"
+              class="mt-1.5 block text-[11px] min-h-[14px] text-white/55"
+              id="qe-rate-hint"
+            >
+              Range: 0.1% to 20%
+            </span>
+          </div>
+        </div>
+        <div
+          aria-atomic="true"
+          aria-live="polite"
+          class="mt-3 min-h-[96px]"
+          role="status"
+        >
+          <p
+            class="text-[12px] text-white/75"
+            id="qe-result-label"
+          >
+            Fortnightly repayment
+          </p>
+          <p
+            aria-labelledby="qe-result-label"
+            class="mt-1 text-[34px] sm:text-[40px] font-semibold leading-none tnum tabular-nums transition-opacity duration-150"
+            style="opacity: 1;"
+          >
+            <span
+              class="sr-only"
+            >
+              Estimated fortnightly repayment: 
+            </span>
+            $1,845
+          </p>
+          <p
+            class="mt-1.5 text-[13px] text-white/75 tnum tabular-nums min-h-[18px]"
+          >
+            Monthly $3,691 · Weekly $852
+          </p>
+        </div>
+        <div
+          aria-hidden="true"
+          class="my-5 h-px bg-white/15"
+        />
+        <div
+          class="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <a
+            aria-label="Open full mortgage calculator with amortisation"
+            class="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-5 text-[14px] font-semibold text-foreground shadow-sm hover:bg-white/95 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] w-full sm:w-auto"
+            href="/mortgage-calculator"
+          >
+            Full calculator 
+            <span
+              aria-hidden="true"
+            >
+              ↗
+            </span>
+          </a>
+          <a
+            aria-label="Open borrowing power calculator"
+            class="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/40 bg-transparent px-5 text-[14px] font-semibold text-white hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] w-full sm:w-auto"
+            href="/borrowing-power-calculator"
+          >
+            Borrowing power
+          </a>
+        </div>
+        <p
+          class="mt-3 text-[11px] text-white/55"
+        >
+          Estimate only. Not financial advice.
+        </p>
+      </section>
+    </div>
+  </div>
+</section>
+`;
+
+exports[`Home visual regression > matches mobile (375px) snapshot 1`] = `
+<section
+  class="bg-background"
+>
+  <div
+    class="page-shell pt-10 pb-10 md:pt-14 md:pb-14"
+  >
+    <div
+      class="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 md:gap-8"
+    >
+      <div
+        class="flex flex-col justify-between py-2 md:py-8 md:pr-4 min-h-[280px] md:min-h-[420px] text-foreground"
+      >
+        <div>
+          <span
+            class="inline-flex items-center gap-1.5 rounded-full border border-border bg-accent-light px-3 py-1 text-[11px] font-semibold tracking-wide text-accent mb-5"
+          >
+            <span
+              aria-hidden="true"
+              class="inline-block h-1.5 w-1.5 rounded-full bg-accent"
+            />
+            Free · No sign-up · Updated May 2026
+          </span>
+          <h1
+            class="font-display text-[32px] sm:text-[40px] md:text-[44px] leading-[1.05] font-extrabold text-foreground mb-4"
+          >
+            Make confident
+            <br />
+            mortgage decisions.
+          </h1>
+          <p
+            class="text-[14px] sm:text-[15px] text-foreground/80 max-w-[440px]"
+          >
+            Free Australian mortgage, stamp duty, borrowing power and LMI calculators. Bank-grade results — no account required.
+          </p>
+        </div>
+        <div
+          class="mt-8 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap"
+        >
+          <a
+            class="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-foreground bg-foreground px-5 text-[14px] font-semibold text-background hover:bg-foreground/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background w-full sm:w-auto"
+            href="/mortgage-calculator"
+          >
+            Get started 
+            <span
+              aria-hidden="true"
+            >
+              ↗
+            </span>
+          </a>
+          <a
+            class="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-foreground/30 bg-transparent px-5 text-[14px] font-semibold text-foreground hover:bg-foreground/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background w-full sm:w-auto"
+            href="/loan-comparison-calculator"
+          >
+            Compare loans
+          </a>
+        </div>
+        <div
+          class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] font-medium text-foreground/70"
+        >
+          <span>
+            6 calculators
+          </span>
+          <span
+            aria-hidden="true"
+            class="inline-block h-1 w-1 rounded-full bg-foreground/30"
+          />
+          <span>
+            All 8 states
+          </span>
+          <span
+            aria-hidden="true"
+            class="inline-block h-1 w-1 rounded-full bg-foreground/30"
+          />
+          <span>
+            Updated monthly
+          </span>
+        </div>
+      </div>
+      <section
+        aria-labelledby="quick-estimate-heading"
+        class="rounded-[24px] p-7 text-white sm:p-9 md:p-10 min-h-[280px] md:min-h-[420px] flex flex-col"
+      >
+        <h2
+          class="text-label mb-5 text-white/75 font-semibold"
+          id="quick-estimate-heading"
+        >
+          Quick estimate
+        </h2>
+        <div
+          class="mb-2 flex flex-col gap-3 sm:flex-row sm:items-start"
+        >
+          <div
+            class="flex-1 min-w-0"
+          >
+            <label
+              class="mb-1.5 block text-[12px] text-white/80"
+              for="qe-loan"
+            >
+              Loan amount
+            </label>
+            <div
+              class="relative"
+            >
+              <span
+                aria-hidden="true"
+                class="absolute left-3.5 top-[22px] -translate-y-1/2 text-[15px] text-muted-foreground"
+              >
+                $
+              </span>
+              <input
+                aria-describedby="qe-loan-hint"
+                aria-invalid="false"
+                autocomplete="off"
+                class="input-field pl-7 tnum focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] "
+                id="qe-loan"
+                inputmode="numeric"
+                max="10000000"
+                min="10000"
+                step="1000"
+                type="number"
+                value="650000"
+              />
+            </div>
+            <span
+              aria-live="off"
+              class="mt-1.5 block text-[11px] min-h-[14px] text-white/55"
+              id="qe-loan-hint"
+            >
+              Range: $10,000 to $10,000,000
+            </span>
+          </div>
+          <div
+            class="w-full sm:w-[130px]"
+          >
+            <label
+              class="mb-1.5 block text-[12px] text-white/80"
+              for="qe-rate"
+            >
+              Rate
+            </label>
+            <div
+              class="relative"
+            >
+              <input
+                aria-describedby="qe-rate-hint"
+                aria-invalid="false"
+                autocomplete="off"
+                class="input-field pr-7 tnum focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] "
+                id="qe-rate"
+                inputmode="decimal"
+                max="20"
+                min="0.1"
+                step="0.01"
+                type="number"
+                value="5.5"
+              />
+              <span
+                aria-hidden="true"
+                class="absolute right-3 top-[22px] -translate-y-1/2 text-[14px] text-muted-foreground"
+              >
+                %
+              </span>
+            </div>
+            <span
+              aria-live="off"
+              class="mt-1.5 block text-[11px] min-h-[14px] text-white/55"
+              id="qe-rate-hint"
+            >
+              Range: 0.1% to 20%
+            </span>
+          </div>
+        </div>
+        <div
+          aria-atomic="true"
+          aria-live="polite"
+          class="mt-3 min-h-[96px]"
+          role="status"
+        >
+          <p
+            class="text-[12px] text-white/75"
+            id="qe-result-label"
+          >
+            Fortnightly repayment
+          </p>
+          <p
+            aria-labelledby="qe-result-label"
+            class="mt-1 text-[34px] sm:text-[40px] font-semibold leading-none tnum tabular-nums transition-opacity duration-150"
+            style="opacity: 1;"
+          >
+            <span
+              class="sr-only"
+            >
+              Estimated fortnightly repayment: 
+            </span>
+            $1,845
+          </p>
+          <p
+            class="mt-1.5 text-[13px] text-white/75 tnum tabular-nums min-h-[18px]"
+          >
+            Monthly $3,691 · Weekly $852
+          </p>
+        </div>
+        <div
+          aria-hidden="true"
+          class="my-5 h-px bg-white/15"
+        />
+        <div
+          class="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <a
+            aria-label="Open full mortgage calculator with amortisation"
+            class="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-5 text-[14px] font-semibold text-foreground shadow-sm hover:bg-white/95 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] w-full sm:w-auto"
+            href="/mortgage-calculator"
+          >
+            Full calculator 
+            <span
+              aria-hidden="true"
+            >
+              ↗
+            </span>
+          </a>
+          <a
+            aria-label="Open borrowing power calculator"
+            class="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/40 bg-transparent px-5 text-[14px] font-semibold text-white hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] w-full sm:w-auto"
+            href="/borrowing-power-calculator"
+          >
+            Borrowing power
+          </a>
+        </div>
+        <p
+          class="mt-3 text-[11px] text-white/55"
+        >
+          Estimate only. Not financial advice.
+        </p>
+      </section>
+    </div>
+  </div>
+</section>
+`;
