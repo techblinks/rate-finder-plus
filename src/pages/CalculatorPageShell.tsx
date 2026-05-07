@@ -21,6 +21,8 @@ interface CalculatorPageShellProps {
   metaDescription: string;
   canonical: string;
   faqs: FaqItem[];
+  /** Optional override for FAQPage JSON-LD only. Visible FAQ section still uses `faqs`. */
+  seoFaqs?: FaqItem[];
   sections: Section[];
   related: { to: string; label: string }[];
   children: ReactNode;
