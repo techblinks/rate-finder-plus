@@ -1,6 +1,7 @@
 import CalculatorPageShell from "./CalculatorPageShell";
 import Lmi from "@/components/calculators/Lmi";
 import { FAQS } from "@/data/faqs";
+import { SEO_FAQS } from "@/data/seoFaqs";
 
 const LmiPage = () => (
   <CalculatorPageShell
@@ -9,6 +10,7 @@ const LmiPage = () => (
     metaDescription="Calculate Lender's Mortgage Insurance (LMI) costs in Australia. Find out your LVR, whether you need LMI, and how much it costs."
     canonical="/lmi-calculator"
     faqs={FAQS.lmi}
+    seoFaqs={SEO_FAQS.lmi}
     related={[
       { to: "/mortgage-calculator", label: "Mortgage Repayment Calculator" },
       { to: "/borrowing-power-calculator", label: "Borrowing Power Calculator" },
