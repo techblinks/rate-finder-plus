@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useSiteSettings, refreshSiteSettings } from "@/hooks/useSiteSettings";
 import { toast } from "@/hooks/use-toast";
+import LiveDataPanel from "./LiveDataPanel";
 
 const BUCKET = "branding";
 
