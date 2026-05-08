@@ -132,25 +132,17 @@ export const ROUTES: RouteMeta[] = [
   },
 ];
 
-const STATE_DEFS: { slug: string; code: string; name: string }[] = [
-  { slug: "nsw", code: "NSW", name: "New South Wales" },
-  { slug: "vic", code: "VIC", name: "Victoria" },
-  { slug: "qld", code: "QLD", name: "Queensland" },
-  { slug: "wa", code: "WA", name: "Western Australia" },
-  { slug: "sa", code: "SA", name: "South Australia" },
-  { slug: "tas", code: "TAS", name: "Tasmania" },
-  { slug: "act", code: "ACT", name: "Australian Capital Territory" },
-  { slug: "nt", code: "NT", name: "Northern Territory" },
-];
+import { STAMP_DUTY_STATE_CONTENT } from "./stampDutyStateContent";
 
-for (const s of STATE_DEFS) {
+for (const slug of Object.keys(STAMP_DUTY_STATE_CONTENT)) {
+  const cfg = STAMP_DUTY_STATE_CONTENT[slug];
   ROUTES.push({
-    path: `/stamp-duty-calculator/${s.slug}`,
-    title: `${s.name} Stamp Duty Calculator`,
-    metaTitle: `${s.code} Stamp Duty Calculator 2026 | ${s.name} | Calcy`,
-    metaDescription: `Calculate ${s.name} (${s.code}) stamp duty for owner-occupiers, first home buyers, and investors. Includes 2026 thresholds and concessions.`,
-    canonical: `/stamp-duty-calculator/${s.slug}`,
-    faqs: FAQS.stampDuty,
+    path: `/stamp-duty-calculator/${cfg.slug}`,
+    title: cfg.h1,
+    metaTitle: cfg.metaTitle,
+    metaDescription: cfg.metaDescription,
+    canonical: `/stamp-duty-calculator/${cfg.slug}`,
+    faqs: cfg.faqs,
     isCalculator: true,
   });
 }
