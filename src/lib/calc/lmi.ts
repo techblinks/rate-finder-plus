@@ -81,6 +81,7 @@ export interface PayNowVsWaitInputs {
   loanTerm: number;
   annualGrowthRate: number;
   monthsToSave: number;
+  monthlyRent?: number;
 }
 
 export interface PayNowVsWaitResult {
