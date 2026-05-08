@@ -1,7 +1,7 @@
 import CalculatorPageShell from "./CalculatorPageShell";
 import StampDuty from "@/components/calculators/StampDuty";
 import { FAQS } from "@/data/faqs";
-import { SEO_FAQS } from "@/data/seoFaqs";
+
 
 const StampDutyPage = () => (
   <CalculatorPageShell
