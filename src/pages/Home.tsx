@@ -81,11 +81,11 @@ const TOPIC_PILLS = [
 const CURRENT_CARDS = [
   {
     tag: "Rate update",
-    stat: "4.10%",
+    stat: "4.35%",
     statLabel: "RBA cash rate · May 2026",
-    trend: "down" as const,
-    headline: "The RBA cut rates in February and March 2026.",
-    body: "The cash rate is now 4.10%. See how the recent cuts affect your monthly mortgage repayments on your current loan.",
+    trend: "up" as const,
+    headline: "The RBA raised rates in February, March, and May 2026.",
+    body: "The cash rate is now 4.35% — the third consecutive hike this year. See how this affects your monthly mortgage repayments.",
     cta: "Calculate now →",
     to: "/mortgage-calculator",
   },
