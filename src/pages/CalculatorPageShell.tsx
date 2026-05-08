@@ -25,6 +25,8 @@ interface CalculatorPageShellProps {
   seoFaqs?: FaqItem[];
   sections: Section[];
   related: { to: string; label: string }[];
+  /** Optional sub-heading rendered directly below the H1. */
+  subheading?: string;
   children: ReactNode;
 }
 
@@ -37,6 +39,7 @@ const CalculatorPageShell = ({
   seoFaqs,
   sections,
   related,
+  subheading,
   children,
 }: CalculatorPageShellProps) => (
   <>
@@ -58,7 +61,10 @@ const CalculatorPageShell = ({
     />
     <div className="page-shell py-8 md:py-10">
       <Breadcrumb current={title} />
-      <h1 className="mb-6">{title}</h1>
+      <h1 className={subheading ? "mb-2" : "mb-6"}>{title}</h1>
+      {subheading && (
+        <p className="mb-6 text-[15px] text-muted-foreground">{subheading}</p>
+      )}
       <AdSlot slot="header" className="mb-6" />
       {children}
       <AdSlot slot="inline" className="my-10" />
