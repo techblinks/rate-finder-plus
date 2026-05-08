@@ -83,7 +83,7 @@ const CURRENT_CARDS = [
     tag: "Rate update",
     stat: "4.35%",
     statLabel: "RBA cash rate · May 2026",
-    trend: "up" as const,
+    trend: "up" as "up" | "down" | "neutral",
     headline: "The RBA raised rates in February, March, and May 2026.",
     body: "The cash rate is now 4.35% — the third consecutive hike this year. See how this affects your monthly mortgage repayments.",
     cta: "Calculate now →",
