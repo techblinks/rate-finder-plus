@@ -132,10 +132,10 @@ const LiveDataPanel = () => {
         .from("rate_data")
         .update({
           ...patch,
-          previous_value: oldValue,
+          previous_value: oldValue as never,
           last_verified_at: new Date().toISOString(),
           last_changed_at: new Date().toISOString(),
-        })
+        } as never)
         .eq("id", id);
       if (error) throw error;
 
