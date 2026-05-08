@@ -17,6 +17,7 @@ import {
 import RangeField from "@/components/RangeField";
 import ResultActions from "@/components/ResultActions";
 import ShareResult from "@/components/ShareResult";
+import StickyResultsBar from "@/components/StickyResultsBar";
 
 const AmortChart = lazy(() => import("@/components/MortgageAmortChart"));
 const AmortTable = lazy(() => import("@/components/MortgageAmortTable"));
