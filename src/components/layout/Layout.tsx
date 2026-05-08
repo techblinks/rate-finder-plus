@@ -14,6 +14,7 @@ const FULLSCREEN_CALC_PATHS = [
   "/lmi-calculator",
   "/extra-repayments-calculator",
   "/loan-comparison-calculator",
+  "/rent-vs-buy-calculator",
 ];
 
 const Layout = () => {

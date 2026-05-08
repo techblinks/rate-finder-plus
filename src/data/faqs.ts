@@ -228,4 +228,38 @@ export const FAQS: Record<string, FaqItem[]> = {
       links: [{ text: "compare loans", href: "/loan-comparison-calculator" }],
     },
   ],
+  rentVsBuy: [
+    {
+      question: "Is it better to rent or buy in Australia in 2026?",
+      answer:
+        "Whether it is better to rent or buy in Australia depends heavily on your local property market, how long you plan to stay, your available deposit, and what returns you could earn by investing instead. In markets with strong property price growth, buying tends to win over periods of 7–10 years or more. In markets with high property prices relative to rents, or when investment returns are high, renting and investing can generate comparable or better outcomes.",
+      links: [{ text: "rent or buy", href: "/rent-vs-buy-calculator" }],
+    },
+    {
+      question: "When does buying a home become cheaper than renting?",
+      answer:
+        "The break-even point — when buying becomes financially better than renting — varies depending on the property price, deposit size, interest rate, rent level, and assumed property growth. In typical Australian conditions (5% property growth, 7% investment returns, 6% mortgage rate), the break-even point is often between 7 and 12 years. Properties in high-growth areas break even sooner.",
+      links: [{ text: "property price", href: "/stamp-duty-calculator" }],
+    },
+    {
+      question: "What happens to my deposit if I keep renting?",
+      answer:
+        "Calcy's rent vs buy calculator models the renting scenario by assuming you invest your deposit (and the monthly difference between buying costs and rent) in a diversified investment portfolio earning your chosen return rate. This is the correct way to compare the two options — renting only makes financial sense if you invest the capital you would otherwise put into a property.",
+      links: [{ text: "deposit", href: "/borrowing-power-calculator" }],
+    },
+    {
+      question: "How much does property growth change the answer?",
+      answer:
+        "Property growth is the single largest input. Dropping the assumed annual growth rate from 5% to 3% can push the break-even point out by several years and, in some scenarios, mean renting and investing wins for the entire analysis period. Calcy's sensitivity table shows the break-even year across many combinations of growth and investment returns.",
+    },
+    {
+      question: "Does this rent vs buy calculator include stamp duty and LMI?",
+      answer:
+        "Yes. Stamp duty is calculated for your selected Australian state (with first home buyer concessions where applicable) and LMI is automatically added if your deposit is below 20%. Conveyancing ($2,000) and a building inspection ($600) are also included in the upfront costs used in the comparison.",
+      links: [
+        { text: "stamp duty", href: "/stamp-duty-calculator" },
+        { text: "LMI", href: "/lmi-calculator" },
+      ],
+    },
+  ],
 };
