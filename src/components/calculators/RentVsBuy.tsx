@@ -1092,30 +1092,40 @@ const RentVsBuy = () => {
         </div>
       </section>
 
-      {/* Mobile sticky verdict bar */}
-      <div className="fixed inset-x-0 bottom-16 z-40 flex items-center justify-between border-t border-border bg-background px-4 py-3 md:hidden">
-        <span className="text-[12px] uppercase text-muted-foreground">
-          {result.breakEvenYear
-            ? "Break-even"
-            : result.verdict === "rent"
-              ? "Renter wins"
-              : "Outlook"}
-        </span>
-        <span
-          className={`text-[15px] font-bold tnum ${
-            result.verdict === "buy"
-              ? "text-success"
+      {/* Mobile sticky verdict + share bar */}
+      <div className="fixed inset-x-0 bottom-16 z-40 flex items-center gap-3 border-t border-border bg-background px-4 py-2.5 md:hidden">
+        <div className="min-w-0 flex-1">
+          <div className="text-[11px] uppercase leading-none text-muted-foreground">
+            {result.breakEvenYear
+              ? "Break-even"
               : result.verdict === "rent"
-                ? "text-accent"
-                : "text-foreground"
-          }`}
+                ? "Renter wins"
+                : "Outlook"}
+          </div>
+          <div
+            className={`mt-0.5 text-[15px] font-bold leading-tight tnum ${
+              result.verdict === "buy"
+                ? "text-success"
+                : result.verdict === "rent"
+                  ? "text-accent"
+                  : "text-foreground"
+            }`}
+          >
+            {result.breakEvenYear
+              ? `Year ${result.breakEvenYear}`
+              : result.verdict === "rent"
+                ? `+${fmtAbs0(result.difference)}`
+                : "≈ Close"}
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={onShare}
+          aria-label="Save or share this result"
+          className="shrink-0 rounded-xl bg-accent px-4 py-2 text-[13px] font-semibold text-accent-foreground shadow-sm hover:bg-accent/90"
         >
-          {result.breakEvenYear
-            ? `Year ${result.breakEvenYear}`
-            : result.verdict === "rent"
-              ? `+${fmtAbs0(result.difference)}`
-              : "≈"}
-        </span>
+          {shareCopied ? "Link copied ✓" : "Save / Share"}
+        </button>
       </div>
     </div>
   );
