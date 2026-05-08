@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useSiteSettings, refreshSiteSettings } from "@/hooks/useSiteSettings";
 import { toast } from "@/hooks/use-toast";
+import LiveDataPanel from "./LiveDataPanel";
 
 const BUCKET = "branding";
 
@@ -19,13 +20,14 @@ const uploadFile = async (file: File, prefix: string) => {
   return data.publicUrl;
 };
 
-type TabKey = "branding" | "analytics" | "adsense" | "seo";
+type TabKey = "branding" | "analytics" | "adsense" | "seo" | "live_data";
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: "branding", label: "Branding" },
   { key: "analytics", label: "Analytics & Tracking" },
   { key: "adsense", label: "AdSense" },
   { key: "seo", label: "SEO" },
+  { key: "live_data", label: "Live Data" },
 ];
 
 const fieldClass =
@@ -609,6 +611,8 @@ const AdminDashboard = () => {
             </div>
           </section>
         )}
+
+        {tab === "live_data" && <LiveDataPanel />}
       </fieldset>
 
       <div className="mt-8 text-sm text-muted-foreground">
