@@ -441,7 +441,7 @@ const RentVsBuy = () => {
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
         {/* LEFT — Inputs */}
-        <div className="space-y-6">
+        <div className="space-y-6 order-2 lg:order-none">
           {/* If you buy */}
           <section className="rounded-2xl border border-border bg-card p-5">
             <h2 className="mb-4 text-[16px] font-semibold">If you buy</h2>
