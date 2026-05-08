@@ -262,4 +262,34 @@ export const FAQS: Record<string, FaqItem[]> = {
       ],
     },
   ],
+  refinance: [
+    {
+      question: "How much can I save by refinancing my home loan?",
+      answer:
+        "The saving depends on the difference between your current and new interest rate, your loan balance, and your remaining term. On a $500,000 loan with 25 years remaining, refinancing from 6.50% to 5.99% saves approximately $264 per month ($3,168 per year) and approximately $89,000 in total interest over the remaining term.",
+      links: [{ text: "refinance calculator", href: "/refinance-calculator" }],
+    },
+    {
+      question: "What are the costs of refinancing in Australia?",
+      answer:
+        "The main costs of refinancing in Australia include: discharge fee from your current lender ($150–$400), application or establishment fee at the new lender ($0–$600), property valuation fee ($0–$300), and potentially LMI if your LVR is above 80%. For fixed rate loans, break costs can be $5,000–$50,000+ depending on market conditions. Many lenders offer cashback incentives of $2,000–$4,000 to offset these costs.",
+      links: [{ text: "LMI", href: "/lmi-calculator" }],
+    },
+    {
+      question: "How do I know if refinancing is worth it?",
+      answer:
+        "Refinancing is generally worth it when your monthly saving is meaningful (at least $150–$200/month), the break-even period is under 24 months, you plan to hold the loan for at least 2–3 years after break-even, and LMI does not apply on the new loan. It is generally NOT worth it when you are on a fixed rate with significant break costs, your LVR is above 80% and LMI would apply, or you plan to sell within the break-even period.",
+    },
+    {
+      question: "What is a refinance break-even period?",
+      answer:
+        "The refinance break-even period is the number of months it takes for your cumulative monthly savings to recover all the costs of switching loans. For example, if refinancing costs you $3,000 in fees and you save $264 per month, your break-even is approximately 12 months. Before that month you have spent more than you have saved; after it, every month is pure saving.",
+    },
+    {
+      question: "Can I refinance a fixed rate home loan?",
+      answer:
+        "Yes, but you may face significant break costs. Australian lenders calculate break costs based on the difference between your contracted fixed rate and current wholesale market rates. If rates have fallen since you fixed, your break cost can be very high — sometimes $20,000 or more. If rates have risen since you fixed, break costs may be minimal or zero. Always request an exact break cost quote from your lender before deciding to refinance a fixed rate loan.",
+      links: [{ text: "extra repayments", href: "/extra-repayments-calculator" }],
+    },
+  ],
 };
