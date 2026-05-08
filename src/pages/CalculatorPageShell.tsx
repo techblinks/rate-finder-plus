@@ -8,6 +8,7 @@ import RelatedCalculators from "@/components/RelatedCalculators";
 import RelatedGuides from "@/components/RelatedGuides";
 import AdSlot from "@/components/AdSlot";
 import StickyMobileAd from "@/components/StickyMobileAd";
+import RateFreshnessBadge from "@/components/RateFreshnessBadge";
 import type { FaqItem } from "@/data/faqs";
 
 interface Section {
@@ -67,10 +68,11 @@ const CalculatorPageShell = ({
     />
     <div className="page-shell py-8 md:py-10">
       <Breadcrumb current={title} />
-      <h1 className={subheading ? "mb-2" : "mb-6"}>{title}</h1>
+      <h1 className={subheading ? "mb-2" : "mb-3"}>{title}</h1>
       {subheading && (
-        <p className="mb-6 text-[15px] text-muted-foreground">{subheading}</p>
+        <p className="mb-3 text-[15px] text-muted-foreground">{subheading}</p>
       )}
+      <RateFreshnessBadge className="mb-6" />
       <AdSlot slot="header" className="mb-6" />
       <div className="min-w-0">
         {children}
