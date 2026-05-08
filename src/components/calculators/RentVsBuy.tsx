@@ -439,7 +439,7 @@ const RentVsBuy = () => {
         </div>
       )}
 
-      <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(320px,420px)]">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
         {/* LEFT — Inputs */}
         <div className="space-y-6">
           {/* If you buy */}
