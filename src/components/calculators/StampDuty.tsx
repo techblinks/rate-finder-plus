@@ -343,7 +343,15 @@ const StampDuty = ({ lockedState }: StampDutyProps) => {
               );
             })}
           </div>
-          <p className="mt-3 text-[12px] text-muted-foreground">{STATE_FHB_NOTE[s.state]}</p>
+          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1">
+            <p className="text-[12px] text-muted-foreground">{STATE_FHB_NOTE[s.state]}</p>
+            <Link
+              to={`/stamp-duty-calculator/${s.state.toLowerCase()}`}
+              className="text-[12px] font-semibold text-accent hover:underline"
+            >
+              View {s.state} stamp duty guide →
+            </Link>
+          </div>
         </section>
       )}
 
