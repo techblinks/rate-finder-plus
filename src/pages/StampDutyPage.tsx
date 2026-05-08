@@ -1,5 +1,6 @@
 import CalculatorPageShell from "./CalculatorPageShell";
 import StampDuty from "@/components/calculators/StampDuty";
+import NextStepsLinks from "@/components/NextStepsLinks";
 import { FAQS } from "@/data/faqs";
 
 
