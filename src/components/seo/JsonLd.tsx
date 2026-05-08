@@ -26,13 +26,17 @@ export const BreadcrumbJsonLd = ({ items }: BreadcrumbProps) => {
 };
 
 export const FaqJsonLd = ({ faqs }: { faqs: FaqItem[] }) => {
+  if (!faqs || faqs.length === 0) return null;
   const data = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: faqs.map((f) => ({
       "@type": "Question",
-      name: f.question,
-      acceptedAnswer: { "@type": "Answer", text: f.answer },
+      name: f.question.trim(),
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: f.answer.replace(/\s+/g, " ").trim(),
+      },
     })),
   };
   return (
