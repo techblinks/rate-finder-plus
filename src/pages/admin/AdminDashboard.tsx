@@ -611,6 +611,8 @@ const AdminDashboard = () => {
             </div>
           </section>
         )}
+
+        {tab === "live_data" && <LiveDataPanel />}
       </fieldset>
 
       <div className="mt-8 text-sm text-muted-foreground">
