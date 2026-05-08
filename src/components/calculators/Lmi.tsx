@@ -260,8 +260,9 @@ const Lmi = () => {
         loanTerm: dState.loanTerm,
         annualGrowthRate: dState.growthPct,
         monthsToSave: dState.monthsToSave,
+        monthlyRent: dRent,
       }),
-    [propertyValue, deposit, lmi, dState.interestRate, dState.loanTerm, dState.growthPct, dState.monthsToSave],
+    [propertyValue, deposit, lmi, dState.interestRate, dState.loanTerm, dState.growthPct, dState.monthsToSave, dRent],
   );
 
   // Vibration when LMI drops to zero
