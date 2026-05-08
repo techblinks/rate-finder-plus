@@ -26,17 +26,24 @@ export const BreadcrumbJsonLd = ({ items }: BreadcrumbProps) => {
 };
 
 export const FaqJsonLd = ({ faqs }: { faqs: FaqItem[] }) => {
-  if (!faqs || faqs.length === 0) return null;
+  // Google Rich Results requires the FAQPage to have at least 2 valid Q/A pairs.
+  const cleaned = (faqs ?? [])
+    .map((f) => ({
+      q: (f.question ?? "").replace(/\s+/g, " ").trim(),
+      a: (f.answer ?? "")
+        .replace(/<[^>]+>/g, " ")
+        .replace(/\s+/g, " ")
+        .trim(),
+    }))
+    .filter((f) => f.q.length > 0 && f.a.length > 0);
+  if (cleaned.length < 2) return null;
   const data = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: faqs.map((f) => ({
+    mainEntity: cleaned.map((f) => ({
       "@type": "Question",
-      name: f.question.trim(),
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: f.answer.replace(/\s+/g, " ").trim(),
-      },
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
   };
   return (
