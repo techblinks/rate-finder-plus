@@ -25,6 +25,8 @@ interface CalculatorPageShellProps {
   seoFaqs?: FaqItem[];
   sections: Section[];
   related: { to: string; label: string }[];
+  /** Optional sub-heading rendered directly below the H1. */
+  subheading?: string;
   children: ReactNode;
 }
 
