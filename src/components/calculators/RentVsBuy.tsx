@@ -773,7 +773,7 @@ const RentVsBuy = () => {
       </div>
 
       {/* Break-even chart */}
-      <section className="rounded-2xl border border-border bg-card p-5">
+      <section className={`rounded-2xl border border-border bg-card p-5 transition-opacity duration-200 ${isStale ? "opacity-60" : "opacity-100"}`}>
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <h3 className="text-[15px] font-semibold">Net worth over time</h3>
           {result.breakEvenYear ? (
@@ -866,7 +866,7 @@ const RentVsBuy = () => {
       </section>
 
       {/* Sensitivity table */}
-      <section className="rounded-2xl border border-border bg-card p-5">
+      <section className={`rounded-2xl border border-border bg-card p-5 transition-opacity duration-200 ${isStale ? "opacity-60" : "opacity-100"}`}>
         <h3 className="text-[15px] font-semibold">How assumptions change the result</h3>
         <p className="mt-1 text-[13px] text-muted-foreground">
           Break-even year at different property growth and investment return rates. The cell that matches your current assumptions is highlighted.
@@ -945,7 +945,7 @@ const RentVsBuy = () => {
       </section>
 
       {/* Year-by-year table */}
-      <section className="rounded-2xl border border-border bg-card p-5">
+      <section className={`rounded-2xl border border-border bg-card p-5 transition-opacity duration-200 ${isStale ? "opacity-60" : "opacity-100"}`}>
         <div className="mb-3 flex items-center justify-between">
           <h3 className="text-[15px] font-semibold">Year-by-year comparison</h3>
           <button
