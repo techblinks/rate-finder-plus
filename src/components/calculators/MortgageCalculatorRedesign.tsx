@@ -143,6 +143,7 @@ const MortgageCalculatorRedesign = () => {
   const [scenariosOpen, setScenariosOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const sliderHaptic = useRef(0);
+  const inputsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setScenarios(loadScenarios());
