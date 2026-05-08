@@ -27,6 +27,11 @@ interface CalculatorPageShellProps {
   related: { to: string; label: string }[];
   /** Optional sub-heading rendered directly below the H1. */
   subheading?: string;
+  /**
+   * Inject an inline ad slot between SEO sections every N sections (e.g. 2 = after every 2nd).
+   * Non-blocking: AdSlot renders a labelled placeholder until AdSense/Ezoic is configured.
+   */
+  interleaveAdsEvery?: number;
   children: ReactNode;
 }
 
