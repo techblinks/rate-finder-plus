@@ -6,6 +6,7 @@ import { SEO_FAQS } from "@/data/seoFaqs";
 const BorrowingPowerPage = () => (
   <CalculatorPageShell
     title="Borrowing power calculator"
+    subheading="Find out how much you could borrow — and exactly how to increase your limit"
     metaTitle="Borrowing Power Calculator Australia 2026 | How Much Can I Borrow? | Calcy"
     metaDescription="Calculate your borrowing power instantly — see how much you can borrow based on your income, expenses and deposit. Includes APRA buffer explanation and personalised tips to increase your limit. Free, no sign-up."
     canonical="/borrowing-power-calculator"
