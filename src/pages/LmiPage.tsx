@@ -1,5 +1,6 @@
 import CalculatorPageShell from "./CalculatorPageShell";
 import Lmi from "@/components/calculators/Lmi";
+import NextStepsLinks from "@/components/NextStepsLinks";
 import { SEO_FAQS } from "@/data/seoFaqs";
 
 const LmiPage = () => (
