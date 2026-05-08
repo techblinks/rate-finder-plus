@@ -660,7 +660,9 @@ const RentVsBuy = () => {
           </section>
 
           {/* If you rent */}
-          <section className="rounded-2xl border border-border bg-card p-5">
+          <section
+            className={`rounded-2xl border border-border bg-card p-5 ${mobileTab === "rent" ? "" : "hidden"} lg:block`}
+          >
             <h2 className="mb-4 text-[16px] font-semibold">If you rent</h2>
             <div className="grid gap-4 sm:grid-cols-2">
               <NumberField
