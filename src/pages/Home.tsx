@@ -8,8 +8,11 @@ import {
   ShieldCheck,
   ArrowLeftRight,
   MapPin,
-  Zap,
+  RefreshCw,
+  Lock,
   Table,
+  Smartphone,
+  BadgeCheck,
   TrendingDown,
   TrendingUp,
   Minus,
@@ -464,30 +467,63 @@ const Home = () => {
       <section className="bg-background border-t border-border">
         <div className="page-shell py-[72px]">
           <h2 className="text-h2 mb-12 text-center">Why Calcy?</h2>
-          <ul className="grid grid-cols-1 gap-10 md:grid-cols-3">
+          <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
                 Icon: MapPin,
                 title: "Built for Australia",
-                body: "Every calculator uses Australian terminology, defaults, and stamp duty rates for all 8 states and territories. Updated monthly with current RBA rates.",
+                body: "Every calculator uses Australian terminology, stamp duty rates for all 8 states and territories, and current RBA rates. Updated monthly.",
               },
               {
-                Icon: Zap,
-                title: "Free, forever",
-                body: "No account, no email, no ads, no pop-ups. Instant results on any device. Just the numbers you need.",
+                Icon: RefreshCw,
+                title: "Updated with RBA moves",
+                body: "Rate inputs and repayment defaults reflect the current RBA cash rate of 4.10%. No stale numbers.",
+              },
+              {
+                Icon: Lock,
+                title: "No account required",
+                body: "No sign-up, no email address needed. Open any calculator and get instant results — nothing to register.",
               },
               {
                 Icon: Table,
                 title: "Detailed breakdowns",
                 body: "Amortisation schedules, year-by-year tables, and side-by-side comparisons — not just a single repayment figure.",
               },
+              {
+                Icon: Smartphone,
+                title: "Works on any device",
+                body: "Fully responsive on mobile, tablet, and desktop. Results update instantly as you adjust any input.",
+              },
+              {
+                Icon: BadgeCheck,
+                title: "Independently run",
+                body: "No lender affiliation, no commissions, no referral fees. The numbers speak for themselves.",
+              },
             ].map(({ Icon, title, body }) => (
-              <li key={title} className="mx-auto max-w-[280px] text-left md:text-center">
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-accent-light md:mx-auto">
+              <li key={title} className="rounded-2xl border border-border bg-background p-6">
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-accent-light">
                   <Icon className="h-6 w-6 text-accent" strokeWidth={1.75} />
                 </div>
                 <h3 className="text-h4 mb-2">{title}</h3>
                 <p className="text-body text-small">{body}</p>
+              </li>
+            ))}
+          </ul>
+
+          <ul className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
+            {[
+              { stat: "6", label: "Free calculators" },
+              { stat: "8", label: "States & territories" },
+              { stat: "4.10%", label: "Current RBA rate" },
+            ].map((s) => (
+              <li
+                key={s.label}
+                className="rounded-2xl border border-border bg-surface px-6 py-5 text-center"
+              >
+                <p className="font-display text-[32px] font-extrabold leading-none text-accent tnum">
+                  {s.stat}
+                </p>
+                <p className="mt-2 text-[12px] font-medium text-muted-foreground">{s.label}</p>
               </li>
             ))}
           </ul>

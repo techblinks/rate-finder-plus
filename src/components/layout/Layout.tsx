@@ -6,6 +6,7 @@ import Footer from "./Footer";
 import { OrganizationJsonLd } from "@/components/seo/JsonLd";
 import MobileBottomNav from "@/components/MobileBottomNav";
 import PwaInstallPrompt from "@/components/PwaInstallPrompt";
+import CookieConsent from "@/components/CookieConsent";
 
 const FULLSCREEN_CALC_PATHS = [
   "/mortgage-calculator",
@@ -56,6 +57,7 @@ const Layout = () => {
       {!fullscreen && <Footer />}
       <MobileBottomNav />
       <PwaInstallPrompt />
+      <CookieConsent />
     </div>
   );
 };
