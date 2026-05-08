@@ -220,6 +220,10 @@ const Lmi = () => {
     setS((prev) => ({ ...prev, [k]: v }));
 
   const [extraSavings, setExtraSavings] = useState(1000);
+  const [monthlyRent, setMonthlyRent] = useState<number>(() =>
+    Math.round((initial.propertyValue * 0.004) / 50) * 50,
+  );
+  const dRent = useDebouncedValue(monthlyRent, 150);
   const [copied, setCopied] = useState(false);
   const prevLmi = useRef(0);
 
@@ -256,8 +260,9 @@ const Lmi = () => {
         loanTerm: dState.loanTerm,
         annualGrowthRate: dState.growthPct,
         monthsToSave: dState.monthsToSave,
+        monthlyRent: dRent,
       }),
-    [propertyValue, deposit, lmi, dState.interestRate, dState.loanTerm, dState.growthPct, dState.monthsToSave],
+    [propertyValue, deposit, lmi, dState.interestRate, dState.loanTerm, dState.growthPct, dState.monthsToSave, dRent],
   );
 
   // Vibration when LMI drops to zero
@@ -367,9 +372,10 @@ const Lmi = () => {
       loanTerm: dState.loanTerm,
       annualGrowthRate: Math.max(0, dState.growthPct - 2),
       monthsToSave: dState.monthsToSave,
+      monthlyRent: dRent,
     });
     return lower.recommendation;
-  }, [propertyValue, deposit, lmi, dState]);
+  }, [propertyValue, deposit, lmi, dState, dRent]);
 
   const buyNowQs = `?value=${Math.round(propertyValue)}&deposit=${Math.round(deposit)}`;
 
@@ -698,6 +704,25 @@ const Lmi = () => {
                 ]}
               />
             </div>
+            <div className="md:col-span-2">
+              <NumberField
+                label="Your monthly rent while waiting"
+                value={monthlyRent}
+                onChange={setMonthlyRent}
+                prefix="$"
+                suffix="/mo"
+                step={50}
+                tooltip="Rent paid every month you wait. Defaults to ~0.4% of the property value."
+                hint={
+                  <>
+                    Total rent over {dState.monthsToSave} months:{" "}
+                    <strong className="text-foreground tnum">
+                      {fmt0(monthlyRent * dState.monthsToSave)}
+                    </strong>
+                  </>
+                }
+              />
+            </div>
           </div>
 
           <div className="grid gap-3 md:grid-cols-2">
@@ -722,6 +747,110 @@ const Lmi = () => {
               </dl>
             </div>
           </div>
+
+          {/* Visual comparison: stacked-cost bar chart */}
+          {(() => {
+            const buyNowTotal = compare.scenarioA.totalRepayments + compare.scenarioA.lmiCost;
+            const waitTotal =
+              compare.scenarioB.totalRepayments + compare.scenarioB.rentWhileWaiting;
+            const max = Math.max(buyNowTotal, waitTotal, 1);
+            const cheaper = buyNowTotal <= waitTotal ? "buy_now" : "wait";
+            const Bar = ({
+              label,
+              segments,
+              total,
+              isCheaper,
+            }: {
+              label: string;
+              segments: { label: string; value: number; className: string }[];
+              total: number;
+              isCheaper: boolean;
+            }) => (
+              <div>
+                <div className="mb-1 flex items-baseline justify-between text-[13px]">
+                  <span className="font-medium text-foreground">
+                    {label}
+                    {isCheaper && (
+                      <span className="ml-2 rounded-full bg-success/15 px-2 py-0.5 text-[11px] font-semibold text-success">
+                        Cheaper
+                      </span>
+                    )}
+                  </span>
+                  <span className="tnum font-semibold text-foreground">{fmt0(total)}</span>
+                </div>
+                <div
+                  className="flex h-7 overflow-hidden rounded-lg bg-surface"
+                  style={{ width: `${(total / max) * 100}%`, minWidth: "20%" }}
+                  role="img"
+                  aria-label={`${label} total ${fmt0(total)}`}
+                >
+                  {segments.map(
+                    (seg, i) =>
+                      seg.value > 0 && (
+                        <div
+                          key={i}
+                          className={seg.className}
+                          style={{ width: `${(seg.value / total) * 100}%` }}
+                          title={`${seg.label}: ${fmt0(seg.value)}`}
+                        />
+                      ),
+                  )}
+                </div>
+              </div>
+            );
+            return (
+              <div className="mt-4 rounded-xl border border-border bg-background p-4">
+                <p className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">
+                  True cost comparison
+                </p>
+                <div className="space-y-3">
+                  <Bar
+                    label="🏠 Buy now"
+                    total={buyNowTotal}
+                    isCheaper={cheaper === "buy_now"}
+                    segments={[
+                      { label: "Repayments", value: compare.scenarioA.totalRepayments, className: "bg-accent" },
+                      { label: "LMI", value: compare.scenarioA.lmiCost, className: "bg-amber-500" },
+                    ]}
+                  />
+                  <Bar
+                    label={`⏳ Wait ${dState.monthsToSave} months`}
+                    total={waitTotal}
+                    isCheaper={cheaper === "wait"}
+                    segments={[
+                      { label: "Repayments", value: compare.scenarioB.totalRepayments, className: "bg-accent/70" },
+                      { label: "Rent while waiting", value: compare.scenarioB.rentWhileWaiting, className: "bg-destructive/70" },
+                    ]}
+                  />
+                </div>
+                <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
+                  <li className="inline-flex items-center gap-1.5"><span className="inline-block h-2.5 w-2.5 rounded-sm bg-accent" /> Loan repayments</li>
+                  <li className="inline-flex items-center gap-1.5"><span className="inline-block h-2.5 w-2.5 rounded-sm bg-amber-500" /> LMI premium</li>
+                  <li className="inline-flex items-center gap-1.5"><span className="inline-block h-2.5 w-2.5 rounded-sm bg-destructive/70" /> Rent while waiting</li>
+                </ul>
+                <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-border pt-3 text-[13px] sm:grid-cols-4">
+                  <div>
+                    <dt className="text-[11px] uppercase tracking-wide text-muted-foreground">Buy-now total</dt>
+                    <dd className="tnum font-semibold text-foreground">{fmt0(buyNowTotal)}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-[11px] uppercase tracking-wide text-muted-foreground">Wait total</dt>
+                    <dd className="tnum font-semibold text-foreground">{fmt0(waitTotal)}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-[11px] uppercase tracking-wide text-muted-foreground">Rent paid waiting</dt>
+                    <dd className="tnum font-semibold text-foreground">{fmt0(compare.scenarioB.rentWhileWaiting)}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-[11px] uppercase tracking-wide text-muted-foreground">Difference</dt>
+                    <dd className={`tnum font-semibold ${cheaper === "buy_now" ? "text-success" : "text-accent"}`}>
+                      {fmt0(Math.abs(buyNowTotal - waitTotal))}
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            );
+          })()}
 
           <div
             className={`mt-4 rounded-xl border p-4 text-[14px] ${

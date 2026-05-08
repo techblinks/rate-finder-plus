@@ -81,6 +81,7 @@ export interface PayNowVsWaitInputs {
   loanTerm: number;
   annualGrowthRate: number;
   monthsToSave: number;
+  monthlyRent?: number;
 }
 
 export interface PayNowVsWaitResult {
@@ -124,7 +125,7 @@ export function payNowVsWait(input: PayNowVsWaitInputs): PayNowVsWaitResult {
   const bLoan = futureValue * 0.8;
   const bTotal = totalRepayments(bLoan, interestRate, loanTerm);
 
-  const monthlyRent = propertyValue * 0.004;
+  const monthlyRent = input.monthlyRent ?? propertyValue * 0.004;
   const rentWhileWaiting = monthlyRent * monthsToSave;
   const bTrue = bTotal + rentWhileWaiting;
 
