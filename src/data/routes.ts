@@ -93,6 +93,16 @@ export const ROUTES: RouteMeta[] = [
     isCalculator: true,
   },
   {
+    path: "/rent-vs-buy-calculator",
+    title: "Rent vs buy calculator — which is better for you?",
+    metaTitle: "Rent vs Buy Calculator Australia 2026 — Should You Buy or Keep Renting? | Calcy",
+    metaDescription:
+      "Compare the true long-term cost of renting vs buying a home in Australia. Find your break-even year, compare 10-year net worth, and see how assumptions change the result. Free, no sign-up required.",
+    canonical: "/rent-vs-buy-calculator",
+    faqs: FAQS.rentVsBuy,
+    isCalculator: true,
+  },
+  {
     path: "/guides",
     title: "Guides",
     metaTitle: "Mortgage & Property Guides Australia 2026 | Calcy",
