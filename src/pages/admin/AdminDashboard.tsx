@@ -19,13 +19,14 @@ const uploadFile = async (file: File, prefix: string) => {
   return data.publicUrl;
 };
 
-type TabKey = "branding" | "analytics" | "adsense" | "seo";
+type TabKey = "branding" | "analytics" | "adsense" | "seo" | "live_data";
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: "branding", label: "Branding" },
   { key: "analytics", label: "Analytics & Tracking" },
   { key: "adsense", label: "AdSense" },
   { key: "seo", label: "SEO" },
+  { key: "live_data", label: "Live Data" },
 ];
 
 const fieldClass =
