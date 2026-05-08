@@ -133,6 +133,39 @@ const LmiPage = () => (
           </>
         ),
       },
+      {
+        heading: "Build your full upfront cost picture",
+        body: (
+          <>
+            <p className="mb-4">
+              LMI sits alongside stamp duty, conveyancing, and your deposit as upfront cost. Use
+              these tools together to size your loan accurately.
+            </p>
+            <NextStepsLinks
+              items={[
+                {
+                  to: "/stamp-duty-calculator",
+                  title: "Stamp duty calculator",
+                  description:
+                    "Estimate stamp duty for your state — typically the largest upfront cost outside the deposit itself.",
+                },
+                {
+                  to: "/mortgage-calculator",
+                  title: "Mortgage repayment calculator",
+                  description:
+                    "Once LMI is capitalised on your loan, see how it changes your monthly repayment and total interest.",
+                },
+                {
+                  to: "/borrowing-power-calculator",
+                  title: "Borrowing power calculator",
+                  description:
+                    "Confirm how much a lender will approve so you know whether a 20% deposit (no LMI) is realistic.",
+                },
+              ]}
+            />
+          </>
+        ),
+      },
     ]}
   >
     <Lmi />
