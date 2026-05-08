@@ -103,6 +103,16 @@ export const ROUTES: RouteMeta[] = [
     isCalculator: true,
   },
   {
+    path: "/refinance-calculator",
+    title: "Refinance calculator — see how much you could save",
+    metaTitle: "Refinance Calculator Australia 2026 — Is Refinancing Your Home Loan Worth It? | Calcy",
+    metaDescription:
+      "Calculate how much you could save by refinancing your home loan. See your monthly saving, break-even month, 5-year saving, and total interest saved. Includes fixed rate break cost warning and LMI check. Free, no sign-up.",
+    canonical: "/refinance-calculator",
+    faqs: FAQS.refinance,
+    isCalculator: true,
+  },
+  {
     path: "/guides",
     title: "Guides",
     metaTitle: "Mortgage & Property Guides Australia 2026 | Calcy",
