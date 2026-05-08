@@ -11,6 +11,7 @@ const NAV = [
   { to: "/lmi-calculator", label: "LMI" },
   { to: "/loan-comparison-calculator", label: "Compare" },
   { to: "/rent-vs-buy-calculator", label: "Rent vs Buy" },
+  { to: "/refinance-calculator", label: "Refinance" },
   { to: "/guides", label: "Guides" },
 ];
 

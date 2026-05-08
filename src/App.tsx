@@ -16,6 +16,7 @@ const LmiPage = lazy(() => import("./pages/LmiPage"));
 const LoanComparisonPage = lazy(() => import("./pages/LoanComparisonPage"));
 const HecsBorrowingPowerPage = lazy(() => import("./pages/HecsBorrowingPowerPage"));
 const RentVsBuyPage = lazy(() => import("./pages/RentVsBuyPage"));
+const RefinancePage = lazy(() => import("./pages/RefinancePage"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const GuidesIndex = lazy(() => import("./pages/GuidesIndex"));
@@ -61,6 +62,8 @@ const App = () => (
           <Route path="/hecs-borrowing-power" element={<HecsBorrowingPowerPage />} />
           <Route path="/rent-vs-buy-calculator" element={<RentVsBuyPage />} />
           <Route path="/rent-vs-buy" element={<Navigate to="/rent-vs-buy-calculator" replace />} />
+          <Route path="/refinance-calculator" element={<RefinancePage />} />
+          <Route path="/refinance" element={<Navigate to="/refinance-calculator" replace />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/guides" element={<GuidesIndex />} />
