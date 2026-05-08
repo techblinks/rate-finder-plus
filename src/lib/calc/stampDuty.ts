@@ -1,179 +1,18 @@
 export type StateCode = "NSW" | "VIC" | "QLD" | "WA" | "SA" | "TAS" | "ACT" | "NT";
 export type BuyerType = "owner" | "fhb" | "investor";
+export type PropertyType = "established" | "new" | "vacant";
 
 export interface StampDutyResult {
   baseDuty: number;
+  fhbDuty: number;
   fhbSaving: number;
   netDuty: number;
+  fhog: number;
+  fhogEligible: boolean;
   legal: number;
   building: number;
   pest: number;
   totalUpfront: number;
-}
-
-interface Bracket {
-  upTo: number; // inclusive upper bound; Infinity for last
-  base: number; // base duty at the start of the bracket
-  ratePer100: number; // dollars per $100 over the threshold
-  threshold: number; // value at which "over" starts
-}
-
-// Brackets encoded from the spec. ratePer100 expressed as $ per $100.
-const BRACKETS: Record<Exclude<StateCode, "ACT" | "NT">, Bracket[]> = {
-  NSW: [
-    { upTo: 14000, base: 0, ratePer100: 1.25, threshold: 0 },
-    { upTo: 32000, base: 175, ratePer100: 1.5, threshold: 14000 },
-    { upTo: 85000, base: 445, ratePer100: 1.75, threshold: 32000 },
-    { upTo: 319000, base: 1372, ratePer100: 3.5, threshold: 85000 },
-    { upTo: 1064999, base: 9562, ratePer100: 4.5, threshold: 319000 },
-    { upTo: Infinity, base: 43087, ratePer100: 5.5, threshold: 1064999 },
-  ],
-  VIC: [
-    { upTo: 25000, base: 0, ratePer100: 1.4, threshold: 0 },
-    { upTo: 130000, base: 350, ratePer100: 2.4, threshold: 25000 },
-    { upTo: 960000, base: 2870, ratePer100: 6.0, threshold: 130000 },
-    { upTo: 2000000, base: 55370, ratePer100: 5.5, threshold: 960000 },
-    // Over $2m flat 6.5% on full value — handled separately.
-    { upTo: Infinity, base: 0, ratePer100: 6.5, threshold: 0 },
-  ],
-  QLD: [
-    { upTo: 5000, base: 0, ratePer100: 0, threshold: 0 },
-    { upTo: 75000, base: 0, ratePer100: 1.5, threshold: 5000 },
-    { upTo: 540000, base: 1050, ratePer100: 3.5, threshold: 75000 },
-    { upTo: 1000000, base: 17325, ratePer100: 4.5, threshold: 540000 },
-    { upTo: Infinity, base: 38025, ratePer100: 5.75, threshold: 1000000 },
-  ],
-  WA: [
-    { upTo: 120000, base: 0, ratePer100: 1.9, threshold: 0 },
-    { upTo: 150000, base: 2280, ratePer100: 2.85, threshold: 120000 },
-    { upTo: 360000, base: 3135, ratePer100: 3.8, threshold: 150000 },
-    { upTo: 725000, base: 11115, ratePer100: 4.75, threshold: 360000 },
-    { upTo: Infinity, base: 28453, ratePer100: 5.15, threshold: 725000 },
-  ],
-  SA: [
-    { upTo: 12000, base: 0, ratePer100: 1.0, threshold: 0 },
-    { upTo: 30000, base: 120, ratePer100: 2.0, threshold: 12000 },
-    { upTo: 50000, base: 480, ratePer100: 3.0, threshold: 30000 },
-    { upTo: 100000, base: 1080, ratePer100: 3.5, threshold: 50000 },
-    { upTo: 200000, base: 2830, ratePer100: 4.0, threshold: 100000 },
-    { upTo: 250000, base: 6830, ratePer100: 4.25, threshold: 200000 },
-    { upTo: 300000, base: 8955, ratePer100: 4.75, threshold: 250000 },
-    { upTo: Infinity, base: 11330, ratePer100: 5.5, threshold: 300000 },
-  ],
-  TAS: [
-    { upTo: 3000, base: 50, ratePer100: 0, threshold: 0 },
-    { upTo: 25000, base: 50, ratePer100: 1.75, threshold: 3000 },
-    { upTo: 75000, base: 435, ratePer100: 2.25, threshold: 25000 },
-    { upTo: 200000, base: 1560, ratePer100: 3.5, threshold: 75000 },
-    { upTo: 375000, base: 5935, ratePer100: 4.0, threshold: 200000 },
-    { upTo: 725000, base: 12935, ratePer100: 4.25, threshold: 375000 },
-    { upTo: Infinity, base: 27810, ratePer100: 4.5, threshold: 725000 },
-  ],
-};
-
-function evalBrackets(value: number, brackets: Bracket[]): number {
-  for (const b of brackets) {
-    if (value <= b.upTo) {
-      return b.base + ((value - b.threshold) * b.ratePer100) / 100;
-    }
-  }
-  return 0;
-}
-
-function nswDuty(v: number) {
-  return evalBrackets(v, BRACKETS.NSW);
-}
-
-function vicDuty(v: number) {
-  if (v > 2000000) return v * 0.065;
-  // Only iterate brackets up to the 2m one
-  const bs = BRACKETS.VIC.slice(0, 4);
-  return evalBrackets(v, bs);
-}
-
-function actDuty(v: number) {
-  // Per spec approximation: value × 0.0492% × (value/1000)
-  return v * 0.000492 * (v / 1000);
-}
-
-function ntDuty(v: number) {
-  if (v > 525000) return v * 0.0495;
-  const V = v / 1000;
-  return ((0.06571441 * V + 15) * V * 1000) / 1000;
-  // i.e. (0.06571441*V + 15) * V dollars, where V = value/1000.
-}
-
-function fhbConcession(state: StateCode, value: number, baseDuty: number): number {
-  // Returns the dollar saving (positive number) compared to baseDuty.
-  switch (state) {
-    case "NSW":
-      if (value <= 800000) return baseDuty;
-      if (value < 1000000) {
-        // Linear taper between $800k (full exempt) and $1m (no concession)
-        const taper = 1 - (value - 800000) / 200000;
-        return baseDuty * taper;
-      }
-      return 0;
-    case "VIC":
-      if (value <= 600000) return baseDuty;
-      if (value <= 750000) {
-        const taper = 1 - (value - 600000) / 150000;
-        return baseDuty * taper;
-      }
-      return 0;
-    case "QLD":
-      if (value <= 500000) return baseDuty;
-      if (value <= 550000) {
-        const taper = 1 - (value - 500000) / 50000;
-        return baseDuty * taper;
-      }
-      return 0;
-    case "WA":
-      if (value <= 430000) return baseDuty;
-      if (value <= 530000) {
-        const taper = 1 - (value - 430000) / 100000;
-        return baseDuty * taper;
-      }
-      return 0;
-    case "SA":
-    case "TAS":
-    case "ACT":
-    case "NT":
-      // No simple uniform FHB rule supplied; return 0 (covered in disclaimer).
-      return 0;
-  }
-}
-
-export function calcStampDuty(
-  value: number,
-  state: StateCode,
-  buyer: BuyerType,
-): StampDutyResult {
-  const v = Math.max(0, value);
-
-  let baseDuty = 0;
-  if (state === "ACT") baseDuty = actDuty(v);
-  else if (state === "NT") baseDuty = ntDuty(v);
-  else if (state === "NSW") baseDuty = nswDuty(v);
-  else if (state === "VIC") baseDuty = vicDuty(v);
-  else baseDuty = evalBrackets(v, BRACKETS[state]);
-
-  const fhbSaving = buyer === "fhb" ? fhbConcession(state, v, baseDuty) : 0;
-  const netDuty = Math.max(0, baseDuty - fhbSaving);
-
-  const legal = 2000;
-  const building = 600;
-  const pest = 400;
-
-  return {
-    baseDuty,
-    fhbSaving,
-    netDuty,
-    legal,
-    building,
-    pest,
-    totalUpfront: netDuty + legal + building + pest,
-  };
 }
 
 export const STATES: { code: StateCode; name: string }[] = [
@@ -186,3 +25,204 @@ export const STATES: { code: StateCode; name: string }[] = [
   { code: "ACT", name: "Australian Capital Territory" },
   { code: "NT", name: "Northern Territory" },
 ];
+
+/** First Home Owner Grant amounts for new homes (2026 indicative). */
+export const FHOG: Record<StateCode, number> = {
+  NSW: 10000,
+  VIC: 10000,
+  QLD: 30000,
+  WA: 10000,
+  SA: 15000,
+  TAS: 30000,
+  ACT: 0,
+  NT: 10000,
+};
+
+/** Short context note shown when a state is selected. */
+export const STATE_FHB_NOTE: Record<StateCode, string> = {
+  NSW: "First home buyers exempt on properties up to $800,000",
+  VIC: "First home buyers exempt on properties up to $600,000",
+  QLD: "First home buyer concession on properties up to $500,000",
+  WA: "First home buyers exempt on properties up to $430,000",
+  SA: "No stamp duty exemption for FHBs — $15,000 FHOG on new homes",
+  TAS: "First home buyers receive 50% stamp duty concession",
+  ACT: "Home Buyer Concession Scheme — income-tested, no stamp duty",
+  NT: "Territory Home Owner Discount of up to $18,601",
+};
+
+interface DutyResult {
+  duty: number;
+  fhbDuty: number;
+}
+
+function calculateNSW(value: number, isFHB: boolean): DutyResult {
+  let duty: number;
+  if (value <= 16000) duty = value * 0.0125;
+  else if (value <= 35000) duty = 200 + (value - 16000) * 0.015;
+  else if (value <= 93000) duty = 485 + (value - 35000) * 0.0175;
+  else if (value <= 351000) duty = 1500 + (value - 93000) * 0.035;
+  else if (value <= 1168000) duty = 10530 + (value - 351000) * 0.045;
+  else if (value <= 3505000) duty = 47295 + (value - 1168000) * 0.055;
+  else duty = 175510 + (value - 3505000) * 0.07;
+
+  let fhbDuty = duty;
+  if (isFHB) {
+    if (value <= 800000) fhbDuty = 0;
+    else if (value <= 1000000) {
+      const reduction = duty * ((1000000 - value) / 200000);
+      fhbDuty = Math.max(0, duty - reduction);
+    }
+  }
+  return { duty, fhbDuty };
+}
+
+function calculateVIC(value: number, isFHB: boolean): DutyResult {
+  let duty: number;
+  if (value <= 25000) duty = value * 0.014;
+  else if (value <= 130000) duty = 350 + (value - 25000) * 0.024;
+  else if (value <= 960000) duty = 2870 + (value - 130000) * 0.06;
+  else duty = 52490 + (value - 960000) * 0.065;
+
+  let fhbDuty = duty;
+  if (isFHB) {
+    if (value <= 600000) fhbDuty = 0;
+    else if (value <= 750000) {
+      fhbDuty = duty * ((value - 600000) / 150000);
+    }
+  }
+  return { duty, fhbDuty };
+}
+
+function calculateQLD(value: number, isFHB: boolean): DutyResult {
+  let duty: number;
+  if (value <= 5000) duty = 0;
+  else if (value <= 75000) duty = (value - 5000) * 0.015;
+  else if (value <= 540000) duty = 1050 + (value - 75000) * 0.035;
+  else if (value <= 1000000) duty = 17325 + (value - 540000) * 0.045;
+  else duty = 38025 + (value - 1000000) * 0.0575;
+
+  let fhbDuty = duty;
+  if (isFHB) {
+    if (value <= 500000) fhbDuty = 0;
+    else if (value <= 550000) {
+      fhbDuty = duty * ((value - 500000) / 50000);
+    }
+  }
+  return { duty, fhbDuty };
+}
+
+function calculateWA(value: number, isFHB: boolean): DutyResult {
+  let duty: number;
+  if (value <= 120000) duty = value * 0.019;
+  else if (value <= 150000) duty = 2280 + (value - 120000) * 0.0285;
+  else if (value <= 360000) duty = 3135 + (value - 150000) * 0.03;
+  else if (value <= 725000) duty = 9435 + (value - 360000) * 0.0475;
+  else if (value <= 1500000) duty = 26760 + (value - 725000) * 0.05;
+  else duty = 65510 + (value - 1500000) * 0.06;
+
+  let fhbDuty = duty;
+  if (isFHB) {
+    if (value <= 430000) fhbDuty = 0;
+    else if (value <= 530000) {
+      fhbDuty = duty * ((value - 430000) / 100000);
+    }
+  }
+  return { duty, fhbDuty };
+}
+
+function calculateSA(value: number): DutyResult {
+  let duty: number;
+  if (value <= 12000) duty = value * 0.01;
+  else if (value <= 30000) duty = 120 + (value - 12000) * 0.02;
+  else if (value <= 50000) duty = 480 + (value - 30000) * 0.03;
+  else if (value <= 100000) duty = 1080 + (value - 50000) * 0.035;
+  else if (value <= 200000) duty = 2830 + (value - 100000) * 0.04;
+  else if (value <= 250000) duty = 6830 + (value - 200000) * 0.0425;
+  else if (value <= 300000) duty = 8955 + (value - 250000) * 0.0475;
+  else if (value <= 500000) duty = 11330 + (value - 300000) * 0.05;
+  else duty = 21330 + (value - 500000) * 0.055;
+  return { duty, fhbDuty: duty };
+}
+
+function calculateTAS(value: number, isFHB: boolean): DutyResult {
+  let duty: number;
+  if (value <= 3000) duty = 50;
+  else if (value <= 25000) duty = 50 + (value - 3000) * 0.0175;
+  else if (value <= 75000) duty = 435 + (value - 25000) * 0.025;
+  else if (value <= 200000) duty = 1685 + (value - 75000) * 0.03;
+  else if (value <= 375000) duty = 5435 + (value - 200000) * 0.035;
+  else if (value <= 725000) duty = 11560 + (value - 375000) * 0.04;
+  else duty = 25560 + (value - 725000) * 0.045;
+  return { duty, fhbDuty: isFHB ? duty * 0.5 : duty };
+}
+
+function calculateACT(value: number, isFHB: boolean): DutyResult {
+  let duty: number;
+  if (value <= 200000) duty = value * 0.0206;
+  else if (value <= 300000) duty = 4120 + (value - 200000) * 0.0332;
+  else if (value <= 500000) duty = 7440 + (value - 300000) * 0.0419;
+  else if (value <= 750000) duty = 15820 + (value - 500000) * 0.049;
+  else if (value <= 1000000) duty = 28070 + (value - 750000) * 0.0491;
+  else if (value <= 1455000) duty = 40345 + (value - 1000000) * 0.0493;
+  else duty = 62789 + (value - 1455000) * 0.049;
+  return { duty, fhbDuty: isFHB ? 0 : duty };
+}
+
+function calculateNT(value: number, isFHB: boolean): DutyResult {
+  const V = value / 1000;
+  const duty = ((0.06571441 * V + 15) * V) / 1000;
+  const discount = isFHB ? Math.min(18601, duty) : 0;
+  return { duty, fhbDuty: Math.max(0, duty - discount) };
+}
+
+export function calculateStampDutyByState(
+  value: number,
+  state: StateCode,
+  isFHB: boolean,
+): DutyResult {
+  const v = Math.max(0, value);
+  switch (state) {
+    case "NSW": return calculateNSW(v, isFHB);
+    case "VIC": return calculateVIC(v, isFHB);
+    case "QLD": return calculateQLD(v, isFHB);
+    case "WA":  return calculateWA(v, isFHB);
+    case "SA":  return calculateSA(v);
+    case "TAS": return calculateTAS(v, isFHB);
+    case "ACT": return calculateACT(v, isFHB);
+    case "NT":  return calculateNT(v, isFHB);
+  }
+}
+
+export function calcStampDuty(
+  value: number,
+  state: StateCode,
+  buyer: BuyerType,
+  propertyType: PropertyType = "established",
+): StampDutyResult {
+  const isFHB = buyer === "fhb";
+  const { duty, fhbDuty } = calculateStampDutyByState(value, state, isFHB);
+
+  const baseDuty = Math.round(duty);
+  const dutyPayable = Math.round(isFHB ? fhbDuty : duty);
+  const fhbSaving = isFHB ? Math.max(0, baseDuty - dutyPayable) : 0;
+
+  const fhogEligible = isFHB && propertyType === "new";
+  const fhog = fhogEligible ? FHOG[state] : 0;
+
+  const legal = 2000;
+  const building = 600;
+  const pest = 400;
+
+  return {
+    baseDuty,
+    fhbDuty: Math.round(fhbDuty),
+    fhbSaving,
+    netDuty: dutyPayable,
+    fhog,
+    fhogEligible,
+    legal,
+    building,
+    pest,
+    totalUpfront: dutyPayable + legal + building + pest,
+  };
+}
