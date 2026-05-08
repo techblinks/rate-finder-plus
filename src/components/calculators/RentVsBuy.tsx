@@ -444,8 +444,44 @@ const RentVsBuy = () => {
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
         {/* LEFT — Inputs */}
         <div className="space-y-6 order-2 lg:order-none">
+          {/* Mobile tab switcher — hidden on lg+ where both sections render side by side */}
+          <div
+            role="tablist"
+            aria-label="Switch between buy and rent inputs"
+            className="sticky top-2 z-20 grid grid-cols-2 gap-1 rounded-2xl border border-border bg-background/95 p-1 shadow-sm backdrop-blur sm:top-2 lg:hidden"
+          >
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mobileTab === "buy"}
+              onClick={() => setMobileTab("buy")}
+              className={`rounded-xl px-3 py-2 text-[13px] font-semibold transition-colors ${
+                mobileTab === "buy"
+                  ? "bg-accent text-accent-foreground"
+                  : "text-foreground hover:bg-accent/10"
+              }`}
+            >
+              🏠 If you buy
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mobileTab === "rent"}
+              onClick={() => setMobileTab("rent")}
+              className={`rounded-xl px-3 py-2 text-[13px] font-semibold transition-colors ${
+                mobileTab === "rent"
+                  ? "bg-accent text-accent-foreground"
+                  : "text-foreground hover:bg-accent/10"
+              }`}
+            >
+              💰 If you rent
+            </button>
+          </div>
+
           {/* If you buy */}
-          <section className="rounded-2xl border border-border bg-card p-5">
+          <section
+            className={`rounded-2xl border border-border bg-card p-5 ${mobileTab === "buy" ? "" : "hidden"} lg:block`}
+          >
             <h2 className="mb-4 text-[16px] font-semibold">If you buy</h2>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2">
