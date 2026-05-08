@@ -47,7 +47,7 @@ const FREQS: Frequency[] = ["weekly", "fortnightly", "monthly"];
 
 const DEFAULTS = {
   loan: 650000,
-  rate: 6.14,
+  rate: 6.39,
   term: 30,
   freq: "fortnightly" as Frequency,
   extra: 0,
