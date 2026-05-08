@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useSiteSettings, refreshSiteSettings } from "@/hooks/useSiteSettings";
 import { toast } from "@/hooks/use-toast";
 import LiveDataPanel from "./LiveDataPanel";
+import SeoPanel from "./SeoPanel";
 
 const BUCKET = "branding";
 
@@ -20,13 +21,14 @@ const uploadFile = async (file: File, prefix: string) => {
   return data.publicUrl;
 };
 
-type TabKey = "branding" | "analytics" | "adsense" | "seo" | "live_data";
+type TabKey = "branding" | "analytics" | "adsense" | "seo" | "seo_intel" | "live_data";
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: "branding", label: "Branding" },
   { key: "analytics", label: "Analytics & Tracking" },
   { key: "adsense", label: "AdSense" },
   { key: "seo", label: "SEO" },
+  { key: "seo_intel", label: "SEO Intelligence" },
   { key: "live_data", label: "Live Data" },
 ];
 
@@ -612,6 +614,7 @@ const AdminDashboard = () => {
           </section>
         )}
 
+        {tab === "seo_intel" && <SeoPanel />}
         {tab === "live_data" && <LiveDataPanel />}
       </fieldset>
 
