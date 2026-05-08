@@ -1,7 +1,7 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Share2, X, Plus, Check } from "lucide-react";
 import { buildAmortisation, type Frequency } from "@/lib/calc/mortgageEngine";
-import { rbaRates } from "@/data/rbaRates";
+import { useRbaRates } from "@/hooks/useRbaRates";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import {
@@ -115,6 +115,7 @@ function readUrlParams() {
 }
 
 const MortgageCalculatorRedesign = () => {
+  const rbaRates = useRbaRates();
   // Initial state from URL → localStorage → defaults
   const [restored, setRestored] = useState<"url" | "local" | null>(null);
   const initial = useMemo(() => {
