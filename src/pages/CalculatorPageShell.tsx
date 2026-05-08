@@ -27,6 +27,11 @@ interface CalculatorPageShellProps {
   related: { to: string; label: string }[];
   /** Optional sub-heading rendered directly below the H1. */
   subheading?: string;
+  /**
+   * Inject an inline ad slot between SEO sections every N sections (e.g. 2 = after every 2nd).
+   * Non-blocking: AdSlot renders a labelled placeholder until AdSense/Ezoic is configured.
+   */
+  interleaveAdsEvery?: number;
   children: ReactNode;
 }
 
@@ -40,6 +45,7 @@ const CalculatorPageShell = ({
   sections,
   related,
   subheading,
+  interleaveAdsEvery,
   children,
 }: CalculatorPageShellProps) => (
   <>
@@ -69,11 +75,16 @@ const CalculatorPageShell = ({
       {children}
       <AdSlot slot="inline" className="my-10" />
       <div className="mt-12 space-y-10">
-        {sections.map((s) => (
-          <section key={s.heading}>
-            <h2 className="mb-3">{s.heading}</h2>
-            <div className="text-[15px] leading-relaxed text-muted-foreground">{s.body}</div>
-          </section>
+        {sections.map((s, i) => (
+          <div key={s.heading} className="space-y-10">
+            <section>
+              <h2 className="mb-3">{s.heading}</h2>
+              <div className="text-[15px] leading-relaxed text-muted-foreground">{s.body}</div>
+            </section>
+            {interleaveAdsEvery &&
+              (i + 1) % interleaveAdsEvery === 0 &&
+              i < sections.length - 1 && <AdSlot slot="inline" />}
+          </div>
         ))}
         <FAQ items={faqs} />
         <RelatedGuides canonical={canonical} />

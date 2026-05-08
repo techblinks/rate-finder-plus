@@ -14,6 +14,7 @@ const StampDutyStatePage = ({ slug }: { slug: keyof typeof STAMP_DUTY_STATE_CONT
       subheading={cfg.subheading}
       faqs={cfg.faqs}
       seoFaqs={cfg.faqs}
+      interleaveAdsEvery={2}
       related={[
         { to: "/stamp-duty-calculator", label: "All states stamp duty calculator" },
         { to: "/mortgage-calculator", label: "Mortgage Repayment Calculator" },

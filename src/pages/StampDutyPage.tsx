@@ -12,6 +12,7 @@ const StampDutyPage = () => (
     canonical="/stamp-duty-calculator"
     faqs={FAQS.stampDuty}
     seoFaqs={SEO_FAQS.stampDuty}
+    interleaveAdsEvery={2}
     related={[
       { to: "/mortgage-calculator", label: "Mortgage Repayment Calculator" },
       { to: "/borrowing-power-calculator", label: "Borrowing Power Calculator" },
