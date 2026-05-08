@@ -17,6 +17,7 @@ import {
 import RangeField from "@/components/RangeField";
 import ResultActions from "@/components/ResultActions";
 import ShareResult from "@/components/ShareResult";
+import StickyResultsBar from "@/components/StickyResultsBar";
 
 const AmortChart = lazy(() => import("@/components/MortgageAmortChart"));
 const AmortTable = lazy(() => import("@/components/MortgageAmortTable"));
@@ -142,6 +143,7 @@ const MortgageCalculatorRedesign = () => {
   const [scenariosOpen, setScenariosOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const sliderHaptic = useRef(0);
+  const inputsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setScenarios(loadScenarios());
@@ -333,6 +335,11 @@ const MortgageCalculatorRedesign = () => {
 
   return (
     <div className="space-y-6">
+      <StickyResultsBar
+        watchRef={inputsRef}
+        summary={`${fmt0(loan)} · ${rate.toFixed(2)}% · ${term}yr`}
+        primary={`${FREQ_LABEL[freq]} ${fmt0(headline)}`}
+      />
       {restored === "local" && (
         <div className="flex items-center justify-between gap-3 rounded-xl border border-accent-mid bg-accent-light px-4 py-3 text-[13px] text-foreground">
           <span>Welcome back! We've restored your last calculation.</span>
@@ -396,7 +403,7 @@ const MortgageCalculatorRedesign = () => {
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
         {/* INPUTS */}
-        <div className="space-y-5 rounded-2xl border border-border bg-card p-5">
+        <div ref={inputsRef} className="space-y-5 rounded-2xl border border-border bg-card p-5">
           <div>
             <RangeField
               label="Loan amount"
