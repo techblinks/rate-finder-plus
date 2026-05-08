@@ -45,6 +45,7 @@ const CalculatorPageShell = ({
   sections,
   related,
   subheading,
+  interleaveAdsEvery,
   children,
 }: CalculatorPageShellProps) => (
   <>
