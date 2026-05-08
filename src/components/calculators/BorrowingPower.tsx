@@ -70,7 +70,7 @@ function readUrl(): Partial<State> | null {
     const target = URL_KEYS[k];
     if (!target) continue;
     const n = parseFloat(v);
-    if (Number.isFinite(n)) (out as Record<keyof State, number>)[target] = n;
+    if (Number.isFinite(n)) (out as Record<string, number>)[target as string] = n;
   }
   if (out.partnerIncome && out.partnerIncome > 0) out.joint = true;
   return out;
