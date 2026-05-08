@@ -254,6 +254,7 @@ const RentVsBuy = () => {
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
   const [showAllYears, setShowAllYears] = useState(false);
+  const [mobileTab, setMobileTab] = useState<"buy" | "rent">("buy");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
