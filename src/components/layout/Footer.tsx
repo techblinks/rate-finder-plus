@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const year = new Date().getFullYear();
 
 // Update these monthly
-const RBA_RATE = "4.10%";
+const RBA_RATE = "4.35%";
 const RBA_UPDATED = "May 2026";
 
 const CALC_LINKS = [
