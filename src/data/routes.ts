@@ -55,10 +55,10 @@ export const ROUTES: RouteMeta[] = [
   },
   {
     path: "/extra-repayments-calculator",
-    title: "Extra Repayments Calculator",
-    metaTitle: "Extra Repayments Calculator Australia 2026 | Calcy",
+    title: "Extra repayments calculator — see how much you can save",
+    metaTitle: "Extra Repayments Calculator Australia — Save Years & Thousands | Calcy",
     metaDescription:
-      "See how extra monthly repayments shorten your mortgage and reduce total interest. Free Australian extra repayments calculator.",
+      "See exactly how much extra repayments save on your Australian home loan. Enter your loan balance, interest rate, and extra amount — instantly see interest saved, years cut, and your new payoff date. Includes lump sum calculator and amortisation chart. Free, no sign-up.",
     canonical: "/extra-repayments-calculator",
     faqs: FAQS.extraRepayments,
     isCalculator: true,
