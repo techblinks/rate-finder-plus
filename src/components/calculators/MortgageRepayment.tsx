@@ -1,6 +1,6 @@
 import { lazy, Suspense, useMemo, useRef, useState } from "react";
 import { calcMortgage } from "@/lib/calc/mortgage";
-import { rbaRates } from "@/data/rbaRates";
+import { useRbaRates } from "@/hooks/useRbaRates";
 import { AUD, monthName } from "@/lib/format";
 import { Card, ResultCard } from "@/components/ui-kit";
 import RangeField from "@/components/RangeField";
@@ -40,6 +40,7 @@ const PillToggle = <T extends string>({
 );
 
 const MortgageRepayment = () => {
+  const rbaRates = useRbaRates();
   const [loanType, setLoanType] = useState<LoanType>("owner");
   const [amount, setAmount] = useState(650000);
   const [rate, setRate] = useState(rbaRates.ownerOccupier);
