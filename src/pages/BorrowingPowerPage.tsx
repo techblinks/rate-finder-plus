@@ -1,5 +1,6 @@
 import CalculatorPageShell from "./CalculatorPageShell";
 import BorrowingPower from "@/components/calculators/BorrowingPower";
+import NextStepsLinks from "@/components/NextStepsLinks";
 import { FAQS } from "@/data/faqs";
 import { SEO_FAQS } from "@/data/seoFaqs";
 
