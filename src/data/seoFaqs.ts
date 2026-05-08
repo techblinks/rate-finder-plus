@@ -26,24 +26,29 @@ export const SEO_FAQS: Record<string, FaqItem[]> = {
   ],
   stampDuty: [
     {
-      question: "How is stamp duty calculated?",
+      question: "How much is stamp duty on a $700,000 property in NSW?",
       answer:
-        "Each Australian state applies its own progressive bracket system to the property's dutiable value. We use the official 2026 thresholds for NSW, VIC, QLD, WA, SA, TAS, ACT and NT.",
+        "Stamp duty on a $700,000 property in New South Wales is approximately $26,707 for an owner-occupier. First home buyers purchasing under $800,000 pay $0 stamp duty in NSW — a saving of $26,707. Use Calcy's stamp duty calculator for exact figures based on your property value and buyer status.",
     },
     {
-      question: "Does this include first home buyer concessions?",
+      question: "Do first home buyers pay stamp duty in Australia?",
       answer:
-        "Yes. Select the first home buyer option to apply the relevant exemption or concession for your state, including phase-out thresholds.",
+        "It depends on the state and property value. In NSW, first home buyers are fully exempt on properties up to $800,000. In Victoria, the exemption applies up to $600,000. In Queensland, the concession applies up to $500,000. In WA, the exemption applies up to $430,000. The ACT offers a full exemption through its Home Buyer Concession Scheme. SA and NT do not offer stamp duty exemptions for first home buyers, though grants are available on new homes.",
     },
     {
-      question: "Is this accurate?",
+      question: "What is the First Home Owner Grant in each state?",
       answer:
-        "Results are estimates based on published 2026 rates. Always confirm the final figure with your conveyancer or state revenue office before settlement.",
+        "The First Home Owner Grant (FHOG) is a one-off payment available to eligible first home buyers purchasing or building a new home. As of 2026: NSW $10,000, VIC $10,000, QLD $30,000, WA $10,000, SA $15,000, TAS $30,000, NT $10,000. The ACT does not have a FHOG but offers stamp duty exemptions. The FHOG is only available on new homes — not established properties.",
     },
     {
-      question: "When is stamp duty paid?",
+      question: "When do you pay stamp duty in Australia?",
       answer:
-        "Stamp duty is paid at settlement — typically 30 to 90 days after signing the contract — and cannot usually be added to your mortgage.",
+        "Stamp duty must be paid at or before settlement in most Australian states — typically within 30 days of signing the contract. Your conveyancer or solicitor arranges the payment as part of the settlement process. Stamp duty is generally paid from your own savings rather than your home loan, which is why it is important to budget for it as part of your upfront costs.",
+    },
+    {
+      question: "Which Australian state has the lowest stamp duty?",
+      answer:
+        "Stamp duty varies significantly by state and property value. For a $700,000 property in 2026, the ACT typically has among the lowest rates for eligible buyers due to its Home Buyer Concession Scheme. Queensland and Western Australia also tend to have lower stamp duty than NSW and Victoria at mid-range prices. Use Calcy's 'Compare all states' feature to see the exact stamp duty for your property value across all 8 states simultaneously.",
     },
   ],
   borrowingPower: [

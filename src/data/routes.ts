@@ -35,10 +35,10 @@ export const ROUTES: RouteMeta[] = [
   },
   {
     path: "/stamp-duty-calculator",
-    title: "Stamp Duty Calculator",
-    metaTitle: "Stamp Duty Calculator Australia 2026 | All States | Calcy",
+    title: "Stamp duty calculator — all Australian states 2026",
+    metaTitle: "Stamp Duty Calculator Australia 2026 — All States & First Home Buyers | Calcy",
     metaDescription:
-      "Calculate stamp duty for any Australian state or territory. Includes first home buyer concessions and exemptions. NSW, VIC, QLD, WA, SA, TAS, ACT, NT.",
+      "Calculate stamp duty for every Australian state and territory in 2026. Includes first home buyer exemptions, FHOG grants, and total upfront cost estimate. Compare stamp duty across all states instantly. Free, no sign-up.",
     canonical: "/stamp-duty-calculator",
     faqs: FAQS.stampDuty,
     isCalculator: true,
