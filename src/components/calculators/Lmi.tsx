@@ -704,6 +704,25 @@ const Lmi = () => {
                 ]}
               />
             </div>
+            <div className="md:col-span-2">
+              <NumberField
+                label="Your monthly rent while waiting"
+                value={monthlyRent}
+                onChange={setMonthlyRent}
+                prefix="$"
+                suffix="/mo"
+                step={50}
+                tooltip="Rent paid every month you wait. Defaults to ~0.4% of the property value."
+                hint={
+                  <>
+                    Total rent over {dState.monthsToSave} months:{" "}
+                    <strong className="text-foreground tnum">
+                      {fmt0(monthlyRent * dState.monthsToSave)}
+                    </strong>
+                  </>
+                }
+              />
+            </div>
           </div>
 
           <div className="grid gap-3 md:grid-cols-2">
