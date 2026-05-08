@@ -265,6 +265,7 @@ const RentVsBuy = () => {
 
   // Persist + URL sync (debounced)
   const debounced = useDebouncedValue(s, 250);
+  const isStale = debounced !== s;
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
@@ -694,15 +695,24 @@ const RentVsBuy = () => {
         {/* RIGHT — Sticky verdict panel */}
         <aside className="order-1 lg:order-none sticky top-2 z-30 self-start lg:top-24">
           <div
-            className={`rounded-2xl border-2 p-5 transition-colors ${verdictBorder}`}
+            className={`rounded-2xl border-2 p-5 transition-all duration-200 ${verdictBorder} ${isStale ? "opacity-70" : "opacity-100"}`}
             aria-live="polite"
+            aria-busy={isStale}
           >
-            <div className="text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">
-              {result.breakEvenYear
-                ? `Break-even at year ${result.breakEvenYear}`
-                : result.verdict === "rent"
-                  ? `Renting wins over ${inputs.analysisYears} years`
-                  : `${inputs.analysisYears}-year outlook`}
+            <div className="flex items-center justify-between gap-2 text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">
+              <span>
+                {result.breakEvenYear
+                  ? `Break-even at year ${result.breakEvenYear}`
+                  : result.verdict === "rent"
+                    ? `Renting wins over ${inputs.analysisYears} years`
+                    : `${inputs.analysisYears}-year outlook`}
+              </span>
+              {isStale && (
+                <span className="flex items-center gap-1.5 rounded-full bg-background/70 px-2 py-0.5 text-[10px] normal-case tracking-normal text-muted-foreground">
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
+                  Updating
+                </span>
+              )}
             </div>
             <div className="mt-1 text-[18px] font-bold text-foreground">
               {verdictLabel}
@@ -763,7 +773,7 @@ const RentVsBuy = () => {
       </div>
 
       {/* Break-even chart */}
-      <section className="rounded-2xl border border-border bg-card p-5">
+      <section className={`rounded-2xl border border-border bg-card p-5 transition-opacity duration-200 ${isStale ? "opacity-60" : "opacity-100"}`}>
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <h3 className="text-[15px] font-semibold">Net worth over time</h3>
           {result.breakEvenYear ? (
@@ -856,7 +866,7 @@ const RentVsBuy = () => {
       </section>
 
       {/* Sensitivity table */}
-      <section className="rounded-2xl border border-border bg-card p-5">
+      <section className={`rounded-2xl border border-border bg-card p-5 transition-opacity duration-200 ${isStale ? "opacity-60" : "opacity-100"}`}>
         <h3 className="text-[15px] font-semibold">How assumptions change the result</h3>
         <p className="mt-1 text-[13px] text-muted-foreground">
           Break-even year at different property growth and investment return rates. The cell that matches your current assumptions is highlighted.
@@ -935,7 +945,7 @@ const RentVsBuy = () => {
       </section>
 
       {/* Year-by-year table */}
-      <section className="rounded-2xl border border-border bg-card p-5">
+      <section className={`rounded-2xl border border-border bg-card p-5 transition-opacity duration-200 ${isStale ? "opacity-60" : "opacity-100"}`}>
         <div className="mb-3 flex items-center justify-between">
           <h3 className="text-[15px] font-semibold">Year-by-year comparison</h3>
           <button
