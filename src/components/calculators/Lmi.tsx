@@ -372,9 +372,10 @@ const Lmi = () => {
       loanTerm: dState.loanTerm,
       annualGrowthRate: Math.max(0, dState.growthPct - 2),
       monthsToSave: dState.monthsToSave,
+      monthlyRent: dRent,
     });
     return lower.recommendation;
-  }, [propertyValue, deposit, lmi, dState]);
+  }, [propertyValue, deposit, lmi, dState, dRent]);
 
   const buyNowQs = `?value=${Math.round(propertyValue)}&deposit=${Math.round(deposit)}`;
 
