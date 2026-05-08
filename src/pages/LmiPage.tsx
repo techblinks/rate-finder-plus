@@ -10,8 +10,7 @@ const LmiPage = () => (
     metaTitle="LMI Calculator Australia 2026 — Lender's Mortgage Insurance Estimate | Calcy"
     metaDescription="Calculate your LMI cost instantly. See if LMI applies to your loan, compare paying upfront vs adding to your loan, and find out if you qualify for government schemes that eliminate LMI entirely. Free, no sign-up."
     canonical="/lmi-calculator"
-    faqs={FAQS.lmi}
-    seoFaqs={SEO_FAQS.lmi}
+    faqs={SEO_FAQS.lmi}
     related={[
       { to: "/mortgage-calculator", label: "Mortgage Repayment Calculator" },
       { to: "/borrowing-power-calculator", label: "Borrowing Power Calculator" },
