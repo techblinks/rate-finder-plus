@@ -10,6 +10,7 @@ const NAV = [
   { to: "/borrowing-power-calculator", label: "Borrowing" },
   { to: "/lmi-calculator", label: "LMI" },
   { to: "/loan-comparison-calculator", label: "Compare" },
+  { to: "/rent-vs-buy-calculator", label: "Rent vs Buy" },
   { to: "/guides", label: "Guides" },
 ];
 
