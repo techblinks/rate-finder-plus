@@ -1,5 +1,6 @@
 import CalculatorPageShell from "./CalculatorPageShell";
 import StampDuty from "@/components/calculators/StampDuty";
+import NextStepsLinks from "@/components/NextStepsLinks";
 import { STAMP_DUTY_STATE_CONTENT } from "@/data/stampDutyStateContent";
 
 const StampDutyStatePage = ({ slug }: { slug: keyof typeof STAMP_DUTY_STATE_CONTENT }) => {
