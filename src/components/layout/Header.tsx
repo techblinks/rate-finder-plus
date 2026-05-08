@@ -33,6 +33,8 @@ const Header = () => {
           <img
             src={src}
             alt="Calcy"
+            width={h * 4}
+            height={h}
             style={{ height: `${h}px`, width: "auto" }}
             decoding="async"
             fetchPriority="high"
