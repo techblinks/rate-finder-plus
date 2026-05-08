@@ -514,7 +514,7 @@ const Home = () => {
             {[
               { stat: "6", label: "Free calculators" },
               { stat: "8", label: "States & territories" },
-              { stat: "4.10%", label: "Current RBA rate" },
+              { stat: "4.35%", label: "Current RBA rate" },
             ].map((s) => (
               <li
                 key={s.label}
