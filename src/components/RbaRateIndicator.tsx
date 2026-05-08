@@ -43,6 +43,7 @@ const RbaRateIndicator = ({ loanType, onApply }: RbaRateIndicatorProps) => {
       </div>
     </div>
   </div>
-);
+  );
+};
 
 export default RbaRateIndicator;
