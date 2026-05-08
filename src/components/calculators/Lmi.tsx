@@ -220,6 +220,10 @@ const Lmi = () => {
     setS((prev) => ({ ...prev, [k]: v }));
 
   const [extraSavings, setExtraSavings] = useState(1000);
+  const [monthlyRent, setMonthlyRent] = useState<number>(() =>
+    Math.round((initial.propertyValue * 0.004) / 50) * 50,
+  );
+  const dRent = useDebouncedValue(monthlyRent, 150);
   const [copied, setCopied] = useState(false);
   const prevLmi = useRef(0);
 
