@@ -335,6 +335,11 @@ const MortgageCalculatorRedesign = () => {
 
   return (
     <div className="space-y-6">
+      <StickyResultsBar
+        watchRef={inputsRef}
+        summary={`${fmt0(loan)} · ${rate.toFixed(2)}% · ${term}yr`}
+        primary={`${FREQ_LABEL[freq]} ${fmt0(headline)}`}
+      />
       {restored === "local" && (
         <div className="flex items-center justify-between gap-3 rounded-xl border border-accent-mid bg-accent-light px-4 py-3 text-[13px] text-foreground">
           <span>Welcome back! We've restored your last calculation.</span>
