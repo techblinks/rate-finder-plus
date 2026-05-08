@@ -17,10 +17,12 @@ const StampDutyStatePage = ({ slug }: { slug: keyof typeof STAMP_DUTY_STATE_CONT
       seoFaqs={cfg.faqs}
       interleaveAdsEvery={2}
       related={[
-        { to: "/stamp-duty-calculator", label: "All states stamp duty calculator" },
-        { to: "/mortgage-calculator", label: "Mortgage Repayment Calculator" },
-        { to: "/lmi-calculator", label: "LMI Calculator" },
-        { to: "/borrowing-power-calculator", label: "Borrowing Power Calculator" },
+        { to: "/stamp-duty-calculator", label: "Compare stamp duty across all states" },
+        { to: "/mortgage-calculator", label: "Mortgage repayment calculator" },
+        { to: "/borrowing-power-calculator", label: "How much can I borrow?" },
+        { to: "/lmi-calculator", label: "LMI calculator (deposit < 20%)" },
+        { to: "/loan-comparison-calculator", label: "Compare two home loans" },
+        { to: "/refinance-calculator", label: "Should I refinance?" },
       ]}
       sections={[
         ...cfg.sections.map((s) => ({
