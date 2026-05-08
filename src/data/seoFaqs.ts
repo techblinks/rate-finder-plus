@@ -48,23 +48,29 @@ export const SEO_FAQS: Record<string, FaqItem[]> = {
   ],
   borrowingPower: [
     {
-      question: "How is my borrowing power calculated?",
+      question: "How much can I borrow on a $100,000 salary in Australia?",
       answer:
-        "We estimate net monthly income, subtract living expenses, other repayments and credit card commitments, then convert your surplus into a maximum loan size at the APRA assessment rate (your rate + 3%).",
+        "On a $100,000 gross salary with typical living expenses of $3,500/month and no existing debts, you may be able to borrow approximately $450,000–$550,000. Lenders assess you at your interest rate plus a 3% APRA serviceability buffer. Use Calcy's borrowing power calculator for a personalised estimate based on your actual income and expenses.",
     },
     {
       question: "What is the APRA serviceability buffer?",
       answer:
-        "APRA requires Australian lenders to assess your repayments at a rate at least 3% above your loan's interest rate, protecting borrowers against future rate rises.",
+        "The APRA serviceability buffer requires Australian lenders to assess your ability to repay a loan at 3% above the actual interest rate. If your loan rate is 6.14%, you are assessed at 9.14%. This means your borrowing power is calculated based on the higher repayment amount, even though you will never actually pay it. The buffer was introduced to protect borrowers from overleveraging.",
     },
     {
-      question: "Is this accurate?",
+      question: "How does a credit card limit affect my borrowing power?",
       answer:
-        "Results are estimates only. Lenders apply their own income shading, expense benchmarks (HEM) and credit policies, so your actual approval may differ.",
+        "Lenders assess your credit card limit — not your balance — as a potential monthly obligation. A $20,000 credit card limit with a $0 balance is still treated as if you could spend the full $20,000. As a rule of thumb, every $10,000 of credit card limit reduces your borrowing power by approximately $50,000. Cancelling unused credit cards before applying is one of the fastest ways to increase your borrowing limit.",
     },
     {
-      question: "What is the current RBA rate?",
-      answer: "The RBA cash rate is 4.10% as of May 2026.",
+      question: "Do both incomes count when applying for a joint home loan?",
+      answer:
+        "Yes. When applying jointly, both incomes are assessed together, significantly increasing borrowing power. A second income of $70,000 per year can add approximately $200,000–$300,000 to your combined borrowing capacity, depending on the lender and each applicant's expenses and commitments.",
+    },
+    {
+      question: "Why is my borrowing power lower than I expected?",
+      answer:
+        "Several factors commonly reduce borrowing power below expectations. The APRA 3% serviceability buffer adds significantly to the assessment rate. Credit card limits (even with $0 balance) reduce capacity. HECS/HELP repayments are deducted from assessed income. Existing loan repayments and living expenses all reduce the amount available for new loan repayments. Calcy's 'How to increase your limit' section shows you exactly which factors are reducing your capacity based on your specific inputs.",
     },
   ],
   extraRepayments: [
