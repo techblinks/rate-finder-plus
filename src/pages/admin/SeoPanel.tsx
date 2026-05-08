@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { Copy, Check, AlertTriangle } from "lucide-react";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 
@@ -54,6 +55,70 @@ const positionColor = (p: number | null | undefined) => {
   if (p <= 10) return "bg-emerald-100 text-emerald-900";
   if (p <= 20) return "bg-amber-100 text-amber-900";
   return "bg-red-100 text-red-900";
+};
+
+const REDIRECT_URI = `${SUPABASE_URL}/functions/v1/gsc-oauth-callback`;
+
+const RedirectUriBox = () => {
+  const [copied, setCopied] = useState(false);
+  const [verified, setVerified] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(REDIRECT_URI);
+      setCopied(true);
+      toast({ title: "Redirect URI copied to clipboard" });
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast({ title: "Failed to copy", variant: "destructive" });
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center gap-2">
+        <code className="rounded-lg border border-border bg-background px-3 py-2 text-xs font-mono text-foreground break-all">
+          {REDIRECT_URI}
+        </code>
+        <button
+          onClick={handleCopy}
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-2 text-xs font-medium text-foreground hover:bg-muted"
+          title="Copy redirect URI"
+        >
+          {copied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </div>
+
+      <label className="flex cursor-pointer items-center gap-2 text-xs text-muted-foreground">
+        <input
+          type="checkbox"
+          checked={verified}
+          onChange={(e) => setVerified(e.target.checked)}
+          className="rounded border-border"
+        />
+        <span>I have pasted this exact URI into Google Cloud Console</span>
+      </label>
+
+      {verified && (
+        <div className="flex items-center gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-xs text-emerald-900">
+          <Check className="h-4 w-4 text-emerald-600" />
+          <span>
+            Good. Make sure there are no extra spaces, trailing slashes, or protocol differences in Google Cloud Console.
+          </span>
+        </div>
+      )}
+
+      {!verified && (
+        <div className="flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+          <AlertTriangle className="h-4 w-4 text-amber-600" />
+          <span>
+            If you see <strong>redirect_uri_mismatch</strong>, the URI in Google Cloud Console doesn't match the one above.
+          </span>
+        </div>
+      )}
+    </div>
+  );
 };
 
 const SeoPanel = () => {
@@ -173,6 +238,19 @@ const SeoPanel = () => {
           </p>
         </section>
       )}
+
+      {/* Redirect URI helper */}
+      <section className="rounded-xl border border-border bg-surface p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h3 className="text-sm font-semibold text-foreground">Google Search Console — Redirect URI</h3>
+            <p className="text-xs text-muted-foreground">
+              Copy this exact URI and paste it into Google Cloud Console → Credentials → your OAuth Client ID → Authorized redirect URIs.
+            </p>
+          </div>
+          <RedirectUriBox />
+        </div>
+      </section>
 
       {/* GSC 403 Troubleshooting */}
       <details className="rounded-2xl border border-amber-300 bg-amber-50 p-5 text-amber-950 open:shadow-sm">
