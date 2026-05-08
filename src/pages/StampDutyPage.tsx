@@ -1,5 +1,6 @@
 import CalculatorPageShell from "./CalculatorPageShell";
 import StampDuty from "@/components/calculators/StampDuty";
+import NextStepsLinks from "@/components/NextStepsLinks";
 import { FAQS } from "@/data/faqs";
 
 
@@ -136,6 +137,46 @@ const StampDutyPage = () => (
               eventually exceed the upfront stamp duty amount. This calculator shows the upfront
               figure — consult a financial adviser to compare the two options for your situation.
             </p>
+          </>
+        ),
+      },
+      {
+        heading: "Next steps after calculating stamp duty",
+        body: (
+          <>
+            <p className="mb-4">
+              Stamp duty is just one piece of your upfront cost. Once you know your duty figure,
+              line it up with your loan size, repayments, and borrowing capacity so you can budget
+              the full purchase with confidence.
+            </p>
+            <NextStepsLinks
+              items={[
+                {
+                  to: "/mortgage-calculator",
+                  title: "Mortgage repayment calculator",
+                  description:
+                    "Estimate monthly principal and interest repayments on the loan you'll need after paying stamp duty and your deposit.",
+                },
+                {
+                  to: "/borrowing-power-calculator",
+                  title: "Borrowing power calculator",
+                  description:
+                    "Check how much a lender is likely to lend you based on income, expenses, and existing debts before factoring in upfront costs.",
+                },
+                {
+                  to: "/lmi-calculator",
+                  title: "LMI calculator",
+                  description:
+                    "If your deposit is below 20% of the purchase price, estimate the Lenders Mortgage Insurance premium added to your loan.",
+                },
+                {
+                  to: "/loan-comparison-calculator",
+                  title: "Loan comparison calculator",
+                  description:
+                    "Compare two home loans side-by-side, including fees, to find the cheaper option over the life of the loan.",
+                },
+              ]}
+            />
           </>
         ),
       },

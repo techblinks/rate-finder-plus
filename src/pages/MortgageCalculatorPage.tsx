@@ -1,5 +1,6 @@
 import CalculatorPageShell from "./CalculatorPageShell";
 import MortgageCalculatorRedesign from "@/components/calculators/MortgageCalculatorRedesign";
+import NextStepsLinks from "@/components/NextStepsLinks";
 import { FAQS } from "@/data/faqs";
 import { SEO_FAQS } from "@/data/seoFaqs";
 
@@ -80,6 +81,46 @@ const MortgageCalculatorPage = () => (
             loan at 6.14%, this saves approximately $45,000 in interest and cuts around 2.5 years
             off the loan.
           </p>
+        ),
+      },
+      {
+        heading: "Don't forget the upfront costs",
+        body: (
+          <>
+            <p className="mb-4">
+              Your monthly repayment is only part of the picture. Stamp duty, LMI, and your
+              borrowing capacity together determine the loan amount you should plug into this
+              calculator.
+            </p>
+            <NextStepsLinks
+              items={[
+                {
+                  to: "/stamp-duty-calculator",
+                  title: "Stamp duty calculator",
+                  description:
+                    "Calculate your exact state stamp duty plus first home buyer concessions before locking in a loan amount.",
+                },
+                {
+                  to: "/lmi-calculator",
+                  title: "LMI calculator",
+                  description:
+                    "If your deposit is below 20%, estimate Lenders Mortgage Insurance — often capitalised on top of your loan.",
+                },
+                {
+                  to: "/borrowing-power-calculator",
+                  title: "Borrowing power calculator",
+                  description:
+                    "See the maximum loan a lender is likely to approve based on your income and expenses.",
+                },
+                {
+                  to: "/loan-comparison-calculator",
+                  title: "Loan comparison calculator",
+                  description:
+                    "Compare two home loans side-by-side, including fees, to find the cheaper option.",
+                },
+              ]}
+            />
+          </>
         ),
       },
     ]}
