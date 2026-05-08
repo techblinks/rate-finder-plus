@@ -104,6 +104,45 @@ const BorrowingPowerPage = () => (
           </ul>
         ),
       },
+      {
+        heading: "After you know your limit",
+        body: (
+          <>
+            <p className="mb-4">
+              Once you know roughly how much you can borrow, work out the upfront costs and
+              monthly repayments so you can confidently set a property budget.
+            </p>
+            <NextStepsLinks
+              items={[
+                {
+                  to: "/stamp-duty-calculator",
+                  title: "Stamp duty calculator",
+                  description:
+                    "Estimate the stamp duty bill for your state — a major upfront cost that comes out of your deposit, not your loan.",
+                },
+                {
+                  to: "/mortgage-calculator",
+                  title: "Mortgage repayment calculator",
+                  description:
+                    "Plug your maximum loan into a repayment schedule to see if monthly numbers feel comfortable in real life.",
+                },
+                {
+                  to: "/lmi-calculator",
+                  title: "LMI calculator",
+                  description:
+                    "Borrowing more than 80% of the property value usually triggers Lenders Mortgage Insurance — estimate it here.",
+                },
+                {
+                  to: "/extra-repayments-calculator",
+                  title: "Extra repayments calculator",
+                  description:
+                    "See how small extra repayments can shave years and tens of thousands of dollars off your future loan.",
+                },
+              ]}
+            />
+          </>
+        ),
+      },
     ]}
   >
     <BorrowingPower />
