@@ -281,36 +281,61 @@ const ExtraRepayments = () => {
   }, [result]);
 
   const downloadCsv = () => {
+    // CSV mirrors the year-by-year breakdown shown on screen:
+    // same ordering, same rounded AUD values (whole dollars, like fmt0),
+    // plus the extra contextual columns power-users expect.
     const headers = [
       "Year",
-      "Opening balance",
-      "Scheduled paid",
-      "Extra paid",
-      "Interest paid (no extra)",
-      "Closing balance (no extra)",
-      "Closing balance (with extra)",
-      "Difference",
+      "Opening balance (AUD)",
+      "Scheduled paid (AUD)",
+      "Extra paid (AUD)",
+      "Interest paid - standard (AUD)",
+      "Interest paid - with extra (AUD)",
+      "Closing balance - standard (AUD)",
+      "Closing balance - with extra (AUD)",
+      "Difference (AUD)",
     ];
-    const rows = result.standard.yearlyData.map((std, i) => {
+    const round = (n: number) => Math.round(n || 0);
+    const escape = (v: string | number) => {
+      const str = String(v);
+      return /[",\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
+    };
+    const totalYears = Math.max(
+      result.standard.yearlyData.length,
+      result.accelerated.yearlyData.length
+    );
+    const rows: string[] = [];
+    for (let i = 0; i < totalYears; i++) {
+      const std = result.standard.yearlyData[i];
       const acc = result.accelerated.yearlyData[i];
-      return [
-        std.year,
-        std.openingBalance,
-        std.scheduledPaid,
-        acc?.extraPaid ?? 0,
-        std.interestPaid,
-        std.closingBalance,
-        acc?.closingBalance ?? 0,
-        std.closingBalance - (acc?.closingBalance ?? 0),
-      ].join(",");
-    });
-    const csv = [headers.join(","), ...rows].join("\n");
+      const stdClose = std?.closingBalance ?? 0;
+      const accClose = acc?.closingBalance ?? 0;
+      rows.push(
+        [
+          std?.year ?? acc?.year ?? i + 1,
+          round(std?.openingBalance ?? acc?.openingBalance ?? 0),
+          round(std?.scheduledPaid ?? acc?.scheduledPaid ?? 0),
+          round(acc?.extraPaid ?? 0),
+          round(std?.interestPaid ?? 0),
+          round(acc?.interestPaid ?? 0),
+          round(stdClose),
+          round(accClose),
+          round(stdClose - accClose),
+        ]
+          .map(escape)
+          .join(",")
+      );
+    }
+    // BOM keeps Excel from mangling currency / unicode.
+    const csv = "\uFEFF" + [headers.join(","), ...rows].join("\r\n") + "\r\n";
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = `calcy-extra-repayments-${s.balance}-${s.extra}.csv`;
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
