@@ -265,6 +265,7 @@ const RentVsBuy = () => {
 
   // Persist + URL sync (debounced)
   const debounced = useDebouncedValue(s, 250);
+  const isStale = debounced !== s;
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
