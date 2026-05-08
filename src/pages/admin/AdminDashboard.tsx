@@ -6,6 +6,7 @@ import { useSiteSettings, refreshSiteSettings } from "@/hooks/useSiteSettings";
 import { toast } from "@/hooks/use-toast";
 import LiveDataPanel from "./LiveDataPanel";
 import SeoPanel from "./SeoPanel";
+import DashboardPanel from "./DashboardPanel";
 
 const BUCKET = "branding";
 
@@ -21,15 +22,23 @@ const uploadFile = async (file: File, prefix: string) => {
   return data.publicUrl;
 };
 
-type TabKey = "branding" | "analytics" | "adsense" | "seo" | "seo_intel" | "live_data";
+type TabKey =
+  | "dashboard"
+  | "branding"
+  | "analytics"
+  | "adsense"
+  | "seo"
+  | "seo_intel"
+  | "live_data";
 
 const TABS: { key: TabKey; label: string }[] = [
+  { key: "dashboard", label: "Dashboard" },
+  { key: "live_data", label: "Live Data" },
+  { key: "seo_intel", label: "SEO Intelligence" },
   { key: "branding", label: "Branding" },
   { key: "analytics", label: "Analytics & Tracking" },
   { key: "adsense", label: "AdSense" },
   { key: "seo", label: "SEO" },
-  { key: "seo_intel", label: "SEO Intelligence" },
-  { key: "live_data", label: "Live Data" },
 ];
 
 const fieldClass =
@@ -79,7 +88,7 @@ const Toggle = ({
 const AdminDashboard = () => {
   const { session, isAdmin, loading } = useAuth();
   const settings = useSiteSettings();
-  const [tab, setTab] = useState<TabKey>("branding");
+  const [tab, setTab] = useState<TabKey>("dashboard");
   const [logoHeight, setLogoHeight] = useState(settings.logo_height);
   const [saving, setSaving] = useState(false);
   const [draft, setDraft] = useState<Record<string, unknown>>({});
@@ -222,6 +231,7 @@ const AdminDashboard = () => {
       </div>
 
       <fieldset disabled={!isAdmin || saving} className="mt-6 space-y-8 disabled:opacity-60">
+        {tab === "dashboard" && <DashboardPanel />}
         {tab === "branding" && (
           <>
             <section className="rounded-2xl border border-border bg-surface p-6">
