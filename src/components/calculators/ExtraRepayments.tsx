@@ -18,6 +18,7 @@ import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import ResultActions from "@/components/ResultActions";
 import ShareResult from "@/components/ShareResult";
+import { useRbaRates } from "@/hooks/useRbaRates";
 
 const AUD0 = new Intl.NumberFormat("en-AU", {
   style: "currency",
@@ -148,6 +149,7 @@ const Segmented = <T extends string>({
 );
 
 const ExtraRepayments = () => {
+  const rbaRates = useRbaRates();
   const [restored, setRestored] = useState<"url" | "local" | null>(null);
   const initial = useMemo<State>(() => {
     const u = readUrl();
@@ -420,7 +422,7 @@ const ExtraRepayments = () => {
                     %
                   </span>
                 </div>
-                <p className="mt-1 text-[11px] text-muted-foreground">RBA cash rate: 4.10%</p>
+                <p className="mt-1 text-[11px] text-muted-foreground">RBA cash rate: {rbaRates.cashRate.toFixed(2)}%</p>
               </div>
 
               <div>
