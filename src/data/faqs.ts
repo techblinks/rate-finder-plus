@@ -160,20 +160,29 @@ export const FAQS: Record<string, FaqItem[]> = {
     {
       question: "How much do extra repayments save on a mortgage?",
       answer:
-        "On a $500,000 loan at 5.50% over 30 years, an extra $500 per month saves approximately $114,000 in interest and cuts the loan term by around 8 years. The earlier you make extra repayments, the greater the saving.",
+        "On a $500,000 loan at 5.5% with 25 years remaining, paying an extra $500 per month saves approximately $119,000 in interest and cuts 6 years and 3 months off the loan term. The earlier you make extra repayments, the greater the total saving.",
       links: [{ text: "$500,000 loan", href: "/mortgage-calculator" }],
+    },
+    {
+      question: "Is it better to make extra repayments weekly or monthly?",
+      answer:
+        "More frequent extra repayments save slightly more interest because the principal reduces sooner. However, the difference is modest — the AMOUNT of extra repayment matters far more than the frequency. Weekly $115 saves only marginally more than monthly $500.",
     },
     {
       question: "Can I make extra repayments on a fixed rate loan?",
       answer:
-        "Most fixed rate loans limit extra repayments to $10,000–$20,000 per year without a break fee. Variable rate loans typically allow unlimited extra repayments. Check your loan contract before making large additional payments on a fixed loan.",
+        "Most Australian fixed rate loans allow extra repayments up to $10,000–$20,000 per year. Above that limit, early repayment fees may apply. Variable rate loans typically allow unlimited extra repayments.",
       links: [{ text: "Variable rate loans", href: "/loan-comparison-calculator" }],
     },
     {
-      question: "What is a mortgage offset account?",
+      question: "Should I put extra money into an offset account or make extra repayments?",
       answer:
-        "An offset account is a savings account linked to your mortgage. The balance in the offset account reduces the principal on which interest is calculated. For example, a $50,000 offset on a $500,000 loan means you only pay interest on $450,000. Offset accounts achieve a similar result to extra repayments without reducing your loan flexibility.",
-      links: [{ text: "extra repayments", href: "/extra-repayments-calculator" }],
+        "Both reduce interest. Extra repayments permanently reduce the loan balance — funds aren't easily accessible again. An offset account holds savings separately while offsetting interest, keeping money accessible. If you need flexibility, an offset is generally better; if discipline is the priority, direct extra repayments work just as well.",
+    },
+    {
+      question: "What is the effect of a lump sum repayment?",
+      answer:
+        "A one-off lump sum (tax return, bonus, inheritance) directly reduces principal. A $10,000 lump sum on a $500,000 loan at 5.5% with 25 years remaining saves approximately $18,000 in total interest and cuts ~9 months off the term — assuming no further extra repayments.",
     },
   ],
   lmi: [
