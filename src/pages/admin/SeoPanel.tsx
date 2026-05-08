@@ -57,6 +57,70 @@ const positionColor = (p: number | null | undefined) => {
   return "bg-red-100 text-red-900";
 };
 
+const REDIRECT_URI = `${SUPABASE_URL}/functions/v1/gsc-oauth-callback`;
+
+const RedirectUriBox = () => {
+  const [copied, setCopied] = useState(false);
+  const [verified, setVerified] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(REDIRECT_URI);
+      setCopied(true);
+      toast({ title: "Redirect URI copied to clipboard" });
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast({ title: "Failed to copy", variant: "destructive" });
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center gap-2">
+        <code className="rounded-lg border border-border bg-background px-3 py-2 text-xs font-mono text-foreground break-all">
+          {REDIRECT_URI}
+        </code>
+        <button
+          onClick={handleCopy}
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-2 text-xs font-medium text-foreground hover:bg-muted"
+          title="Copy redirect URI"
+        >
+          {copied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </div>
+
+      <label className="flex cursor-pointer items-center gap-2 text-xs text-muted-foreground">
+        <input
+          type="checkbox"
+          checked={verified}
+          onChange={(e) => setVerified(e.target.checked)}
+          className="rounded border-border"
+        />
+        <span>I have pasted this exact URI into Google Cloud Console</span>
+      </label>
+
+      {verified && (
+        <div className="flex items-center gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-xs text-emerald-900">
+          <Check className="h-4 w-4 text-emerald-600" />
+          <span>
+            Good. Make sure there are no extra spaces, trailing slashes, or protocol differences in Google Cloud Console.
+          </span>
+        </div>
+      )}
+
+      {!verified && (
+        <div className="flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+          <AlertTriangle className="h-4 w-4 text-amber-600" />
+          <span>
+            If you see <strong>redirect_uri_mismatch</strong>, the URI in Google Cloud Console doesn't match the one above.
+          </span>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const SeoPanel = () => {
   const [sub, setSub] = useState<SubTab>("overview");
   const [gscConnected, setGscConnected] = useState<boolean | null>(null);
