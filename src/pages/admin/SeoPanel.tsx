@@ -174,6 +174,72 @@ const SeoPanel = () => {
         </section>
       )}
 
+      {/* GSC 403 Troubleshooting */}
+      <details className="rounded-2xl border border-amber-300 bg-amber-50 p-5 text-amber-950 open:shadow-sm">
+        <summary className="cursor-pointer text-sm font-semibold">
+          ⚠️ Getting a 403 / "access_denied" / "has not completed Google verification"? Click to fix.
+        </summary>
+        <div className="mt-4 space-y-4 text-sm">
+          <p>
+            Your Google OAuth app is in <strong>Testing</strong> mode, so only emails listed as <strong>Test users</strong> can sign in.
+            Add <code className="rounded bg-amber-100 px-1 py-0.5">yadavabikash@gmail.com</code> (and any other admin email) to the test users list.
+          </p>
+
+          <div>
+            <p className="font-semibold">Step-by-step</p>
+            <ol className="mt-2 list-decimal space-y-2 pl-5">
+              <li>
+                Open the Google Cloud Console OAuth consent screen:{" "}
+                <a
+                  href="https://console.cloud.google.com/apis/credentials/consent"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold underline"
+                >
+                  console.cloud.google.com/apis/credentials/consent →
+                </a>
+              </li>
+              <li>Make sure the project selector (top bar) is set to the same project that owns your OAuth Client ID / Secret.</li>
+              <li>
+                Confirm <strong>Publishing status: Testing</strong> and <strong>User type: External</strong>.
+              </li>
+              <li>
+                Scroll down to the <strong>Test users</strong> section and click{" "}
+                <span className="rounded bg-white px-1.5 py-0.5 font-mono text-xs">+ ADD USERS</span>.
+              </li>
+              <li>
+                Enter <code className="rounded bg-amber-100 px-1 py-0.5">yadavabikash@gmail.com</code> and click <strong>Save</strong>.
+              </li>
+              <li>
+                Go to <strong>Data Access</strong> (or <strong>Scopes</strong>) and confirm{" "}
+                <code className="rounded bg-amber-100 px-1 py-0.5">.../auth/webmasters.readonly</code> is listed.
+              </li>
+              <li>
+                Open <strong>Credentials → your OAuth Client ID</strong> and verify the redirect URI is exactly:
+                <pre className="mt-1 overflow-x-auto rounded bg-white p-2 text-xs">
+                  {`${SUPABASE_URL}/functions/v1/gsc-oauth-callback`}
+                </pre>
+              </li>
+              <li>
+                Come back here and click <strong>Connect Google Search Console</strong> again. If Google shows
+                "Google hasn't verified this app", click <strong>Advanced → Go to (unsafe)</strong> to continue —
+                this is normal for apps in Testing mode.
+              </li>
+            </ol>
+          </div>
+
+          <div className="rounded-lg border border-amber-300 bg-white/60 p-3 text-xs">
+            <p className="font-semibold">Still blocked?</p>
+            <ul className="mt-1 list-disc space-y-1 pl-5">
+              <li>Test users can take ~1 minute to propagate — wait and retry.</li>
+              <li>You must sign in with the <em>exact</em> email you added (yadavabikash@gmail.com), not a different Google account.</li>
+              <li>That account must also have access to the <code>calcy.com.au</code> property in Search Console.</li>
+              <li>If you see <code>redirect_uri_mismatch</code>, the URI in step 7 doesn't match — copy it exactly.</li>
+            </ul>
+          </div>
+        </div>
+      </details>
+
       {gscConnected && (
         <div className="flex items-center justify-between rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-2 text-sm text-emerald-900">
           <span>✓ Google Search Console connected — calcy.com.au</span>
