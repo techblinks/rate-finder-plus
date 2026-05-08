@@ -477,7 +477,7 @@ const Home = () => {
               {
                 Icon: RefreshCw,
                 title: "Updated with RBA moves",
-                body: "Rate inputs and repayment defaults reflect the current RBA cash rate of 4.10%. No stale numbers.",
+                body: "Rate inputs and repayment defaults reflect the current RBA cash rate of 4.35%. No stale numbers.",
               },
               {
                 Icon: Lock,
