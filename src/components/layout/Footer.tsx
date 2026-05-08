@@ -129,7 +129,7 @@ const Footer = () => (
       <div className="page-shell flex flex-col items-center gap-2 px-6 py-3 text-[13px] text-foreground sm:flex-row sm:justify-center sm:gap-3">
         <span>
           📊 RBA cash rate: <strong className="font-semibold">{RBA_RATE}</strong> · Last updated:{" "}
-          {RBA_UPDATED} · Following cuts in February and March 2026
+          {RBA_UPDATED} · Rate raised 25bps on 5 May 2026
         </span>
         <Link to="/mortgage-calculator" className="font-medium text-accent hover:underline">
           Recalculate my mortgage repayments →
