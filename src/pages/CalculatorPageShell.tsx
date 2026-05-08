@@ -72,16 +72,9 @@ const CalculatorPageShell = ({
         <p className="mb-6 text-[15px] text-muted-foreground">{subheading}</p>
       )}
       <AdSlot slot="header" className="mb-6" />
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
-        <div className="min-w-0">
-          {children}
-          <AdSlot slot="inline" className="my-10" />
-        </div>
-        <aside className="hidden lg:block" aria-label="Advertisement">
-          <div className="sticky top-24">
-            <AdSlot slot="sidebar" />
-          </div>
-        </aside>
+      <div className="min-w-0">
+        {children}
+        <AdSlot slot="inline" className="my-10" />
       </div>
       <div className="mt-12 space-y-10">
         {sections.map((s, i) => (

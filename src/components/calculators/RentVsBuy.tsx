@@ -439,9 +439,9 @@ const RentVsBuy = () => {
         </div>
       )}
 
-      <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(320px,420px)]">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
         {/* LEFT — Inputs */}
-        <div className="space-y-6">
+        <div className="space-y-6 order-2 lg:order-none">
           {/* If you buy */}
           <section className="rounded-2xl border border-border bg-card p-5">
             <h2 className="mb-4 text-[16px] font-semibold">If you buy</h2>
@@ -692,7 +692,7 @@ const RentVsBuy = () => {
         </div>
 
         {/* RIGHT — Sticky verdict panel */}
-        <aside className="md:sticky md:top-6 md:self-start">
+        <aside className="order-1 lg:order-none lg:sticky lg:top-24 lg:self-start">
           <div
             className={`rounded-2xl border-2 p-5 transition-colors ${verdictBorder}`}
             aria-live="polite"
