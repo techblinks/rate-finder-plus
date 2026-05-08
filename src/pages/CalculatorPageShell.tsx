@@ -75,11 +75,16 @@ const CalculatorPageShell = ({
       {children}
       <AdSlot slot="inline" className="my-10" />
       <div className="mt-12 space-y-10">
-        {sections.map((s) => (
-          <section key={s.heading}>
-            <h2 className="mb-3">{s.heading}</h2>
-            <div className="text-[15px] leading-relaxed text-muted-foreground">{s.body}</div>
-          </section>
+        {sections.map((s, i) => (
+          <div key={s.heading} className="space-y-10">
+            <section>
+              <h2 className="mb-3">{s.heading}</h2>
+              <div className="text-[15px] leading-relaxed text-muted-foreground">{s.body}</div>
+            </section>
+            {interleaveAdsEvery &&
+              (i + 1) % interleaveAdsEvery === 0 &&
+              i < sections.length - 1 && <AdSlot slot="inline" />}
+          </div>
         ))}
         <FAQ items={faqs} />
         <RelatedGuides canonical={canonical} />
