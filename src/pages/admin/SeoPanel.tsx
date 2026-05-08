@@ -175,6 +175,19 @@ const SeoPanel = () => {
         </section>
       )}
 
+      {/* Redirect URI helper */}
+      <section className="rounded-xl border border-border bg-surface p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h3 className="text-sm font-semibold text-foreground">Google Search Console — Redirect URI</h3>
+            <p className="text-xs text-muted-foreground">
+              Copy this exact URI and paste it into Google Cloud Console → Credentials → your OAuth Client ID → Authorized redirect URIs.
+            </p>
+          </div>
+          <RedirectUriBox />
+        </div>
+      </section>
+
       {/* GSC 403 Troubleshooting */}
       <details className="rounded-2xl border border-amber-300 bg-amber-50 p-5 text-amber-950 open:shadow-sm">
         <summary className="cursor-pointer text-sm font-semibold">
