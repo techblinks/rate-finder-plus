@@ -699,12 +699,20 @@ const RentVsBuy = () => {
             aria-live="polite"
             aria-busy={isStale}
           >
-            <div className="text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">
-              {result.breakEvenYear
-                ? `Break-even at year ${result.breakEvenYear}`
-                : result.verdict === "rent"
-                  ? `Renting wins over ${inputs.analysisYears} years`
-                  : `${inputs.analysisYears}-year outlook`}
+            <div className="flex items-center justify-between gap-2 text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">
+              <span>
+                {result.breakEvenYear
+                  ? `Break-even at year ${result.breakEvenYear}`
+                  : result.verdict === "rent"
+                    ? `Renting wins over ${inputs.analysisYears} years`
+                    : `${inputs.analysisYears}-year outlook`}
+              </span>
+              {isStale && (
+                <span className="flex items-center gap-1.5 rounded-full bg-background/70 px-2 py-0.5 text-[10px] normal-case tracking-normal text-muted-foreground">
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
+                  Updating
+                </span>
+              )}
             </div>
             <div className="mt-1 text-[18px] font-bold text-foreground">
               {verdictLabel}
