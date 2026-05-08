@@ -22,7 +22,7 @@ import {
   type NewLoanType,
   type RefinanceInputs,
 } from "@/lib/calc/refinance";
-import { rbaRates } from "@/data/rbaRates";
+import { useRbaRates } from "@/hooks/useRbaRates";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
 const AUD = new Intl.NumberFormat("en-AU", {
@@ -86,7 +86,7 @@ const DEFAULTS: State = {
   propertyValue: 700_000,
   manualLmi: 0,
 
-  wholesaleRate: rbaRates.cashRate,
+  wholesaleRate: 4.1,
 };
 
 const BALANCE_PILLS = [300_000, 400_000, 500_000, 600_000, 750_000, 1_000_000];
@@ -263,6 +263,7 @@ const Segmented = <T extends string | number>({
 );
 
 const Refinance = () => {
+  const rbaRates = useRbaRates();
   const [s, setS] = useState<State>(() => {
     if (typeof window === "undefined") return DEFAULTS;
     const fromUrl = readUrl();

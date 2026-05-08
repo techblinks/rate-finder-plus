@@ -4,7 +4,7 @@ import { Share2, Check, ExternalLink } from "lucide-react";
 import { calcLmi, lmiCapitalisedCost, payNowVsWait, type BuyerType } from "@/lib/calc/lmi";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
-import { rbaRates } from "@/data/rbaRates";
+import { useRbaRates } from "@/hooks/useRbaRates";
 import Tooltip from "@/components/Tooltip";
 import ResultActions from "@/components/ResultActions";
 
@@ -193,6 +193,7 @@ function Segmented<T extends string | number>({
 }
 
 const Lmi = () => {
+  const rbaRates = useRbaRates();
   const [restored, setRestored] = useState<"url" | "local" | null>(null);
   const initial = useMemo<State>(() => {
     const u = readUrl();

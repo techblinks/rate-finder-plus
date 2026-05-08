@@ -17,7 +17,7 @@ import {
   type RentVsBuyInputs,
 } from "@/lib/calc/rentVsBuy";
 import { STATES, type StateCode } from "@/lib/calc/stampDuty";
-import { rbaRates } from "@/data/rbaRates";
+import { useRbaRates } from "@/hooks/useRbaRates";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
 const AUD0 = new Intl.NumberFormat("en-AU", {
@@ -243,6 +243,7 @@ const Segmented = <T extends string | number>({
 );
 
 const RentVsBuy = () => {
+  const rbaRates = useRbaRates();
   const [s, setS] = useState<State>(() => {
     if (typeof window === "undefined") return DEFAULTS;
     const fromUrl = readUrl();
