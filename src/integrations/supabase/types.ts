@@ -14,6 +14,365 @@ export type Database = {
   }
   public: {
     Tables: {
+      competitor_pages: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          domain: string
+          domain_authority_estimate: number | null
+          estimated_monthly_traffic: number | null
+          id: string
+          is_active: boolean | null
+          keywords_ranking_for: Json | null
+          last_crawled_at: string | null
+          page_description: string | null
+          page_title: string | null
+          updated_at: string | null
+          url: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          domain: string
+          domain_authority_estimate?: number | null
+          estimated_monthly_traffic?: number | null
+          id?: string
+          is_active?: boolean | null
+          keywords_ranking_for?: Json | null
+          last_crawled_at?: string | null
+          page_description?: string | null
+          page_title?: string | null
+          updated_at?: string | null
+          url: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          domain?: string
+          domain_authority_estimate?: number | null
+          estimated_monthly_traffic?: number | null
+          id?: string
+          is_active?: boolean | null
+          keywords_ranking_for?: Json | null
+          last_crawled_at?: string | null
+          page_description?: string | null
+          page_title?: string | null
+          updated_at?: string | null
+          url?: string
+        }
+        Relationships: []
+      }
+      gsc_oauth_tokens: {
+        Row: {
+          access_token: string | null
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          refresh_token: string
+          scope: string | null
+          site_url: string
+          token_type: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          access_token?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          refresh_token: string
+          scope?: string | null
+          site_url?: string
+          token_type?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          access_token?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          refresh_token?: string
+          scope?: string | null
+          site_url?: string
+          token_type?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      rate_audit_log: {
+        Row: {
+          category: string
+          change_note: string | null
+          change_source: string | null
+          changed_by: string
+          created_at: string | null
+          id: string
+          key: string
+          new_value: Json
+          old_value: Json | null
+          rate_data_id: string | null
+          state: string | null
+        }
+        Insert: {
+          category: string
+          change_note?: string | null
+          change_source?: string | null
+          changed_by: string
+          created_at?: string | null
+          id?: string
+          key: string
+          new_value: Json
+          old_value?: Json | null
+          rate_data_id?: string | null
+          state?: string | null
+        }
+        Update: {
+          category?: string
+          change_note?: string | null
+          change_source?: string | null
+          changed_by?: string
+          created_at?: string | null
+          id?: string
+          key?: string
+          new_value?: Json
+          old_value?: Json | null
+          rate_data_id?: string | null
+          state?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rate_audit_log_rate_data_id_fkey"
+            columns: ["rate_data_id"]
+            isOneToOne: false
+            referencedRelation: "rate_data"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rate_data: {
+        Row: {
+          auto_sync: boolean | null
+          category: string
+          created_at: string | null
+          display_label: string | null
+          id: string
+          is_active: boolean | null
+          key: string
+          last_changed_at: string | null
+          last_verified_at: string | null
+          notes: string | null
+          previous_value: Json | null
+          source_name: string | null
+          source_url: string | null
+          state: string | null
+          sync_source: string | null
+          updated_at: string | null
+          value: Json
+        }
+        Insert: {
+          auto_sync?: boolean | null
+          category: string
+          created_at?: string | null
+          display_label?: string | null
+          id?: string
+          is_active?: boolean | null
+          key: string
+          last_changed_at?: string | null
+          last_verified_at?: string | null
+          notes?: string | null
+          previous_value?: Json | null
+          source_name?: string | null
+          source_url?: string | null
+          state?: string | null
+          sync_source?: string | null
+          updated_at?: string | null
+          value: Json
+        }
+        Update: {
+          auto_sync?: boolean | null
+          category?: string
+          created_at?: string | null
+          display_label?: string | null
+          id?: string
+          is_active?: boolean | null
+          key?: string
+          last_changed_at?: string | null
+          last_verified_at?: string | null
+          notes?: string | null
+          previous_value?: Json | null
+          source_name?: string | null
+          source_url?: string | null
+          state?: string | null
+          sync_source?: string | null
+          updated_at?: string | null
+          value?: Json
+        }
+        Relationships: []
+      }
+      seo_keywords: {
+        Row: {
+          adsense_cpc_estimate: number | null
+          calcy_clicks_28d: number | null
+          calcy_ctr_28d: number | null
+          calcy_impressions_28d: number | null
+          calcy_position: number | null
+          calcy_position_previous: number | null
+          calcy_vs_competitor_gap: number | null
+          category: string
+          content_gap_notes: string | null
+          created_at: string | null
+          id: string
+          intent: string | null
+          is_active: boolean | null
+          keyword: string
+          last_synced_at: string | null
+          monthly_search_volume: number | null
+          opportunity_score: number | null
+          priority: number | null
+          recommended_action: string | null
+          target_page: string | null
+          top_competitor_domain: string | null
+          top_competitor_position: number | null
+          top_competitor_url: string | null
+          trend_data: Json | null
+          trend_direction: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          adsense_cpc_estimate?: number | null
+          calcy_clicks_28d?: number | null
+          calcy_ctr_28d?: number | null
+          calcy_impressions_28d?: number | null
+          calcy_position?: number | null
+          calcy_position_previous?: number | null
+          calcy_vs_competitor_gap?: number | null
+          category: string
+          content_gap_notes?: string | null
+          created_at?: string | null
+          id?: string
+          intent?: string | null
+          is_active?: boolean | null
+          keyword: string
+          last_synced_at?: string | null
+          monthly_search_volume?: number | null
+          opportunity_score?: number | null
+          priority?: number | null
+          recommended_action?: string | null
+          target_page?: string | null
+          top_competitor_domain?: string | null
+          top_competitor_position?: number | null
+          top_competitor_url?: string | null
+          trend_data?: Json | null
+          trend_direction?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          adsense_cpc_estimate?: number | null
+          calcy_clicks_28d?: number | null
+          calcy_ctr_28d?: number | null
+          calcy_impressions_28d?: number | null
+          calcy_position?: number | null
+          calcy_position_previous?: number | null
+          calcy_vs_competitor_gap?: number | null
+          category?: string
+          content_gap_notes?: string | null
+          created_at?: string | null
+          id?: string
+          intent?: string | null
+          is_active?: boolean | null
+          keyword?: string
+          last_synced_at?: string | null
+          monthly_search_volume?: number | null
+          opportunity_score?: number | null
+          priority?: number | null
+          recommended_action?: string | null
+          target_page?: string | null
+          top_competitor_domain?: string | null
+          top_competitor_position?: number | null
+          top_competitor_url?: string | null
+          trend_data?: Json | null
+          trend_direction?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      seo_reports: {
+        Row: {
+          avg_ctr: number | null
+          avg_position: number | null
+          biggest_drops: Json | null
+          biggest_wins: Json | null
+          competitor_alerts: Json | null
+          content_recommendations: Json | null
+          created_at: string | null
+          full_report_data: Json | null
+          generated_at: string | null
+          id: string
+          keywords_declined: number | null
+          keywords_improved: number | null
+          keywords_new_page1: number | null
+          period_end: string | null
+          period_start: string | null
+          rba_keywords: Json | null
+          report_type: string
+          top_opportunities: Json | null
+          total_clicks_period: number | null
+          total_impressions_period: number | null
+          total_keywords_tracked: number | null
+          trending_keywords: Json | null
+        }
+        Insert: {
+          avg_ctr?: number | null
+          avg_position?: number | null
+          biggest_drops?: Json | null
+          biggest_wins?: Json | null
+          competitor_alerts?: Json | null
+          content_recommendations?: Json | null
+          created_at?: string | null
+          full_report_data?: Json | null
+          generated_at?: string | null
+          id?: string
+          keywords_declined?: number | null
+          keywords_improved?: number | null
+          keywords_new_page1?: number | null
+          period_end?: string | null
+          period_start?: string | null
+          rba_keywords?: Json | null
+          report_type: string
+          top_opportunities?: Json | null
+          total_clicks_period?: number | null
+          total_impressions_period?: number | null
+          total_keywords_tracked?: number | null
+          trending_keywords?: Json | null
+        }
+        Update: {
+          avg_ctr?: number | null
+          avg_position?: number | null
+          biggest_drops?: Json | null
+          biggest_wins?: Json | null
+          competitor_alerts?: Json | null
+          content_recommendations?: Json | null
+          created_at?: string | null
+          full_report_data?: Json | null
+          generated_at?: string | null
+          id?: string
+          keywords_declined?: number | null
+          keywords_improved?: number | null
+          keywords_new_page1?: number | null
+          period_end?: string | null
+          period_start?: string | null
+          rba_keywords?: Json | null
+          report_type?: string
+          top_opportunities?: Json | null
+          total_clicks_period?: number | null
+          total_impressions_period?: number | null
+          total_keywords_tracked?: number | null
+          trending_keywords?: Json | null
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           ads_txt: string | null
@@ -107,6 +466,54 @@ export type Database = {
           slot_sticky_mobile_enabled?: boolean
           title_template?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      sync_jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          duration_ms: number | null
+          error_log: Json | null
+          id: string
+          job_type: string
+          records_checked: number | null
+          records_failed: number | null
+          records_updated: number | null
+          started_at: string | null
+          status: string
+          summary: Json | null
+          triggered_by: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          duration_ms?: number | null
+          error_log?: Json | null
+          id?: string
+          job_type: string
+          records_checked?: number | null
+          records_failed?: number | null
+          records_updated?: number | null
+          started_at?: string | null
+          status?: string
+          summary?: Json | null
+          triggered_by: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          duration_ms?: number | null
+          error_log?: Json | null
+          id?: string
+          job_type?: string
+          records_checked?: number | null
+          records_failed?: number | null
+          records_updated?: number | null
+          started_at?: string | null
+          status?: string
+          summary?: Json | null
+          triggered_by?: string
         }
         Relationships: []
       }
