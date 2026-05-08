@@ -68,11 +68,12 @@ const FAQ = ({ items }: { items: FaqItem[] }) => {
                   }`}
                 />
               </button>
-              {isOpen && (
-                <div className="px-4 pb-4 text-[14px] leading-relaxed text-muted-foreground">
-                  {renderAnswer(f.answer, f.links)}
-                </div>
-              )}
+              <div
+                hidden={!isOpen}
+                className="px-4 pb-4 text-[14px] leading-relaxed text-muted-foreground"
+              >
+                {renderAnswer(f.answer, f.links)}
+              </div>
             </li>
           );
         })}
