@@ -407,7 +407,7 @@ const RentVsBuy = () => {
 
   const verdictBorder =
     result.verdict === "buy"
-      ? "border-success/60 bg-success-light/40"
+      ? "border-success/60 bg-success/15"
       : result.verdict === "rent"
         ? "border-accent/60 bg-accent-light/40"
         : "border-border bg-muted/30";
@@ -767,7 +767,7 @@ const RentVsBuy = () => {
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <h3 className="text-[15px] font-semibold">Net worth over time</h3>
           {result.breakEvenYear ? (
-            <span className="rounded-full bg-warning-light/40 px-3 py-1 text-[12px] font-semibold text-warning-foreground">
+            <span className="rounded-full bg-warning/15 px-3 py-1 text-[12px] font-semibold text-warning-foreground">
               Break-even: Year {result.breakEvenYear}
             </span>
           ) : (
@@ -903,9 +903,9 @@ const RentVsBuy = () => {
                     if (cell.breakEvenYear != null) {
                       label = `Yr ${cell.breakEvenYear}`;
                       if (cell.breakEvenYear <= 5)
-                        cls = "bg-success-light/50 text-success";
+                        cls = "bg-success/15 text-success";
                       else if (cell.breakEvenYear <= 15)
-                        cls = "bg-warning-light/40 text-warning-foreground";
+                        cls = "bg-warning/15 text-warning-foreground";
                       else cls = "bg-muted text-foreground";
                     } else {
                       cls = "bg-accent-light/40 text-accent";
@@ -972,8 +972,8 @@ const RentVsBuy = () => {
                       <span
                         className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
                           buyWins
-                            ? "bg-success-light/50 text-success"
-                            : "bg-accent-light/50 text-accent"
+                            ? "bg-success/15 text-success"
+                            : "bg-accent/15 text-accent"
                         }`}
                       >
                         {buyWins ? "Buy ✓" : "Rent ✓"}
@@ -988,7 +988,7 @@ const RentVsBuy = () => {
       </section>
 
       {/* Why assumptions matter */}
-      <section className="rounded-2xl border border-warning/40 bg-warning-light/30 p-5">
+      <section className="rounded-2xl border border-warning/40 bg-warning/10 p-5">
         <h3 className="text-[15px] font-semibold">⚠ Why assumptions matter so much</h3>
         <ul className="mt-2 space-y-1 text-[13px] text-foreground">
           <li>• Property grows {inputs.annualPropertyGrowth}% per year (your assumption)</li>
