@@ -95,24 +95,34 @@ export const SEO_FAQS: Record<string, FaqItem[]> = {
   ],
   lmi: [
     {
-      question: "How is LMI calculated?",
+      question: "What is Lender's Mortgage Insurance (LMI)?",
       answer:
-        "LMI premiums are based on your loan amount and Loan-to-Value Ratio (LVR). We apply indicative 2026 LMI bands: 0.66% up to 85% LVR, 1.19% up to 90%, 1.96% up to 95% and 3.10% above 95%.",
+        "Lender's Mortgage Insurance (LMI) is a one-off insurance premium charged by your lender when your deposit is less than 20% of the property value — meaning your LVR (Loan to Value Ratio) is above 80%. LMI protects the lender, not you, if you default on the loan. Despite protecting the lender, you pay the premium. LMI can be paid upfront or added to your home loan.",
     },
     {
-      question: "Does this include fees?",
+      question: "How much does LMI cost in Australia?",
       answer:
-        "The premium shown is the LMI cost only. Stamp duty on the LMI premium (charged in some states) and lender application fees are not included.",
+        "LMI costs depend on your loan amount and LVR. On a $700,000 property with a 10% deposit ($70,000), LMI is approximately $7,500–$8,500. On a 5% deposit, LMI can exceed $20,000. LMI is calculated as a percentage of the loan amount — the higher your LVR, the higher the rate applied. Use Calcy's LMI calculator for a precise estimate based on your property value and deposit.",
     },
     {
-      question: "Is this accurate?",
+      question: "Can I avoid paying LMI?",
       answer:
-        "Results are estimates. Your lender's insurer (typically Helia or QBE) will provide the exact premium when you apply.",
+        "Yes. There are four main ways to avoid LMI in Australia: (1) Save a 20% deposit so your LVR is 80% or below. (2) Use the First Home Guarantee — eligible first home buyers can purchase with a 5% deposit with no LMI, as the government guarantees the remaining 15%. (3) Use a guarantor loan where a family member's property equity covers part of your deposit. (4) Some lenders offer LMI waivers for certain professions including doctors, lawyers, and accountants, even above 80% LVR.",
     },
     {
-      question: "When is LMI required?",
+      question: "Is it better to pay LMI upfront or add it to the loan?",
       answer:
-        "LMI is generally required when your deposit is less than 20% of the property value (LVR above 80%).",
+        "Paying LMI upfront is always cheaper in total dollar terms. When LMI is added to your loan, you pay interest on the LMI premium for the life of the loan. On a $7,500 LMI premium at 6.14% over 30 years, adding it to the loan costs approximately $14,000–$15,000 in total — roughly double the upfront cost. However, if you don't have $7,500 available at settlement, capitalising LMI into the loan is a valid option that avoids the need for additional cash savings.",
+    },
+    {
+      question: "Does LMI get refunded if I sell my property?",
+      answer:
+        "No. LMI premiums are non-refundable once your loan settles. If you sell the property, refinance to a new lender, or pay off the loan early, you do not receive any refund of the LMI premium. If you refinance to a new lender while your LVR is still above 80%, you may need to pay a new LMI premium with the new lender — this is an important consideration when deciding whether to refinance.",
+    },
+    {
+      question: "What is the First Home Guarantee and how does it avoid LMI?",
+      answer:
+        "The First Home Guarantee (formerly the First Home Loan Deposit Scheme) is an Australian government program administered by Housing Australia. Eligible first home buyers can purchase a property with as little as a 5% deposit without paying LMI. The government guarantees up to 15% of the property value, so the lender treats the loan as if the buyer has a 20% deposit. Up to 35,000 places are available each financial year. Income caps and property price limits apply.",
     },
   ],
   loanComparison: [
