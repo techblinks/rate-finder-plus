@@ -30,6 +30,7 @@ const Layout = () => {
         <Outlet />
       </main>
       {!isMobile && <Footer />}
+      <MobileStickyResultBar />
       <MobileBottomNav />
       <PwaInstallPrompt />
       <CookieConsent />
