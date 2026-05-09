@@ -225,17 +225,31 @@ const SeoPanel = () => {
       {/* GSC Connection prompt */}
       {gscConnected === false && (
         <section className="rounded-2xl border border-accent/40 bg-accent/5 p-6">
-          <h2 className="text-lg font-semibold text-foreground">Connect Google Search Console</h2>
+          <h2 className="text-lg font-semibold text-foreground">
+            {gscPreviouslyConnected ? "Reconnect Google Search Console" : "Connect Google Search Console"}
+          </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Connect your GSC account to unlock exact keyword rankings, click & impression data, automated weekly reports
-            and content recommendations for calcy.com.au.
+            {gscPreviouslyConnected
+              ? "Your previous GSC connection is inactive. Reconnect to resume keyword sync and reports for calcy.com.au."
+              : "Connect your GSC account to unlock exact keyword rankings, click & impression data, automated weekly reports and content recommendations for calcy.com.au."}
           </p>
-          <button
-            onClick={startGscOAuth}
-            className="mt-4 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
-          >
-            Connect Google Search Console →
-          </button>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button
+              onClick={startGscOAuth}
+              className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
+            >
+              {gscPreviouslyConnected ? "🔁 Reconnect Google Search Console →" : "Connect Google Search Console →"}
+            </button>
+            {gscPreviouslyConnected && (
+              <button
+                onClick={startGscOAuth}
+                className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
+                title="Start the Google OAuth flow again"
+              >
+                Restart OAuth flow
+              </button>
+            )}
+          </div>
           <p className="mt-3 text-xs text-muted-foreground">
             Requires a Google account with access to the calcy.com.au Search Console property.
           </p>
