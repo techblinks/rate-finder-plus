@@ -376,7 +376,7 @@ const SeoPanel = () => {
 
       {gscConnected && (
         <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-2 text-sm text-emerald-900">
-          <span>✓ Google Search Console connected — calcy.com.au</span>
+          <span>✓ Google Search Console connected — Property: calcy.com.au (Domain property)</span>
           <div className="flex items-center gap-3">
             <button onClick={() => callFunction("sync-gsc-data")} className="text-xs font-semibold underline">
               Run sync now
