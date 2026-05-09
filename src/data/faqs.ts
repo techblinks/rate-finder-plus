@@ -129,6 +129,26 @@ export const FAQS: Record<string, FaqItem[]> = {
         "In most cases, no. Stamp duty must be paid in cash at settlement and cannot be added to your mortgage. This is why it is important to budget for stamp duty as a separate upfront cost when saving your deposit.",
       links: [{ text: "added to your mortgage", href: "/borrowing-power-calculator" }],
     },
+    {
+      question: "How much is stamp duty in the ACT?",
+      answer:
+        "Eligible buyers in the ACT pay zero stamp duty regardless of property value through the Home Buyer Concession Scheme. The scheme is income-tested and available to any eligible buyer who will occupy the property as their principal place of residence, not just first home buyers.",
+    },
+    {
+      question: "Do first home buyers pay stamp duty in the ACT?",
+      answer:
+        "First home buyers in the ACT do not pay stamp duty if they qualify for the Home Buyer Concession Scheme. Unlike other states, the ACT scheme is not limited to first home buyers — any eligible buyer can receive the full exemption, provided they meet income thresholds and occupancy requirements.",
+    },
+    {
+      question: "What is the ACT Home Buyer Concession Scheme?",
+      answer:
+        "The ACT Home Buyer Concession Scheme is an income-tested program that provides a full stamp duty exemption on any property value for eligible buyers who will occupy the home as their principal place of residence. The ACT does not offer a First Home Owner Grant — the stamp duty exemption is the primary benefit.",
+    },
+    {
+      question: "What are the income limits for the ACT stamp duty exemption?",
+      answer:
+        "The ACT Home Buyer Concession Scheme income caps are approximately $160,000 per year for single applicants and $215,000 per year for couples or joint applicants. These thresholds are indexed annually. Your total gross income must not exceed the relevant cap in the financial year before purchase.",
+    },
   ],
   borrowingPower: [
     {
