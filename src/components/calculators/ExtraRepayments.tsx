@@ -232,7 +232,12 @@ const ExtraRepayments = () => {
     extra: dExtra,
     lump: dLump,
     interest_saved: result.interestSaved,
-    months_saved: result.monthsSaved,
+  });
+
+  usePublishMobileResult({
+    label: "Interest saved",
+    value: fmt0(result.interestSaved),
+    sub: `${formatYearsMonths(result.monthsSaved)} sooner`,
   });
 
   // Chart data — merge year arrays so both lines share the X axis
