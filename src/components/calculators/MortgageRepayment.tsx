@@ -12,6 +12,7 @@ const AmortisationTable = lazy(() => import("@/components/AmortisationTable"));
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import ResultActions from "@/components/ResultActions";
+import { usePublishMobileResult } from "@/lib/mobileResult";
 
 type Frequency = "monthly" | "fortnightly" | "weekly";
 type LoanType = "owner" | "investor";
@@ -83,6 +84,16 @@ const MortgageRepayment = () => {
     result.totalRepaid > 0 ? (result.totalInterest / result.totalRepaid) * 100 : 0;
 
   const calcRef = useRef<HTMLDivElement>(null);
+
+  // Publish primary result to the mobile sticky bottom bar (no-op on desktop).
+  usePublishMobileResult({
+    label: `${frequency.charAt(0).toUpperCase() + frequency.slice(1)} repayment`,
+    value: AUD(display),
+    sub: frequency === "monthly"
+      ? `Fortnightly ${AUD(result.fortnightly)}`
+      : `Monthly ${AUD(result.monthly)}`,
+  });
+
 
   return (
     <div className="space-y-6">
