@@ -16,6 +16,7 @@ import {
 } from "@/lib/calc/extraRepayments";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
+import { usePublishMobileResult } from "@/lib/mobileResult";
 import ResultActions from "@/components/ResultActions";
 import ShareResult from "@/components/ShareResult";
 import { useRbaRates } from "@/hooks/useRbaRates";
