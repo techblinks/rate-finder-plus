@@ -387,7 +387,7 @@ const SeoPanel = () => {
                 const { error } = await supabase
                   .from("gsc_oauth_tokens")
                   .update({ is_active: false })
-                  .eq("site_url", "https://calcy.com.au");
+                  .eq("site_url", GSC_SITE_URL);
                 if (error) {
                   toast({ title: "Disconnect failed", description: error.message, variant: "destructive" });
                   return;
