@@ -869,14 +869,14 @@ export const GUIDES: GuideMeta[] = [
       {
         h2: "What the current rate environment means for your decision",
         blocks: [
-          p("As of May 2026, the RBA cash rate is 4.10% following two cuts in February and March 2026. Variable home loan rates are sitting broadly in the 5.9%–6.5% range depending on lender and loan type. Fixed rates for 2–3 year terms are priced in the 5.6%–6.2% range from most major lenders."),
+          p("As of May 2026, the RBA cash rate is 4.35% following three consecutive hikes in February, March, and May 2026. Variable home loan rates are sitting broadly in the 6.1%–6.75% range depending on lender and loan type. Fixed rates for 2–3 year terms are priced in the 5.9%–6.5% range from most major lenders."),
           p("When fixed rates are lower than variable rates — which is the case in some segments of the current market — fixing locks in the cheaper rate for the short term. However, the premium or discount of fixed vs variable rates reflects the market's expectation of where rates are heading."),
           p("Key considerations in the current environment:"),
           ul(
-            "The RBA has cut twice and commentary suggests further cuts are possible",
-            "If rates continue falling, variable rate borrowers benefit immediately; fixed rate borrowers do not",
-            "Fixed rates below current variable rates are priced to account for expected further cuts",
-            "Locking in now protects against the scenario where cuts don't materialise or reverse",
+            "The RBA has hiked three times in 2026 and commentary signals further hikes are possible",
+            "If rates continue rising, variable rate borrowers face higher repayments; fixed rate borrowers do not",
+            "Fixed rates may price below current variable rates if the market expects rate cuts further out",
+            "Locking in now at a fixed rate protects against the scenario where the hiking cycle continues",
           ),
         ],
       },
