@@ -319,7 +319,12 @@ const Lmi = () => {
     rate: dState.interestRate,
     buyer: dState.buyer,
     lvr: Math.round(lvr * 10) / 10,
-    premium: lmi,
+  });
+
+  usePublishMobileResult({
+    label: "Estimated LMI",
+    value: fmt0(lmi),
+    sub: `LVR ${lvr.toFixed(1)}%`,
   });
 
   const onShare = async () => {
