@@ -42,7 +42,7 @@ const DEFAULTS: State = {
   otherRepayments: 0,
   creditCardLimit: 0,
   dependants: 0,
-  interestRate: 6.14,
+  interestRate: 6.39,
   loanTerm: 30,
   deposit: 80000,
 };
