@@ -835,7 +835,7 @@ export const GUIDES: GuideMeta[] = [
           h3("Scenario 3: You sell or refinance within 2 years — and you're fixed"),
           p("If you sell your property or refinance within your fixed term, your lender will charge a break cost. This is calculated based on the difference between your fixed rate and current wholesale market rates, multiplied by your remaining loan balance and time left in the fixed term."),
           p("In a falling rate environment, break costs can be extremely high — sometimes $20,000–$50,000 on a $600,000 loan with 18 months remaining."),
-          p("Example: Loan $600,000 fixed at 5.89% for 2 years. You sell after 14 months — 10 months remaining. Current market rate has fallen to 5.39%. Approximate break cost: $600,000 × (5.89% − 5.39%) × (10/12) = approximately $25,000."),
+          p("Example: Loan $600,000 fixed at 6.14% for 2 years. You sell after 14 months — 10 months remaining. Current market rate has fallen to 5.64%. Approximate break cost: $600,000 × (6.14% − 5.64%) × (10/12) = approximately $25,000."),
         ],
       },
       {
