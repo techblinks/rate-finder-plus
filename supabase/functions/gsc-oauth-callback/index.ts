@@ -7,6 +7,7 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '
 
 // Hardcoded — must NOT have a trailing slash (prevents //admin redirect bug)
 const SITE_URL = 'https://calcy.com.au'
+const GSC_SITE_URL = 'sc-domain:calcy.com.au'
 const REDIRECT_URI = `${SUPABASE_URL}/functions/v1/gsc-oauth-callback`
 
 Deno.serve(async (req) => {
@@ -66,7 +67,7 @@ Deno.serve(async (req) => {
       try {
         const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
         // Delete existing row first to avoid upsert conflicts
-        await supabase.from('gsc_oauth_tokens').delete().eq('site_url', SITE_URL)
+        await supabase.from('gsc_oauth_tokens').delete().eq('site_url', GSC_SITE_URL)
 
         const { error: insertError } = await supabase.from('gsc_oauth_tokens').insert({
           access_token: tokens.access_token,
@@ -74,7 +75,7 @@ Deno.serve(async (req) => {
           token_type: tokens.token_type || 'Bearer',
           expires_at: expiresAt,
           scope: tokens.scope || 'https://www.googleapis.com/auth/webmasters.readonly',
-          site_url: SITE_URL,
+          site_url: GSC_SITE_URL,
           is_active: true,
         })
 

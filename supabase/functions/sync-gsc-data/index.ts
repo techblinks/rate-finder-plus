@@ -12,7 +12,8 @@ const supabase = createClient(
 
 const GSC_CLIENT_ID = Deno.env.get('GSC_CLIENT_ID')!
 const GSC_CLIENT_SECRET = Deno.env.get('GSC_CLIENT_SECRET')!
-const SITE_URL_PROP = 'https://calcy.com.au'
+const GSC_SITE_URL = 'sc-domain:calcy.com.au'
+const SITE_URL_PROP = GSC_SITE_URL
 
 async function getValidAccessToken(): Promise<string> {
   const { data: tokenData } = await supabase
@@ -149,7 +150,7 @@ Deno.serve(async (req) => {
     const accessToken = await getValidAccessToken()
 
     const gscResponse = await fetch(
-      'https://www.googleapis.com/webmasters/v3/sites/https%3A%2F%2Fcalcy.com.au%2F/searchAnalytics/query',
+      `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(GSC_SITE_URL)}/searchAnalytics/query`,
       {
         method: 'POST',
         headers: {
