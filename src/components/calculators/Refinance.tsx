@@ -65,7 +65,7 @@ interface State {
 
 const DEFAULTS: State = {
   currentBalance: 500_000,
-  currentRate: 6.5,
+  currentRate: 6.75,
   currentTermYears: 25,
   currentTermMonthsExtra: 0,
   currentLoanType: "variable",
@@ -74,7 +74,7 @@ const DEFAULTS: State = {
   hasOffset: false,
   currentOffsetBalance: 0,
 
-  newRate: 5.99,
+  newRate: 6.24,
   newTermMode: "keep",
   newLoanType: "variable",
   newLenderFees: 0,

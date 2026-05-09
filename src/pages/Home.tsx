@@ -81,11 +81,11 @@ const TOPIC_PILLS = [
 const CURRENT_CARDS = [
   {
     tag: "Rate update",
-    stat: "4.10%",
+    stat: "4.35%",
     statLabel: "RBA cash rate · May 2026",
-    trend: "down" as const,
-    headline: "The RBA cut rates in February and March 2026.",
-    body: "The cash rate is now 4.10%. See how the recent cuts affect your monthly mortgage repayments on your current loan.",
+    trend: "up" as "up" | "down" | "neutral",
+    headline: "The RBA raised rates in February, March, and May 2026.",
+    body: "The cash rate is now 4.35% — the third consecutive hike this year. See how this affects your monthly mortgage repayments.",
     cta: "Calculate now →",
     to: "/mortgage-calculator",
   },
@@ -144,7 +144,7 @@ const validateRate = (n: number) => {
 
 const Home = () => {
   const [loan, setLoan] = useState(650000);
-  const [rate, setRate] = useState(5.5);
+  const [rate, setRate] = useState(5.75);
   const dLoan = useDebouncedValue(loan, 150);
   const dRate = useDebouncedValue(rate, 150);
 
@@ -477,7 +477,7 @@ const Home = () => {
               {
                 Icon: RefreshCw,
                 title: "Updated with RBA moves",
-                body: "Rate inputs and repayment defaults reflect the current RBA cash rate of 4.10%. No stale numbers.",
+                body: "Rate inputs and repayment defaults reflect the current RBA cash rate of 4.35%. No stale numbers.",
               },
               {
                 Icon: Lock,
@@ -514,7 +514,7 @@ const Home = () => {
             {[
               { stat: "6", label: "Free calculators" },
               { stat: "8", label: "States & territories" },
-              { stat: "4.10%", label: "Current RBA rate" },
+              { stat: "4.35%", label: "Current RBA rate" },
             ].map((s) => (
               <li
                 key={s.label}

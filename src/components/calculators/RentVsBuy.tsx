@@ -53,7 +53,7 @@ interface State {
 const DEFAULTS: State = {
   propertyValue: 700_000,
   deposit: 140_000,
-  interestRate: 6.14,
+  interestRate: 6.39,
   loanTermYears: 30,
   annualPropertyGrowth: 5,
   councilRates: 1500,

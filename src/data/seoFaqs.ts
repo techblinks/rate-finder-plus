@@ -21,7 +21,7 @@ export const SEO_FAQS: Record<string, FaqItem[]> = {
     },
     {
       question: "What is the current RBA rate?",
-      answer: "The RBA cash rate is 4.10% as of May 2026.",
+      answer: "The RBA cash rate is 4.35% as of May 2026, following the 25bps hike on 5 May 2026.",
     },
   ],
   stampDuty: [
@@ -60,7 +60,7 @@ export const SEO_FAQS: Record<string, FaqItem[]> = {
     {
       question: "What is the APRA serviceability buffer?",
       answer:
-        "The APRA serviceability buffer requires Australian lenders to assess your ability to repay a loan at 3% above the actual interest rate. If your loan rate is 6.14%, you are assessed at 9.14%. This means your borrowing power is calculated based on the higher repayment amount, even though you will never actually pay it. The buffer was introduced to protect borrowers from overleveraging.",
+        "The APRA serviceability buffer requires Australian lenders to assess your ability to repay a loan at 3% above the actual interest rate. If your loan rate is 6.39%, you are assessed at 9.39%. This means your borrowing power is calculated based on the higher repayment amount, even though you will never actually pay it. The buffer was introduced to protect borrowers from overleveraging.",
     },
     {
       question: "How does a credit card limit affect my borrowing power?",
@@ -95,7 +95,7 @@ export const SEO_FAQS: Record<string, FaqItem[]> = {
     },
     {
       question: "What is the current RBA rate?",
-      answer: "The RBA cash rate is 4.10% as of May 2026.",
+      answer: "The RBA cash rate is 4.35% as of May 2026, following the 25bps hike on 5 May 2026.",
     },
   ],
   lmi: [
@@ -117,7 +117,7 @@ export const SEO_FAQS: Record<string, FaqItem[]> = {
     {
       question: "Is it better to pay LMI upfront or add it to the loan?",
       answer:
-        "Paying LMI upfront is always cheaper in total dollar terms. When LMI is added to your loan, you pay interest on the LMI premium for the life of the loan. On a $7,500 LMI premium at 6.14% over 30 years, adding it to the loan costs approximately $14,000–$15,000 in total — roughly double the upfront cost. However, if you don't have $7,500 available at settlement, capitalising LMI into the loan is a valid option that avoids the need for additional cash savings.",
+        "Paying LMI upfront is always cheaper in total dollar terms. When LMI is added to your loan, you pay interest on the LMI premium for the life of the loan. On a $7,500 LMI premium at 6.39% over 30 years, adding it to the loan costs approximately $14,800 in total — roughly double the upfront cost. However, if you don't have $7,500 available at settlement, capitalising LMI into the loan is a valid option that avoids the need for additional cash savings.",
     },
     {
       question: "Does LMI get refunded if I sell my property?",

@@ -820,13 +820,13 @@ export const GUIDES: GuideMeta[] = [
       {
         h2: "Running the numbers — three real scenarios",
         blocks: [
-          p("Let's look at three realistic Australian borrower scenarios. Assumptions: $600,000 loan, 30-year term, 2-year fixed rate of 5.89%, variable rate of 6.14%."),
+          p("Let's look at three realistic Australian borrower scenarios. Assumptions: $600,000 loan, 30-year term, 2-year fixed rate of 6.14%, variable rate of 6.39%."),
           h3("Scenario 1: You fix for 2 years, then go variable"),
-          p("Fixed for years 1–2: Monthly repayment $3,549. Total paid in 2 years: $85,176. Loan balance after 2 years: approximately $576,200."),
-          p("Variable for years 3–30 (at 6.14%): Monthly repayment on remaining balance approximately $3,720. Total paid over remaining 28 years: approximately $1,249,920."),
-          p("Total cost (fixed then variable): approximately $1,335,096."),
-          p("Fully variable for all 30 years (at 6.14%): Monthly repayment $3,648. Total paid over 30 years: approximately $1,313,280."),
-          p("Comparison: In this stable-rate scenario, the variable rate option costs approximately $21,816 less over the full 30-year term because the variable rate started lower. The fixed rate provided certainty but at a slight premium."),
+          p("Fixed for years 1–2: Monthly repayment $3,641. Total paid in 2 years: $87,384. Loan balance after 2 years: approximately $577,400."),
+          p("Variable for years 3–30 (at 6.39%): Monthly repayment on remaining balance approximately $3,820. Total paid over remaining 28 years: approximately $1,283,520."),
+          p("Total cost (fixed then variable): approximately $1,370,904."),
+          p("Fully variable for all 30 years (at 6.39%): Monthly repayment $3,741. Total paid over 30 years: approximately $1,346,760."),
+          p("Comparison: In this stable-rate scenario, the variable rate option costs approximately $24,144 less over the full 30-year term because the variable rate started lower. The fixed rate provided certainty but at a slight premium."),
           h3("Scenario 2: Rates rise 1% during your fixed term"),
           p("This is the scenario where fixing pays off. Assume rates rise to 7.14% variable during your 2-year fixed period."),
           p("Fixed rate borrower (years 1–2): Repayment $3,549/month (unchanged). Saving vs variable at 7.14% ($4,047/month): $498/month = $11,952 over 2 years."),
@@ -835,7 +835,7 @@ export const GUIDES: GuideMeta[] = [
           h3("Scenario 3: You sell or refinance within 2 years — and you're fixed"),
           p("If you sell your property or refinance within your fixed term, your lender will charge a break cost. This is calculated based on the difference between your fixed rate and current wholesale market rates, multiplied by your remaining loan balance and time left in the fixed term."),
           p("In a falling rate environment, break costs can be extremely high — sometimes $20,000–$50,000 on a $600,000 loan with 18 months remaining."),
-          p("Example: Loan $600,000 fixed at 5.89% for 2 years. You sell after 14 months — 10 months remaining. Current market rate has fallen to 5.39%. Approximate break cost: $600,000 × (5.89% − 5.39%) × (10/12) = approximately $25,000."),
+          p("Example: Loan $600,000 fixed at 6.14% for 2 years. You sell after 14 months — 10 months remaining. Current market rate has fallen to 5.64%. Approximate break cost: $600,000 × (6.14% − 5.64%) × (10/12) = approximately $25,000."),
         ],
       },
       {
@@ -869,14 +869,14 @@ export const GUIDES: GuideMeta[] = [
       {
         h2: "What the current rate environment means for your decision",
         blocks: [
-          p("As of May 2026, the RBA cash rate is 4.10% following two cuts in February and March 2026. Variable home loan rates are sitting broadly in the 5.9%–6.5% range depending on lender and loan type. Fixed rates for 2–3 year terms are priced in the 5.6%–6.2% range from most major lenders."),
+          p("As of May 2026, the RBA cash rate is 4.35% following three consecutive hikes in February, March, and May 2026. Variable home loan rates are sitting broadly in the 6.1%–6.75% range depending on lender and loan type. Fixed rates for 2–3 year terms are priced in the 5.9%–6.5% range from most major lenders."),
           p("When fixed rates are lower than variable rates — which is the case in some segments of the current market — fixing locks in the cheaper rate for the short term. However, the premium or discount of fixed vs variable rates reflects the market's expectation of where rates are heading."),
           p("Key considerations in the current environment:"),
           ul(
-            "The RBA has cut twice and commentary suggests further cuts are possible",
-            "If rates continue falling, variable rate borrowers benefit immediately; fixed rate borrowers do not",
-            "Fixed rates below current variable rates are priced to account for expected further cuts",
-            "Locking in now protects against the scenario where cuts don't materialise or reverse",
+            "The RBA has hiked three times in 2026 and commentary signals further hikes are possible",
+            "If rates continue rising, variable rate borrowers face higher repayments; fixed rate borrowers do not",
+            "Fixed rates may price below current variable rates if the market expects rate cuts further out",
+            "Locking in now at a fixed rate protects against the scenario where the hiking cycle continues",
           ),
         ],
       },

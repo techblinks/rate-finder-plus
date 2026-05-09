@@ -48,8 +48,8 @@ const BorrowingPowerPage = () => (
             <h3 className="mt-4 text-[16px] font-semibold text-foreground">The APRA serviceability buffer</h3>
             <p className="mt-2">
               Since October 2021, APRA requires all Australian banks to assess whether borrowers can
-              afford their loan at their actual interest rate plus 3%. If your loan rate is 6.14%,
-              your lender tests whether you can afford repayments at 9.14%. This is why many
+              afford their loan at their actual interest rate plus 3%. If your loan rate is 6.39%,
+              your lender tests whether you can afford repayments at 9.39%. This is why many
               borrowers find their approved loan amount significantly lower than expected.
             </p>
             <h3 className="mt-4 text-[16px] font-semibold text-foreground">Why credit card limits matter more than you think</h3>

@@ -39,8 +39,8 @@ const ScenarioCol = ({
 
 const LoanComparisonCalc = () => {
   const [amount, setAmount] = useState(650000);
-  const [a, setA] = useState<ScenarioInput>({ rate: 5.5, term: 30, fees: 0 });
-  const [b, setB] = useState<ScenarioInput>({ rate: 5.99, term: 30, fees: 800 });
+  const [a, setA] = useState<ScenarioInput>({ rate: 5.75, term: 30, fees: 0 });
+  const [b, setB] = useState<ScenarioInput>({ rate: 6.24, term: 30, fees: 800 });
 
   const dAmount = useDebouncedValue(amount);
   const dA = useDebouncedValue(a);

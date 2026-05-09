@@ -51,7 +51,7 @@ interface State {
 
 const DEFAULTS: State = {
   balance: 500_000,
-  rate: 5.5,
+  rate: 5.75,
   term: 25,
   frequency: "monthly",
   extra: 500,

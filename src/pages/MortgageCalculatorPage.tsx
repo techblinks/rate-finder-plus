@@ -78,7 +78,7 @@ const MortgageCalculatorPage = () => (
             Choosing fortnightly repayments instead of monthly is one of the simplest ways to pay
             off your loan faster at no extra cost. Because there are 26 fortnights in a year, you
             make the equivalent of 13 monthly repayments per year rather than 12. On a $650,000
-            loan at 6.14%, this saves approximately $45,000 in interest and cuts around 2.5 years
+            loan at 6.39%, this saves approximately $45,000 in interest and cuts around 2.5 years
             off the loan.
           </p>
         ),
