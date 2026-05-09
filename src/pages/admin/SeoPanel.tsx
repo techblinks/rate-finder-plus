@@ -154,12 +154,14 @@ const SeoPanel = () => {
 
   const loadAll = async () => {
     const [tokens, kw, rep, sj] = await Promise.all([
-      supabase.from("gsc_oauth_tokens").select("id").eq("is_active", true).limit(1),
+      supabase.from("gsc_oauth_tokens").select("id, is_active"),
       supabase.from("seo_keywords").select("*").eq("is_active", true).order("opportunity_score", { ascending: false }),
       supabase.from("seo_reports").select("*").order("generated_at", { ascending: false }).limit(20),
       supabase.from("sync_jobs").select("*").in("job_type", ["gsc_data", "trends"]).order("started_at", { ascending: false }).limit(20),
     ]);
-    setGscConnected((tokens.data?.length ?? 0) > 0);
+    const tokenRows = (tokens.data as { id: string; is_active: boolean | null }[] | null) || [];
+    setGscConnected(tokenRows.some((t) => t.is_active));
+    setGscPreviouslyConnected(tokenRows.length > 0);
     setKeywords((kw.data as Keyword[]) || []);
     setReports((rep.data as Report[]) || []);
     setLatestReport((rep.data?.find((r: Report) => r.report_type === "weekly_summary") as Report) || null);
