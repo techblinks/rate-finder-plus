@@ -12,7 +12,8 @@ const supabase = createClient(
 
 const GSC_CLIENT_ID = Deno.env.get('GSC_CLIENT_ID')!
 const GSC_CLIENT_SECRET = Deno.env.get('GSC_CLIENT_SECRET')!
-const SITE_URL_PROP = 'https://calcy.com.au'
+const GSC_SITE_URL = 'sc-domain:calcy.com.au'
+const SITE_URL_PROP = GSC_SITE_URL
 
 async function getValidAccessToken(): Promise<string> {
   const { data: tokenData } = await supabase
