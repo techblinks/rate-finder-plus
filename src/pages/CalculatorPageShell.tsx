@@ -80,11 +80,29 @@ const CalculatorPageShell = ({
   if (isMobile) {
     // Native-app feel: only the calculator. No breadcrumbs, no SEO sections,
     // no ads between inputs, no related links. Pure tool focus.
+    // Bottom padding leaves room for sticky result bar (56) + tabs (64) + safe-area.
     return (
       <>
         {heads}
         <MobileCalcHeader title={title} />
-        <div className="px-4 pt-3 pb-4 min-w-0">{children}</div>
+        <div
+          className="px-4 pt-3 min-w-0"
+          style={{ paddingBottom: `calc(56px + 24px)` }}
+        >
+          {children}
+          {swipe.index >= 0 && (
+            <div className="mt-6 flex items-center justify-center gap-1.5 pb-2">
+              {Array.from({ length: swipe.total }).map((_, i) => (
+                <span
+                  key={i}
+                  className={`h-1.5 rounded-full transition-all ${
+                    i === swipe.index ? "w-4 bg-accent" : "w-1.5 bg-border"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </>
     );
   }
