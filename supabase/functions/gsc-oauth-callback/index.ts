@@ -7,6 +7,7 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '
 
 // Hardcoded — must NOT have a trailing slash (prevents //admin redirect bug)
 const SITE_URL = 'https://calcy.com.au'
+const GSC_SITE_URL = 'sc-domain:calcy.com.au'
 const REDIRECT_URI = `${SUPABASE_URL}/functions/v1/gsc-oauth-callback`
 
 Deno.serve(async (req) => {
