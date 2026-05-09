@@ -12,6 +12,7 @@ const AmortisationTable = lazy(() => import("@/components/AmortisationTable"));
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import ResultActions from "@/components/ResultActions";
+import { usePublishMobileResult } from "@/lib/mobileResult";
 
 type Frequency = "monthly" | "fortnightly" | "weekly";
 type LoanType = "owner" | "investor";
