@@ -319,11 +319,31 @@ const SeoPanel = () => {
       </details>
 
       {gscConnected && (
-        <div className="flex items-center justify-between rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-2 text-sm text-emerald-900">
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-2 text-sm text-emerald-900">
           <span>✓ Google Search Console connected — calcy.com.au</span>
-          <button onClick={() => callFunction("sync-gsc-data")} className="text-xs font-semibold underline">
-            Run sync now
-          </button>
+          <div className="flex items-center gap-3">
+            <button onClick={() => callFunction("sync-gsc-data")} className="text-xs font-semibold underline">
+              Run sync now
+            </button>
+            <button
+              onClick={async () => {
+                if (!confirm("Disconnect Google Search Console? Keyword tracking will stop.")) return;
+                const { error } = await supabase
+                  .from("gsc_oauth_tokens")
+                  .update({ is_active: false })
+                  .eq("site_url", "https://calcy.com.au");
+                if (error) {
+                  toast({ title: "Disconnect failed", description: error.message, variant: "destructive" });
+                  return;
+                }
+                setGscConnected(false);
+                toast({ title: "Google Search Console disconnected" });
+              }}
+              className="text-xs font-semibold text-red-700 underline"
+            >
+              Disconnect
+            </button>
+          </div>
         </div>
       )}
 
