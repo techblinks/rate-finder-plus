@@ -331,6 +331,14 @@ const Refinance = () => {
     [inputs, result],
   );
 
+  usePublishMobileResult({
+    label: result.monthlySaving >= 0 ? "Monthly saving" : "Monthly extra cost",
+    value: fmt0(Math.abs(result.monthlySaving)),
+    sub: result.breakEvenMonth != null
+      ? `Break-even: month ${result.breakEvenMonth}`
+      : "No break-even",
+  });
+
   // Persist + URL sync (debounced)
   useEffect(() => {
     if (typeof window === "undefined") return;
