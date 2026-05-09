@@ -60,7 +60,7 @@ export const SEO_FAQS: Record<string, FaqItem[]> = {
     {
       question: "What is the APRA serviceability buffer?",
       answer:
-        "The APRA serviceability buffer requires Australian lenders to assess your ability to repay a loan at 3% above the actual interest rate. If your loan rate is 6.14%, you are assessed at 9.14%. This means your borrowing power is calculated based on the higher repayment amount, even though you will never actually pay it. The buffer was introduced to protect borrowers from overleveraging.",
+        "The APRA serviceability buffer requires Australian lenders to assess your ability to repay a loan at 3% above the actual interest rate. If your loan rate is 6.39%, you are assessed at 9.39%. This means your borrowing power is calculated based on the higher repayment amount, even though you will never actually pay it. The buffer was introduced to protect borrowers from overleveraging.",
     },
     {
       question: "How does a credit card limit affect my borrowing power?",
