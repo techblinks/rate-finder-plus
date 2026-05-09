@@ -117,7 +117,7 @@ export const SEO_FAQS: Record<string, FaqItem[]> = {
     {
       question: "Is it better to pay LMI upfront or add it to the loan?",
       answer:
-        "Paying LMI upfront is always cheaper in total dollar terms. When LMI is added to your loan, you pay interest on the LMI premium for the life of the loan. On a $7,500 LMI premium at 6.14% over 30 years, adding it to the loan costs approximately $14,000–$15,000 in total — roughly double the upfront cost. However, if you don't have $7,500 available at settlement, capitalising LMI into the loan is a valid option that avoids the need for additional cash savings.",
+        "Paying LMI upfront is always cheaper in total dollar terms. When LMI is added to your loan, you pay interest on the LMI premium for the life of the loan. On a $7,500 LMI premium at 6.39% over 30 years, adding it to the loan costs approximately $14,800 in total — roughly double the upfront cost. However, if you don't have $7,500 available at settlement, capitalising LMI into the loan is a valid option that avoids the need for additional cash savings.",
     },
     {
       question: "Does LMI get refunded if I sell my property?",
