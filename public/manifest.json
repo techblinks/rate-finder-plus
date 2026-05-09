@@ -2,7 +2,8 @@
   "name": "Calcy — Australian Mortgage Calculators",
   "short_name": "Calcy",
   "description": "Free Australian mortgage, stamp duty, borrowing power and LMI calculators.",
-  "start_url": "/",
+  "start_url": "/mortgage-calculator",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#3348F4",
@@ -12,5 +13,25 @@
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ],
   "categories": ["finance", "utilities"],
-  "lang": "en-AU"
+  "lang": "en-AU",
+  "shortcuts": [
+    {
+      "name": "Mortgage Calculator",
+      "short_name": "Mortgage",
+      "url": "/mortgage-calculator",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Stamp Duty",
+      "short_name": "Stamp Duty",
+      "url": "/stamp-duty-calculator",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Borrowing Power",
+      "short_name": "Borrowing",
+      "url": "/borrowing-power-calculator",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
 }
