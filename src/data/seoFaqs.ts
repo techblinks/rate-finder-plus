@@ -95,7 +95,7 @@ export const SEO_FAQS: Record<string, FaqItem[]> = {
     },
     {
       question: "What is the current RBA rate?",
-      answer: "The RBA cash rate is 4.10% as of May 2026.",
+      answer: "The RBA cash rate is 4.35% as of May 2026, following the 25bps hike on 5 May 2026.",
     },
   ],
   lmi: [
