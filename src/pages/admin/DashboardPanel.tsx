@@ -2,7 +2,16 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useDataAlerts, type AlertSeverity } from "@/hooks/useDataAlerts";
 import { useLiveRates, invalidateLiveRatesCache } from "@/hooks/useLiveRates";
-import { getNextRbaMeeting, isRbaDecisionDay } from "@/config/rba-calendar";
+import { getNextRbaMeeting, isRbaDecisionDay, getDaysUntilNextRba } from "@/config/rba-calendar";
+
+const fmtRbaDate = (iso: string | null) => {
+  if (!iso) return "—";
+  return new Date(iso).toLocaleDateString("en-AU", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+};
 import { toast } from "@/hooks/use-toast";
 
 interface SyncJobLite {
@@ -178,6 +187,7 @@ const DashboardPanel = () => {
   const runRbaEventScan = async () => {
     setBusy("rba_event");
     try {
+      // 1+2: Sync RBA rate and trends
       await Promise.all([
         supabase.functions.invoke("sync-rba-rate", {
           headers: { "x-triggered-by": "rba_event" },
@@ -188,9 +198,17 @@ const DashboardPanel = () => {
         }),
       ]);
       invalidateLiveRatesCache();
+
+      // 3: Generate RBA announcement article draft
+      const { data, error } = await supabase.functions.invoke("generate-rba-article");
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+
       toast({
         title: "✓ RBA Event Scan complete",
-        description: "Check SEO Reports for trending keywords.",
+        description: (data as any)?.skipped
+          ? "Rate synced, trends captured. Article draft already exists in Content tab."
+          : "Rate synced, trends captured, article draft ready in Content tab.",
       });
     } catch (err) {
       toast({
