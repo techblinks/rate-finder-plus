@@ -5,6 +5,7 @@ import { Card, Field, NumberInput, ResultCard } from "@/components/ui-kit";
 import BarCompare from "@/components/BarCompare";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
+import { usePublishMobileResult } from "@/lib/mobileResult";
 import ResultActions from "@/components/ResultActions";
 import ShareResult from "@/components/ShareResult";
 
