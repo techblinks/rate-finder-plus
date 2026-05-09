@@ -124,6 +124,7 @@ const RedirectUriBox = () => {
 const SeoPanel = () => {
   const [sub, setSub] = useState<SubTab>("overview");
   const [gscConnected, setGscConnected] = useState<boolean | null>(null);
+  const [gscPreviouslyConnected, setGscPreviouslyConnected] = useState(false);
   const [keywords, setKeywords] = useState<Keyword[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
   const [latestReport, setLatestReport] = useState<Report | null>(null);
