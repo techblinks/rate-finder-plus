@@ -314,7 +314,8 @@ const DashboardPanel = () => {
               {lastUpdated ? `Synced ${fmtAge(lastUpdated.toISOString())}` : "Live data"}
             </CardSub>
             <CardSub>
-              Next meeting: {getNextRbaMeeting() ?? "—"}
+              Next meeting: {fmtRbaDate(getNextRbaMeeting())}
+              {getNextRbaMeeting() ? ` (${getDaysUntilNextRba()} days)` : ""}
             </CardSub>
           </Card>
           <Card>
