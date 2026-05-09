@@ -311,6 +311,33 @@
   .safe-pb { padding-bottom: env(safe-area-inset-bottom, 0px); }
 }
 
+/* ── Admin panel design tokens (scoped) ── */
+.admin-shell {
+  --admin-primary: 217 91% 50%;        /* #2563eb */
+  --admin-primary-light: 214 100% 96%;
+  --admin-green: 142 71% 36%;          /* #16a34a */
+  --admin-green-light: 138 76% 97%;
+  --admin-amber: 32 94% 44%;
+  --admin-amber-light: 48 100% 96%;
+  --admin-red: 0 73% 50%;
+  --admin-red-light: 0 86% 97%;
+  --admin-bg: 210 40% 98%;             /* #f8fafc */
+  --admin-surface: 0 0% 100%;
+  --admin-border: 214 32% 91%;         /* #e2e8f0 */
+  --admin-text: 222 47% 11%;
+  --admin-muted: 215 16% 47%;          /* #64748b */
+  --admin-sidebar: 222 47% 11%;        /* #0f172a */
+  --admin-sidebar-text: 213 27% 84%;
+  --admin-sidebar-muted: 215 14% 50%;
+  --admin-sidebar-active: 217 91% 50%;
+}
+.admin-shell { background: hsl(var(--admin-bg)); color: hsl(var(--admin-text)); }
+.admin-shell .admin-card { background: hsl(var(--admin-surface)); border: 1px solid hsl(var(--admin-border)); border-radius: 12px; }
+.admin-shell .admin-section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: hsl(var(--admin-sidebar-muted)); }
+.admin-shell .admin-page-title { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; color: hsl(var(--admin-text)); }
+.admin-shell .admin-metric { font-size: 28px; font-weight: 700; line-height: 1.1; color: hsl(var(--admin-text)); font-variant-numeric: tabular-nums; }
+.admin-shell .admin-metric-label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: hsl(var(--admin-muted)); }
+
 /* Print styles — strip nav/footer/ads, expand result card to full page */
 @media print {
   header, footer, nav, .no-print, [role="complementary"] { display: none !important; }
