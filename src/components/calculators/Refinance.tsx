@@ -23,6 +23,7 @@ import {
   type RefinanceInputs,
 } from "@/lib/calc/refinance";
 import { useRbaRates } from "@/hooks/useRbaRates";
+import { usePublishMobileResult } from "@/lib/mobileResult";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
 const AUD = new Intl.NumberFormat("en-AU", {
