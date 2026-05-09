@@ -74,7 +74,7 @@ const DEFAULTS: State = {
   hasOffset: false,
   currentOffsetBalance: 0,
 
-  newRate: 5.99,
+  newRate: 6.24,
   newTermMode: "keep",
   newLoanType: "variable",
   newLenderFees: 0,
