@@ -150,7 +150,7 @@ Deno.serve(async (req) => {
     const accessToken = await getValidAccessToken()
 
     const gscResponse = await fetch(
-      'https://www.googleapis.com/webmasters/v3/sites/https%3A%2F%2Fcalcy.com.au%2F/searchAnalytics/query',
+      `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(GSC_SITE_URL)}/searchAnalytics/query`,
       {
         method: 'POST',
         headers: {
