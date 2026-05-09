@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import MobileHomepage from "@/components/mobile/MobileHomepage";
 import {
   Home as HomeIcon,
   FileText,
