@@ -173,6 +173,63 @@ export type Database = {
         }
         Relationships: []
       }
+      programmatic_pages: {
+        Row: {
+          calculated_result: Json | null
+          clicks_28d: number
+          created_at: string
+          h1: string | null
+          id: string
+          impressions_28d: number
+          intro_text: string | null
+          is_active: boolean
+          meta_description: string | null
+          meta_title: string | null
+          page_type: string
+          params: Json
+          position: number | null
+          target_keyword: string | null
+          updated_at: string
+          url_path: string
+        }
+        Insert: {
+          calculated_result?: Json | null
+          clicks_28d?: number
+          created_at?: string
+          h1?: string | null
+          id?: string
+          impressions_28d?: number
+          intro_text?: string | null
+          is_active?: boolean
+          meta_description?: string | null
+          meta_title?: string | null
+          page_type: string
+          params: Json
+          position?: number | null
+          target_keyword?: string | null
+          updated_at?: string
+          url_path: string
+        }
+        Update: {
+          calculated_result?: Json | null
+          clicks_28d?: number
+          created_at?: string
+          h1?: string | null
+          id?: string
+          impressions_28d?: number
+          intro_text?: string | null
+          is_active?: boolean
+          meta_description?: string | null
+          meta_title?: string | null
+          page_type?: string
+          params?: Json
+          position?: number | null
+          target_keyword?: string | null
+          updated_at?: string
+          url_path?: string
+        }
+        Relationships: []
+      }
       rate_audit_log: {
         Row: {
           category: string
