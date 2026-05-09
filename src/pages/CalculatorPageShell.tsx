@@ -53,6 +53,7 @@ const CalculatorPageShell = ({
   children,
 }: CalculatorPageShellProps) => {
   const isMobile = useIsMobile();
+  const swipe = useSwipeNavigation(isMobile);
 
   // SEO heads always render — JSON-LD is invisible and benefits both desktop & SSR.
   const heads = (
