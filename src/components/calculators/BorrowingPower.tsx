@@ -342,7 +342,12 @@ const BorrowingPower = () => {
     dependants: debounced.dependants,
     rate: debounced.interestRate,
     term: debounced.loanTerm,
-    borrowing_power: result.borrowingPower,
+  });
+
+  usePublishMobileResult({
+    label: "You can borrow",
+    value: fmt0(result.borrowingPower),
+    sub: `at ${debounced.interestRate}% over ${debounced.loanTerm}yr`,
   });
 
   const onShare = async () => {
