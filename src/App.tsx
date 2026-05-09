@@ -78,6 +78,7 @@ const App = () => (
           <Route path="/lmi" element={<Navigate to="/lmi-calculator" replace />} />
           <Route path="/extra" element={<Navigate to="/extra-repayments-calculator" replace />} />
           <Route path="/compare" element={<Navigate to="/loan-comparison-calculator" replace />} />
+          <Route path="/calculate/*" element={<ProgrammaticPage />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route path="/admin/login" element={<AdminLogin />} />
