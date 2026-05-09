@@ -67,7 +67,7 @@ Deno.serve(async (req) => {
       try {
         const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
         // Delete existing row first to avoid upsert conflicts
-        await supabase.from('gsc_oauth_tokens').delete().eq('site_url', SITE_URL)
+        await supabase.from('gsc_oauth_tokens').delete().eq('site_url', GSC_SITE_URL)
 
         const { error: insertError } = await supabase.from('gsc_oauth_tokens').insert({
           access_token: tokens.access_token,
@@ -75,7 +75,7 @@ Deno.serve(async (req) => {
           token_type: tokens.token_type || 'Bearer',
           expires_at: expiresAt,
           scope: tokens.scope || 'https://www.googleapis.com/auth/webmasters.readonly',
-          site_url: SITE_URL,
+          site_url: GSC_SITE_URL,
           is_active: true,
         })
 
