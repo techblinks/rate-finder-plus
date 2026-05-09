@@ -37,7 +37,7 @@ export const FAQS: Record<string, FaqItem[]> = {
     {
       question: "What is the current RBA cash rate?",
       answer:
-        "The current RBA cash rate is 4.10% as of May 2026, following cuts in February and March 2026.",
+        "The current RBA cash rate is 4.35% as of May 2026, following three consecutive hikes in February, March, and May 2026.",
     },
     {
       question: "What is LMI?",
