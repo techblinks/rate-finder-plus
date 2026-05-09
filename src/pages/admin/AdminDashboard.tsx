@@ -7,6 +7,7 @@ import { toast } from "@/hooks/use-toast";
 import LiveDataPanel from "./LiveDataPanel";
 import SeoPanel from "./SeoPanel";
 import DashboardPanel from "./DashboardPanel";
+import ContentPanel from "./ContentPanel";
 
 const BUCKET = "branding";
 
@@ -29,12 +30,14 @@ type TabKey =
   | "adsense"
   | "seo"
   | "seo_intel"
+  | "content"
   | "live_data";
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: "dashboard", label: "Dashboard" },
   { key: "live_data", label: "Live Data" },
   { key: "seo_intel", label: "SEO Intelligence" },
+  { key: "content", label: "Content" },
   { key: "branding", label: "Branding" },
   { key: "analytics", label: "Analytics & Tracking" },
   { key: "adsense", label: "AdSense" },
@@ -232,6 +235,7 @@ const AdminDashboard = () => {
 
       <fieldset disabled={!isAdmin || saving} className="mt-6 space-y-8 disabled:opacity-60">
         {tab === "dashboard" && <DashboardPanel />}
+        {tab === "content" && <ContentPanel />}
         {tab === "branding" && (
           <>
             <section className="rounded-2xl border border-border bg-surface p-6">
