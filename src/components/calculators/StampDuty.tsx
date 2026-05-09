@@ -13,6 +13,7 @@ import {
 } from "@/lib/calc/stampDuty";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
+import { usePublishMobileResult } from "@/lib/mobileResult";
 import Tooltip from "@/components/Tooltip";
 import ResultActions from "@/components/ResultActions";
 
