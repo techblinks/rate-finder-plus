@@ -62,6 +62,78 @@ export type Database = {
         }
         Relationships: []
       }
+      content_drafts: {
+        Row: {
+          brief: Json | null
+          category: string | null
+          content: string | null
+          created_at: string
+          generated_by: string | null
+          id: string
+          keyword_impressions: number | null
+          keyword_opportunity: number | null
+          keyword_position: number | null
+          meta_description: string | null
+          meta_title: string | null
+          notes: string | null
+          published_at: string | null
+          reviewed_by: string | null
+          seo_score: number | null
+          slug: string | null
+          status: string
+          target_keyword: string | null
+          title: string
+          updated_at: string
+          word_count: number | null
+        }
+        Insert: {
+          brief?: Json | null
+          category?: string | null
+          content?: string | null
+          created_at?: string
+          generated_by?: string | null
+          id?: string
+          keyword_impressions?: number | null
+          keyword_opportunity?: number | null
+          keyword_position?: number | null
+          meta_description?: string | null
+          meta_title?: string | null
+          notes?: string | null
+          published_at?: string | null
+          reviewed_by?: string | null
+          seo_score?: number | null
+          slug?: string | null
+          status?: string
+          target_keyword?: string | null
+          title: string
+          updated_at?: string
+          word_count?: number | null
+        }
+        Update: {
+          brief?: Json | null
+          category?: string | null
+          content?: string | null
+          created_at?: string
+          generated_by?: string | null
+          id?: string
+          keyword_impressions?: number | null
+          keyword_opportunity?: number | null
+          keyword_position?: number | null
+          meta_description?: string | null
+          meta_title?: string | null
+          notes?: string | null
+          published_at?: string | null
+          reviewed_by?: string | null
+          seo_score?: number | null
+          slug?: string | null
+          status?: string
+          target_keyword?: string | null
+          title?: string
+          updated_at?: string
+          word_count?: number | null
+        }
+        Relationships: []
+      }
       gsc_oauth_tokens: {
         Row: {
           access_token: string | null
