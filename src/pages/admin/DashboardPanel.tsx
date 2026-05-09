@@ -2,7 +2,16 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useDataAlerts, type AlertSeverity } from "@/hooks/useDataAlerts";
 import { useLiveRates, invalidateLiveRatesCache } from "@/hooks/useLiveRates";
-import { getNextRbaMeeting, isRbaDecisionDay } from "@/config/rba-calendar";
+import { getNextRbaMeeting, isRbaDecisionDay, getDaysUntilNextRba } from "@/config/rba-calendar";
+
+const fmtRbaDate = (iso: string | null) => {
+  if (!iso) return "—";
+  return new Date(iso).toLocaleDateString("en-AU", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+};
 import { toast } from "@/hooks/use-toast";
 
 interface SyncJobLite {
@@ -178,6 +187,7 @@ const DashboardPanel = () => {
   const runRbaEventScan = async () => {
     setBusy("rba_event");
     try {
+      // 1+2: Sync RBA rate and trends
       await Promise.all([
         supabase.functions.invoke("sync-rba-rate", {
           headers: { "x-triggered-by": "rba_event" },
@@ -188,9 +198,17 @@ const DashboardPanel = () => {
         }),
       ]);
       invalidateLiveRatesCache();
+
+      // 3: Generate RBA announcement article draft
+      const { data, error } = await supabase.functions.invoke("generate-rba-article");
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+
       toast({
         title: "✓ RBA Event Scan complete",
-        description: "Check SEO Reports for trending keywords.",
+        description: (data as any)?.skipped
+          ? "Rate synced, trends captured. Article draft already exists in Content tab."
+          : "Rate synced, trends captured, article draft ready in Content tab.",
       });
     } catch (err) {
       toast({
@@ -221,21 +239,67 @@ const DashboardPanel = () => {
         </div>
       )}
 
-      {isRbaDecisionDay() && (
-        <div className="flex flex-wrap items-center gap-3 rounded-lg border-l-4 border-blue-500 bg-blue-50 p-3 text-sm text-blue-900">
-          <span>⚡</span>
-          <span className="flex-1 font-semibold">
-            RBA MEETING TODAY: Run RBA Event Scan to capture trending keywords
-          </span>
-          <button
-            onClick={runRbaEventScan}
-            disabled={!!busy}
-            className="rounded-md bg-blue-600 px-3 py-1 text-xs font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
-          >
-            {busy === "rba_event" ? "Running…" : "Run RBA Event Scan"}
-          </button>
-        </div>
-      )}
+      {(() => {
+        const nextIso = getNextRbaMeeting();
+        const days = getDaysUntilNextRba();
+        const isToday = isRbaDecisionDay();
+
+        if (isToday) {
+          return (
+            <div className="flex flex-wrap items-center gap-3 rounded-lg border-l-4 border-red-500 bg-red-50 p-3 text-sm text-red-900">
+              <span aria-hidden>🔴</span>
+              <div className="flex-1">
+                <div className="font-semibold">RBA DECISION DAY — Today</div>
+                <div className="text-xs text-red-800">
+                  Wait for the 2:30pm AEST announcement, then click below to sync rate, capture trends and generate the article draft.
+                </div>
+              </div>
+              <button
+                onClick={runRbaEventScan}
+                disabled={!!busy}
+                className="rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+              >
+                {busy === "rba_event" ? "Running…" : "⚡ Run RBA Event Scan"}
+              </button>
+            </div>
+          );
+        }
+
+        if (nextIso && days >= 0 && days <= 7) {
+          return (
+            <div className="flex flex-wrap items-center gap-3 rounded-lg border-l-4 border-amber-500 bg-amber-50 p-3 text-sm text-amber-900">
+              <span aria-hidden>⚡</span>
+              <div className="flex-1">
+                <div className="font-semibold">
+                  RBA meeting in {days} day{days === 1 ? "" : "s"} — {fmtRbaDate(nextIso)}
+                </div>
+                <div className="text-xs text-amber-800">
+                  Prepare your article template. After the 2:30pm AEST announcement, click "Run RBA Event Scan" to generate your draft instantly.
+                </div>
+              </div>
+              <button
+                onClick={runRbaEventScan}
+                disabled={!!busy}
+                className="rounded-md bg-amber-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-700 disabled:opacity-50"
+              >
+                {busy === "rba_event" ? "Running…" : "Run RBA Event Scan →"}
+              </button>
+            </div>
+          );
+        }
+
+        if (nextIso) {
+          return (
+            <div className="flex flex-wrap items-center gap-3 rounded-lg border-l-4 border-blue-500 bg-blue-50 p-3 text-sm text-blue-900">
+              <span aria-hidden>📅</span>
+              <span className="flex-1">
+                Next RBA meeting: <strong>{fmtRbaDate(nextIso)}</strong> — {days} day{days === 1 ? "" : "s"} away
+              </span>
+            </div>
+          );
+        }
+        return null;
+      })()}
 
       {/* Live data row */}
       <section>
@@ -250,7 +314,8 @@ const DashboardPanel = () => {
               {lastUpdated ? `Synced ${fmtAge(lastUpdated.toISOString())}` : "Live data"}
             </CardSub>
             <CardSub>
-              Next meeting: {getNextRbaMeeting() ?? "—"}
+              Next meeting: {fmtRbaDate(getNextRbaMeeting())}
+              {getNextRbaMeeting() ? ` (${getDaysUntilNextRba()} days)` : ""}
             </CardSub>
           </Card>
           <Card>
