@@ -299,6 +299,63 @@
 
   .link-accent { color: hsl(var(--accent)); }
   .link-accent:hover { color: hsl(var(--accent-hover)); text-decoration: underline; }
+
+  /* ── Mobile-only input polish (Part 8) ── */
+  @media (max-width: 767px) {
+    .range-slider,
+    input[type="range"].range-styled {
+      height: 6px;
+    }
+    input[type="range"]::-webkit-slider-thumb,
+    .range-slider::-webkit-slider-thumb {
+      width: 28px;
+      height: 28px;
+      box-shadow: 0 2px 6px hsl(var(--accent) / 0.25);
+    }
+    input[type="range"]::-moz-range-thumb,
+    .range-slider::-moz-range-thumb {
+      width: 28px;
+      height: 28px;
+    }
+    /* Value chip on the right of RangeField */
+    .field .range-value-chip input {
+      min-width: 110px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+      background: hsl(var(--accent-light));
+      color: hsl(var(--accent));
+      border-color: transparent;
+      border-radius: 999px;
+      padding: 6px 14px;
+    }
+    .pill-toggle button {
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+  }
+
+  /* ── Mobile restore chip (Part 10) ── */
+  .restore-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: hsl(var(--accent-light));
+    color: hsl(var(--accent));
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid hsl(var(--accent) / 0.2);
+  }
+  .restore-chip button {
+    color: hsl(var(--accent));
+    font-weight: 600;
+  }
+  .restore-chip .dismiss {
+    color: hsl(var(--muted-foreground));
+    font-weight: 400;
+  }
 }
 
 @layer utilities {

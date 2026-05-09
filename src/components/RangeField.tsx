@@ -26,7 +26,7 @@ const RangeField = ({
   <div className="field">
     <div className="flex items-center justify-between gap-3">
       <label className="text-[13px] font-medium text-foreground">{label}</label>
-      <div className="w-[44%] max-w-[180px]">
+      <div className="range-value-chip w-[44%] max-w-[180px]">
         <NumberInput
           value={value}
           onChange={onChange}

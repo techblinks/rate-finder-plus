@@ -13,6 +13,8 @@ import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import ResultActions from "@/components/ResultActions";
 import { usePublishMobileResult } from "@/lib/mobileResult";
+import { useCalcPersist } from "@/lib/calcPersist";
+import MobileRestoreChip from "@/components/mobile/MobileRestoreChip";
 
 type Frequency = "monthly" | "fortnightly" | "weekly";
 type LoanType = "owner" | "investor";
@@ -94,9 +96,28 @@ const MortgageRepayment = () => {
       : `Monthly ${AUD(result.monthly)}`,
   });
 
+  const persistState = useMemo(
+    () => ({ loanType, amount, rate, term, frequency, extraOpen, extra }),
+    [loanType, amount, rate, term, frequency, extraOpen, extra],
+  );
+  const { showRestore, restore, dismiss } = useCalcPersist(
+    "mortgage_repayment",
+    persistState,
+    (s) => {
+      setLoanType(s.loanType);
+      setAmount(s.amount);
+      setRate(s.rate);
+      setTerm(s.term);
+      setFrequency(s.frequency);
+      setExtraOpen(s.extraOpen);
+      setExtra(s.extra);
+    },
+  );
+
 
   return (
     <div className="space-y-6">
+      <MobileRestoreChip show={showRestore} onRestore={restore} onDismiss={dismiss} />
       <StickyResultsBar
         watchRef={calcRef}
         summary={`${AUD(amount)} @ ${rate.toFixed(2)}% · ${term}yr`}
