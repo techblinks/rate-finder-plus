@@ -4,6 +4,7 @@ import { Share2, Check, ExternalLink } from "lucide-react";
 import { calcLmi, lmiCapitalisedCost, payNowVsWait, type BuyerType } from "@/lib/calc/lmi";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
+import { usePublishMobileResult } from "@/lib/mobileResult";
 import { useRbaRates } from "@/hooks/useRbaRates";
 import Tooltip from "@/components/Tooltip";
 import ResultActions from "@/components/ResultActions";
