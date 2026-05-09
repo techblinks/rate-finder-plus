@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import ProgrammaticPagesSection from "./ProgrammaticPagesSection";
 
 type Status = "brief" | "draft" | "approved" | "published" | "rejected";
 
@@ -263,6 +264,8 @@ const ContentPanel = () => {
           {generating ? "Analysing your keyword data…" : "⚡ Generate this week's briefs"}
         </button>
       </section>
+
+      <ProgrammaticPagesSection />
 
       <div className="flex gap-2 border-b border-border">
         {(["briefs", "drafts", "published"] as SubTab[]).map((s) => (

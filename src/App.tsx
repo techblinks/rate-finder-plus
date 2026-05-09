@@ -26,6 +26,7 @@ const Terms = lazy(() => import("./pages/Terms"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const ProgrammaticPage = lazy(() => import("./pages/ProgrammaticPage"));
 
 const STATE_SLUGS = ["nsw", "vic", "qld", "wa", "sa", "tas", "act", "nt"] as const;
 
@@ -77,6 +78,7 @@ const App = () => (
           <Route path="/lmi" element={<Navigate to="/lmi-calculator" replace />} />
           <Route path="/extra" element={<Navigate to="/extra-repayments-calculator" replace />} />
           <Route path="/compare" element={<Navigate to="/loan-comparison-calculator" replace />} />
+          <Route path="/calculate/*" element={<ProgrammaticPage />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route path="/admin/login" element={<AdminLogin />} />
