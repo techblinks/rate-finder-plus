@@ -12,13 +12,69 @@ function pAndI(loan: number, annualRate: number, months = 360) {
   return (loan * (r * Math.pow(1 + r, months))) / (Math.pow(1 + r, months) - 1);
 }
 
+async function generateText(system: string, userPrompt: string, maxTokens: number) {
+  const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+
+  if (ANTHROPIC_API_KEY) {
+    const anthropicResp = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: "claude-3-haiku-20240307",
+        max_tokens: maxTokens,
+        system,
+        messages: [{ role: "user", content: userPrompt }],
+      }),
+    });
+
+    if (anthropicResp.ok) {
+      const aiData = await anthropicResp.json();
+      return aiData?.content?.[0]?.text ?? "";
+    }
+
+    const errText = await anthropicResp.text();
+    console.error("Anthropic error:", anthropicResp.status, errText);
+    if (anthropicResp.status !== 404 || !LOVABLE_API_KEY) {
+      throw new Error(`Anthropic API error: ${anthropicResp.status}. ${errText}`);
+    }
+  }
+
+  if (!LOVABLE_API_KEY) throw new Error("No AI provider configured");
+
+  const gatewayResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${LOVABLE_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "google/gemini-3-flash-preview",
+      messages: [
+        { role: "system", content: system },
+        { role: "user", content: userPrompt },
+      ],
+    }),
+  });
+
+  if (!gatewayResp.ok) {
+    const errText = await gatewayResp.text();
+    console.error("AI gateway error:", gatewayResp.status, errText);
+    throw new Error(`AI gateway error: ${gatewayResp.status}. ${errText}`);
+  }
+
+  const gatewayData = await gatewayResp.json();
+  return gatewayData?.choices?.[0]?.message?.content ?? "";
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
-    if (!ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY not configured");
-
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -141,32 +197,7 @@ Q: How do I calculate my new repayments?
 
 Write the full article now in markdown. Do NOT include the H1 — it will be added separately.`;
 
-    const aiResp = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: "claude-3-5-sonnet-20240620",
-        max_tokens: 4000,
-        system,
-        messages: [{ role: "user", content: userPrompt }],
-      }),
-    });
-
-    if (!aiResp.ok) {
-      const errText = await aiResp.text();
-      console.error("Anthropic error:", aiResp.status, errText);
-      return new Response(
-        JSON.stringify({ error: `Anthropic API error: ${aiResp.status}`, details: errText }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
-    }
-
-    const aiData = await aiResp.json();
-    const articleContent: string = aiData?.content?.[0]?.text ?? "";
+    const articleContent = await generateText(system, userPrompt, 4000);
     const wordCount = articleContent.split(/\s+/).filter(Boolean).length;
 
     const title = `RBA ${verb} Cash Rate to ${currentRate}% — What It Means for Your Mortgage (${monthYear})`;
