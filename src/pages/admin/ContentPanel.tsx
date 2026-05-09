@@ -362,8 +362,16 @@ const ContentPanel = () => {
 
               {(d.status === "draft" || d.status === "approved") && (
                 <>
+                  {d.brief?.trigger === "rba_event" && (
+                    <div className="mt-3 rounded-lg border-l-4 border-amber-500 bg-amber-50 p-2 text-xs text-amber-900">
+                      <div className="font-semibold">⚡ RBA EVENT ARTICLE</div>
+                      <div className="mt-0.5">
+                        ⏰ Time-sensitive — publish within 2 hours of the RBA announcement for maximum traffic.
+                      </div>
+                    </div>
+                  )}
                   <p className="mt-2 text-xs text-muted-foreground tnum">
-                    {d.word_count ?? 0} words
+                    {d.word_count ?? 0} words · Generated {new Date(d.created_at).toLocaleString("en-AU")}
                   </p>
                   <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">
                     {(d.content ?? "").slice(0, 200)}…
