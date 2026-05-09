@@ -158,14 +158,14 @@ const SeoPanel = () => {
         try {
           const tokenData = JSON.parse(decodeURIComponent(gscToken));
           const expiresAt = new Date(Date.now() + (tokenData.expires_in || 3600) * 1000).toISOString();
-          await supabase.from("gsc_oauth_tokens").delete().eq("site_url", "https://calcy.com.au");
+          await supabase.from("gsc_oauth_tokens").delete().eq("site_url", GSC_SITE_URL);
           const { error } = await supabase.from("gsc_oauth_tokens").insert({
             access_token: tokenData.access_token,
             refresh_token: tokenData.refresh_token || "",
             token_type: tokenData.token_type || "Bearer",
             expires_at: expiresAt,
             scope: tokenData.scope || "https://www.googleapis.com/auth/webmasters.readonly",
-            site_url: "https://calcy.com.au",
+            site_url: GSC_SITE_URL,
             is_active: true,
           });
           if (error) {
