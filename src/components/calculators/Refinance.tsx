@@ -23,6 +23,7 @@ import {
   type RefinanceInputs,
 } from "@/lib/calc/refinance";
 import { useRbaRates } from "@/hooks/useRbaRates";
+import { usePublishMobileResult } from "@/lib/mobileResult";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
 const AUD = new Intl.NumberFormat("en-AU", {
@@ -329,6 +330,14 @@ const Refinance = () => {
     () => buildRefinanceTimeline(inputs, result),
     [inputs, result],
   );
+
+  usePublishMobileResult({
+    label: result.monthlySaving >= 0 ? "Monthly saving" : "Monthly extra cost",
+    value: fmt0(Math.abs(result.monthlySaving)),
+    sub: result.breakEvenMonth != null
+      ? `Break-even: month ${result.breakEvenMonth}`
+      : "No break-even",
+  });
 
   // Persist + URL sync (debounced)
   useEffect(() => {

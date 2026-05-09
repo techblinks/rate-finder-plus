@@ -3,6 +3,7 @@ import { Minus, Plus, Share2, Check, ChevronDown } from "lucide-react";
 import { calcBorrowingPowerV2, calcHem } from "@/lib/calc/borrowingPower";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
+import { usePublishMobileResult } from "@/lib/mobileResult";
 import { useRbaRates } from "@/hooks/useRbaRates";
 import Tooltip from "@/components/Tooltip";
 import ResultActions from "@/components/ResultActions";
@@ -341,7 +342,12 @@ const BorrowingPower = () => {
     dependants: debounced.dependants,
     rate: debounced.interestRate,
     term: debounced.loanTerm,
-    borrowing_power: result.borrowingPower,
+  });
+
+  usePublishMobileResult({
+    label: "You can borrow",
+    value: fmt0(result.borrowingPower),
+    sub: `at ${debounced.interestRate}% over ${debounced.loanTerm}yr`,
   });
 
   const onShare = async () => {

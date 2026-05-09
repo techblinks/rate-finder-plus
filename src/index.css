@@ -347,3 +347,14 @@
   .shadow-lg, .shadow-md, .shadow-sm { box-shadow: none !important; }
   .border, .border-border { border-color: #ddd !important; }
 }
+
+/* ── Mobile-only: app-feel route transition ── */
+@media (max-width: 767px) {
+  @keyframes calcy-page-in {
+    from { transform: translateX(8%); opacity: 0; }
+    to   { transform: translateX(0);   opacity: 1; }
+  }
+  .mobile-page-transition {
+    animation: calcy-page-in 180ms ease-out;
+  }
+}

@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -9,6 +9,7 @@ import PwaInstallPrompt from "@/components/PwaInstallPrompt";
 import CookieConsent from "@/components/CookieConsent";
 
 const Layout = () => {
+  const { pathname } = useLocation();
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -26,7 +27,7 @@ const Layout = () => {
     >
       <OrganizationJsonLd />
       {!isMobile && <Header />}
-      <main className="flex-1">
+      <main key={isMobile ? pathname : undefined} className={`flex-1 ${isMobile ? "mobile-page-transition" : ""}`}>
         <Outlet />
       </main>
       {!isMobile && <Footer />}

@@ -13,6 +13,7 @@ import {
 } from "@/lib/calc/stampDuty";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
+import { usePublishMobileResult } from "@/lib/mobileResult";
 import Tooltip from "@/components/Tooltip";
 import ResultActions from "@/components/ResultActions";
 
@@ -222,7 +223,12 @@ const StampDuty = ({ lockedState }: StampDutyProps) => {
     buyer: buyerCode,
     value: dState.value,
     net_duty: result.netDuty,
-    mode: dState.mode,
+  });
+
+  usePublishMobileResult({
+    label: "Stamp duty",
+    value: fmt0(result.netDuty),
+    sub: `${dState.state} · ${fmt0(dState.value)}`,
   });
 
   const stateName = STATES.find((st) => st.code === s.state)?.name ?? s.state;

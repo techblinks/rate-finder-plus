@@ -5,6 +5,7 @@ import { Card, Field, NumberInput, ResultCard } from "@/components/ui-kit";
 import BarCompare from "@/components/BarCompare";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
+import { usePublishMobileResult } from "@/lib/mobileResult";
 import ResultActions from "@/components/ResultActions";
 import ShareResult from "@/components/ShareResult";
 
@@ -70,6 +71,13 @@ const LoanComparisonCalc = () => {
   const monthlyDiff = Math.abs(result.a.monthly - result.b.monthly);
   const totalRepaidDiff = Math.abs(result.a.totalRepaid - result.b.totalRepaid);
   const interestDiff = Math.abs(result.a.totalInterest - result.b.totalInterest);
+  const cheaperLabel = result.a.totalInterest <= result.b.totalInterest ? "Loan A" : "Loan B";
+
+  usePublishMobileResult({
+    label: `${cheaperLabel} saves`,
+    value: AUD(interestDiff),
+    sub: `${AUD(monthlyDiff)}/mo difference`,
+  });
 
   return (
     <div className="space-y-6">
