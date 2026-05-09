@@ -265,6 +265,8 @@ const ContentPanel = () => {
         </button>
       </section>
 
+      <ProgrammaticPagesSection />
+
       <div className="flex gap-2 border-b border-border">
         {(["briefs", "drafts", "published"] as SubTab[]).map((s) => (
           <button
