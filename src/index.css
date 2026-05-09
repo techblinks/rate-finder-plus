@@ -318,11 +318,7 @@
       height: 28px;
     }
     /* Value chip on the right of RangeField */
-    .field > .flex > div.w-\[44\%\] {
-      width: auto;
-      max-width: none;
-    }
-    .field > .flex > div.w-\[44\%\] input {
+    .field .range-value-chip input {
       min-width: 110px;
       text-align: right;
       font-variant-numeric: tabular-nums;
