@@ -140,16 +140,54 @@ const SeoPanel = () => {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    void loadAll();
-    // Detect callback flags
     const params = new URLSearchParams(window.location.search);
+
     if (params.get("gsc_connected") === "true") {
       toast({ title: "Google Search Console connected" });
       window.history.replaceState({}, "", "/admin");
-    } else if (params.get("gsc_error")) {
-      toast({ title: "GSC connection failed", description: params.get("gsc_error") || "", variant: "destructive" });
+      void loadAll();
+      return;
+    }
+
+    // Fallback: edge function passed tokens via URL — save them with the user's session
+    const gscToken = params.get("gsc_token");
+    if (gscToken) {
+      window.history.replaceState({}, "", "/admin");
+      (async () => {
+        try {
+          const tokenData = JSON.parse(decodeURIComponent(gscToken));
+          const expiresAt = new Date(Date.now() + (tokenData.expires_in || 3600) * 1000).toISOString();
+          await supabase.from("gsc_oauth_tokens").delete().eq("site_url", "https://calcy.com.au");
+          const { error } = await supabase.from("gsc_oauth_tokens").insert({
+            access_token: tokenData.access_token,
+            refresh_token: tokenData.refresh_token || "",
+            token_type: tokenData.token_type || "Bearer",
+            expires_at: expiresAt,
+            scope: tokenData.scope || "https://www.googleapis.com/auth/webmasters.readonly",
+            site_url: "https://calcy.com.au",
+            is_active: true,
+          });
+          if (error) {
+            toast({ title: "Failed to save GSC connection", description: error.message, variant: "destructive" });
+          } else {
+            toast({ title: "Google Search Console connected" });
+          }
+        } catch (err: any) {
+          toast({ title: "Failed to parse GSC token", description: String(err?.message || err), variant: "destructive" });
+        } finally {
+          void loadAll();
+        }
+      })();
+      return;
+    }
+
+    if (params.get("gsc_error")) {
+      const desc = params.get("gsc_error_description") || params.get("gsc_error") || "";
+      toast({ title: "GSC connection failed", description: desc, variant: "destructive" });
       window.history.replaceState({}, "", "/admin");
     }
+
+    void loadAll();
   }, []);
 
   const loadAll = async () => {
