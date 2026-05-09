@@ -4,6 +4,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import { OrganizationJsonLd } from "@/components/seo/JsonLd";
 import MobileBottomNav from "@/components/MobileBottomNav";
+import MobileStickyResultBar from "@/components/mobile/MobileStickyResultBar";
 import PwaInstallPrompt from "@/components/PwaInstallPrompt";
 import CookieConsent from "@/components/CookieConsent";
 
