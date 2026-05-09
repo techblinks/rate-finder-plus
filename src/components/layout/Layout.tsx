@@ -35,11 +35,14 @@ const Layout = () => {
     (p) => pathname === p || pathname.startsWith(p + "/"),
   );
   const fullscreen = isMobile && inCalc;
+  // On mobile, hide the desktop header site-wide; bottom tabs are the primary nav.
+  const hideHeader = isMobile;
+  const hideFooter = isMobile;
 
   return (
     <div className="flex min-h-screen flex-col bg-background" style={{ paddingBottom: isMobile ? 80 : 0 }}>
       <OrganizationJsonLd />
-      {!fullscreen && <Header />}
+      {!hideHeader && <Header />}
       {fullscreen && (
         <div className="sticky top-0 z-40 flex h-12 items-center border-b border-border bg-background/95 px-3 backdrop-blur">
           <Link
@@ -54,7 +57,7 @@ const Layout = () => {
       <main className="flex-1">
         <Outlet />
       </main>
-      {!fullscreen && <Footer />}
+      {!hideFooter && <Footer />}
       <MobileBottomNav />
       <PwaInstallPrompt />
       <CookieConsent />

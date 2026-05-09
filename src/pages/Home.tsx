@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import MobileHomepage from "@/components/mobile/MobileHomepage";
 import {
   Home as HomeIcon,
   FileText,
@@ -143,10 +144,22 @@ const validateRate = (n: number) => {
 };
 
 const Home = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   const [loan, setLoan] = useState(650000);
   const [rate, setRate] = useState(5.75);
   const dLoan = useDebouncedValue(loan, 150);
   const dRate = useDebouncedValue(rate, 150);
+
+  if (isMobile) return <MobileHomepage />;
+
 
   const loanError = validateLoan(loan);
   const rateError = validateRate(rate);
