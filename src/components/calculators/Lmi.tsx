@@ -34,7 +34,7 @@ const DEFAULTS: State = {
   propertyValue: 700000,
   deposit: 70000,
   loanTerm: 30,
-  interestRate: 6.14,
+  interestRate: 6.39,
   buyer: "owner",
   fhb: false,
   growthPct: 5,
