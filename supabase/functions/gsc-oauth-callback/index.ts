@@ -1,15 +1,13 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 const GSC_CLIENT_ID = Deno.env.get('GSC_CLIENT_ID')!
 const GSC_CLIENT_SECRET = Deno.env.get('GSC_CLIENT_SECRET')!
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
 
 // Hardcoded — must NOT have a trailing slash (prevents //admin redirect bug)
 const SITE_URL = 'https://calcy.com.au'
 const REDIRECT_URI = `${SUPABASE_URL}/functions/v1/gsc-oauth-callback`
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
 Deno.serve(async (req) => {
   const url = new URL(req.url)
@@ -52,45 +50,59 @@ Deno.serve(async (req) => {
 
     const tokens = await tokenResponse.json()
 
-    if (tokens.error) {
-      console.error('Token exchange error:', tokens)
+    if (tokens.error || !tokens.access_token) {
+      console.error('Token exchange failed:', JSON.stringify(tokens))
       return Response.redirect(
-        `${SITE_URL}/admin?gsc_error=${encodeURIComponent(tokens.error)}&gsc_error_description=${encodeURIComponent(tokens.error_description || 'Token exchange failed')}`,
+        `${SITE_URL}/admin?gsc_error=${encodeURIComponent(tokens.error || 'no_token')}&gsc_error_description=${encodeURIComponent(tokens.error_description || 'Token exchange failed')}`,
         302,
       )
-    }
-
-    if (!tokens.access_token) {
-      console.error('No access token in response:', tokens)
-      return Response.redirect(`${SITE_URL}/admin?gsc_error=no_access_token`, 302)
     }
 
     const expiresAt = new Date(Date.now() + (tokens.expires_in || 3600) * 1000).toISOString()
 
-    const { error: dbError } = await supabase.from('gsc_oauth_tokens').upsert(
-      {
-        access_token: tokens.access_token,
-        refresh_token: tokens.refresh_token || null,
-        token_type: tokens.token_type || 'Bearer',
-        expires_at: expiresAt,
-        scope: tokens.scope || 'https://www.googleapis.com/auth/webmasters.readonly',
-        site_url: 'https://calcy.com.au',
-        is_active: true,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: 'site_url', ignoreDuplicates: false },
-    )
+    // METHOD 1: Try saving with service role
+    let saved = false
+    if (SUPABASE_SERVICE_ROLE_KEY) {
+      try {
+        const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+        // Delete existing row first to avoid upsert conflicts
+        await supabase.from('gsc_oauth_tokens').delete().eq('site_url', SITE_URL)
 
-    if (dbError) {
-      console.error('Database error saving tokens:', dbError)
-      return Response.redirect(
-        `${SITE_URL}/admin?gsc_error=database_error&gsc_error_description=${encodeURIComponent(dbError.message)}`,
-        302,
-      )
+        const { error: insertError } = await supabase.from('gsc_oauth_tokens').insert({
+          access_token: tokens.access_token,
+          refresh_token: tokens.refresh_token || '',
+          token_type: tokens.token_type || 'Bearer',
+          expires_at: expiresAt,
+          scope: tokens.scope || 'https://www.googleapis.com/auth/webmasters.readonly',
+          site_url: SITE_URL,
+          is_active: true,
+        })
+
+        if (!insertError) {
+          saved = true
+          console.log('GSC tokens saved via service role')
+        } else {
+          console.error('Service role insert failed:', JSON.stringify(insertError))
+        }
+      } catch (e) {
+        console.error('Service role error:', e)
+      }
     }
 
-    console.log('GSC tokens saved successfully')
-    return Response.redirect(`${SITE_URL}/admin?gsc_connected=true`, 302)
+    if (saved) {
+      return Response.redirect(`${SITE_URL}/admin?gsc_connected=true`, 302)
+    }
+
+    // METHOD 2: Fallback — pass tokens to frontend so the user's auth session can save them
+    const tokenPayload = encodeURIComponent(JSON.stringify({
+      access_token: tokens.access_token,
+      refresh_token: tokens.refresh_token || '',
+      token_type: tokens.token_type || 'Bearer',
+      expires_in: tokens.expires_in || 3600,
+      scope: tokens.scope || 'https://www.googleapis.com/auth/webmasters.readonly',
+    }))
+
+    return Response.redirect(`${SITE_URL}/admin?gsc_token=${tokenPayload}`, 302)
   } catch (err) {
     console.error('Unexpected error:', err)
     return Response.redirect(
