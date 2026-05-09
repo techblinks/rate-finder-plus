@@ -4,6 +4,7 @@ import { toast } from "@/hooks/use-toast";
 import { Copy, Check, AlertTriangle } from "lucide-react";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const GSC_SITE_URL = "sc-domain:calcy.com.au";
 
 type SubTab = "overview" | "keywords" | "opportunities" | "reports";
 
