@@ -11,7 +11,7 @@ import StickyMobileAd from "@/components/StickyMobileAd";
 import RateFreshnessBadge from "@/components/RateFreshnessBadge";
 import MobileCalcHeader from "@/components/mobile/MobileCalcHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useSwipeNavigation, CALCULATOR_ORDER } from "@/hooks/useSwipeNavigation";
+import { useSwipeNavigation } from "@/hooks/useSwipeNavigation";
 import type { FaqItem } from "@/data/faqs";
 
 interface Section {
