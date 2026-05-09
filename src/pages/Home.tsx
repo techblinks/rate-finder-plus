@@ -158,9 +158,6 @@ const Home = () => {
   const dLoan = useDebouncedValue(loan, 150);
   const dRate = useDebouncedValue(rate, 150);
 
-  if (isMobile) return <MobileHomepage />;
-
-
   const loanError = validateLoan(loan);
   const rateError = validateRate(rate);
   const hasError = Boolean(loanError || rateError);
@@ -176,6 +173,9 @@ const Home = () => {
       weekly: monthly / (52 / 12),
     };
   }, [dLoan, dRate]);
+
+  if (isMobile) return <MobileHomepage />;
+
 
   return (
     <>
