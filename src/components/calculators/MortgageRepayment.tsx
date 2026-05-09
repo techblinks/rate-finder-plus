@@ -85,6 +85,16 @@ const MortgageRepayment = () => {
 
   const calcRef = useRef<HTMLDivElement>(null);
 
+  // Publish primary result to the mobile sticky bottom bar (no-op on desktop).
+  usePublishMobileResult({
+    label: `${frequency.charAt(0).toUpperCase() + frequency.slice(1)} repayment`,
+    value: AUD(display),
+    sub: frequency === "monthly"
+      ? `Fortnightly ${AUD(result.fortnightly)}`
+      : `Monthly ${AUD(result.monthly)}`,
+  });
+
+
   return (
     <div className="space-y-6">
       <StickyResultsBar
