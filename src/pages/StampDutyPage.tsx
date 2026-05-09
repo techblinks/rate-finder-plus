@@ -144,6 +144,26 @@ const StampDutyPage = () => (
         ),
       },
       {
+        heading: "Stamp duty in the ACT — 2026 guide",
+        body: (
+          <>
+            <p>
+              The ACT (Australian Capital Territory) has one of the most generous stamp duty
+              concession schemes in Australia. Unlike other states, the ACT's Home Buyer
+              Concession Scheme is not exclusive to first home buyers — it is available to any
+              eligible buyer who will occupy the property as their principal place of residence,
+              subject to income caps.
+            </p>
+            <p className="mt-3">
+              Eligible buyers in the ACT pay zero stamp duty regardless of the property value.
+              Income caps apply: approximately $160,000 for singles and $215,000 for couples
+              (indexed annually). The ACT does not have a First Home Owner Grant — the stamp
+              duty exemption is the primary benefit.
+            </p>
+          </>
+        ),
+      },
+      {
         heading: "Next steps after calculating stamp duty",
         body: (
           <>
