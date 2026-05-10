@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import Breadcrumb from "@/components/Breadcrumb";
+import PageHeader from "@/components/layout/PageHeader";
 import { GUIDES } from "@/data/guides";
 import { CITY_GUIDES } from "@/data/cityGuides";
 import { COUNTRIES } from "@/data/countryCatalogue";
@@ -19,14 +20,26 @@ const GuidesIndex = () => (
         { name: "Guides", path: "/guides" },
       ]}
     />
+
+    <PageHeader
+      breadcrumbs={[
+        { label: "Home", href: "/" },
+        { label: "Guides" },
+      ]}
+      title="Mortgage & property guides"
+      subtitle="Plain-English explainers covering stamp duty, LMI, borrowing power, and first home buyer grants — plus city-specific guides for 50 Australian markets."
+    />
+
     <div className="page-shell py-8 md:py-10">
-      <Breadcrumb current="Guides" />
-      <h1 className="mb-3">Mortgage & property guides</h1>
-      <p className="mb-10 max-w-2xl text-[15px] text-muted-foreground">
-        Plain-English explainers covering stamp duty, LMI, borrowing power, first home buyer
-        grants and rate strategy — plus city-specific guides for 50 Australian markets,
-        updated for 2026.
-      </p>
+      <div className="md:hidden">
+        <Breadcrumb current="Guides" />
+        <h1 className="mb-3">Mortgage & property guides</h1>
+        <p className="mb-6 max-w-2xl text-[15px] text-muted-foreground">
+          Plain-English explainers covering stamp duty, LMI, borrowing power, first home buyer
+          grants and rate strategy — plus city-specific guides for 50 Australian markets,
+          updated for 2026.
+        </p>
+      </div>
 
       <h2 className="mb-4 text-[20px] font-semibold">Core Australian guides</h2>
       <ul className="mb-12 grid grid-cols-1 gap-5 md:grid-cols-2">
