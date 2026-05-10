@@ -39,35 +39,47 @@ const GuideArticleShell = ({ guide }: { guide: GuideMeta }) => {
       />
       <FaqJsonLd faqs={guide.faqs} />
 
+      <PageHeader
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Guides", href: "/guides" },
+          { label: guide.title },
+        ]}
+        title={guide.title}
+        subtitle={`${guide.category} · ${guide.readMins} min read · Last updated May 2026`}
+      />
+
       <article className="page-shell py-8 md:py-10">
-        <nav aria-label="Breadcrumb" className="mb-5 text-[13px] text-muted-foreground">
-          <ol className="flex flex-wrap items-center gap-1">
-            <li><Link to="/" className="link-accent">Home</Link></li>
-            <li className="flex items-center gap-1">
-              <ChevronRight className="h-3.5 w-3.5 opacity-60" />
-              <Link to="/guides" className="link-accent">Guides</Link>
-            </li>
-            <li className="flex items-center gap-1">
-              <ChevronRight className="h-3.5 w-3.5 opacity-60" />
-              <span aria-current="page" className="text-foreground">{guide.title}</span>
-            </li>
-          </ol>
-        </nav>
+        <div className="md:hidden">
+          <nav aria-label="Breadcrumb" className="mb-5 text-[13px] text-muted-foreground">
+            <ol className="flex flex-wrap items-center gap-1">
+              <li><Link to="/" className="link-accent">Home</Link></li>
+              <li className="flex items-center gap-1">
+                <ChevronRight className="h-3.5 w-3.5 opacity-60" />
+                <Link to="/guides" className="link-accent">Guides</Link>
+              </li>
+              <li className="flex items-center gap-1">
+                <ChevronRight className="h-3.5 w-3.5 opacity-60" />
+                <span aria-current="page" className="text-foreground">{guide.title}</span>
+              </li>
+            </ol>
+          </nav>
 
-        <div className="mb-4 flex flex-wrap items-center gap-2 text-[12px] font-medium text-muted-foreground">
-          <span className="inline-flex items-center gap-1 rounded-full bg-accent-light px-3 py-1 text-accent">
-            <Tag className="h-3 w-3" /> {guide.category}
-          </span>
-          <span className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1">
-            <Clock className="h-3 w-3" /> {guide.readMins} min read
-          </span>
+          <div className="mb-4 flex flex-wrap items-center gap-2 text-[12px] font-medium text-muted-foreground">
+            <span className="inline-flex items-center gap-1 rounded-full bg-accent-light px-3 py-1 text-accent">
+              <Tag className="h-3 w-3" /> {guide.category}
+            </span>
+            <span className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1">
+              <Clock className="h-3 w-3" /> {guide.readMins} min read
+            </span>
+          </div>
+
+          <h1 className="mb-3">{guide.title}</h1>
+
+          <p className="mb-6 text-[13px] text-muted-foreground">
+            Last updated: May 2026 · By Calcy Editorial Team
+          </p>
         </div>
-
-        <h1 className="mb-3">{guide.title}</h1>
-
-        <p className="mb-6 text-[13px] text-muted-foreground">
-          Last updated: May 2026 · By Calcy Editorial Team
-        </p>
 
         <p className="mb-8 text-[16px] leading-relaxed text-foreground/90">{guide.intro}</p>
 
