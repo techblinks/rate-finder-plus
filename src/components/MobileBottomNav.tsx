@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Home, Calculator, BookOpen, ArrowLeftRight } from "lucide-react";
 
@@ -22,22 +21,11 @@ const TABS = [
 
 const MobileBottomNav = () => {
   const { pathname } = useLocation();
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const update = () => setShow(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
-  if (!show) return null;
 
   return (
     <nav
       aria-label="Mobile bottom navigation"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background md:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <ul className="grid grid-cols-4">
@@ -64,4 +52,3 @@ const MobileBottomNav = () => {
 };
 
 export default MobileBottomNav;
-

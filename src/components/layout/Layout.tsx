@@ -22,15 +22,16 @@ const Layout = () => {
 
   return (
     <div
-      className="flex min-h-screen flex-col bg-background"
-      style={{ paddingBottom: isMobile ? `calc(64px + env(safe-area-inset-bottom))` : 0 }}
+      className="flex min-h-screen flex-col bg-background pb-[calc(64px+env(safe-area-inset-bottom))] md:pb-0"
     >
       <OrganizationJsonLd />
       <Header />
       <main key={isMobile ? pathname : undefined} className={`flex-1 ${isMobile ? "mobile-page-transition" : ""}`}>
         <Outlet />
       </main>
-      {!isMobile && <Footer />}
+      <div className="hidden md:block">
+        <Footer />
+      </div>
       <MobileStickyResultBar />
       <MobileBottomNav />
       <PwaInstallPrompt />
