@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import RestoreBanner from "@/components/RestoreBanner";
 import { Link } from "react-router-dom";
 import { Share2, Check, ExternalLink } from "lucide-react";
 import { calcLmi, lmiCapitalisedCost, payNowVsWait, type BuyerType } from "@/lib/calc/lmi";
