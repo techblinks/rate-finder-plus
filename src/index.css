@@ -542,6 +542,51 @@
       font-variant-numeric: tabular-nums;
       letter-spacing: -0.02em;
     }
+
+    /* ── Inner-page warm grey body (desktop only) ── */
+    body { background: var(--c-bg-redesign); }
+
+    /* ── Segmented controls (loan term / frequency / mode / loan type) ──
+       Targets the shared Segmented + StampDuty mode-toggle pattern: a
+       role="tablist" container styled with bg-surface. Override to the
+       navy active pattern on desktop only. */
+    [role="tablist"].bg-surface,
+    [role="tablist"][class*=" bg-surface"] {
+      background: #f1f5f9 !important;
+      border-color: var(--c-border-redesign) !important;
+      border-radius: var(--r-medium) !important;
+      padding: 3px !important;
+    }
+    [role="tablist"].bg-surface > button,
+    [role="tablist"][class*=" bg-surface"] > button {
+      border-radius: 4px !important;
+      color: var(--c-slate-mid) !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      font-weight: 400 !important;
+      font-family: var(--font-body-redesign);
+      transition: background 150ms ease, color 150ms ease;
+    }
+    [role="tablist"].bg-surface > button:hover,
+    [role="tablist"][class*=" bg-surface"] > button:hover {
+      color: var(--c-navy) !important;
+      background: rgba(10,22,40,0.04) !important;
+    }
+    [role="tablist"].bg-surface > button[aria-selected="true"],
+    [role="tablist"][class*=" bg-surface"] > button[aria-selected="true"] {
+      background: var(--c-navy) !important;
+      color: #fff !important;
+      font-weight: 500 !important;
+    }
+
+    /* ── Restore banner — neutral slate on desktop ── */
+    [role="status"].bg-accent-light\/40,
+    [role="status"][class*="bg-accent-light"] {
+      background: rgba(10,22,40,0.03) !important;
+      border-color: var(--c-border-redesign) !important;
+      color: var(--c-slate) !important;
+      border-radius: var(--r-medium) !important;
+    }
   }
 }
 
