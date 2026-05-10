@@ -12,6 +12,7 @@ import RateFreshnessBadge from "@/components/RateFreshnessBadge";
 import MobileCalcHeader from "@/components/mobile/MobileCalcHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useSwipeNavigation } from "@/hooks/useSwipeNavigation";
+import MobileRelatedSections from "@/components/mobile/MobileRelatedSections";
 import type { FaqItem } from "@/data/faqs";
 
 interface Section {
@@ -102,6 +103,7 @@ const CalculatorPageShell = ({
               ))}
             </div>
           )}
+          <MobileRelatedSections canonical={canonical} related={related} />
         </div>
       </>
     );

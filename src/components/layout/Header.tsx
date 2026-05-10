@@ -64,7 +64,7 @@ const Header = () => {
           onClick={() => setOpen((v) => !v)}
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
-          className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-md border border-border bg-surface"
+          className="hidden md:hidden inline-flex h-10 w-10 items-center justify-center rounded-md border border-border bg-surface"
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
@@ -73,7 +73,7 @@ const Header = () => {
       {open && (
         <nav
           aria-label="Mobile"
-          className="md:hidden border-t border-border bg-background"
+          className="hidden border-t border-border bg-background"
         >
           <ul className="page-shell py-3">
             {NAV.map((item) => (
