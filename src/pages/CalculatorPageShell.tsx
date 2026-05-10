@@ -132,7 +132,13 @@ const CalculatorPageShell = ({
           {sections.map((s, i) => (
             <div key={s.heading} className="space-y-10">
               <section>
-                <h2 className="mb-3">{s.heading}</h2>
+                <h2
+                  className="mb-3 hidden md:block text-[28px] font-normal leading-[1.15] tracking-tight"
+                  style={{ fontFamily: "var(--font-display-serif)", color: "var(--c-navy)" }}
+                >
+                  {s.heading}
+                </h2>
+                <h2 className="mb-3 md:hidden">{s.heading}</h2>
                 <div className="text-[15px] leading-relaxed text-muted-foreground">{s.body}</div>
               </section>
               {interleaveAdsEvery &&
