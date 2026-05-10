@@ -1,5 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
-import calcyLogo from "@/assets/calcy-logo.png";
+import calcyLogo from "@/assets/calcy-logo.webp";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const NAV = [
