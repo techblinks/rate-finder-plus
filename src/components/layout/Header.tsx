@@ -39,7 +39,7 @@ const Header = () => {
             height={h}
             style={{ height: `${h}px`, width: "auto" }}
             decoding="async"
-            fetchPriority="high"
+            fetchpriority="high"
           />
         </Link>
 

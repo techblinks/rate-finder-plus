@@ -26,7 +26,7 @@ const Layout = () => {
       style={{ paddingBottom: isMobile ? `calc(64px + env(safe-area-inset-bottom))` : 0 }}
     >
       <OrganizationJsonLd />
-      {!isMobile && <Header />}
+      <Header />
       <main key={isMobile ? pathname : undefined} className={`flex-1 ${isMobile ? "mobile-page-transition" : ""}`}>
         <Outlet />
       </main>
