@@ -46,6 +46,31 @@
     --ring: 232 90% 58%;
 
     --radius: 0.5rem;
+
+    /* ── Anti-vibe redesign tokens (desktop) ── */
+    --c-navy: #0a1628;
+    --c-navy-mid: #1e3a5f;
+    --c-navy-light: #e8edf5;
+    --c-slate: #334155;
+    --c-slate-mid: #64748b;
+    --c-slate-light: #94a3b8;
+    --c-bg-redesign: #f7f8fa;
+    --c-border-redesign: #e2e8f0;
+    --c-accent-redesign: #0052cc;
+    --c-accent-hover-redesign: #003d99;
+    --c-green: #16a34a;
+    --c-amber: #b45309;
+    --c-red: #dc2626;
+    --font-display-serif: "DM Serif Display", Georgia, serif;
+    --font-body-redesign: "DM Sans", system-ui, sans-serif;
+    --font-data: "DM Mono", ui-monospace, Menlo, monospace;
+    --r-sharp: 0px;
+    --r-small: 4px;
+    --r-medium: 6px;
+    --r-large: 10px;
+    --r-xl: 16px;
+    --shadow-card: 0 1px 3px rgba(10, 22, 40, 0.08), 0 1px 2px rgba(10, 22, 40, 0.06);
+    --shadow-float: 0 4px 16px rgba(10, 22, 40, 0.12);
   }
 }
 

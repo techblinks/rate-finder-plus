@@ -19,6 +19,16 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         surface: "hsl(var(--surface))",
+        navy: {
+          DEFAULT: "#0a1628",
+          mid: "#1e3a5f",
+          light: "#e8edf5",
+        },
+        slate: {
+          DEFAULT: "#334155",
+          mid: "#64748b",
+          light: "#94a3b8",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
