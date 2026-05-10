@@ -113,7 +113,20 @@ const CalculatorPageShell = ({
   return (
     <>
       {heads}
-      <div className="page-shell py-8 md:py-10">
+
+      {/* Desktop: navy hero band */}
+      <PageHeader
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: title },
+        ]}
+        title={title}
+        subtitle={subheading}
+        liveChip="Rates current — updated today"
+      />
+
+      {/* Mobile: keep legacy breadcrumb + H1 untouched */}
+      <div className="page-shell pt-6 md:hidden">
         <Breadcrumb current={title} />
         <h1
           className={`${subheading ? "mb-2" : "mb-3"} font-serif font-normal tracking-tight text-[clamp(32px,4vw,48px)] leading-[1.1] text-[hsl(var(--foreground))]`}
@@ -124,7 +137,10 @@ const CalculatorPageShell = ({
         {subheading && (
           <p className="mb-3 text-[15px] text-muted-foreground">{subheading}</p>
         )}
-        <RateFreshnessBadge className="mb-6" />
+        <RateFreshnessBadge className="mb-2" />
+      </div>
+
+      <div className="page-shell py-8 md:py-10">
         <div className="min-w-0">
           {children}
           <AdSlot slot="inline" className="my-10" />
