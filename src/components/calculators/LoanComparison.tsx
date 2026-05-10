@@ -6,6 +6,8 @@ import BarCompare from "@/components/BarCompare";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import { usePublishMobileResult } from "@/lib/mobileResult";
+import { useCalcPersist } from "@/lib/calcPersist";
+import MobileRestoreChip from "@/components/mobile/MobileRestoreChip";
 import ResultActions from "@/components/ResultActions";
 import ShareResult from "@/components/ShareResult";
 
@@ -79,8 +81,16 @@ const LoanComparisonCalc = () => {
     sub: `${AUD(monthlyDiff)}/mo difference`,
   });
 
+  const persistState = useMemo(() => ({ amount, a, b }), [amount, a, b]);
+  const { showRestore, restore, dismiss } = useCalcPersist(
+    "loan_comparison",
+    persistState,
+    (s) => { setAmount(s.amount); setA(s.a); setB(s.b); },
+  );
+
   return (
     <div className="space-y-6">
+      <MobileRestoreChip show={showRestore} onRestore={restore} onDismiss={dismiss} />
       <Card>
         <div className="space-y-5">
           <Field label="Loan amount (shared)">
