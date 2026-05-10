@@ -20,6 +20,18 @@ Mobile (`MobileHomepage`, `MobileBottomNav`, mobile-scoped CSS) is intentionally
 - Numeric outputs site-wide already inherit DM Mono on desktop via the `.tnum` rule from Batch 2.
 - Remaining: keyboard a11y on hover dropdown + perf re-profile (deferred — out of scope for this redesign sweep).
 
+## Batch 4 — Brand consistency: navy header on every inner page (DONE)
+- New `PageHeader` component (`src/components/layout/PageHeader.tsx`) renders the dark navy hero band on desktop only (`hidden md:block`) — white-on-navy breadcrumbs, optional live chip with pulsing dot, DM Serif Display H1, optional subtitle.
+- New CSS in `index.css`: `.page-header-band`, `.page-header-inner`, `.page-breadcrumb`, `.page-live-chip`, `.page-header-title`, `.page-header-sub`.
+- `CalculatorPageShell.tsx`: desktop now renders PageHeader (`liveChip="Rates current — updated today"`); legacy breadcrumb + serif H1 + RateFreshnessBadge wrapped in `md:hidden`.
+- `GuidesIndex.tsx` + `GuideArticleShell.tsx`: same treatment — PageHeader on desktop, original breadcrumb + H1 in `md:hidden`. Mobile untouched.
+- `AdSlot.tsx` (Part 10): empty placeholder removed — returns `null` until ads load, so the bare "Advertisement" label never appears.
+
+## Batch 5 — Deferred (next pass)
+- Part 3: navy result panels per-calculator (DM Mono white-on-navy primary value + secondary stat cards).
+- Part 5: data-forward "Related calculators" cards with stat numbers.
+- Part 6/7: guides index card restyle + guide article 2-column sidebar w/ TOC + sticky calculator CTA.
+
 ## Constraints
 - No calculator logic, Supabase queries, SEO content, guide articles, admin panel, or URLs change.
 - Mobile (< 768px) renders identically to before this redesign.
