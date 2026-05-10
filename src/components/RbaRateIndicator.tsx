@@ -7,42 +7,23 @@ interface RbaRateIndicatorProps {
 
 const RbaRateIndicator = ({ loanType, onApply }: RbaRateIndicatorProps) => {
   const rbaRates = useRbaRates();
+  const activeRate = loanType === "owner" ? rbaRates.ownerOccupier : rbaRates.investor;
   return (
-  <div className="rounded-lg border border-border bg-surface px-4 py-3 text-[13px]">
-    <p className="mb-1.5 text-[12px] uppercase tracking-wide text-muted-foreground">
-      RBA average rate — {rbaRates.lastUpdated}
-    </p>
-    <div className="space-y-1">
-      <div
-        className={`flex items-center justify-between gap-2 ${
-          loanType === "owner" ? "font-semibold text-foreground" : "text-foreground"
-        }`}
-      >
-        <span>Owner-occupier (P&amp;I): {rbaRates.ownerOccupier.toFixed(2)}%</span>
+    <div className="flex items-center justify-between rounded-lg border border-border bg-surface px-4 py-2.5 text-[13px]">
+      <span className="text-muted-foreground">
+        RBA avg <span className="text-[11px]">({rbaRates.lastUpdated})</span>
+      </span>
+      <div className="flex items-center gap-3">
+        <span className="font-semibold text-foreground tnum">{activeRate.toFixed(2)}%</span>
         <button
           type="button"
-          onClick={() => onApply(rbaRates.ownerOccupier)}
-          className="text-accent hover:underline"
+          onClick={() => onApply(activeRate)}
+          className="text-[12px] font-medium text-accent hover:underline"
         >
-          Use this rate →
-        </button>
-      </div>
-      <div
-        className={`flex items-center justify-between gap-2 ${
-          loanType === "investor" ? "font-semibold text-foreground" : "text-foreground"
-        }`}
-      >
-        <span>Investor: {rbaRates.investor.toFixed(2)}%</span>
-        <button
-          type="button"
-          onClick={() => onApply(rbaRates.investor)}
-          className="text-accent hover:underline"
-        >
-          Use this rate →
+          Use →
         </button>
       </div>
     </div>
-  </div>
   );
 };
 
