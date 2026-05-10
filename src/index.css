@@ -457,6 +457,23 @@
   .footer-navy a { color: rgba(255,255,255,0.55); text-decoration: none; transition: color 150ms ease; }
   .footer-navy a:hover { color: rgba(255,255,255,0.95); }
   .footer-navy .footer-rba { border-top: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.35); font-family: var(--font-data); font-size: 12px; }
+
+  /* ── Page header band (desktop only — applied to inner pages) ── */
+  .page-header-band { background: var(--c-navy); padding: 32px 0 36px; border-bottom: 1px solid rgba(255,255,255,0.06); font-family: var(--font-body-redesign); }
+  .page-header-inner { max-width: 1200px; margin: 0 auto; padding: 0 32px; display: flex; flex-direction: column; gap: 10px; }
+  .page-breadcrumb { font-size: 13px; color: rgba(255,255,255,0.35); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .page-breadcrumb a { color: rgba(255,255,255,0.55); text-decoration: none; transition: color 150ms ease; }
+  .page-breadcrumb a:hover { color: rgba(255,255,255,0.9); }
+  .page-breadcrumb .breadcrumb-sep { color: rgba(255,255,255,0.25); }
+  .page-breadcrumb .breadcrumb-current { color: rgba(255,255,255,0.7); }
+  .page-live-chip { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: rgba(255,255,255,0.55); font-family: var(--font-data); }
+  .page-header-title { font-family: var(--font-display-serif); font-size: clamp(28px, 3vw, 40px); font-weight: 400; color: #fff; letter-spacing: -0.025em; line-height: 1.15; margin: 0; }
+  .page-header-sub { font-size: 15px; color: rgba(255,255,255,0.55); line-height: 1.6; margin: 0; max-width: 640px; }
+
+  /* Inner-page warm grey body (desktop only). Mobile keeps its original bg. */
+  @media (min-width: 768px) {
+    body.has-page-band { background: var(--c-bg-redesign); }
+  }
 }
 
 @layer utilities {
