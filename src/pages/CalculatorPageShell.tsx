@@ -103,6 +103,7 @@ const CalculatorPageShell = ({
               ))}
             </div>
           )}
+          <MobileRelatedSections canonical={canonical} related={related} />
         </div>
       </>
     );
