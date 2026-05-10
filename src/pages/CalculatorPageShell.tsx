@@ -9,6 +9,7 @@ import RelatedGuides from "@/components/RelatedGuides";
 import AdSlot from "@/components/AdSlot";
 import StickyMobileAd from "@/components/StickyMobileAd";
 import RateFreshnessBadge from "@/components/RateFreshnessBadge";
+import PageHeader from "@/components/layout/PageHeader";
 import MobileCalcHeader from "@/components/mobile/MobileCalcHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useSwipeNavigation } from "@/hooks/useSwipeNavigation";
