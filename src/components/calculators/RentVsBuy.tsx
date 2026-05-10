@@ -735,7 +735,7 @@ const RentVsBuy = () => {
         {/* RIGHT — Sticky verdict panel */}
         <aside className="order-1 lg:order-none sticky top-2 z-30 self-start lg:top-24">
           <div
-            className={`rounded-2xl border-2 p-5 transition-all duration-200 ${verdictBorder} ${isStale ? "opacity-70" : "opacity-100"}`}
+            className={`result-panel-navy rounded-2xl border-2 p-5 transition-all duration-200 md:p-7 ${verdictBorder} ${isStale ? "opacity-70" : "opacity-100"}`}
             aria-live="polite"
             aria-busy={isStale}
           >
