@@ -476,18 +476,7 @@ const Refinance = () => {
 
   return (
     <div className="space-y-6 pb-32 md:pb-0">
-      {restored && (
-        <div className="flex items-center justify-between gap-3 rounded-xl border border-accent/30 bg-accent-light/40 px-4 py-3 text-[13px] text-foreground">
-          <span>Welcome back — we've restored your last refinance comparison.</span>
-          <button
-            type="button"
-            onClick={reset}
-            className="font-semibold text-accent hover:underline"
-          >
-            Reset
-          </button>
-        </div>
-      )}
+      <RestoreBanner show={!!restored} onReset={reset} />
 
       <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(320px,420px)]">
         {/* LEFT — Inputs */}
