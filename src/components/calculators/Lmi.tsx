@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import RestoreBanner from "@/components/RestoreBanner";
 import { Link } from "react-router-dom";
 import { Share2, Check, ExternalLink } from "lucide-react";
 import { calcLmi, lmiCapitalisedCost, payNowVsWait, type BuyerType } from "@/lib/calc/lmi";
@@ -388,18 +389,7 @@ const Lmi = () => {
 
   return (
     <div className="space-y-6">
-      {restored === "local" && (
-        <div className="flex items-center justify-between gap-3 rounded-xl border border-accent-mid bg-accent-light px-4 py-3 text-[13px] text-foreground">
-          <span>Welcome back — we've restored your last calculation.</span>
-          <button
-            type="button"
-            onClick={clearStored}
-            className="font-semibold text-accent hover:underline"
-          >
-            Clear
-          </button>
-        </div>
-      )}
+      <RestoreBanner show={restored === "local"} onReset={clearStored} />
 
       <div className="grid gap-6 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
         {/* Inputs */}

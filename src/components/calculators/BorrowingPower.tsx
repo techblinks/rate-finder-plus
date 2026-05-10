@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import RestoreBanner from "@/components/RestoreBanner";
 import { Minus, Plus, Share2, Check, ChevronDown } from "lucide-react";
 import { calcBorrowingPowerV2, calcHem } from "@/lib/calc/borrowingPower";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
@@ -474,18 +475,7 @@ const BorrowingPower = () => {
 
   return (
     <div className="space-y-6">
-      {restored === "local" && (
-        <div className="flex items-center justify-between gap-3 rounded-xl border border-accent-mid bg-accent-light px-4 py-3 text-[13px] text-foreground">
-          <span>Welcome back — we've restored your last calculation.</span>
-          <button
-            type="button"
-            onClick={clearStored}
-            className="font-semibold text-accent hover:underline"
-          >
-            Clear
-          </button>
-        </div>
-      )}
+      <RestoreBanner show={restored === "local"} onReset={clearStored} />
 
       <div className="grid gap-6 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         {/* Inputs */}
