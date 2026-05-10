@@ -10,17 +10,16 @@ Mobile (`MobileHomepage`, `MobileBottomNav`, mobile-scoped CSS) is intentionally
 - `Footer.tsx`: navy background, brand column, link columns, RBA bar, legal — all on desktop (already hidden on mobile via Layout).
 - `Home.tsx`: full desktop rebuild — navy hero with live RBA chip + 4-link grid + data panel; remove "Why Calcy?" emoji section, blue quick-estimate widget, topic pills, old "Current in home loans" cards. Add data-style calculator grid (4×2) and Bloomberg-style rates table. Mobile branch (`<MobileHomepage />`) untouched.
 
-## Batch 2 — Calculator pages (next turn)
-- `CalculatorPageShell.tsx`: drop the `header` AdSlot above results, restyle title/breadcrumb with DM Serif, navy result panel, white input panel, sidebar ad slot.
-- `RangeField`, `BarCompare`, calculator inputs: tabular DM Mono on all numbers.
-- State pills (StampDuty.tsx): `rounded-md` + navy active.
-- Sweep `rounded-full` → `rounded-md` on desktop CTAs (keep mobile pills).
+## Batch 2 — Calculator pages (DONE)
+- `CalculatorPageShell.tsx`: removed `header` AdSlot. H1 in DM Serif (clamp 32–48px), navy section H2s on desktop only.
+- `index.css`: `.tnum` adopts `var(--font-data)` at ≥768px so all numeric outputs render in DM Mono on desktop. Mobile typography untouched.
+- `StampDuty.tsx`: state pills + property-value pills become `rounded-md` with navy active state on desktop. Mobile pill style untouched.
 
-## Batch 3 — Polish (next turn)
-- Buttons: ensure `.btn-primary` defaults to navy on desktop sections; mobile keeps current accent.
-- All number renderings: `tnum` + DM Mono via existing `.tnum` utility re-pointed.
-- Validate hover dropdown a11y (keyboard).
-- Run perf profile + visual QA.
+## Batch 3 — Polish (next)
+- Sweep remaining selection pills (RentVsBuy:160, Lmi:438, Refinance:185, MortgageCalculatorRedesign:424) to `md:rounded-md` + navy active.
+- Restyle `BarCompare` row labels with DM Mono on desktop.
+- Audit `.btn-primary` on desktop sections — point to navy when in non-mobile shell.
+- Validate hover dropdown a11y (keyboard) + run perf profile.
 
 ## Constraints
 - No calculator logic, Supabase queries, SEO content, guide articles, admin panel, or URLs change.
