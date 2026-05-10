@@ -3,6 +3,7 @@ import { ChevronRight, Clock, Tag, ArrowRight } from "lucide-react";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { ArticleJsonLd, BreadcrumbJsonLd, FaqJsonLd } from "@/components/seo/JsonLd";
 import FAQ from "@/components/FAQ";
+import PageHeader from "@/components/layout/PageHeader";
 import type { GuideMeta } from "@/data/guides";
 import { ALL_GUIDES } from "@/data/allGuides";
 
