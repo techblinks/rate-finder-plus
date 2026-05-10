@@ -7,8 +7,10 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Inter"', "ui-sans-serif", "system-ui", "sans-serif"],
-        display: ['"Plus Jakarta Sans"', '"Inter"', "ui-sans-serif", "system-ui", "sans-serif"],
+        sans: ['"DM Sans"', '"Inter"', "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ['"DM Serif Display"', "Georgia", "serif"],
+        serif: ['"DM Serif Display"', "Georgia", "serif"],
+        mono: ['"DM Mono"', "ui-monospace", "Menlo", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -17,6 +19,16 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         surface: "hsl(var(--surface))",
+        navy: {
+          DEFAULT: "#0a1628",
+          mid: "#1e3a5f",
+          light: "#e8edf5",
+        },
+        slate: {
+          DEFAULT: "#334155",
+          mid: "#64748b",
+          light: "#94a3b8",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
