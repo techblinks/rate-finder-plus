@@ -54,18 +54,15 @@ const MobileHomepage = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      {/* Minimal sticky header */}
-      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-border bg-background/95 px-4 py-3 backdrop-blur">
-        <span className="text-[18px] font-semibold tracking-tight">
-          <span aria-hidden>🧮</span> Calcy
-        </span>
+      {/* RBA rate chip (header lives in global Header) */}
+      <div className="flex justify-end px-4 pt-3">
         <span
           className="rounded-full px-2.5 py-1 text-[12px] font-medium"
           style={{ background: "hsl(var(--accent-light))", color: "hsl(var(--accent))" }}
         >
           RBA {rbaRate}%
         </span>
-      </header>
+      </div>
 
       {/* Last result (if available) */}
       {lastResult && (
