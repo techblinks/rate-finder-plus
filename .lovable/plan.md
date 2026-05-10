@@ -1,67 +1,68 @@
-# Fix Rent vs Buy layout — user-first, ads later
+# Plan: native-app feel for mobile
 
-## The problem
+Based on the annotated screenshot, three distinct issues + one feature request.
 
-At your current viewport (1101 px) three columns are competing for space:
+## 1. Remove duplicate "Calcy" row on mobile home
 
+`src/components/mobile/MobileHomepage.tsx` currently renders its own sticky header (`🧮 Calcy` + `RBA 4.35%` pill). Since the global `Header` now renders the uploaded logo on mobile too, this row is a duplicate. Remove the entire inner `<header>` block and move the RBA pill inline above the calculator grid (small chip, right-aligned) so the rate signal stays visible.
+
+## 2. Remove hamburger menu on mobile (looks like a website)
+
+In `src/components/layout/Header.tsx`, the mobile menu button + slide-down nav are redundant — `MobileBottomNav` already provides primary navigation (Home / Calculate / Guides / Compare). On viewports `< md`, hide the hamburger button and the mobile dropdown nav entirely. Desktop nav stays untouched. Result: mobile header shows only the logo, like a native app's top bar.
+
+## 3. Native-style "Related calculators" + "Latest guides" under each calculator (mobile only)
+
+Today the mobile branch of `CalculatorPageShell.tsx` returns only the calculator + a swipe-progress dots row. We'll add two new sections **below the calculator** for engagement and internal-linking:
+
+### A. Related calculators — horizontal snap scroller
+- Reuse the existing `related` prop already passed to the shell.
+- Render as a horizontally-scrolling row of pill cards with icon + label, `snap-x snap-mandatory`, `active:scale-[0.97]`. No webview-style list — feels like an iOS "You might also like" rail.
+
+### B. Related guides & latest news — vertical card stack
+- Reuse `RelatedGuides`'s mapping logic (`CALCULATOR_TO_GUIDES` keyed by canonical) to pick 3 contextual guide cards.
+- Render as full-width rounded cards (`rounded-2xl`, soft border, subtle shadow) with: small category chip, bold title (2-line clamp), 2-line description, "Read more →". No grid — single column stacked, mimicking native news feeds (e.g. Apple News).
+- Header: "Latest guides & insights" with small "View all →" link to `/guides`.
+
+Both sections only render on mobile (already inside the `if (isMobile)` branch). Bottom padding adjusts so the sticky result bar doesn't cover the last card.
+
+## Files touched
+
+- `src/components/mobile/MobileHomepage.tsx` — remove inner header, relocate RBA chip.
+- `src/components/layout/Header.tsx` — hide hamburger + mobile dropdown on `<md`.
+- `src/pages/CalculatorPageShell.tsx` — add related-calculators rail + related-guides stack inside the mobile branch.
+- (No new file strictly required, but I may extract a small `MobileRelatedRail.tsx` if the JSX gets long — purely organisational.)
+
+## Out of scope
+
+- No data/business-logic changes.
+- No new "news" data source — "latest news" is sourced from the existing `GUIDES` dataset, which is what the rest of the site treats as editorial content. If you want a separate live RSS/news feed later, that's a follow-up.
+
+## Visual reference
+
+```text
+┌─────────────────────────────┐
+│  [logo]                     │  ← mobile header: logo only
+├─────────────────────────────┤
+│  Mortgage Calculator        │
+│  ...inputs / results...     │
+│  • • • • ● • • •            │  swipe dots
+│                             │
+│  Try next ▸                 │
+│  ┌──┐ ┌──┐ ┌──┐ ┌──┐ →     │  horizontal snap rail
+│  │SD│ │BP│ │LMI│ │RvB│      │
+│  └──┘ └──┘ └──┘ └──┘        │
+│                             │
+│  Latest guides & insights   │
+│  ┌─────────────────────┐    │
+│  │ STAMP DUTY          │    │  card 1
+│  │ Stamp duty 2026...  │    │
+│  │ Description text…   │    │
+│  └─────────────────────┘    │
+│  ┌─────────────────────┐    │
+│  │ FIRST HOME BUYER    │    │  card 2
+│  └─────────────────────┘    │
+└─────────────────────────────┘
+│ Home  Calc  Guides  Compare │  bottom nav (unchanged)
 ```
-[ Inputs (cramped) | Verdict panel | Ad sidebar (empty placeholder) ]
-```
 
-The page shell adds a sticky 300 px ad sidebar, and the calculator itself already has a 2-column inputs/verdict layout. The inputs column collapses to ~240 px, fields wrap onto 6+ lines, the deposit value gets clipped, and the ad column is empty space stealing the user's working area.
-
-This violates the user-first principle: a tool the visitor came to use is being squeezed by an ad slot that may never even render.
-
-## The strategy
-
-**Priority order for above-the-fold space on calculator pages:**
-1. The calculator inputs and the verdict panel
-2. The break-even chart (the "aha" moment)
-3. Sensitivity / year-by-year detail
-4. SEO content
-5. Ads (header banner + inline + sticky mobile only — no desktop sidebar squeezing the tool)
-
-The desktop sticky sidebar ad gets removed from the calculator content area and replaced with an inline ad block placed **between the calculator and the SEO content**, where it is naturally seen during reading without competing with the tool itself. Header banner, inline ad-after-calculator, and mobile sticky ad all stay — they don't fight for the calculator's working width.
-
-## Layout changes
-
-### CalculatorPageShell
-- Remove the desktop `lg:grid-cols-[1fr_300px]` split. Calculator children render full-width.
-- Keep the top header banner (`AdSlot slot="header"`).
-- Keep one inline `AdSlot slot="inline"` placed *after* the calculator output, *before* SEO sections.
-- Keep `interleaveAdsEvery` inside SEO sections (where it belongs — readers, not tool users).
-- Mobile sticky ad (`StickyMobileAd`) unchanged.
-
-Result: the calculator now has the full content column to breathe.
-
-### RentVsBuy component
-- Inputs/verdict grid breakpoint moved from `md` (768 px) to `lg` (1024 px), so on screens 768–1023 px (and the cramped 1101 px shell case) inputs render full-width above the verdict instead of squeezed beside it.
-- Verdict aside width tightened: `lg:grid-cols-[minmax(0,1fr)_360px]` (was 320–420 px), giving the inputs more room when side-by-side.
-- "If you buy" and "If you rent" cards keep their internal `sm:grid-cols-2` so price/deposit/rate fields stay on one row at any reasonable width.
-- Sticky verdict panel keeps `lg:sticky lg:top-24` so it scrolls along on desktop.
-
-### Mobile/tablet flow (≤1023 px)
-```
-[ Verdict summary card ]      ← appears first so users see the answer
-[ "If you buy" inputs ]
-[ "If you rent" inputs ]
-[ Net-worth chart ]
-[ Sensitivity table ]
-```
-
-The verdict panel re-orders to render *first* on small screens (CSS order), so on mobile users see the answer immediately and scroll to refine inputs. On desktop the visual order remains inputs-left, verdict-right.
-
-## Files to edit
-
-- `src/pages/CalculatorPageShell.tsx` — drop the lg sidebar grid; place inline ad slot after `children`, before SEO sections.
-- `src/components/calculators/RentVsBuy.tsx` — switch grid breakpoint to `lg`, tighten aside width, add `order-first lg:order-none` to the verdict aside so mobile shows it first.
-
-## What stays the same
-
-- All calculation logic, persistence, share/reset, sensitivity grid, chart, SEO sections, FAQs.
-- `AdSlot` component, ad config, AdSense compliance work.
-- Mobile sticky ad and header banner ad.
-
-## What does NOT change
-
-I am not removing ad capability — only relocating ads so they don't compete with the tool's working area. Revenue impact should be neutral-to-positive: a usable calculator drives more sessions, scroll depth, and inline-ad views than a cramped one with a sidebar nobody looks at.
+Approve and I'll implement.
