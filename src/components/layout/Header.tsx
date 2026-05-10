@@ -21,7 +21,7 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
       <div className="page-shell flex h-[60px] items-center justify-between">
-        <Link to="/" onClick={() => setOpen(false)} aria-label="Calcy home" className="flex items-center">
+        <Link to="/" aria-label="Calcy home" className="flex items-center">
           <img
             src={src}
             alt="Calcy"
