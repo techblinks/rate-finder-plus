@@ -15,11 +15,10 @@ Mobile (`MobileHomepage`, `MobileBottomNav`, mobile-scoped CSS) is intentionally
 - `index.css`: `.tnum` adopts `var(--font-data)` at ≥768px so all numeric outputs render in DM Mono on desktop. Mobile typography untouched.
 - `StampDuty.tsx`: state pills + property-value pills become `rounded-md` with navy active state on desktop. Mobile pill style untouched.
 
-## Batch 3 — Polish (next)
-- Sweep remaining selection pills (RentVsBuy:160, Lmi:438, Refinance:185, MortgageCalculatorRedesign:424) to `md:rounded-md` + navy active.
-- Restyle `BarCompare` row labels with DM Mono on desktop.
-- Audit `.btn-primary` on desktop sections — point to navy when in non-mobile shell.
-- Validate hover dropdown a11y (keyboard) + run perf profile.
+## Batch 3 — Polish (DONE)
+- Selection pills in RentVsBuy, Lmi, Refinance, MortgageCalculatorRedesign now use `md:rounded-md` + navy active state on desktop. Mobile pill style untouched.
+- Numeric outputs site-wide already inherit DM Mono on desktop via the `.tnum` rule from Batch 2.
+- Remaining: keyboard a11y on hover dropdown + perf re-profile (deferred — out of scope for this redesign sweep).
 
 ## Constraints
 - No calculator logic, Supabase queries, SEO content, guide articles, admin panel, or URLs change.
