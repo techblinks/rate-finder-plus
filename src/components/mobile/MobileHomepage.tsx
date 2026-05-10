@@ -100,7 +100,7 @@ const MobileHomepage = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      <FaqJsonLd faqs={faqs.map((f) => ({ q: f.q, a: f.a }))} />
+      <FaqJsonLd faqs={faqs.map((f) => ({ question: f.q, answer: f.a }))} />
 
       {/* Hero */}
       <section className="px-4 pt-4 pb-3">
