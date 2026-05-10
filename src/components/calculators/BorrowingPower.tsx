@@ -655,7 +655,7 @@ const BorrowingPower = () => {
         <div className="md:sticky md:top-6 md:self-start">
           <div
             ref={resultsRef}
-            className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm"
+            className="result-panel-navy space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm md:p-7"
           >
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">

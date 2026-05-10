@@ -217,26 +217,26 @@ const MortgageRepayment = () => {
 
       <ResultCard>
         <div className="border-b border-border pb-3 text-center">
-          <p className="text-[13px] uppercase tracking-wide text-muted-foreground">
+          <p className="result-primary-label text-[13px] uppercase tracking-wide text-muted-foreground">
             {frequency} repayment
           </p>
-          <p className="tnum text-[32px] font-semibold leading-tight text-success">
+          <p className="result-primary-value tnum text-[32px] font-semibold leading-tight text-success">
             {AUD(display)}
           </p>
         </div>
 
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <div className="rounded-lg border border-border bg-surface p-3">
-            <p className="text-[13px] text-muted-foreground">Total repaid</p>
-            <p className="tnum text-[18px] font-semibold text-foreground">{AUD(result.totalRepaid)}</p>
+          <div className="result-stat-card rounded-lg border border-border bg-surface p-3">
+            <p className="stat-label text-[13px] text-muted-foreground">Total repaid</p>
+            <p className="stat-value tnum text-[18px] font-semibold text-foreground">{AUD(result.totalRepaid)}</p>
           </div>
-          <div className="rounded-lg border border-border bg-surface p-3">
-            <p className="text-[13px] text-muted-foreground">Total interest</p>
-            <p className="tnum text-[18px] font-semibold text-foreground">{AUD(result.totalInterest)}</p>
+          <div className="result-stat-card rounded-lg border border-border bg-surface p-3">
+            <p className="stat-label text-[13px] text-muted-foreground">Total interest</p>
+            <p className="stat-value tnum text-[18px] font-semibold text-foreground">{AUD(result.totalInterest)}</p>
           </div>
-          <div className="rounded-lg border border-border bg-surface p-3">
-            <p className="text-[13px] text-muted-foreground">Loan paid off</p>
-            <p className="tnum text-[18px] font-semibold text-foreground">{monthName(result.payoffDate)}</p>
+          <div className="result-stat-card rounded-lg border border-border bg-surface p-3">
+            <p className="stat-label text-[13px] text-muted-foreground">Loan paid off</p>
+            <p className="stat-value tnum text-[18px] font-semibold text-foreground">{monthName(result.payoffDate)}</p>
           </div>
         </div>
 

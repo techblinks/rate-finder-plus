@@ -514,7 +514,7 @@ const Lmi = () => {
 
         {/* Results */}
         <div className="md:sticky md:top-6 md:self-start">
-          <div className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
+          <div className="result-panel-navy space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm md:p-7">
             {/* LVR gauge */}
             <div>
               <div className="mb-1 flex items-baseline justify-between">

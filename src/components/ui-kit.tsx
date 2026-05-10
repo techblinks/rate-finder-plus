@@ -147,5 +147,7 @@ export const Card = ({
 }) => <As className="surface-card">{children}</As>;
 
 export const ResultCard = ({ children }: { children: ReactNode }) => (
-  <div className="rounded-lg border border-border bg-card p-4">{children}</div>
+  <div className="result-panel-navy rounded-lg border border-border bg-card p-4 md:p-7">
+    {children}
+  </div>
 );
