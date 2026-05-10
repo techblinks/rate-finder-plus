@@ -7,8 +7,10 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Inter"', "ui-sans-serif", "system-ui", "sans-serif"],
-        display: ['"Plus Jakarta Sans"', '"Inter"', "ui-sans-serif", "system-ui", "sans-serif"],
+        sans: ['"DM Sans"', '"Inter"', "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ['"DM Serif Display"', "Georgia", "serif"],
+        serif: ['"DM Serif Display"', "Georgia", "serif"],
+        mono: ['"DM Mono"', "ui-monospace", "Menlo", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
