@@ -59,41 +59,7 @@ const Header = () => {
           ))}
         </nav>
 
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          className="hidden md:hidden inline-flex h-10 w-10 items-center justify-center rounded-md border border-border bg-surface"
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
       </div>
-
-      {open && (
-        <nav
-          aria-label="Mobile"
-          className="hidden border-t border-border bg-background"
-        >
-          <ul className="page-shell py-3">
-            {NAV.map((item) => (
-              <li key={item.to}>
-                <NavLink
-                  to={item.to}
-                  onClick={() => setOpen(false)}
-                  className={({ isActive }) =>
-                    `block py-3 text-[15px] font-medium ${
-                      isActive ? "text-accent" : "text-foreground"
-                    }`
-                  }
-                >
-                  {item.label}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      )}
     </header>
   );
 };
