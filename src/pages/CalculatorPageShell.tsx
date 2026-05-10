@@ -114,12 +114,16 @@ const CalculatorPageShell = ({
       {heads}
       <div className="page-shell py-8 md:py-10">
         <Breadcrumb current={title} />
-        <h1 className={subheading ? "mb-2" : "mb-3"}>{title}</h1>
+        <h1
+          className={`${subheading ? "mb-2" : "mb-3"} font-serif font-normal tracking-tight text-[clamp(32px,4vw,48px)] leading-[1.1] text-[hsl(var(--foreground))]`}
+          style={{ fontFamily: "var(--font-display-serif)" }}
+        >
+          {title}
+        </h1>
         {subheading && (
           <p className="mb-3 text-[15px] text-muted-foreground">{subheading}</p>
         )}
         <RateFreshnessBadge className="mb-6" />
-        <AdSlot slot="header" className="mb-6" />
         <div className="min-w-0">
           {children}
           <AdSlot slot="inline" className="my-10" />
@@ -128,7 +132,13 @@ const CalculatorPageShell = ({
           {sections.map((s, i) => (
             <div key={s.heading} className="space-y-10">
               <section>
-                <h2 className="mb-3">{s.heading}</h2>
+                <h2
+                  className="mb-3 hidden md:block text-[28px] font-normal leading-[1.15] tracking-tight"
+                  style={{ fontFamily: "var(--font-display-serif)", color: "var(--c-navy)" }}
+                >
+                  {s.heading}
+                </h2>
+                <h2 className="mb-3 md:hidden">{s.heading}</h2>
                 <div className="text-[15px] leading-relaxed text-muted-foreground">{s.body}</div>
               </section>
               {interleaveAdsEvery &&

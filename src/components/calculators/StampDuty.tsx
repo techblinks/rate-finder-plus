@@ -332,10 +332,10 @@ const StampDuty = ({ lockedState }: StampDutyProps) => {
                   type="button"
                   onClick={() => set("state", st.code)}
                   aria-pressed={active}
-                  className={`inline-flex h-9 min-w-[44px] items-center justify-center rounded-full border px-4 text-[13px] font-semibold transition-colors ${
+                  className={`inline-flex h-9 min-w-[44px] items-center justify-center rounded-full md:rounded-md border px-4 text-[13px] font-semibold transition-colors ${
                     active
-                      ? "border-accent bg-accent text-accent-foreground"
-                      : "border-accent/40 bg-background text-accent hover:bg-accent-light"
+                      ? "border-accent bg-accent text-accent-foreground md:border-[var(--c-navy)] md:bg-[var(--c-navy)] md:text-white"
+                      : "border-accent/40 bg-background text-accent hover:bg-accent-light md:border-[var(--c-border-redesign)] md:text-[var(--c-navy)] md:hover:bg-[var(--c-bg-redesign)]"
                   }`}
                 >
                   {st.code}
@@ -407,10 +407,10 @@ const StampDuty = ({ lockedState }: StampDutyProps) => {
                     key={v}
                     type="button"
                     onClick={() => set("value", v)}
-                    className={`rounded-full border px-3 py-1 text-[12px] font-medium ${
+                    className={`rounded-full md:rounded-md border px-3 py-1 text-[12px] font-medium ${
                       s.value === v
-                        ? "border-accent bg-accent text-accent-foreground"
-                        : "border-border bg-background text-foreground hover:border-accent"
+                        ? "border-accent bg-accent text-accent-foreground md:border-[var(--c-navy)] md:bg-[var(--c-navy)] md:text-white"
+                        : "border-border bg-background text-foreground hover:border-accent md:hover:border-[var(--c-navy)]"
                     }`}
                   >
                     {v >= 1_000_000 ? `$${v / 1_000_000}M` : `$${v / 1000}k`}
