@@ -157,10 +157,10 @@ const Pill = ({
   <button
     type="button"
     onClick={onClick}
-    className={`rounded-full border px-3 py-1 text-[12px] font-medium transition-colors ${
+    className={`rounded-full md:rounded-md border px-3 py-1 text-[12px] font-medium transition-colors ${
       active
-        ? "border-accent bg-accent text-accent-foreground"
-        : "border-border bg-background text-foreground hover:border-accent/40"
+        ? "border-accent bg-accent text-accent-foreground md:border-[var(--c-navy)] md:bg-[var(--c-navy)] md:text-white"
+        : "border-border bg-background text-foreground hover:border-accent/40 md:hover:border-[var(--c-navy)]"
     }`}
   >
     {children}
