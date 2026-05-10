@@ -52,8 +52,6 @@ const CookieConsent = () => {
     if (!getConsent()) setShow(true);
   }, []);
 
-  if (!show) return null;
-
   const accept = (v: ConsentValue) => {
     saveConsent(v);
     setShow(false);
@@ -65,7 +63,10 @@ const CookieConsent = () => {
       <div
         role="dialog"
         aria-label="Cookie consent"
-        className="fixed inset-x-0 bottom-0 z-[10000] border-t border-border bg-background shadow-[0_-4px_24px_hsl(var(--foreground)/0.06)]"
+        aria-hidden={!show}
+        className={`fixed inset-x-0 bottom-0 z-[10000] border-t border-border bg-background shadow-[0_-4px_24px_hsl(var(--foreground)/0.06)] transition-transform duration-300 will-change-transform ${
+          show ? "translate-y-0" : "translate-y-full pointer-events-none"
+        }`}
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <div className="page-shell flex flex-col gap-3 px-6 py-4 md:flex-row md:items-center md:justify-between">
