@@ -59,14 +59,9 @@ const AdSlot = ({ slot, className = "" }: AdSlotProps) => {
   }, [client, slotId, enabled]);
 
   if (!client || !slotId || !enabled) {
-    return (
-      <div
-        aria-hidden="true"
-        className={`flex items-center justify-center rounded-xl border border-dashed border-border bg-muted/30 text-[12px] uppercase tracking-wide text-muted-foreground ${SLOT_CLASS[slot]} ${className}`}
-      >
-        Advertisement
-      </div>
-    );
+    // Collapse completely when no ad is configured/loaded — avoids a bare
+    // "Advertisement" label appearing on the page.
+    return null;
   }
 
   return (
