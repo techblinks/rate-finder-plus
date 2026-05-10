@@ -27,8 +27,15 @@ Mobile (`MobileHomepage`, `MobileBottomNav`, mobile-scoped CSS) is intentionally
 - `GuidesIndex.tsx` + `GuideArticleShell.tsx`: same treatment — PageHeader on desktop, original breadcrumb + H1 in `md:hidden`. Mobile untouched.
 - `AdSlot.tsx` (Part 10): empty placeholder removed — returns `null` until ads load, so the bare "Advertisement" label never appears.
 
-## Batch 5 — Deferred (next pass)
-- Part 3: navy result panels per-calculator (DM Mono white-on-navy primary value + secondary stat cards).
+## Batch 5a — Navy result panels (DONE)
+- New `.result-panel-navy` opt-in CSS class in `index.css` (scoped to ≥768px). Provides: navy bg, white-on-navy text overrides for `.text-foreground`/`.text-muted-foreground`/`.text-success`/`.text-warning`/`.text-destructive`/`.text-accent`, translucent inner surfaces, plus styles for `.result-primary-label` / `.result-primary-value` / `.result-stat-card` / `.stat-label` / `.stat-value`.
+- Shared `ResultCard` (`ui-kit.tsx`) now wraps with `result-panel-navy` — auto-applies to MortgageRepayment, HecsBorrowingPower, LoanComparison.
+- `MortgageRepayment.tsx`: tagged primary value + 3 secondary stat cards with `result-primary-label`, `result-primary-value`, `result-stat-card`/`stat-label`/`stat-value` so DM Mono kicks in on desktop.
+- Per-calculator primary result wrappers tagged with `result-panel-navy md:p-7`:
+  StampDuty (sticky single-mode panel), BorrowingPower (sticky borrowing-power panel), Lmi (LVR + LMI cost panel), Refinance (verdict aside), ExtraRepayments ("you save" section), RentVsBuy (sticky verdict aside), MortgageCalculatorRedesign (primary repayment panel).
+- Mobile (<768px) untouched — class is inert below the breakpoint.
+
+## Batch 5b — Deferred
 - Part 5: data-forward "Related calculators" cards with stat numbers.
 - Part 6/7: guides index card restyle + guide article 2-column sidebar w/ TOC + sticky calculator CTA.
 
