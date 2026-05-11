@@ -91,8 +91,8 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="border-t border-white/5">
-        <p className="mx-auto max-w-[900px] px-6 py-5 text-[11px] leading-relaxed text-white/30">
+      <div className="border-t border-border">
+        <p className="mx-auto max-w-[900px] px-6 py-5 text-[11px] leading-relaxed text-muted-foreground">
           Calculations are estimates for illustrative purposes only. Calcy is not a lender, broker, bank, or financial adviser
           and does not provide financial advice. All calculator results should be verified with a licensed Australian financial
           professional before making any financial decision. Stamp duty rates are indicative for {year} and subject to change —
