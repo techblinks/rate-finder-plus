@@ -13,6 +13,7 @@ interface CalcCardData {
   statValue: string;
   statLabel: string;
   shortDesc: string;
+  catVar: string; // CSS variable name for category color, e.g. "--cat-mortgage-fg"
 }
 
 const Home = () => {
