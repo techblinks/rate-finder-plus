@@ -30,7 +30,9 @@ const today = new Date().toISOString().slice(0, 10);
 
 // ---- sitemap-static.xml (editorial + base routes; 37 URLs) ----
 const PROGRAMMATIC_RE = /^\/guides\/(mortgage|lmi|stamp-duty)-calculator-/;
-const STATIC_ROUTES = ROUTES.filter((r) => !PROGRAMMATIC_RE.test(r.canonical));
+const STATIC_ROUTES = ROUTES.filter(
+  (r) => !PROGRAMMATIC_RE.test(r.canonical) && !r.canonical.startsWith("/suburbs/"),
+);
 writeFileSync(
   join(DIST, "sitemap-static.xml"),
   buildSitemap({ routes: STATIC_ROUTES, site: SITE, lastmod: today, indexingEnabled: true }),

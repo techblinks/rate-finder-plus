@@ -148,10 +148,12 @@ function validateSitemap(routes) {
   const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
   const set = new Set(locs);
   if (locs.length !== set.size) fail("sitemap-static.xml", "duplicate <loc> entries");
-  // Programmatic city guides live in sitemap-programmatic.xml (edge function),
-  // not sitemap-static.xml. Exclude them from the static "missing route" check.
+  // Programmatic city guides live in sitemap-programmatic.xml and suburb
+  // guides in sitemap-suburbs.xml. Exclude both from the static check.
   const PROGRAMMATIC_RE = /^\/guides\/(mortgage|lmi|stamp-duty)-calculator-/;
-  const staticRoutes = routes.filter((r) => !PROGRAMMATIC_RE.test(r.canonical));
+  const staticRoutes = routes.filter(
+    (r) => !PROGRAMMATIC_RE.test(r.canonical) && !r.canonical.startsWith("/suburbs/"),
+  );
   const expected = new Set(staticRoutes.map((r) => `${SITE}${r.canonical}`));
   for (const l of locs) {
     if (!expected.has(l)) fail("sitemap-static.xml", `unknown URL ${l}`);
