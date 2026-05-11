@@ -16,7 +16,11 @@ import {
   clearLast,
   haptic,
   MAX_SCENARIOS,
+  loadOffsetPresets,
+  saveOffsetPresets,
+  MAX_OFFSET_PRESETS,
   type SavedScenario,
+  type OffsetPreset,
 } from "@/lib/mortgageState";
 import RangeField from "@/components/RangeField";
 import ResultActions from "@/components/ResultActions";
