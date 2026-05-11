@@ -1,6 +1,10 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Share2, X, Plus, Check } from "lucide-react";
-import { buildAmortisation, type Frequency } from "@/lib/calc/mortgageEngine";
+import { Share2, X, Plus, Check, ChevronDown } from "lucide-react";
+import { buildAmortisation, type Frequency, type YearAmort } from "@/lib/calc/mortgageEngine";
+import { calculateWithOffset } from "@/lib/calc/offset";
+import { monthlyPayment as basePmt } from "@/lib/calc/mortgage";
+import Tooltip from "@/components/Tooltip";
+import CurrencyInput from "@/components/CurrencyInput";
 import { useRbaRates } from "@/hooks/useRbaRates";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
@@ -52,6 +56,8 @@ const DEFAULTS = {
   freq: "fortnightly" as Frequency,
   extra: 0,
   propValue: 0,
+  offsetStart: 0,
+  offsetMonthly: 0,
 };
 
 type LoanType = "pi" | "io";
@@ -110,6 +116,8 @@ function readUrlParams() {
     term: num("term", DEFAULTS.term),
     extra: num("extra", DEFAULTS.extra),
     propValue: num("pv", DEFAULTS.propValue),
+    offsetStart: num("offset_start", DEFAULTS.offsetStart),
+    offsetMonthly: num("offset_monthly", DEFAULTS.offsetMonthly),
     freq,
   };
 }
@@ -138,6 +146,11 @@ const MortgageCalculatorRedesign = () => {
   const [freq, setFreq] = useState<Frequency>(initial.freq);
   const [extra, setExtra] = useState(initial.extra);
   const [propValue, setPropValue] = useState(initial.propValue);
+  const [offsetOpen, setOffsetOpen] = useState(
+    (initial.offsetStart ?? 0) > 0 || (initial.offsetMonthly ?? 0) > 0,
+  );
+  const [offsetStart, setOffsetStart] = useState(initial.offsetStart ?? 0);
+  const [offsetMonthly, setOffsetMonthly] = useState(initial.offsetMonthly ?? 0);
   const [loanType, setLoanType] = useState<LoanType>("pi");
   const [ioYears, setIoYears] = useState(3);
   const [scenarios, setScenarios] = useState<SavedScenario[]>([]);
@@ -161,6 +174,9 @@ const MortgageCalculatorRedesign = () => {
   const dRate = useDebouncedValue(rate);
   const dTerm = useDebouncedValue(term);
   const dExtra = useDebouncedValue(extra);
+  const dOffsetStart = useDebouncedValue(offsetOpen ? offsetStart : 0);
+  const dOffsetMonthly = useDebouncedValue(offsetOpen ? offsetMonthly : 0);
+  const offsetActive = offsetOpen && (dOffsetStart > 0 || dOffsetMonthly > 0);
 
   // Effective rate / amort accounts for IO mode by computing the IO-period
   // interest-only payment, then full amort over (term - ioYears).
@@ -218,10 +234,21 @@ const MortgageCalculatorRedesign = () => {
     sp.set("freq", freq);
     sp.set("extra", String(Math.round(dExtra)));
     if (propValue > 0) sp.set("pv", String(Math.round(propValue)));
+    if (dOffsetStart > 0) sp.set("offset_start", String(Math.round(dOffsetStart)));
+    if (dOffsetMonthly > 0) sp.set("offset_monthly", String(Math.round(dOffsetMonthly)));
     const url = `${window.location.pathname}?${sp.toString()}`;
     window.history.replaceState(null, "", url);
-    saveLast({ loan: dLoan, rate: dRate, term: dTerm, freq, extra: dExtra, propValue });
-  }, [dLoan, dRate, dTerm, freq, dExtra, propValue]);
+    saveLast({
+      loan: dLoan,
+      rate: dRate,
+      term: dTerm,
+      freq,
+      extra: dExtra,
+      propValue,
+      offsetStart: dOffsetStart,
+      offsetMonthly: dOffsetMonthly,
+    });
+  }, [dLoan, dRate, dTerm, freq, dExtra, propValue, dOffsetStart, dOffsetMonthly]);
 
   // Haptic snap on $50k loan boundaries
   useEffect(() => {
@@ -250,6 +277,57 @@ const MortgageCalculatorRedesign = () => {
       payoffYear: result.payoffYear,
     };
   }, [baseResult, result, dExtra]);
+
+  // Offset account modeling (Sprint 4). Only computed when offset is active.
+  const offset = useMemo(() => {
+    if (!offsetActive || loanType !== "pi" || dLoan <= 0 || dTerm <= 0) return null;
+    const payment = basePmt(dLoan, dRate, dTerm);
+    const r = calculateWithOffset({
+      loanAmount: dLoan,
+      annualRate: dRate,
+      termYears: dTerm,
+      monthlyPayment: payment + dExtra, // extra repayments boost principal portion
+      startingOffset: dOffsetStart,
+      monthlyOffsetContribution: dOffsetMonthly,
+    });
+    // Convert monthly schedule → yearly aggregates matching YearAmort shape.
+    const yearly: YearAmort[] = [];
+    let yOpen = dLoan;
+    let yPrin = 0;
+    let yInt = 0;
+    let yClose = dLoan;
+    for (let i = 0; i < r.schedule.length; i++) {
+      const row = r.schedule[i];
+      yPrin += row.principalPaid;
+      yInt += row.interestPaid;
+      yClose = row.loanBalance;
+      if ((i + 1) % 12 === 0 || i === r.schedule.length - 1) {
+        yearly.push({
+          year: Math.ceil((i + 1) / 12),
+          openingBalance: yOpen,
+          principalPaid: yPrin,
+          interestPaid: yInt,
+          closingBalance: yClose,
+        });
+        yOpen = yClose;
+        yPrin = 0;
+        yInt = 0;
+      }
+    }
+    const nowYear = new Date().getFullYear();
+    return {
+      ...r,
+      yearlySchedule: yearly,
+      payoffYearWith: nowYear + Math.ceil(r.payoffMonths / 12),
+      payoffYearWithout: nowYear + Math.ceil(r.baselinePayoffMonths / 12),
+    };
+  }, [offsetActive, loanType, dLoan, dRate, dTerm, dExtra, dOffsetStart, dOffsetMonthly]);
+
+  // Baseline yearly schedule for chart comparison (re-uses existing engine).
+  const baselineForChart = useMemo(
+    () => (offset ? buildAmortisation(dLoan, dRate, dTerm, freq, dExtra).schedule : null),
+    [offset, dLoan, dRate, dTerm, freq, dExtra],
+  );
 
   const lvr = propValue > 0 ? Math.min(999, (loan / propValue) * 100) : null;
 
@@ -286,6 +364,11 @@ const MortgageCalculatorRedesign = () => {
     setFreq(s.freq);
     setExtra(s.extra);
     if (s.propValue) setPropValue(s.propValue);
+    const os = s.offsetStart ?? 0;
+    const om = s.offsetMonthly ?? 0;
+    setOffsetStart(os);
+    setOffsetMonthly(om);
+    setOffsetOpen(os > 0 || om > 0);
     haptic(15);
   };
 
@@ -301,6 +384,8 @@ const MortgageCalculatorRedesign = () => {
       freq,
       extra,
       propValue,
+      offsetStart,
+      offsetMonthly,
     };
     const arr = [...scenarios, next];
     setScenarios(arr);
@@ -328,6 +413,9 @@ const MortgageCalculatorRedesign = () => {
     setFreq(DEFAULTS.freq);
     setExtra(DEFAULTS.extra);
     setPropValue(DEFAULTS.propValue);
+    setOffsetStart(DEFAULTS.offsetStart);
+    setOffsetMonthly(DEFAULTS.offsetMonthly);
+    setOffsetOpen(false);
     clearLast();
     setRestored(null);
   };
@@ -478,6 +566,87 @@ const MortgageCalculatorRedesign = () => {
             />
           </div>
 
+          {/* Offset account (advanced, Sprint 4) */}
+          <div className="rounded-xl border border-border">
+            <button
+              type="button"
+              onClick={() => {
+                setOffsetOpen((v) => !v);
+                haptic(8);
+              }}
+              aria-expanded={offsetOpen}
+              className="flex w-full min-h-[44px] items-center justify-between gap-2 px-4 py-3 text-left"
+            >
+              <span className="flex flex-wrap items-center gap-2">
+                <strong className="text-[14px] font-semibold text-foreground">
+                  Add an offset account
+                </strong>
+                <span className="text-[12px] uppercase tracking-wide text-muted-foreground">
+                  advanced
+                </span>
+                <span onClick={(e) => e.stopPropagation()}>
+                  <Tooltip
+                    label="What is an offset account?"
+                    text="An offset account is a transaction account linked to your loan. Money in the offset reduces the interest you pay daily. $50,000 in offset on a $650,000 loan means you only pay interest on $600,000. Most Australian variable-rate loans include this feature free."
+                  />
+                </span>
+              </span>
+              <ChevronDown
+                className={`h-4 w-4 text-muted-foreground transition-transform ${
+                  offsetOpen ? "rotate-180" : ""
+                }`}
+                aria-hidden="true"
+              />
+            </button>
+            <p className="px-4 pb-3 text-[13px] text-muted-foreground">
+              Model an offset account like 80% of Australian mortgages use.
+            </p>
+            {offsetOpen && (
+              <div className="space-y-4 border-t border-border p-4">
+                <div>
+                  <label
+                    htmlFor="offset-start"
+                    className="mb-1 block text-[13px] font-medium text-foreground"
+                  >
+                    Starting offset balance
+                  </label>
+                  <CurrencyInput
+                    id="offset-start"
+                    value={offsetStart}
+                    onChange={setOffsetStart}
+                    min={0}
+                    max={5_000_000}
+                    ariaLabel="Starting offset balance"
+                    placeholder="$0"
+                  />
+                  <p className="mt-1 text-[12px] text-muted-foreground">
+                    Current savings sitting in your offset account today.
+                  </p>
+                </div>
+                <div>
+                  <label
+                    htmlFor="offset-monthly"
+                    className="mb-1 block text-[13px] font-medium text-foreground"
+                  >
+                    Monthly contribution to offset
+                  </label>
+                  <CurrencyInput
+                    id="offset-monthly"
+                    value={offsetMonthly}
+                    onChange={setOffsetMonthly}
+                    min={0}
+                    max={50_000}
+                    ariaLabel="Monthly contribution to offset"
+                    placeholder="$0"
+                  />
+                  <p className="mt-1 text-[12px] text-muted-foreground">
+                    How much you'll add to the offset each month from leftover income.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+
           <div>
             <p className="mb-1 text-[13px] font-medium text-foreground">Loan type</p>
             <Segmented<LoanType>
@@ -560,10 +729,68 @@ const MortgageCalculatorRedesign = () => {
             </div>
           )}
 
+          {offset && (
+            <div className="rounded-2xl border border-success/40 bg-success/5 p-5">
+              <p className="mb-3 text-[11px] font-bold uppercase tracking-wider text-success">
+                With offset account
+              </p>
+              {offset.clearedByOffsetAlone ? (
+                <p className="mb-3 text-[14px] font-semibold text-success">
+                  Your offset balance alone would clear this loan immediately.
+                </p>
+              ) : null}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <p className="text-[12px] uppercase tracking-wide text-muted-foreground">
+                    Interest saved
+                  </p>
+                  <p className="tnum text-[22px] font-bold text-success">
+                    {fmt0(offset.interestSaved)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[12px] uppercase tracking-wide text-muted-foreground">
+                    Years shaved off
+                  </p>
+                  <p className="tnum text-[22px] font-bold text-success">
+                    {offset.yearsSaved.toFixed(1)} years
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[12px] uppercase tracking-wide text-muted-foreground">
+                    Effective rate
+                  </p>
+                  <p className="tnum text-[18px] font-bold text-accent">
+                    {offset.effectiveRate.toFixed(2)}%
+                    <span className="ml-1 text-[12px] font-normal text-muted-foreground">
+                      vs {dRate.toFixed(2)}% nominal
+                    </span>
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[12px] uppercase tracking-wide text-muted-foreground">
+                    New payoff year
+                  </p>
+                  <p className="tnum text-[18px] font-bold text-foreground">
+                    {offset.payoffYearWith}
+                    <span className="ml-1 text-[12px] font-normal text-muted-foreground">
+                      (vs {offset.payoffYearWithout} without offset)
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="rounded-2xl border border-border bg-card p-4">
-            <h3 className="mb-3 text-[15px] font-semibold">Principal vs interest by year</h3>
+            <h3 className="mb-3 text-[15px] font-semibold">
+              {offset ? "Loan balance over time" : "Principal vs interest by year"}
+            </h3>
             <Suspense fallback={<div className="h-64 animate-pulse rounded-lg bg-muted/40" />}>
-              <AmortChart schedule={result.schedule} />
+              <AmortChart
+                schedule={offset ? offset.yearlySchedule : result.schedule}
+                baselineSchedule={offset && baselineForChart ? baselineForChart : undefined}
+              />
             </Suspense>
           </div>
 
@@ -593,6 +820,8 @@ const MortgageCalculatorRedesign = () => {
               freq,
               extra: Math.round(extra),
               pv: propValue > 0 ? Math.round(propValue) : undefined,
+              offset_start: offsetStart > 0 ? Math.round(offsetStart) : undefined,
+              offset_monthly: offsetMonthly > 0 ? Math.round(offsetMonthly) : undefined,
             }}
             shareText={`I calculated my mortgage repayment at ${fmt0(headline)} per ${freq}`}
           />

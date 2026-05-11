@@ -92,6 +92,13 @@ export const FAQS: Record<string, FaqItem[]> = {
         { text: "extra repayments", href: "/extra-repayments-calculator" },
       ],
     },
+    {
+      question:
+        "Should I put my savings in an offset account or pay down the loan directly?",
+      answer:
+        "For most variable-rate borrowers, the offset wins. The interest savings are mathematically identical — $1 in offset reduces interest the same as $1 paid off principal — but the offset keeps your money fully accessible if you lose your job, have a baby, or face an emergency. Money paid directly onto the loan typically requires a redraw request, which can be slow or restricted. Plus, the implicit return on offset money is tax-free (you're avoiding interest, not earning income), so it usually beats a high-interest savings account on an after-tax basis.",
+      links: [{ text: "offset account modeling", href: "/mortgage-calculator" }],
+    },
   ],
   stampDuty: [
     {

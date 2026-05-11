@@ -1,115 +1,144 @@
+## Sprint Goal
 
-# Sprint 2 — Unify Calcy on the light mobile design system
+Ship **Offset Account Modeling** on the mortgage calculator — a collapsible advanced section that simulates how an offset balance + monthly contributions reduce interest and shorten the loan. Mortgage calculator only. All other calculators untouched.
 
-Goal: replace the dark "anti-vibe" desktop theme with the light theme that already ships on mobile, color-code result cards by calculator category, and keep every calculator's logic, routing, SEO and Sprint 1 mobile fixes untouched.
+Existing component: `MortgageCalculatorRedesign.tsx`. Existing engine: `mortgageEngine.ts` / `mortgage.ts`. The "Extra repayments per month" input lives at line ~469; "Property value (optional, for LVR)" at ~505. The offset section goes between them.
 
-The base tokens in `src/index.css` are already light (`--background: #FFF`, navy foreground, blue accent). The dark theme is delivered through a small set of override classes (`.site-nav-redesign`, `.hero-redesign`, `.page-header-band`, `.calc-data-card`, `.rates-table`, `.trust-bar`, `--c-navy*`, `--c-bg-redesign`). So the unification is mostly a swap of those classes — not a token-wide rewrite.
+---
 
-## 1. Central category palette (single source of truth)
+## 1. Calculation engine — `src/lib/calc/offset.ts`
 
-Add `src/data/calcCategories.ts` exporting one map keyed by canonical path:
-
-```text
-mortgage             → blue    (#2563eb / #eff6ff)
-stamp-duty           → green   (#16a34a / #f0fdf4)
-borrowing-power      → purple  (#a855f7 / #fdf4ff)
-lmi                  → orange  (#ea580c / #fff7ed)
-loan-comparison      → slate   (#475569 / #f8fafc)
-rent-vs-buy          → red     (#dc2626 / #fef2f2)
-refinance            → teal    (#0d9488 / #f0fdf4)
-extra-repayments     → amber   (#d97706 / #fffbeb)
-hecs-borrowing       → purple  (shares borrowing-power)
+```ts
+calculateWithOffset({
+  loanAmount,
+  annualRate,        // % e.g. 6.14
+  termYears,
+  monthlyPayment,    // baseline P&I payment from monthlyPayment()
+  startingOffset,
+  monthlyOffsetContribution,
+}) => {
+  interestSaved, yearsSaved, effectiveRate,
+  payoffMonths, schedule: [{month, loanBalance, offsetBalance, interestPaid, principalPaid}]
+}
 ```
 
-Mirror as CSS custom properties on `:root` (`--cat-mortgage-fg`, `--cat-mortgage-bg`, …) so SSR/prerendered pages render with zero JS.
+Algorithm (month-by-month):
+- `daysInMonth = 365 / 12` (≈30.4167) — tweak: spec says 30.4375; use **30.4167** for exact `annualRate/12` equivalence on the offset-free case, OR keep the spec's daily-accrual model with 30.4375. We will use `daily = annualRate/100/365`, `monthlyInterest = max(0, loanBal - offsetBal) * daily * (365/12)`. This is equivalent to `(loanBal - offsetBal) * annualRate/100/12` → matches baseline PMT exactly when offset = 0 (test #1 stays clean).
+- `principalPart = min(monthlyPayment - monthlyInterest, loanBal)`; if negative (rare when rate=0), just `min(monthlyPayment, loanBal)`.
+- `loanBal -= principalPart`; `offsetBal += monthlyOffsetContribution`; clamp `offsetBal` to never exceed `loanBal` for the *interest computation* (we keep the raw offset accumulator but use `effectiveOffset = min(offsetBal, loanBal)` when computing interest — this matches reality where offset money sits available but earns no benefit beyond loan).
+- Stop when `loanBal <= 0.005`. Cap simulation at `termYears*12 + 600` months as a safety.
+- Edge: if `startingOffset >= loanAmount` → loan cleared month 1 with `principalPart = loanAmount`, flag `clearedByOffsetAlone = true`.
+- `effectiveRate = annualRate * (1 - avgOffset/avgLoanBal)` computed from schedule averages (more honest than using just starting values).
+- Baseline (no offset) total interest computed by running same loop with offset = 0 (or reusing existing engine for consistency).
 
-## 2. CSS overrides — turn the dark classes light
+## 2. Tests — `src/lib/calc/offset.test.ts`
 
-In `src/index.css` (anti-vibe block ~line 386), rewrite to light tokens while preserving class names:
+1. `offset=0, monthly=0` → totalInterest within 0.5% of `calcMortgage(...).totalInterest`.
+2. `$50k, $0/mo` on $650k @ 6.14% / 30y → modest savings, yearsSaved ≥ 1.
+3. `$50k, $1500/mo` on $650k @ 6.14% / 30y → interestSaved in [$150k, $250k], yearsSaved in [4, 8]. (Spec target: ~$180k–$220k, ~5–7yr.)
+4. `startingOffset > loanAmount` → `payoffMonths === 1`, `interestSaved ≈ baselineInterest`, no negatives in schedule.
+5. `rate=0` → interestSaved=0, yearsSaved=0, offset has no effect on payoff timing.
 
-- `.site-nav-redesign` → white bg, bottom border `hsl(var(--border))`, sticky.
-- `.nav-link-redesign` → foreground @ 65 %, hover accent, active solid accent.
-- `.hero-redesign` → `bg-background`, foreground text. H1 keeps DM Serif Display.
-- `.live-indicator` / `.live-dot` → green dot, muted-foreground label.
-- `.hero-calc-link` → light card on `surface`, border `border`, hover lifts.
-- `.hero-data-panel` + `.data-*` → white card, navy values, success-green modifier.
-- `.trust-bar` → `surface` bg, border separators.
-- `.calc-card-grid` → transparent bg, `gap: 12px`.
-- `.calc-data-card` → white, 1 px border, `r-xl`, hover lift + accent border, leading category-tinted icon dot.
-- `.rates-table` → already light; `.green` stays success.
-- `.page-header-band` → white, foreground text, `border-b`. Title DM Serif Display 40–48 px.
+## 3. UI — `MortgageCalculatorRedesign.tsx`
 
-Keep `--c-navy*` tokens defined (marked deprecated) to avoid sweeping unrelated edits.
+Add state: `offsetOpen`, `offsetStart`, `offsetMonthly`. Defaults 0, collapsed.
 
-## 3. Homepage (`src/pages/Home.tsx`)
+Insert new section between "Extra repayments per month" (~line 479) and "Loan type" (~481). (Spec says "between extra repayments and Property value (optional)" — current order in code is Extra → Loan type → Property value. Place the offset block immediately after Extra repayments, before Loan type, to keep the advanced-stack together. Will note this minor reordering in commit.)
 
-Desktop branch only — mobile untouched.
+```tsx
+<div className="rounded-xl border border-border">
+  <button aria-expanded={offsetOpen} onClick={toggle} className="flex w-full items-center justify-between p-4 min-h-[44px]">
+    <span className="flex items-center gap-2">
+      <strong>Add an offset account</strong>
+      <span className="text-muted-foreground text-[12px]">(advanced)</span>
+      <InfoTooltip text="An offset account is a transaction account linked to your loan…"/>
+    </span>
+    <ChevronDown className={offsetOpen ? "rotate-180" : ""}/>
+  </button>
+  <p className="px-4 -mt-2 pb-3 text-[13px] text-muted-foreground">Model an offset account like 80% of Australian mortgages use.</p>
+  {offsetOpen && (
+    <div className="space-y-4 border-t border-border p-4">
+      <CurrencyInput label="Starting offset balance" value={offsetStart} onChange={setOffsetStart} help="Current savings sitting in your offset account today" />
+      <CurrencyInput label="Monthly contribution to offset" value={offsetMonthly} onChange={setOffsetMonthly} help="How much you'll add to the offset each month from leftover income" />
+    </div>
+  )}
+</div>
+```
 
-- Replace navy hero with light hero: RBA pill, serif H1 (clamp 40–64 px), muted sub.
-- 4-column colorful calculator grid mirroring mobile (lift card array into `calcCategories.ts` so both pages share).
-- Right rail at ≥ lg: light "At a glance" panel using recoloured `.hero-data-panel`.
-- Keep trust bar, rates table, FAQ on white/surface.
-- Container `max-w-[1200px] mx-auto`.
+- Reuse existing `CurrencyInput.tsx` (Sprint 3) with `inputMode="numeric"`.
+- Tooltip: reuse existing `Tooltip.tsx`.
+- Haptic light tap on collapse toggle.
 
-## 4. Calculator pages — `CalculatorPageShell`
+## 4. Results — "WITH OFFSET ACCOUNT" card
 
-- `PageHeader` becomes light per §2.
-- Add `category` prop forwarded as CSS vars on a wrapping div, so children read `--cat-fg` / `--cat-bg`.
-- Wrap `{children}` in `lg:grid lg:grid-cols-[1fr_380px] lg:gap-10` for desktop inputs-left / results-right.
-- Trust strip under H1 reusing `<LastReviewed />` and `<RateFreshnessBadge />`.
+When `offsetOpen && (offsetStart>0 || offsetMonthly>0)`:
 
-Mobile shell unchanged.
+Render new card below the existing savings card with 4 stats:
+1. Interest saved (success green) — `fmt0(interestSaved)`
+2. Years shaved off — `X.Y years` (green)
+3. Effective rate — `5.42% vs 6.14% nominal` (accent)
+4. Payoff year — `2051 (vs 2056 without offset)`
 
-## 5. Result card colour coding
+If `clearedByOffsetAlone`: show banner "Your offset balance alone would clear this loan in X years."
 
-a) New `src/components/CategoryResultCard.tsx` wrapping existing `ResultCard` with a left accent border in `--cat-fg` + faint `--cat-bg` tint. Each calculator's primary result swaps to this.
+The existing **Payoff year stat card** continues to show no-offset value; the new card shows the with-offset comparison (per spec wording "New payoff year (replaces...)" — interpreted as: when offset is active, the offset card becomes the primary payoff narrative; the original stat stays for parity with no-offset).
 
-b) Per-metric semantic colour utility classes:
-- accent / category fg → primary number
-- `--success` → savings / exemptions
-- `--destructive` → costs / total interest
-- `--warning` → LMI / warnings
-- `text-muted-foreground` → secondary
+## 5. Dual-line chart — `MortgageAmortChart.tsx`
 
-Files: `MortgageCalculatorRedesign.tsx`, `StampDuty.tsx`, `BorrowingPower.tsx`, `Lmi.tsx`, `LoanComparison.tsx`, `RentVsBuy.tsx`, `Refinance.tsx`, `ExtraRepayments.tsx`, `HecsBorrowingPower.tsx`. JSX-only edits — no math, no inputs.
+Extend props: `schedule` (with offset or baseline), `baselineSchedule?` (for comparison). When `baselineSchedule` provided:
+- Switch from stacked Area to LineChart with two lines: `closingBalance` with offset (solid `hsl(var(--accent))`) and `closingBalance` without (dashed `hsl(var(--muted-foreground))`, `strokeDasharray="4 4"`).
+- Legend below: "With offset" / "Without offset".
+- When no offset: render the current stacked Area exactly as today (no regression).
 
-## 6. Footer
+## 6. URL params
 
-`.footer-navy` → `bg-surface` + `border-t border-border`, foreground text, accent links. Copy verbatim.
+In the existing URL sync `useEffect` (~line 212), add:
+```ts
+if (offsetStart > 0) sp.set("offset_start", String(Math.round(offsetStart)));
+if (offsetMonthly > 0) sp.set("offset_monthly", String(Math.round(offsetMonthly)));
+```
+In `readUrlParams()`, parse them. In `ShareResult` params payload, pass through. `saveLast`/`loadLast` get the two new fields (with safe defaults so old localStorage entries still load).
 
-## 7. Header
+## 7. Content additions — `MortgageCalculatorPage.tsx`
 
-- Remove `filter: brightness(0) invert(1)` from desktop logo `<img>`.
-- `.site-nav-redesign` light per §2 — no JSX restructure.
+- New `sections[]` entry: **"How offset accounts work"** — 3–4 paragraphs (mechanism, who benefits, typical balances by income $80k/$150k/$250k, tax angle).
+- Add a new FAQ entry to `src/data/faqs.ts` under `mortgage`: *"Should I put my savings in an offset account or pay down the loan directly?"* with answer covering accessibility, tax (offset interest savings are not taxed; mortgage prepayment redraw similar; savings interest is taxed), effective-rate equivalence.
+- Update meta:
+  - `metaTitle="Mortgage Repayment Calculator with Offset Account 2026 | Calcy"`
+  - `metaDescription="Australia's first mortgage calculator that models offset accounts like real lenders do. Live RBA rates, extra repayments, fortnightly options."`
 
-## 8. Inherited pages (no per-file edits)
+## 8. Validation
 
-8 state stamp-duty, 8 FHB grant, all guides, 150 city programmatic, 600 suburb, About/Contact/Privacy/Terms — all flow through `PageHeader` / shells and inherit the new light styles. Quick audit pass to swap any hard-coded `bg-[var(--c-navy)]` / `text-white` strings to semantic tokens.
+Manually run $650k @ 6.14% / 30y, $50k offset, $1500/mo. Cross-check against InfoChoice or Bankwest public offset calculator; report both numbers in the post-deploy summary.
 
-## 9. Tests
+## 9. Hard gates checklist
 
-- Refresh `src/test/home-visual.snapshot.test.tsx`.
-- `seo-regression`, `state-faq-jsonld`, sitemap tests untouched (URLs/JSON-LD don't change).
-- Add light-theme assertion: header lacks dark bg class.
+1. `bunx vitest run` all green incl. 5 new offset tests
+2. `bun run build` clean, 787 prerendered files
+3. Sitemap counts 37 / 150 / 600 unchanged
+4. Cross-check numbers reported
+5. Cookie banner unaffected
+6. CurrencyInput `inputMode` preserved on all currency fields (offset inputs use the same component)
+7. URL round-trip: open `?offset_start=50000&offset_monthly=1500` → state restored → re-serialized identically
+8. With offset collapsed/zero: calculator output byte-identical to current (regression test: snapshot the existing yearly schedule)
+9. Mobile 390px: section collapses neatly, headers/spacing unchanged elsewhere
+10. PWA: service worker + manifest unchanged; offline.html unaffected
 
-## 10. Hard gates
+## Files
 
-1. `bunx vitest` — all green.
-2. `npm run build` + prerender — 787 files.
-3. Sitemap counts: 37 / 150 / 600 / 3 children.
-4. `validate-seo.mjs` + `validate-city-seo.mjs` — green.
-5. Spot-check `/`, `/mortgage-calculator`, `/stamp-duty-calculator`, `/suburbs/mortgage-calculator-parramatta`, `/guides/mortgage-calculator-sydney`.
-6. Mobile regressions: cookie banner, 44 px term-year, `inputmode="decimal"`, OG image.
-7. Screenshots — 4 desktop @ 1440 (`/`, `/mortgage-calculator`, `/stamp-duty-calculator/nsw`, `/guides/mortgage-calculator-sydney`) + 2 mobile @ 390 (`/`, `/mortgage-calculator`).
+**New**
+- `src/lib/calc/offset.ts`
+- `src/lib/calc/offset.test.ts`
 
-## Out of scope
+**Edited**
+- `src/components/calculators/MortgageCalculatorRedesign.tsx` (state, UI section, results card, URL params, share params)
+- `src/components/MortgageAmortChart.tsx` (optional `baselineSchedule` prop + dual-line mode)
+- `src/pages/MortgageCalculatorPage.tsx` (meta + new content section)
+- `src/data/faqs.ts` (new offset FAQ)
+- `src/lib/mortgageState.ts` (persist offset fields)
 
-No formulas, no routing, no sitemap, no bottom-nav rework, no new content, no `MobileHomepage` / `MobileCalcHeader` / `MobileBottomNav` edits.
+## Notes / decisions to flag
 
-## File-touch summary
-
-Edited: `src/index.css`, `src/pages/Home.tsx`, `src/pages/CalculatorPageShell.tsx`, `src/components/layout/Header.tsx`, `src/components/layout/Footer.tsx`, `src/components/layout/PageHeader.tsx`, 9 calculator components, 9 calculator pages, snapshot test.
-
-Created: `src/data/calcCategories.ts`, `src/components/CategoryResultCard.tsx`.
-
-Deleted: none. Routes added: none. SQL: none.
+- **Section placement**: spec asks "between Extra repayments and Property value"; current code order is Extra → Loan type → Property value. Will place offset directly after Extra repayments, keeping Loan type and Property value below — closest match to spec intent (advanced stack grouped).
+- **Day-count convention**: using `annualRate/12` monthly accrual (mathematically equivalent to daily×365/12) so test #1 (zero offset) matches baseline PMT exactly. Documented in `offset.ts`.
+- **Effective rate**: computed from schedule averages, not just `1 - startingOffset/loanAmount`, since the offset grows over time when monthlyContribution > 0.

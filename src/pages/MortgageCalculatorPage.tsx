@@ -7,8 +7,8 @@ import { SEO_FAQS } from "@/data/seoFaqs";
 const MortgageCalculatorPage = () => (
   <CalculatorPageShell
     title="Mortgage repayment calculator"
-    metaTitle="Mortgage Repayment Calculator Australia 2026 | Calcy"
-    metaDescription="Calculate your exact Australian mortgage repayment, total interest, amortisation schedule. Free, no sign-up, updated with May 2026 RBA rate."
+    metaTitle="Mortgage Repayment Calculator with Offset Account 2026 | Calcy"
+    metaDescription="Australia's first mortgage calculator that models offset accounts like real lenders do. Live RBA rates, extra repayments, fortnightly options."
     canonical="/mortgage-calculator"
     faqs={FAQS.mortgage}
     seoFaqs={SEO_FAQS.mortgage}
@@ -81,6 +81,43 @@ const MortgageCalculatorPage = () => (
             loan at 6.39%, this saves approximately $45,000 in interest and cuts around 2.5 years
             off the loan.
           </p>
+        ),
+      },
+      {
+        heading: "How offset accounts work",
+        body: (
+          <div className="space-y-4">
+            <p>
+              An offset account is a transaction account linked directly to your home loan.
+              The balance sitting in the offset is subtracted from your loan balance each day
+              before interest is calculated. If you owe $650,000 and have $50,000 in your
+              offset, you only pay interest on $600,000 — every single day. The repayment
+              amount you make stays the same, but a larger share goes to principal, so the
+              loan shrinks faster.
+            </p>
+            <p>
+              Around 80% of Australian variable-rate mortgages include a 100% offset facility,
+              usually free or for a small annual package fee. Brokers consistently recommend
+              parking your emergency fund, salary, and even tax-set-aside money in the offset
+              rather than a savings account. The reason is tax: interest "saved" through an
+              offset is not income, so you don't pay tax on it. A 6% offset benefit can be
+              worth roughly 9–10% in a taxed savings account for someone on the 37% bracket.
+            </p>
+            <p>
+              Typical offset balances we see in broker conversations: ${"\u200B"}10k–$30k for
+              single-income households under $90k, $40k–$80k for dual-income households around
+              $150k combined, and $100k+ for high earners or investors who keep their tax
+              provision in the offset. The break-even is small — even $10,000 sitting in
+              offset on a $600,000 loan saves about $600/year in interest at 6%.
+            </p>
+            <p>
+              The "Add an offset account" toggle on this calculator models exactly that
+              dynamic month by month. Enter your starting balance and how much you can add
+              each month from leftover income — the calculator will show the years shaved
+              off your loan, the total interest saved, and the effective rate you're really
+              paying once the offset is taken into account.
+            </p>
+          </div>
         ),
       },
       {
