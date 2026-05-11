@@ -80,6 +80,14 @@ const App = () => (
           <Route path="/lmi" element={<Navigate to="/lmi-calculator" replace />} />
           <Route path="/extra" element={<Navigate to="/extra-repayments-calculator" replace />} />
           <Route path="/compare" element={<Navigate to="/loan-comparison-calculator" replace />} />
+          {STATE_SLUGS.map((slug) => (
+            <Route
+              key={`fhb-${slug}`}
+              path={`/first-home-buyer-grant-${slug}`}
+              element={<FhbGrantPage slug={slug} />}
+            />
+          ))}
+          <Route path="/best-home-loans-australia" element={<BestHomeLoansAustralia />} />
           <Route path="/calculate/*" element={<ProgrammaticPage />} />
           <Route path="*" element={<NotFound />} />
         </Route>
