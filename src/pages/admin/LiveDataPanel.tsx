@@ -125,6 +125,41 @@ const LiveDataPanel = () => {
     }
   };
 
+  const runRbaEventScan = async () => {
+    setBusy("rba-event-scan");
+    try {
+      // 1. Sync the latest RBA cash rate
+      const sync = await supabase.functions.invoke("sync-rba-rate", {
+        headers: { "x-triggered-by": "admin_rba_event_scan" },
+      });
+      if (sync.error) throw sync.error;
+      invalidateLiveRatesCache();
+
+      // 2. Auto-generate a draft article from the new rate context
+      const draft = await supabase.functions.invoke("generate-rba-article", {
+        headers: { "x-triggered-by": "admin_rba_event_scan" },
+      });
+      if (draft.error) throw draft.error;
+
+      const wordCount = (draft.data as any)?.word_count;
+      toast({
+        title: "RBA event scan complete",
+        description: wordCount
+          ? `Rates synced and a ${wordCount}-word draft article was saved to Content → Drafts.`
+          : "Rates synced. Draft article saved to Content → Drafts.",
+      });
+      await refresh();
+    } catch (err) {
+      toast({
+        title: "RBA event scan failed",
+        description: err instanceof Error ? err.message : String(err),
+        variant: "destructive",
+      });
+    } finally {
+      setBusy(null);
+    }
+  };
+
   const saveRow = async (id: string, patch: Partial<RateRow>, oldValue: unknown) => {
     setBusy(id);
     try {
