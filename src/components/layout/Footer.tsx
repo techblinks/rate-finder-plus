@@ -63,7 +63,7 @@ const Footer = () => {
               </li>
             ))}
             <li>
-              <Link to="/guides" className="!text-white/85">
+              <Link to="/guides" className="!text-accent font-medium">
                 All guides →
               </Link>
             </li>
