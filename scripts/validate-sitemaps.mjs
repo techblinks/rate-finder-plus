@@ -71,7 +71,7 @@ async function validate({ url, rootTag, childTag, minEntries }) {
   res.status === 200 ? pass(`HTTP 200`) : fail(`HTTP status`, `got ${res.status}`);
 
   const ct = (res.headers.get("content-type") ?? "").toLowerCase();
-  ct.startsWith("application/xml")
+  /^(application|text)\/xml/.test(ct)
     ? pass(`Content-Type: ${ct}`)
     : fail(`Content-Type`, `expected application/xml or text/xml, got "${ct}"`);
 
