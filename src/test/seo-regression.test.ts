@@ -114,9 +114,9 @@ describe("SeoHead invariants under admin settings", () => {
     expect(finalDescription).toBe(PAGE.description);
   });
 
-  it("falls back to icon-512 when no admin OG image configured", () => {
+  it("falls back to /og-image.png when no admin OG image configured", () => {
     const { ogImage } = deriveSeoTags(PAGE, baseSettings);
-    expect(ogImage).toBe("https://calcy.com.au/icon-512.png");
+    expect(ogImage).toBe("https://calcy.com.au/og-image.png");
   });
 
   it("admin OG image override is reflected", () => {
