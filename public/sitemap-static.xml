@@ -15,6 +15,25 @@
   <url><loc>https://calcy.com.au/extra-repayments-calculator</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://calcy.com.au/lmi-calculator</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://calcy.com.au/loan-comparison-calculator</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/hecs-borrowing-power</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://calcy.com.au/rent-vs-buy-calculator</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://calcy.com.au/refinance-calculator</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/first-home-buyer-grant-nsw</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/first-home-buyer-grant-vic</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/first-home-buyer-grant-qld</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/first-home-buyer-grant-wa</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/first-home-buyer-grant-sa</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/first-home-buyer-grant-tas</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/first-home-buyer-grant-act</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/first-home-buyer-grant-nt</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/guides</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/guides/stamp-duty-australia-2026</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/guides/what-is-lmi</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/guides/borrowing-power-australia</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/guides/first-home-buyer-grants-2026</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/guides/fixed-vs-variable-rate</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://calcy.com.au/about</loc><priority>0.5</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://calcy.com.au/contact</loc><priority>0.5</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://calcy.com.au/privacy-policy</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://calcy.com.au/terms-of-use</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
 </urlset>
