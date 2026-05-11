@@ -803,7 +803,7 @@ const Refinance = () => {
         </div>
 
         {/* RIGHT — Verdict panel */}
-        <aside className="md:sticky md:top-6 md:self-start">
+        <aside className="order-first md:order-none md:sticky md:top-6 md:self-start">
           <div
             className={`result-panel-navy rounded-2xl border-2 p-5 transition-colors md:p-7 ${verdictBorder}`}
             aria-live="polite"

@@ -516,7 +516,7 @@ const MortgageCalculatorRedesign = () => {
         </div>
 
         {/* RESULTS */}
-        <div className="space-y-4">
+        <div className="order-first lg:order-none space-y-4">
           <div className="result-panel-navy rounded-2xl border border-border bg-card p-6 text-center md:p-7">
             <p className="result-primary-label text-[12px] uppercase tracking-wide text-muted-foreground">
               {FREQ_LABEL[freq]} repayment

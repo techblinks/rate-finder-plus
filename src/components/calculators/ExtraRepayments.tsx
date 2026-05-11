@@ -557,7 +557,7 @@ const ExtraRepayments = () => {
         </div>
 
         {/* RESULTS — sticky on desktop */}
-        <div className="md:sticky md:top-6 md:self-start space-y-4">
+        <div className="order-first md:order-none md:sticky md:top-6 md:self-start space-y-4">
           <section className="result-panel-navy rounded-2xl border border-border bg-card p-6 text-center md:p-7">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               You save
