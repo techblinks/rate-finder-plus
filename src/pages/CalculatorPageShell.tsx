@@ -167,6 +167,9 @@ const CalculatorPageShell = ({
           <FAQ items={faqs} />
           <RelatedGuides canonical={canonical} />
           <RelatedCalculators items={related} />
+          <div className="pt-2">
+            <LastReviewed />
+          </div>
         </div>
       </div>
       <StickyMobileAd />
