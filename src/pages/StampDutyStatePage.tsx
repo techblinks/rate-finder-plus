@@ -17,12 +17,12 @@ const StampDutyStatePage = ({ slug }: { slug: keyof typeof STAMP_DUTY_STATE_CONT
       seoFaqs={cfg.faqs}
       interleaveAdsEvery={2}
       related={[
+        { to: `/first-home-buyer-grant-${cfg.slug}`, label: `${cfg.code} First Home Owner Grant 2026` },
         { to: "/stamp-duty-calculator", label: "Compare stamp duty across all states" },
         { to: "/mortgage-calculator", label: "Mortgage repayment calculator" },
         { to: "/borrowing-power-calculator", label: "How much can I borrow?" },
         { to: "/lmi-calculator", label: "LMI calculator (deposit < 20%)" },
-        { to: "/loan-comparison-calculator", label: "Compare two home loans" },
-        { to: "/refinance-calculator", label: "Should I refinance?" },
+        { to: "/best-home-loans-australia", label: "Best Australian home loans 2026" },
       ]}
       sections={[
         ...cfg.sections.map((s) => ({
