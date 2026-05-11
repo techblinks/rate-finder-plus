@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Cookie } from "lucide-react";
+import { haptic } from "@/lib/haptic";
 
 export const CONSENT_KEY = "calcy_cookie_consent";
 export type ConsentValue = "accepted" | "essential_only";
@@ -56,6 +57,7 @@ const CookieConsent = () => {
   }, []);
 
   const accept = (v: ConsentValue) => {
+    haptic.light();
     saveConsent(v);
     setShow(false);
     setShowPrefs(false);
