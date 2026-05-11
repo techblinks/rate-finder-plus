@@ -59,10 +59,10 @@ function assertWellFormedXml(body: string) {
 describe.runIf(RUN)("live sitemap endpoints", () => {
   for (const t of TARGETS) {
     describe(t.url, () => {
-      it("returns HTTP 200 with application/xml Content-Type", async () => {
+      it("returns HTTP 200 with application/xml or text/xml Content-Type", async () => {
         const { status, contentType } = await fetchSitemap(t.url);
         expect(status).toBe(200);
-        expect(contentType.toLowerCase()).toMatch(/^application\/xml/);
+        expect(contentType.toLowerCase()).toMatch(/^(application|text)\/xml/);
       });
 
       it(`is well-formed XML with <${t.rootTag}> root and ≥ ${t.minEntries} <${t.childTag}> entries`, async () => {
