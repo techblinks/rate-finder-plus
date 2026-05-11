@@ -159,12 +159,14 @@ const MortgageCalculatorRedesign = () => {
   const [ioYears, setIoYears] = useState(3);
   const [scenarios, setScenarios] = useState<SavedScenario[]>([]);
   const [scenariosOpen, setScenariosOpen] = useState(false);
+  const [offsetPresets, setOffsetPresets] = useState<OffsetPreset[]>([]);
   const [copied, setCopied] = useState(false);
   const sliderHaptic = useRef(0);
   const inputsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setScenarios(loadScenarios());
+    setOffsetPresets(loadOffsetPresets());
   }, []);
 
   // Listen for the bottom-nav "Saved" tap → toggle the scenarios panel.
