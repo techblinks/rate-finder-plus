@@ -566,6 +566,87 @@ const MortgageCalculatorRedesign = () => {
             />
           </div>
 
+          {/* Offset account (advanced, Sprint 4) */}
+          <div className="rounded-xl border border-border">
+            <button
+              type="button"
+              onClick={() => {
+                setOffsetOpen((v) => !v);
+                haptic(8);
+              }}
+              aria-expanded={offsetOpen}
+              className="flex w-full min-h-[44px] items-center justify-between gap-2 px-4 py-3 text-left"
+            >
+              <span className="flex flex-wrap items-center gap-2">
+                <strong className="text-[14px] font-semibold text-foreground">
+                  Add an offset account
+                </strong>
+                <span className="text-[12px] uppercase tracking-wide text-muted-foreground">
+                  advanced
+                </span>
+                <span onClick={(e) => e.stopPropagation()}>
+                  <Tooltip
+                    label="What is an offset account?"
+                    text="An offset account is a transaction account linked to your loan. Money in the offset reduces the interest you pay daily. $50,000 in offset on a $650,000 loan means you only pay interest on $600,000. Most Australian variable-rate loans include this feature free."
+                  />
+                </span>
+              </span>
+              <ChevronDown
+                className={`h-4 w-4 text-muted-foreground transition-transform ${
+                  offsetOpen ? "rotate-180" : ""
+                }`}
+                aria-hidden="true"
+              />
+            </button>
+            <p className="px-4 pb-3 text-[13px] text-muted-foreground">
+              Model an offset account like 80% of Australian mortgages use.
+            </p>
+            {offsetOpen && (
+              <div className="space-y-4 border-t border-border p-4">
+                <div>
+                  <label
+                    htmlFor="offset-start"
+                    className="mb-1 block text-[13px] font-medium text-foreground"
+                  >
+                    Starting offset balance
+                  </label>
+                  <CurrencyInput
+                    id="offset-start"
+                    value={offsetStart}
+                    onChange={setOffsetStart}
+                    min={0}
+                    max={5_000_000}
+                    ariaLabel="Starting offset balance"
+                    placeholder="$0"
+                  />
+                  <p className="mt-1 text-[12px] text-muted-foreground">
+                    Current savings sitting in your offset account today.
+                  </p>
+                </div>
+                <div>
+                  <label
+                    htmlFor="offset-monthly"
+                    className="mb-1 block text-[13px] font-medium text-foreground"
+                  >
+                    Monthly contribution to offset
+                  </label>
+                  <CurrencyInput
+                    id="offset-monthly"
+                    value={offsetMonthly}
+                    onChange={setOffsetMonthly}
+                    min={0}
+                    max={50_000}
+                    ariaLabel="Monthly contribution to offset"
+                    placeholder="$0"
+                  />
+                  <p className="mt-1 text-[12px] text-muted-foreground">
+                    How much you'll add to the offset each month from leftover income.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+
           <div>
             <p className="mb-1 text-[13px] font-medium text-foreground">Loan type</p>
             <Segmented<LoanType>
