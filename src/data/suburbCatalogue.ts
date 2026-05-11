@@ -158,7 +158,7 @@ export const SUBURB_CATALOGUE: SuburbRecord[] = [
   { slug: "thornbury", name: "Thornbury", ...VIC, ...melbourne, median: 1050000 },
   // VIC regional (+5)
   { slug: "ocean-grove", name: "Ocean Grove", ...VIC, ...geelong, median: 980000 },
-  { slug: "belmont-vic", name: "Belmont", ...VIC, ...geelong, median: 720000 },
+  { slug: "belmont-vic", name: "Belmont VIC", ...VIC, ...geelong, median: 720000 },
   { slug: "torquay", name: "Torquay", ...VIC, ...geelong, median: 1280000 },
   { slug: "castlemaine", name: "Castlemaine", ...VIC, ...bendigo, median: 750000 },
   { slug: "daylesford", name: "Daylesford", ...VIC, ...ballarat, median: 880000 },
