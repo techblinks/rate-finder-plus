@@ -407,7 +407,7 @@ const StampDuty = ({ lockedState }: StampDutyProps) => {
                     key={v}
                     type="button"
                     onClick={() => set("value", v)}
-                    className={`rounded-full md:rounded-md border px-3 py-1 text-[12px] font-medium ${
+                    className={`inline-flex min-h-[44px] items-center justify-center rounded-full md:rounded-md border px-3 text-[13px] font-medium ${
                       s.value === v
                         ? "border-accent bg-accent text-accent-foreground md:border-[var(--c-navy)] md:bg-[var(--c-navy)] md:text-white"
                         : "border-border bg-background text-foreground hover:border-accent md:hover:border-[var(--c-navy)]"
