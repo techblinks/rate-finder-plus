@@ -46,6 +46,7 @@ const Home = () => {
       statValue: "$3,897",
       statLabel: `Fortnightly on $650k at ${rba.ownerOccupier.toFixed(2)}%`,
       shortDesc: "Repayments, total interest, amortisation schedule",
+      catVar: "--cat-mortgage-fg",
     },
     {
       name: "Stamp duty calculator",
@@ -53,6 +54,7 @@ const Home = () => {
       statValue: "$0",
       statLabel: "For FHB on $800k in NSW",
       shortDesc: "All 8 states. First home buyer exemptions included",
+      catVar: "--cat-stamp-fg",
     },
     {
       name: "Borrowing power",
@@ -60,6 +62,7 @@ const Home = () => {
       statValue: "$680k",
       statLabel: "Estimated on $100k salary",
       shortDesc: "How much can you borrow? APRA buffer applied",
+      catVar: "--cat-borrow-fg",
     },
     {
       name: "LMI calculator",
@@ -67,6 +70,7 @@ const Home = () => {
       statValue: "$14,560",
       statLabel: "LMI on $700k at 10% deposit",
       shortDesc: "Avoid paying $15k+ with the right deposit",
+      catVar: "--cat-lmi-fg",
     },
     {
       name: "Loan comparison",
@@ -74,6 +78,7 @@ const Home = () => {
       statValue: "$47k",
       statLabel: "Saved by comparing two loan options",
       shortDesc: "Compare any two home loans side by side",
+      catVar: "--cat-compare-fg",
     },
     {
       name: "Refinance calculator",
@@ -81,6 +86,7 @@ const Home = () => {
       statValue: "$312/mo",
       statLabel: "Saved refinancing 7.20% → 6.39%",
       shortDesc: "Break-even months, monthly saving, total saving",
+      catVar: "--cat-refi-fg",
     },
     {
       name: "Rent vs Buy",
@@ -88,6 +94,7 @@ const Home = () => {
       statValue: "6 yrs",
       statLabel: "Break-even point in Sydney",
       shortDesc: "When does buying actually beat renting?",
+      catVar: "--cat-rent-fg",
     },
     {
       name: "Extra repayments",
@@ -95,6 +102,7 @@ const Home = () => {
       statValue: "$152k",
       statLabel: "Saved with $500 extra per month",
       shortDesc: "Pay off your loan years earlier",
+      catVar: "--cat-extra-fg",
     },
   ];
 
