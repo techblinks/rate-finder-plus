@@ -211,14 +211,12 @@ for (const route of ROUTES) {
     count++;
     continue;
   }
-  // Emit sibling `<path>.html` files (e.g. dist/suburbs/foo.html) rather than
-  // dist/suburbs/foo/index.html — Lovable hosting resolves `<path>.html`
-  // for bare URLs but does not perform directory-index resolution before its
-  // SPA fallback fires.
+  // Emit folder-with-index format (dist/<path>/index.html). Cloudflare Pages
+  // natively resolves directory-index for bare URLs.
   const relPath = route.canonical.replace(/^\//, "");
-  const outFile = join(DIST, `${relPath}.html`);
-  mkdirSync(dirname(outFile), { recursive: true });
-  writeFileSync(outFile, renderRouteHtml(route), "utf8");
+  const outDir = join(DIST, relPath);
+  mkdirSync(outDir, { recursive: true });
+  writeFileSync(join(outDir, "index.html"), renderRouteHtml(route), "utf8");
   count++;
 }
 
