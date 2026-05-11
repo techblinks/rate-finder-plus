@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#2563eb">
+<title>Offline — Calcy</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'DM Sans',-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;background:#fff;color:#0f172a;line-height:1.5;padding:24px;padding-top:max(24px,env(safe-area-inset-top));padding-bottom:max(24px,env(safe-area-inset-bottom))}
+  .wrap{max-width:420px;margin:0 auto}
+  h1{font-family:'DM Serif Display',Georgia,serif;font-size:32px;margin:24px 0 8px;font-weight:400}
+  p{color:#64748b;margin:0 0 16px}
+  .card{border:1px solid #e2e8f0;border-radius:16px;padding:16px;margin-top:16px}
+  label{display:block;font-size:13px;font-weight:500;margin:8px 0 4px}
+  input{width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;font-size:16px;font-family:inherit}
+  .result{margin-top:16px;padding:16px;border-radius:12px;background:#eff6ff;border:1px solid #bfdbfe}
+  .result strong{font-size:24px;color:#2563eb;display:block}
+  .badge{display:inline-block;padding:4px 10px;border-radius:999px;background:#fef3c7;color:#92400e;font-size:12px;font-weight:600}
+  button{margin-top:12px;width:100%;padding:12px;border:0;border-radius:10px;background:#2563eb;color:#fff;font-weight:600;font-size:15px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="badge">Offline</span>
+  <h1>You're offline</h1>
+  <p>The basic mortgage calculator still works — try again to load the full site when you have signal.</p>
+  <div class="card">
+    <label for="amount">Loan amount</label>
+    <input id="amount" type="number" inputmode="decimal" value="650000">
+    <label for="rate">Interest rate (%)</label>
+    <input id="rate" type="number" inputmode="decimal" step="0.01" value="6.39">
+    <label for="years">Term (years)</label>
+    <input id="years" type="number" inputmode="numeric" value="30">
+    <div class="result">
+      <small>Monthly repayment</small>
+      <strong id="out">—</strong>
+    </div>
+    <button onclick="location.reload()">Try again</button>
+  </div>
+</div>
+<script>
+  const $=(id)=>document.getElementById(id),out=$("out");
+  function calc(){
+    const P=+$("amount").value,r=(+$("rate").value)/100/12,n=(+$("years").value)*12;
+    if(!P||!r||!n){out.textContent="—";return}
+    const m=P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
+    out.textContent="$"+Math.round(m).toLocaleString("en-AU");
+  }
+  ["amount","rate","years"].forEach(id=>$(id).addEventListener("input",calc));
+  calc();
+</script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Home, Calculator, BookOpen, ArrowLeftRight } from "lucide-react";
+import { haptic } from "@/lib/haptic";
 
 const TABS = [
   { to: "/", label: "Home", icon: Home, match: (p: string) => p === "/" },
@@ -10,7 +11,12 @@ const TABS = [
     match: (p: string) =>
       p.includes("calculator") && !p.startsWith("/loan-comparison"),
   },
-  { to: "/guides", label: "Guides", icon: BookOpen, match: (p: string) => p.startsWith("/guides") },
+  {
+    to: "/guides",
+    label: "Guides",
+    icon: BookOpen,
+    match: (p: string) => p.startsWith("/guides"),
+  },
   {
     to: "/loan-comparison-calculator",
     label: "Compare",
@@ -36,12 +42,20 @@ const MobileBottomNav = () => {
             <li key={t.to}>
               <Link
                 to={t.to}
-                className={`flex h-16 flex-col items-center justify-center gap-1 ${
+                onClick={() => haptic.light()}
+                className={`flex h-16 flex-col items-center justify-center gap-1 transition-transform active:scale-90 ${
                   active ? "text-accent" : "text-muted-foreground"
                 }`}
               >
-                <Icon className="h-5 w-5" strokeWidth={active ? 2.5 : 2} />
-                <span className="text-[10px] font-medium">{t.label}</span>
+                <Icon
+                  className="h-5 w-5"
+                  strokeWidth={active ? 2.75 : 2}
+                  fill={active ? "currentColor" : "none"}
+                  fillOpacity={active ? 0.18 : 0}
+                />
+                <span className={`text-[10px] ${active ? "font-semibold" : "font-medium"}`}>
+                  {t.label}
+                </span>
               </Link>
             </li>
           );
