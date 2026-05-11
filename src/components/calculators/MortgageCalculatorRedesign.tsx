@@ -412,6 +412,40 @@ const MortgageCalculatorRedesign = () => {
     saveScenarios(arr);
   };
 
+  const applyOffsetPreset = (p: { start: number; monthly: number }) => {
+    haptic(10);
+    setOffsetStart(p.start);
+    setOffsetMonthly(p.monthly);
+    setOffsetOpen(true);
+  };
+
+  const saveCurrentOffsetPreset = () => {
+    if (offsetPresets.length >= MAX_OFFSET_PRESETS) {
+      alert(`You can save up to ${MAX_OFFSET_PRESETS} offset presets. Delete one to add another.`);
+      return;
+    }
+    if (offsetStart <= 0 && offsetMonthly <= 0) return;
+    const fallback = `My preset ${offsetPresets.length + 1}`;
+    const name = (prompt("Name this offset preset", fallback) || fallback).trim().slice(0, 32);
+    if (!name) return;
+    const next: OffsetPreset = {
+      id: crypto.randomUUID?.() ?? String(Date.now()),
+      name,
+      start: Math.round(offsetStart),
+      monthly: Math.round(offsetMonthly),
+    };
+    const arr = [...offsetPresets, next];
+    setOffsetPresets(arr);
+    saveOffsetPresets(arr);
+    haptic(15);
+  };
+
+  const deleteOffsetPreset = (id: string) => {
+    const arr = offsetPresets.filter((p) => p.id !== id);
+    setOffsetPresets(arr);
+    saveOffsetPresets(arr);
+  };
+
   const resetDefaults = () => {
     setLoan(DEFAULTS.loan);
     setRate(DEFAULTS.rate);
