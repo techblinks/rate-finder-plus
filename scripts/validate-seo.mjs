@@ -141,25 +141,35 @@ function validateBlocks(blocks, page) {
 }
 
 function validateSitemap(routes) {
-  const file = join(DIST, "sitemap.xml");
-  if (!existsSync(file)) return fail("sitemap.xml", "missing");
+  const file = join(DIST, "sitemap-static.xml");
+  if (!existsSync(file)) return fail("sitemap-static.xml", "missing");
   const xml = readFileSync(file, "utf8");
-  if (!xml.startsWith("<?xml")) fail("sitemap.xml", "bad XML prolog");
+  if (!xml.startsWith("<?xml")) fail("sitemap-static.xml", "bad XML prolog");
   const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
   const set = new Set(locs);
-  if (locs.length !== set.size) fail("sitemap.xml", "duplicate <loc> entries");
+  if (locs.length !== set.size) fail("sitemap-static.xml", "duplicate <loc> entries");
   const expected = new Set(routes.map((r) => `${SITE}${r.canonical}`));
   for (const l of locs) {
-    if (!expected.has(l)) fail("sitemap.xml", `unknown URL ${l}`);
+    if (!expected.has(l)) fail("sitemap-static.xml", `unknown URL ${l}`);
     const path = l.replace(SITE, "");
     const f =
       path === "/" ? join(DIST, "index.html") : join(DIST, path.replace(/^\//, ""), "index.html");
     if (!existsSync(f) || !statSync(f).isFile())
-      fail("sitemap.xml", `URL has no built file: ${l}`);
+      fail("sitemap-static.xml", `URL has no built file: ${l}`);
   }
   for (const e of expected) {
-    if (!set.has(e)) fail("sitemap.xml", `missing route ${e}`);
+    if (!set.has(e)) fail("sitemap-static.xml", `missing route ${e}`);
   }
+
+  // Also validate the sitemap index references both children.
+  const indexFile = join(DIST, "sitemap.xml");
+  if (!existsSync(indexFile)) return fail("sitemap.xml", "missing index");
+  const indexXml = readFileSync(indexFile, "utf8");
+  if (!indexXml.includes("<sitemapindex")) fail("sitemap.xml", "not a sitemap index");
+  if (!indexXml.includes(`${SITE}/sitemap-static.xml`))
+    fail("sitemap.xml", "missing sitemap-static.xml reference");
+  if (!indexXml.includes(`${SITE}/sitemap-programmatic.xml`))
+    fail("sitemap.xml", "missing sitemap-programmatic.xml reference");
 }
 
 export async function runValidation() {

@@ -22,7 +22,7 @@ async function loadCityGuides() {
   // Fall back to executing the route-manifest builder output via TS-stripped read.
   // The simplest approach: re-run build-route-manifest.mjs upstream guarantees
   // dist/sitemap.xml lists every guide. So we discover from sitemap.
-  const sitemap = readFileSync(join(DIST, "sitemap.xml"), "utf8");
+  const sitemap = readFileSync(join(DIST, "sitemap-static.xml"), "utf8");
   const slugs = [...sitemap.matchAll(/<loc>https:\/\/calcy\.com\.au\/guides\/([a-z0-9-]+)<\/loc>/g)]
     .map((m) => m[1])
     .filter((s) => /^(mortgage|lmi|stamp-duty)-calculator-/.test(s));
