@@ -47,20 +47,21 @@
 
     --radius: 0.5rem;
 
-    /* ── Anti-vibe redesign tokens (desktop) ── */
-    --c-navy: #0a1628;
-    --c-navy-mid: #1e3a5f;
-    --c-navy-light: #e8edf5;
-    --c-slate: #334155;
-    --c-slate-mid: #64748b;
-    --c-slate-light: #94a3b8;
-    --c-bg-redesign: #f7f8fa;
-    --c-border-redesign: #e2e8f0;
-    --c-accent-redesign: #0052cc;
-    --c-accent-hover-redesign: #003d99;
-    --c-green: #16a34a;
-    --c-amber: #b45309;
-    --c-red: #dc2626;
+    /* ── Legacy "anti-vibe" tokens, kept for compat & remapped to the new
+       light/accent system. Do not use in new code — prefer semantic tokens. ── */
+    --c-navy: hsl(225 22% 8%);              /* now: foreground */
+    --c-navy-mid: hsl(232 14% 28%);
+    --c-navy-light: hsl(214 100% 96%);       /* now: surface */
+    --c-slate: hsl(225 22% 8%);
+    --c-slate-mid: hsl(232 14% 54%);         /* now: muted-foreground */
+    --c-slate-light: hsl(232 14% 54%);
+    --c-bg-redesign: hsl(0 0% 100%);         /* now: background */
+    --c-border-redesign: hsl(232 22% 92%);   /* now: border */
+    --c-accent-redesign: hsl(232 90% 58%);
+    --c-accent-hover-redesign: hsl(232 70% 49%);
+    --c-green: hsl(160 84% 30%);
+    --c-amber: hsl(32 94% 44%);
+    --c-red: hsl(0 73% 50%);
     --font-display-serif: "DM Serif Display", Georgia, serif;
     --font-body-redesign: "DM Sans", system-ui, sans-serif;
     --font-data: "DM Mono", ui-monospace, Menlo, monospace;
@@ -69,8 +70,8 @@
     --r-medium: 6px;
     --r-large: 10px;
     --r-xl: 16px;
-    --shadow-card: 0 1px 3px rgba(10, 22, 40, 0.08), 0 1px 2px rgba(10, 22, 40, 0.06);
-    --shadow-float: 0 4px 16px rgba(10, 22, 40, 0.12);
+    --shadow-card: 0 1px 3px rgba(15, 17, 23, 0.06), 0 1px 2px rgba(15, 17, 23, 0.04);
+    --shadow-float: 0 10px 32px rgba(15, 17, 23, 0.10), 0 2px 6px rgba(15, 17, 23, 0.05);
   }
 }
 
