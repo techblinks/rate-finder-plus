@@ -12,7 +12,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:seo": "vitest run src/test/seo-regression.test.ts"
+    "test:seo": "vitest run src/test/seo-regression.test.ts",
+    "validate:sitemaps": "node scripts/validate-sitemaps.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
