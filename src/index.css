@@ -499,8 +499,26 @@
     .result-panel-navy .text-accent { color: #93c5fd !important; }
     .result-panel-navy .bg-surface,
     .result-panel-navy .bg-card,
+    .result-panel-navy .bg-background,
     .result-panel-navy .bg-muted { background: rgba(255,255,255,0.05) !important; }
     .result-panel-navy .border-border { border-color: rgba(255,255,255,0.10) !important; }
+    /* Inputs/buttons nested in the navy panel keep readable contrast */
+    .result-panel-navy button.bg-surface,
+    .result-panel-navy button[class*="bg-surface"] {
+      background: rgba(255,255,255,0.10) !important;
+      border-color: rgba(255,255,255,0.20) !important;
+      color: rgba(255,255,255,0.92) !important;
+    }
+    .result-panel-navy button.bg-surface:hover,
+    .result-panel-navy button[class*="bg-surface"]:hover {
+      background: rgba(255,255,255,0.16) !important;
+      color: #fff !important;
+    }
+    /* Nested success-tinted cards on navy: keep readable green tones */
+    .result-panel-navy [class*="bg-success/"] {
+      background: rgba(34,197,94,0.10) !important;
+      border-color: rgba(34,197,94,0.25) !important;
+    }
 
     /* Primary result value — large DM Mono on navy */
     .result-panel-navy .result-primary-value {
