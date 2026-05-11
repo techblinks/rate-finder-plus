@@ -23,13 +23,20 @@ const { ROUTES } = await import(
 const today = new Date().toISOString().slice(0, 10);
 
 // sitemap-static.xml: the urlset of canonical static routes (homepage,
-// calculators, guides, etc.). Referenced by sitemap.xml (sitemap index).
+// calculators, editorial guides, etc.). Referenced by sitemap.xml (sitemap
+// index). City programmatic guides (mortgage|lmi|stamp-duty-calculator-<city>)
+// are intentionally excluded — they're listed in sitemap-programmatic.xml
+// served by the edge function. Suburb guides are excluded similarly via
+// sitemap-suburbs.xml.
+const PROGRAMMATIC_RE =
+  /^\/guides\/(mortgage|lmi|stamp-duty)-calculator-/;
+const STATIC_ROUTES = ROUTES.filter((r) => !PROGRAMMATIC_RE.test(r.canonical));
 writeFileSync(
   join(DIST, "sitemap-static.xml"),
-  buildSitemap({ routes: ROUTES, site: SITE, lastmod: today, indexingEnabled: true }),
+  buildSitemap({ routes: STATIC_ROUTES, site: SITE, lastmod: today, indexingEnabled: true }),
   "utf8",
 );
-console.log(`[sitemap] Wrote ${ROUTES.length} URLs to dist/sitemap-static.xml`);
+console.log(`[sitemap] Wrote ${STATIC_ROUTES.length} URLs to dist/sitemap-static.xml`);
 
 // sitemap.xml: sitemap index that references both child sitemaps. The
 // programmatic child is served dynamically from the edge function via the

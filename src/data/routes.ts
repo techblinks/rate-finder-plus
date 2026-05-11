@@ -192,9 +192,14 @@ ROUTES.push({
   isArticle: true,
 });
 
-import { ALL_GUIDES } from "./allGuides";
+// Editorial + city programmatic guides live under /guides/. Suburb guides
+// are intentionally excluded here — they're served by the /suburbs/:slug
+// React route and listed only in sitemap-suburbs.xml (the dynamic edge
+// function), keeping suburbs in a single namespace.
+import { GUIDES } from "./guides";
+import { CITY_GUIDES } from "./cityGuides";
 
-for (const g of ALL_GUIDES) {
+for (const g of [...GUIDES, ...CITY_GUIDES]) {
   ROUTES.push({
     path: `/guides/${g.slug}`,
     title: g.title,
