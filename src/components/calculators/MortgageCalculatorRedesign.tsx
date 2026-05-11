@@ -364,6 +364,11 @@ const MortgageCalculatorRedesign = () => {
     setFreq(s.freq);
     setExtra(s.extra);
     if (s.propValue) setPropValue(s.propValue);
+    const os = s.offsetStart ?? 0;
+    const om = s.offsetMonthly ?? 0;
+    setOffsetStart(os);
+    setOffsetMonthly(om);
+    setOffsetOpen(os > 0 || om > 0);
     haptic(15);
   };
 
@@ -379,6 +384,8 @@ const MortgageCalculatorRedesign = () => {
       freq,
       extra,
       propValue,
+      offsetStart,
+      offsetMonthly,
     };
     const arr = [...scenarios, next];
     setScenarios(arr);
