@@ -9,6 +9,7 @@ import RelatedGuides from "@/components/RelatedGuides";
 import AdSlot from "@/components/AdSlot";
 import StickyMobileAd from "@/components/StickyMobileAd";
 import RateFreshnessBadge from "@/components/RateFreshnessBadge";
+import LastReviewed from "@/components/LastReviewed";
 import PageHeader from "@/components/layout/PageHeader";
 import MobileCalcHeader from "@/components/mobile/MobileCalcHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -166,6 +167,9 @@ const CalculatorPageShell = ({
           <FAQ items={faqs} />
           <RelatedGuides canonical={canonical} />
           <RelatedCalculators items={related} />
+          <div className="pt-2">
+            <LastReviewed />
+          </div>
         </div>
       </div>
       <StickyMobileAd />

@@ -129,7 +129,7 @@ interface ArticleProps {
 }
 
 export const OrganizationJsonLd = () => {
-  const data = {
+  const org = {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "Calcy",
@@ -138,10 +138,37 @@ export const OrganizationJsonLd = () => {
     description:
       "Free Australian mortgage, stamp duty, borrowing power and LMI calculators.",
     areaServed: "AU",
+    sameAs: [],
+  };
+  const financialService = {
+    "@context": "https://schema.org",
+    "@type": "FinancialService",
+    name: "Calcy",
+    url: SITE,
+    description:
+      "Free Australian home loan calculators: mortgage repayments, stamp duty, borrowing power, LMI, refinance, rent vs buy.",
+    areaServed: { "@type": "Country", name: "Australia" },
+    serviceType: "Home loan calculators",
+    provider: { "@type": "Organization", name: "Calcy", url: SITE },
+    audience: { "@type": "Audience", audienceType: "Australian home buyers" },
+  };
+  const website = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Calcy",
+    url: SITE,
+    inLanguage: "en-AU",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${SITE}/guides?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
   };
   return (
     <Helmet>
-      <script type="application/ld+json">{JSON.stringify(data)}</script>
+      <script type="application/ld+json">{JSON.stringify(org)}</script>
+      <script type="application/ld+json">{JSON.stringify(financialService)}</script>
+      <script type="application/ld+json">{JSON.stringify(website)}</script>
     </Helmet>
   );
 };
