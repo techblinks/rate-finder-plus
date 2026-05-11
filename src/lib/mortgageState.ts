@@ -137,6 +137,7 @@ export function saveOffsetPresets(presets: OffsetPreset[]) {
   } catch {
     /* ignore */
   }
+}
 
 export function haptic(duration = 10) {
   try {
