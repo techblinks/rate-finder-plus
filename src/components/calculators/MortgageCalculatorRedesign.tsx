@@ -770,8 +770,29 @@ const MortgageCalculatorRedesign = () => {
 
           {offset && (
             <div className="rounded-2xl border border-success/40 bg-success/5 p-5">
-              <p className="mb-3 text-[11px] font-bold uppercase tracking-wider text-success">
+              <p className="mb-1 text-[11px] font-bold uppercase tracking-wider text-success">
                 With offset account
+              </p>
+              <p className="mb-3 text-[13px] text-muted-foreground">
+                Modelled against{" "}
+                <strong className="font-semibold text-foreground">
+                  {fmt0(dOffsetStart)}
+                </strong>{" "}
+                starting in the offset
+                {dOffsetMonthly > 0 ? (
+                  <>
+                    {" "}plus{" "}
+                    <strong className="font-semibold text-foreground">
+                      {fmt0(dOffsetMonthly)}
+                    </strong>{" "}
+                    added every month
+                  </>
+                ) : (
+                  <> with no further contributions</>
+                )}
+                . Both inputs drive the figures below — your monthly repayment of{" "}
+                <strong className="font-semibold text-foreground">{fmt2(result.monthly)}</strong>{" "}
+                doesn't change; more of it goes to principal each cycle.
               </p>
               {offset.clearedByOffsetAlone ? (
                 <p className="mb-3 text-[14px] font-semibold text-success">
