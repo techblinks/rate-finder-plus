@@ -1,6 +1,10 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Share2, X, Plus, Check } from "lucide-react";
-import { buildAmortisation, type Frequency } from "@/lib/calc/mortgageEngine";
+import { Share2, X, Plus, Check, ChevronDown } from "lucide-react";
+import { buildAmortisation, type Frequency, type YearAmort } from "@/lib/calc/mortgageEngine";
+import { calculateWithOffset } from "@/lib/calc/offset";
+import { monthlyPayment as basePmt } from "@/lib/calc/mortgage";
+import Tooltip from "@/components/Tooltip";
+import CurrencyInput from "@/components/CurrencyInput";
 import { useRbaRates } from "@/hooks/useRbaRates";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
