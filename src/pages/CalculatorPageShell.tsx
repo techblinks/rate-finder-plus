@@ -15,6 +15,7 @@ import MobileCalcHeader from "@/components/mobile/MobileCalcHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useSwipeNavigation } from "@/hooks/useSwipeNavigation";
 import MobileRelatedSections from "@/components/mobile/MobileRelatedSections";
+import MobileTrustStrip from "@/components/mobile/MobileTrustStrip";
 import type { FaqItem } from "@/data/faqs";
 
 interface Section {
@@ -93,6 +94,7 @@ const CalculatorPageShell = ({
           style={{ paddingBottom: `calc(56px + 24px)` }}
         >
           {children}
+          <MobileTrustStrip />
           {swipe.index >= 0 && (
             <div className="mt-6 flex items-center justify-center gap-1.5 pb-2">
               {Array.from({ length: swipe.total }).map((_, i) => (
