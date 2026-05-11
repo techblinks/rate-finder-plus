@@ -604,6 +604,45 @@ const MortgageCalculatorRedesign = () => {
             {offsetOpen && (
               <div className="space-y-4 border-t border-border p-4">
                 <div>
+                  <p className="mb-2 text-[12px] font-medium uppercase tracking-wide text-muted-foreground">
+                    Quick presets
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {(
+                      [
+                        { label: "None", start: 0, monthly: 0 },
+                        { label: "Offset only", start: 50000, monthly: 0 },
+                        { label: "+ $500/mo", start: 50000, monthly: 500 },
+                        { label: "+ $1,000/mo", start: 50000, monthly: 1000 },
+                      ] as const
+                    ).map((p) => {
+                      const active =
+                        Math.round(offsetStart) === p.start &&
+                        Math.round(offsetMonthly) === p.monthly;
+                      return (
+                        <button
+                          key={p.label}
+                          type="button"
+                          onClick={() => {
+                            haptic(10);
+                            setOffsetStart(p.start);
+                            setOffsetMonthly(p.monthly);
+                          }}
+                          aria-pressed={active}
+                          className={
+                            "rounded-full border px-3 py-1.5 text-[12px] font-medium transition-colors " +
+                            (active
+                              ? "border-accent bg-accent text-accent-foreground"
+                              : "border-border bg-background text-foreground hover:bg-muted")
+                          }
+                        >
+                          {p.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div>
                   <label
                     htmlFor="offset-start"
                     className="mb-1 block text-[13px] font-medium text-foreground"
