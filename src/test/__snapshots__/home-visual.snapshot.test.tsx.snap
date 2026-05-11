@@ -2,482 +2,1133 @@
 
 exports[`Home visual regression > matches desktop (1280px) snapshot 1`] = `
 <section
-  class="bg-background"
+  class="hero-redesign"
 >
   <div
-    class="page-shell pt-10 pb-10 md:pt-14 md:pb-14"
+    class="mx-auto grid max-w-[1200px] items-center gap-20 px-6 py-20 lg:grid-cols-[1fr_380px]"
   >
-    <div
-      class="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 md:gap-8"
+    <div>
+      <div
+        class="live-indicator mb-6"
+      >
+        <span
+          aria-hidden="true"
+          class="live-dot"
+        />
+        <span>
+          RBA cash rate: 
+          <strong
+            class="text-white/85"
+          >
+            4.10
+            %
+          </strong>
+        </span>
+        <span
+          class="text-white/20"
+        >
+          ·
+        </span>
+        <span>
+          Updated 
+          11 May 2026
+        </span>
+      </div>
+      <h1
+        class="text-[clamp(36px,4vw,54px)] mb-5"
+      >
+        Australia's most
+        <br />
+        accurate mortgage
+        <br />
+        calculators.
+      </h1>
+      <p
+        class="mb-10 max-w-[480px] text-[16px] leading-relaxed text-white/55"
+      >
+        Updated with live RBA rates. Stamp duty for all 8 states. No sign-up. No ads disguised as results.
+      </p>
+      <div
+        class="grid max-w-[480px] grid-cols-2 gap-2"
+      >
+        <a
+          class="hero-calc-link primary"
+          href="/mortgage-calculator"
+        >
+          <span>
+            Mortgage repayments
+          </span>
+          <span
+            aria-hidden="true"
+            class="text-white/35"
+          >
+            →
+          </span>
+        </a>
+        <a
+          class="hero-calc-link"
+          href="/stamp-duty-calculator"
+        >
+          <span>
+            Stamp duty
+          </span>
+          <span
+            aria-hidden="true"
+            class="text-white/35"
+          >
+            →
+          </span>
+        </a>
+        <a
+          class="hero-calc-link"
+          href="/borrowing-power-calculator"
+        >
+          <span>
+            Borrowing power
+          </span>
+          <span
+            aria-hidden="true"
+            class="text-white/35"
+          >
+            →
+          </span>
+        </a>
+        <a
+          class="hero-calc-link"
+          href="/lmi-calculator"
+        >
+          <span>
+            LMI calculator
+          </span>
+          <span
+            aria-hidden="true"
+            class="text-white/35"
+          >
+            →
+          </span>
+        </a>
+      </div>
+    </div>
+    <aside
+      class="hero-data-panel"
     >
       <div
-        class="flex flex-col justify-between py-2 md:py-8 md:pr-4 min-h-[280px] md:min-h-[420px] text-foreground"
+        class="data-header"
       >
-        <div>
-          <span
-            class="inline-flex items-center gap-1.5 rounded-full border border-border bg-accent-light px-3 py-1 text-[11px] font-semibold tracking-wide text-accent mb-5"
-          >
-            <span
-              aria-hidden="true"
-              class="inline-block h-1.5 w-1.5 rounded-full bg-accent"
-            />
-            Free · No sign-up · Updated May 2026
-          </span>
-          <h1
-            class="font-display text-[32px] sm:text-[40px] md:text-[44px] leading-[1.05] font-extrabold text-foreground mb-4"
-          >
-            Make confident
-            <br />
-            mortgage decisions.
-          </h1>
-          <p
-            class="text-[14px] sm:text-[15px] text-foreground/80 max-w-[440px]"
-          >
-            Free Australian mortgage, stamp duty, borrowing power and LMI calculators. Bank-grade results — no account required.
-          </p>
-        </div>
-        <div
-          class="mt-8 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap"
+        <span>
+          Current Australian rates
+        </span>
+        <span
+          class="data-fresh"
         >
-          <a
-            class="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-foreground bg-foreground px-5 text-[14px] font-semibold text-background hover:bg-foreground/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background w-full sm:w-auto"
-            href="/mortgage-calculator"
-          >
-            Get started 
-            <span
-              aria-hidden="true"
-            >
-              ↗
-            </span>
-          </a>
-          <a
-            class="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-foreground/30 bg-transparent px-5 text-[14px] font-semibold text-foreground hover:bg-foreground/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background w-full sm:w-auto"
-            href="/loan-comparison-calculator"
-          >
-            Compare loans
-          </a>
-        </div>
-        <div
-          class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] font-medium text-foreground/70"
-        >
-          <span>
-            6 calculators
-          </span>
-          <span
-            aria-hidden="true"
-            class="inline-block h-1 w-1 rounded-full bg-foreground/30"
-          />
-          <span>
-            All 8 states
-          </span>
-          <span
-            aria-hidden="true"
-            class="inline-block h-1 w-1 rounded-full bg-foreground/30"
-          />
-          <span>
-            Updated monthly
-          </span>
-        </div>
+          ● Live
+        </span>
       </div>
-      <section
-        aria-labelledby="quick-estimate-heading"
-        class="rounded-[24px] p-7 text-white sm:p-9 md:p-10 min-h-[280px] md:min-h-[420px] flex flex-col"
+      <div
+        class="data-row"
       >
-        <h2
-          class="text-label mb-5 text-white/75 font-semibold"
-          id="quick-estimate-heading"
+        <span
+          class="data-label"
         >
-          Quick estimate
-        </h2>
-        <div
-          class="mb-2 flex flex-col gap-3 sm:flex-row sm:items-start"
+          RBA cash rate
+        </span>
+        <span
+          class="data-value"
         >
-          <div
-            class="flex-1 min-w-0"
-          >
-            <label
-              class="mb-1.5 block text-[12px] text-white/80"
-              for="qe-loan"
-            >
-              Loan amount
-            </label>
-            <div
-              class="relative"
-            >
-              <span
-                aria-hidden="true"
-                class="absolute left-3.5 top-[22px] -translate-y-1/2 text-[15px] text-muted-foreground"
-              >
-                $
-              </span>
-              <input
-                aria-describedby="qe-loan-hint"
-                aria-invalid="false"
-                autocomplete="off"
-                class="input-field pl-7 tnum focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] "
-                id="qe-loan"
-                inputmode="numeric"
-                max="10000000"
-                min="10000"
-                step="1000"
-                type="number"
-                value="650000"
-              />
-            </div>
-            <span
-              aria-live="off"
-              class="mt-1.5 block text-[11px] min-h-[14px] text-white/55"
-              id="qe-loan-hint"
-            >
-              Range: $10,000 to $10,000,000
-            </span>
-          </div>
-          <div
-            class="w-full sm:w-[130px]"
-          >
-            <label
-              class="mb-1.5 block text-[12px] text-white/80"
-              for="qe-rate"
-            >
-              Rate
-            </label>
-            <div
-              class="relative"
-            >
-              <input
-                aria-describedby="qe-rate-hint"
-                aria-invalid="false"
-                autocomplete="off"
-                class="input-field pr-7 tnum focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] "
-                id="qe-rate"
-                inputmode="decimal"
-                max="20"
-                min="0.1"
-                step="0.01"
-                type="number"
-                value="5.5"
-              />
-              <span
-                aria-hidden="true"
-                class="absolute right-3 top-[22px] -translate-y-1/2 text-[14px] text-muted-foreground"
-              >
-                %
-              </span>
-            </div>
-            <span
-              aria-live="off"
-              class="mt-1.5 block text-[11px] min-h-[14px] text-white/55"
-              id="qe-rate-hint"
-            >
-              Range: 0.1% to 20%
-            </span>
-          </div>
-        </div>
-        <div
-          aria-atomic="true"
-          aria-live="polite"
-          class="mt-3 min-h-[96px]"
-          role="status"
+          4.10
+          %
+        </span>
+      </div>
+      <div
+        class="data-row"
+      >
+        <span
+          class="data-label"
         >
-          <p
-            class="text-[12px] text-white/75"
-            id="qe-result-label"
-          >
-            Fortnightly repayment
-          </p>
-          <p
-            aria-labelledby="qe-result-label"
-            class="mt-1 text-[34px] sm:text-[40px] font-semibold leading-none tnum tabular-nums transition-opacity duration-150"
-            style="opacity: 1;"
-          >
-            <span
-              class="sr-only"
-            >
-              Estimated fortnightly repayment: 
-            </span>
-            $1,845
-          </p>
-          <p
-            class="mt-1.5 text-[13px] text-white/75 tnum tabular-nums min-h-[18px]"
-          >
-            Monthly $3,691 · Weekly $852
-          </p>
-        </div>
-        <div
-          aria-hidden="true"
-          class="my-5 h-px bg-white/15"
-        />
-        <div
-          class="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between"
+          Owner-occupier avg
+        </span>
+        <span
+          class="data-value"
         >
-          <a
-            aria-label="Open full mortgage calculator with amortisation"
-            class="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-5 text-[14px] font-semibold text-foreground shadow-sm hover:bg-white/95 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] w-full sm:w-auto"
-            href="/mortgage-calculator"
-          >
-            Full calculator 
-            <span
-              aria-hidden="true"
-            >
-              ↗
-            </span>
-          </a>
-          <a
-            aria-label="Open borrowing power calculator"
-            class="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/40 bg-transparent px-5 text-[14px] font-semibold text-white hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] w-full sm:w-auto"
-            href="/borrowing-power-calculator"
-          >
-            Borrowing power
-          </a>
-        </div>
-        <p
-          class="mt-3 text-[11px] text-white/55"
+          5.66
+          %
+        </span>
+      </div>
+      <div
+        class="data-row"
+      >
+        <span
+          class="data-label"
         >
-          Estimate only. Not financial advice.
-        </p>
-      </section>
-    </div>
+          Typical variable rate
+        </span>
+        <span
+          class="data-value"
+        >
+          ~
+          6.14
+          %
+        </span>
+      </div>
+      <div
+        class="data-divider"
+      />
+      <div
+        class="data-row"
+      >
+        <span
+          class="data-label"
+        >
+          NSW FHB stamp duty
+        </span>
+        <span
+          class="data-value green"
+        >
+          Exempt ≤ $800k
+        </span>
+      </div>
+      <div
+        class="data-row"
+      >
+        <span
+          class="data-label"
+        >
+          QLD first home grant
+        </span>
+        <span
+          class="data-value green"
+        >
+          $30,000
+        </span>
+      </div>
+      <div
+        class="data-row"
+      >
+        <span
+          class="data-label"
+        >
+          VIC FHB stamp duty
+        </span>
+        <span
+          class="data-value green"
+        >
+          Exempt ≤ $600k
+        </span>
+      </div>
+      <div
+        class="data-footer"
+      >
+        All 8 states · Updated daily
+      </div>
+    </aside>
   </div>
 </section>
 `;
 
 exports[`Home visual regression > matches mobile (375px) snapshot 1`] = `
-<section
-  class="bg-background"
+<div
+  class="min-h-screen bg-background pb-24"
 >
-  <div
-    class="page-shell pt-10 pb-10 md:pt-14 md:pb-14"
+  <section
+    class="px-4 pt-4 pb-3"
   >
-    <div
-      class="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 md:gap-8"
+    <h1
+      class="text-[24px] font-bold leading-tight tracking-tight text-foreground"
     >
-      <div
-        class="flex flex-col justify-between py-2 md:py-8 md:pr-4 min-h-[280px] md:min-h-[420px] text-foreground"
+      Australian mortgage calculators
+    </h1>
+    <p
+      class="mt-1.5 text-[14px] text-muted-foreground"
+    >
+      Free. Live RBA rates. All 8 states. No sign-up.
+    </p>
+    <div
+      class="mt-3 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-[12px]"
+    >
+      <span
+        aria-hidden="true"
+        class="h-1.5 w-1.5 rounded-full bg-success"
+      />
+      <span
+        class="text-muted-foreground"
       >
+        RBA
+         
+        <strong
+          class="font-semibold tnum text-foreground"
+        >
+          4.10
+          %
+        </strong>
+         
+        · 
+        May 2026
+      </span>
+    </div>
+  </section>
+  <section
+    class="px-4 pt-5"
+  >
+    <p
+      class="mb-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground"
+    >
+      All calculators
+    </p>
+    <div
+      class="grid grid-cols-2 gap-2.5"
+    >
+      <a
+        class="flex min-h-[96px] flex-col justify-between rounded-2xl border border-black/5 p-4 active:scale-[0.97] transition-transform"
+        href="/mortgage-calculator"
+        style="background: rgb(239, 246, 255);"
+      >
+        <svg
+          class="lucide lucide-house h-6 w-6"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          style="color: rgb(37, 99, 235);"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"
+          />
+          <path
+            d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+          />
+        </svg>
         <div>
           <span
-            class="inline-flex items-center gap-1.5 rounded-full border border-border bg-accent-light px-3 py-1 text-[11px] font-semibold tracking-wide text-accent mb-5"
+            class="block text-[13px] font-semibold text-foreground"
           >
-            <span
-              aria-hidden="true"
-              class="inline-block h-1.5 w-1.5 rounded-full bg-accent"
-            />
-            Free · No sign-up · Updated May 2026
-          </span>
-          <h1
-            class="font-display text-[32px] sm:text-[40px] md:text-[44px] leading-[1.05] font-extrabold text-foreground mb-4"
-          >
-            Make confident
-            <br />
-            mortgage decisions.
-          </h1>
-          <p
-            class="text-[14px] sm:text-[15px] text-foreground/80 max-w-[440px]"
-          >
-            Free Australian mortgage, stamp duty, borrowing power and LMI calculators. Bank-grade results — no account required.
-          </p>
-        </div>
-        <div
-          class="mt-8 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap"
-        >
-          <a
-            class="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-foreground bg-foreground px-5 text-[14px] font-semibold text-background hover:bg-foreground/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background w-full sm:w-auto"
-            href="/mortgage-calculator"
-          >
-            Get started 
-            <span
-              aria-hidden="true"
-            >
-              ↗
-            </span>
-          </a>
-          <a
-            class="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-foreground/30 bg-transparent px-5 text-[14px] font-semibold text-foreground hover:bg-foreground/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background w-full sm:w-auto"
-            href="/loan-comparison-calculator"
-          >
-            Compare loans
-          </a>
-        </div>
-        <div
-          class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] font-medium text-foreground/70"
-        >
-          <span>
-            6 calculators
+            Mortgage
           </span>
           <span
-            aria-hidden="true"
-            class="inline-block h-1 w-1 rounded-full bg-foreground/30"
+            class="block text-[11px] text-muted-foreground"
+          >
+            Repayments
+          </span>
+        </div>
+      </a>
+      <a
+        class="flex min-h-[96px] flex-col justify-between rounded-2xl border border-black/5 p-4 active:scale-[0.97] transition-transform"
+        href="/stamp-duty-calculator"
+        style="background: rgb(240, 253, 244);"
+      >
+        <svg
+          class="lucide lucide-file-text h-6 w-6"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          style="color: rgb(22, 163, 74);"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
           />
-          <span>
+          <path
+            d="M14 2v4a2 2 0 0 0 2 2h4"
+          />
+          <path
+            d="M10 9H8"
+          />
+          <path
+            d="M16 13H8"
+          />
+          <path
+            d="M16 17H8"
+          />
+        </svg>
+        <div>
+          <span
+            class="block text-[13px] font-semibold text-foreground"
+          >
+            Stamp Duty
+          </span>
+          <span
+            class="block text-[11px] text-muted-foreground"
+          >
             All 8 states
           </span>
-          <span
-            aria-hidden="true"
-            class="inline-block h-1 w-1 rounded-full bg-foreground/30"
+        </div>
+      </a>
+      <a
+        class="flex min-h-[96px] flex-col justify-between rounded-2xl border border-black/5 p-4 active:scale-[0.97] transition-transform"
+        href="/borrowing-power-calculator"
+        style="background: rgb(253, 244, 255);"
+      >
+        <svg
+          class="lucide lucide-chart-column h-6 w-6"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          style="color: rgb(168, 85, 247);"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M3 3v16a2 2 0 0 0 2 2h16"
           />
-          <span>
-            Updated monthly
+          <path
+            d="M18 17V9"
+          />
+          <path
+            d="M13 17V5"
+          />
+          <path
+            d="M8 17v-3"
+          />
+        </svg>
+        <div>
+          <span
+            class="block text-[13px] font-semibold text-foreground"
+          >
+            Borrowing Power
+          </span>
+          <span
+            class="block text-[11px] text-muted-foreground"
+          >
+            APRA buffer
           </span>
         </div>
-      </div>
-      <section
-        aria-labelledby="quick-estimate-heading"
-        class="rounded-[24px] p-7 text-white sm:p-9 md:p-10 min-h-[280px] md:min-h-[420px] flex flex-col"
+      </a>
+      <a
+        class="flex min-h-[96px] flex-col justify-between rounded-2xl border border-black/5 p-4 active:scale-[0.97] transition-transform"
+        href="/lmi-calculator"
+        style="background: rgb(255, 247, 237);"
       >
-        <h2
-          class="text-label mb-5 text-white/75 font-semibold"
-          id="quick-estimate-heading"
+        <svg
+          class="lucide lucide-shield h-6 w-6"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          style="color: rgb(234, 88, 12);"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          Quick estimate
-        </h2>
-        <div
-          class="mb-2 flex flex-col gap-3 sm:flex-row sm:items-start"
-        >
-          <div
-            class="flex-1 min-w-0"
+          <path
+            d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+          />
+        </svg>
+        <div>
+          <span
+            class="block text-[13px] font-semibold text-foreground"
           >
-            <label
-              class="mb-1.5 block text-[12px] text-white/80"
-              for="qe-loan"
-            >
-              Loan amount
-            </label>
-            <div
-              class="relative"
-            >
-              <span
-                aria-hidden="true"
-                class="absolute left-3.5 top-[22px] -translate-y-1/2 text-[15px] text-muted-foreground"
-              >
-                $
-              </span>
-              <input
-                aria-describedby="qe-loan-hint"
-                aria-invalid="false"
-                autocomplete="off"
-                class="input-field pl-7 tnum focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] "
-                id="qe-loan"
-                inputmode="numeric"
-                max="10000000"
-                min="10000"
-                step="1000"
-                type="number"
-                value="650000"
-              />
-            </div>
-            <span
-              aria-live="off"
-              class="mt-1.5 block text-[11px] min-h-[14px] text-white/55"
-              id="qe-loan-hint"
-            >
-              Range: $10,000 to $10,000,000
-            </span>
-          </div>
-          <div
-            class="w-full sm:w-[130px]"
+            LMI
+          </span>
+          <span
+            class="block text-[11px] text-muted-foreground"
           >
-            <label
-              class="mb-1.5 block text-[12px] text-white/80"
-              for="qe-rate"
-            >
-              Rate
-            </label>
-            <div
-              class="relative"
-            >
-              <input
-                aria-describedby="qe-rate-hint"
-                aria-invalid="false"
-                autocomplete="off"
-                class="input-field pr-7 tnum focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] "
-                id="qe-rate"
-                inputmode="decimal"
-                max="20"
-                min="0.1"
-                step="0.01"
-                type="number"
-                value="5.5"
-              />
-              <span
-                aria-hidden="true"
-                class="absolute right-3 top-[22px] -translate-y-1/2 text-[14px] text-muted-foreground"
-              >
-                %
-              </span>
-            </div>
-            <span
-              aria-live="off"
-              class="mt-1.5 block text-[11px] min-h-[14px] text-white/55"
-              id="qe-rate-hint"
-            >
-              Range: 0.1% to 20%
-            </span>
-          </div>
+            Avoid $15k+
+          </span>
         </div>
-        <div
-          aria-atomic="true"
-          aria-live="polite"
-          class="mt-3 min-h-[96px]"
-          role="status"
+      </a>
+      <a
+        class="flex min-h-[96px] flex-col justify-between rounded-2xl border border-black/5 p-4 active:scale-[0.97] transition-transform"
+        href="/loan-comparison-calculator"
+        style="background: rgb(248, 250, 252);"
+      >
+        <svg
+          class="lucide lucide-arrow-left-right h-6 w-6"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          style="color: rgb(71, 85, 105);"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <p
-            class="text-[12px] text-white/75"
-            id="qe-result-label"
+          <path
+            d="M8 3 4 7l4 4"
+          />
+          <path
+            d="M4 7h16"
+          />
+          <path
+            d="m16 21 4-4-4-4"
+          />
+          <path
+            d="M20 17H4"
+          />
+        </svg>
+        <div>
+          <span
+            class="block text-[13px] font-semibold text-foreground"
           >
-            Fortnightly repayment
-          </p>
-          <p
-            aria-labelledby="qe-result-label"
-            class="mt-1 text-[34px] sm:text-[40px] font-semibold leading-none tnum tabular-nums transition-opacity duration-150"
-            style="opacity: 1;"
+            Compare Loans
+          </span>
+          <span
+            class="block text-[11px] text-muted-foreground"
           >
-            <span
-              class="sr-only"
-            >
-              Estimated fortnightly repayment: 
-            </span>
-            $1,845
-          </p>
-          <p
-            class="mt-1.5 text-[13px] text-white/75 tnum tabular-nums min-h-[18px]"
-          >
-            Monthly $3,691 · Weekly $852
-          </p>
+            Side by side
+          </span>
         </div>
-        <div
-          aria-hidden="true"
-          class="my-5 h-px bg-white/15"
-        />
-        <div
-          class="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between"
+      </a>
+      <a
+        class="flex min-h-[96px] flex-col justify-between rounded-2xl border border-black/5 p-4 active:scale-[0.97] transition-transform"
+        href="/rent-vs-buy-calculator"
+        style="background: rgb(254, 242, 242);"
+      >
+        <svg
+          class="lucide lucide-building2 h-6 w-6"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          style="color: rgb(220, 38, 38);"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <a
-            aria-label="Open full mortgage calculator with amortisation"
-            class="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-5 text-[14px] font-semibold text-foreground shadow-sm hover:bg-white/95 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] w-full sm:w-auto"
-            href="/mortgage-calculator"
+          <path
+            d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"
+          />
+          <path
+            d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"
+          />
+          <path
+            d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"
+          />
+          <path
+            d="M10 6h4"
+          />
+          <path
+            d="M10 10h4"
+          />
+          <path
+            d="M10 14h4"
+          />
+          <path
+            d="M10 18h4"
+          />
+        </svg>
+        <div>
+          <span
+            class="block text-[13px] font-semibold text-foreground"
           >
-            Full calculator 
-            <span
-              aria-hidden="true"
-            >
-              ↗
-            </span>
-          </a>
-          <a
-            aria-label="Open borrowing power calculator"
-            class="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/40 bg-transparent px-5 text-[14px] font-semibold text-white hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--accent))] w-full sm:w-auto"
-            href="/borrowing-power-calculator"
+            Rent vs Buy
+          </span>
+          <span
+            class="block text-[11px] text-muted-foreground"
           >
-            Borrowing power
-          </a>
+            Break-even
+          </span>
         </div>
-        <p
-          class="mt-3 text-[11px] text-white/55"
+      </a>
+      <a
+        class="flex min-h-[96px] flex-col justify-between rounded-2xl border border-black/5 p-4 active:scale-[0.97] transition-transform"
+        href="/refinance-calculator"
+        style="background: rgb(240, 253, 244);"
+      >
+        <svg
+          class="lucide lucide-repeat h-6 w-6"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          style="color: rgb(13, 148, 136);"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          Estimate only. Not financial advice.
-        </p>
-      </section>
+          <path
+            d="m17 2 4 4-4 4"
+          />
+          <path
+            d="M3 11v-1a4 4 0 0 1 4-4h14"
+          />
+          <path
+            d="m7 22-4-4 4-4"
+          />
+          <path
+            d="M21 13v1a4 4 0 0 1-4 4H3"
+          />
+        </svg>
+        <div>
+          <span
+            class="block text-[13px] font-semibold text-foreground"
+          >
+            Refinance
+          </span>
+          <span
+            class="block text-[11px] text-muted-foreground"
+          >
+            Switch & save
+          </span>
+        </div>
+      </a>
+      <a
+        class="flex min-h-[96px] flex-col justify-between rounded-2xl border border-black/5 p-4 active:scale-[0.97] transition-transform"
+        href="/extra-repayments-calculator"
+        style="background: rgb(255, 251, 235);"
+      >
+        <svg
+          class="lucide lucide-circle-plus h-6 w-6"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          style="color: rgb(217, 119, 6);"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle
+            cx="12"
+            cy="12"
+            r="10"
+          />
+          <path
+            d="M8 12h8"
+          />
+          <path
+            d="M12 8v8"
+          />
+        </svg>
+        <div>
+          <span
+            class="block text-[13px] font-semibold text-foreground"
+          >
+            Extra Repayments
+          </span>
+          <span
+            class="block text-[11px] text-muted-foreground"
+          >
+            Pay off sooner
+          </span>
+        </div>
+      </a>
     </div>
-  </div>
-</section>
+  </section>
+  <div
+    class="px-4 pt-6"
+  />
+  <section
+    class="px-4 pt-6"
+  >
+    <div
+      class="mb-2 flex items-center gap-2"
+    >
+      <span
+        aria-hidden="true"
+        class="h-1.5 w-1.5 rounded-full bg-success"
+      />
+      <p
+        class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground"
+      >
+        Live Australian data
+      </p>
+    </div>
+    <div
+      class="overflow-hidden rounded-2xl border border-border bg-background"
+    >
+      <div
+        class="flex items-center justify-between px-4 py-2.5 text-[13px] border-b border-border"
+      >
+        <span
+          class="text-muted-foreground"
+        >
+          RBA cash rate
+        </span>
+        <span
+          class="tnum font-semibold text-foreground"
+        >
+          4.10%
+        </span>
+      </div>
+      <div
+        class="flex items-center justify-between px-4 py-2.5 text-[13px] border-b border-border"
+      >
+        <span
+          class="text-muted-foreground"
+        >
+          Owner-occupier avg
+        </span>
+        <span
+          class="tnum font-semibold text-foreground"
+        >
+          5.66%
+        </span>
+      </div>
+      <div
+        class="flex items-center justify-between px-4 py-2.5 text-[13px] border-b border-border"
+      >
+        <span
+          class="text-muted-foreground"
+        >
+          NSW FHB exemption
+        </span>
+        <span
+          class="tnum font-semibold text-success"
+        >
+          ≤ $800k
+        </span>
+      </div>
+      <div
+        class="flex items-center justify-between px-4 py-2.5 text-[13px] border-b border-border"
+      >
+        <span
+          class="text-muted-foreground"
+        >
+          QLD First Home Grant
+        </span>
+        <span
+          class="tnum font-semibold text-success"
+        >
+          $30,000
+        </span>
+      </div>
+      <div
+        class="flex items-center justify-between px-4 py-2.5 text-[13px] "
+      >
+        <span
+          class="text-muted-foreground"
+        >
+          Min deposit (no LMI)
+        </span>
+        <span
+          class="tnum font-semibold text-foreground"
+        >
+          20%
+        </span>
+      </div>
+    </div>
+  </section>
+  <section
+    class="px-4 pt-6"
+  >
+    <h2
+      class="mb-3 text-[16px] font-semibold text-foreground"
+    >
+      Most used right now
+    </h2>
+    <div
+      class="overflow-hidden rounded-2xl border border-border bg-background"
+    >
+      <a
+        class="flex items-center gap-3 px-4 py-3 active:bg-surface border-b border-border"
+        href="/stamp-duty-calculator"
+      >
+        <span
+          class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-foreground text-[11px] font-bold text-background"
+        >
+          1
+        </span>
+        <div
+          class="flex-1"
+        >
+          <p
+            class="text-[14px] font-medium text-foreground"
+          >
+            Stamp duty calculator
+          </p>
+          <p
+            class="text-[12px] text-muted-foreground"
+          >
+            All 8 states including ACT
+          </p>
+        </div>
+        <span
+          class="text-muted-foreground"
+        >
+          →
+        </span>
+      </a>
+      <a
+        class="flex items-center gap-3 px-4 py-3 active:bg-surface border-b border-border"
+        href="/mortgage-calculator"
+      >
+        <span
+          class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-foreground text-[11px] font-bold text-background"
+        >
+          2
+        </span>
+        <div
+          class="flex-1"
+        >
+          <p
+            class="text-[14px] font-medium text-foreground"
+          >
+            Mortgage calculator
+          </p>
+          <p
+            class="text-[12px] text-muted-foreground"
+          >
+            With amortisation schedule
+          </p>
+        </div>
+        <span
+          class="text-muted-foreground"
+        >
+          →
+        </span>
+      </a>
+      <a
+        class="flex items-center gap-3 px-4 py-3 active:bg-surface "
+        href="/borrowing-power-calculator"
+      >
+        <span
+          class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-foreground text-[11px] font-bold text-background"
+        >
+          3
+        </span>
+        <div
+          class="flex-1"
+        >
+          <p
+            class="text-[14px] font-medium text-foreground"
+          >
+            Borrowing power calculator
+          </p>
+          <p
+            class="text-[12px] text-muted-foreground"
+          >
+            Includes APRA 3% buffer
+          </p>
+        </div>
+        <span
+          class="text-muted-foreground"
+        >
+          →
+        </span>
+      </a>
+    </div>
+  </section>
+  <div
+    class="px-4 pt-6"
+  />
+  <section
+    class="px-4 pt-6"
+  >
+    <h2
+      class="mb-3 text-[16px] font-semibold text-foreground"
+    >
+      Common questions
+    </h2>
+    <div
+      class="overflow-hidden rounded-2xl border border-border bg-background"
+    >
+      <div
+        class=""
+      >
+        <button
+          aria-expanded="true"
+          class="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left"
+          type="button"
+        >
+          <span
+            class="text-[14px] font-medium text-foreground"
+          >
+            What is the current RBA cash rate?
+          </span>
+          <svg
+            class="lucide lucide-chevron-down h-4 w-4 flex-shrink-0 text-muted-foreground transition-transform rotate-180"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m6 9 6 6 6-6"
+            />
+          </svg>
+        </button>
+        <div
+          class="px-4 pb-4 text-[14px] leading-relaxed text-muted-foreground"
+        >
+          The RBA cash rate is currently 4.10% (May 2026). Average owner-occupier rates sit around 5.66%. Use the mortgage calculator to see what this means for your repayments.
+        </div>
+      </div>
+      <div
+        class="border-t border-border"
+      >
+        <button
+          aria-expanded="false"
+          class="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left"
+          type="button"
+        >
+          <span
+            class="text-[14px] font-medium text-foreground"
+          >
+            Do first home buyers pay stamp duty in NSW?
+          </span>
+          <svg
+            class="lucide lucide-chevron-down h-4 w-4 flex-shrink-0 text-muted-foreground transition-transform"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m6 9 6 6 6-6"
+            />
+          </svg>
+        </button>
+      </div>
+      <div
+        class="border-t border-border"
+      >
+        <button
+          aria-expanded="false"
+          class="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left"
+          type="button"
+        >
+          <span
+            class="text-[14px] font-medium text-foreground"
+          >
+            How much can I borrow on my salary?
+          </span>
+          <svg
+            class="lucide lucide-chevron-down h-4 w-4 flex-shrink-0 text-muted-foreground transition-transform"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m6 9 6 6 6-6"
+            />
+          </svg>
+        </button>
+      </div>
+      <div
+        class="border-t border-border"
+      >
+        <button
+          aria-expanded="false"
+          class="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left"
+          type="button"
+        >
+          <span
+            class="text-[14px] font-medium text-foreground"
+          >
+            What is LMI and can I avoid it?
+          </span>
+          <svg
+            class="lucide lucide-chevron-down h-4 w-4 flex-shrink-0 text-muted-foreground transition-transform"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m6 9 6 6 6-6"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+  <section
+    class="px-4 pt-6"
+  >
+    <div
+      class="mb-3 flex items-center justify-between"
+    >
+      <h2
+        class="text-[16px] font-semibold text-foreground"
+      >
+        Free guides
+      </h2>
+      <a
+        class="text-[13px] font-medium text-accent"
+        href="/guides"
+      >
+        View all →
+      </a>
+    </div>
+    <div
+      class="overflow-hidden rounded-2xl border border-border bg-background"
+    >
+      <a
+        class="flex items-center gap-3 px-4 py-3 text-[14px] text-foreground active:bg-surface border-b border-border"
+        href="/guides/stamp-duty-australia-2026"
+      >
+        <svg
+          class="lucide lucide-book-open h-4 w-4 flex-shrink-0 text-muted-foreground"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 7v14"
+          />
+          <path
+            d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"
+          />
+        </svg>
+        <span
+          class="flex-1"
+        >
+          Stamp duty in every state 2026
+        </span>
+        <span
+          class="text-muted-foreground"
+        >
+          →
+        </span>
+      </a>
+      <a
+        class="flex items-center gap-3 px-4 py-3 text-[14px] text-foreground active:bg-surface border-b border-border"
+        href="/guides/what-is-lmi"
+      >
+        <svg
+          class="lucide lucide-book-open h-4 w-4 flex-shrink-0 text-muted-foreground"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 7v14"
+          />
+          <path
+            d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"
+          />
+        </svg>
+        <span
+          class="flex-1"
+        >
+          What is LMI and how to avoid it
+        </span>
+        <span
+          class="text-muted-foreground"
+        >
+          →
+        </span>
+      </a>
+      <a
+        class="flex items-center gap-3 px-4 py-3 text-[14px] text-foreground active:bg-surface border-b border-border"
+        href="/guides/borrowing-power-australia"
+      >
+        <svg
+          class="lucide lucide-book-open h-4 w-4 flex-shrink-0 text-muted-foreground"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 7v14"
+          />
+          <path
+            d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"
+          />
+        </svg>
+        <span
+          class="flex-1"
+        >
+          How much can I borrow in Australia?
+        </span>
+        <span
+          class="text-muted-foreground"
+        >
+          →
+        </span>
+      </a>
+      <a
+        class="flex items-center gap-3 px-4 py-3 text-[14px] text-foreground active:bg-surface "
+        href="/guides/first-home-buyer-grants-2026"
+      >
+        <svg
+          class="lucide lucide-book-open h-4 w-4 flex-shrink-0 text-muted-foreground"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 7v14"
+          />
+          <path
+            d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"
+          />
+        </svg>
+        <span
+          class="flex-1"
+        >
+          First home buyer grants 2026
+        </span>
+        <span
+          class="text-muted-foreground"
+        >
+          →
+        </span>
+      </a>
+    </div>
+  </section>
+  <p
+    class="mt-8 px-4 text-center text-[12px] text-muted-foreground"
+  >
+    🔒 No sign-up · Free forever · Australian-made
+  </p>
+</div>
 `;
