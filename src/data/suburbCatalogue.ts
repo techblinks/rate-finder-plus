@@ -195,7 +195,7 @@ export const SUBURB_CATALOGUE: SuburbRecord[] = [
   { slug: "ashgrove", name: "Ashgrove", ...QLD, ...brisbane, median: 1320000 },
   { slug: "everton-park", name: "Everton Park", ...QLD, ...brisbane, median: 880000 },
   { slug: "aspley", name: "Aspley", ...QLD, ...brisbane, median: 850000 },
-  { slug: "mt-gravatt", name: "Mount Gravatt", ...QLD, ...brisbane, median: 880000 },
+  { slug: "mount-gravatt", name: "Mount Gravatt", ...QLD, ...brisbane, median: 880000 },
   { slug: "sunnybank", name: "Sunnybank", ...QLD, ...brisbane, median: 1080000 },
   { slug: "forest-lake", name: "Forest Lake", ...QLD, ...brisbane, median: 720000 },
   { slug: "surfers-paradise", name: "Surfers Paradise", ...QLD, ...goldCoast, median: 920000 },
