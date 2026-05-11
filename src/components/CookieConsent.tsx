@@ -43,6 +43,9 @@ const isStandalone = () =>
   window.matchMedia("(display-mode: standalone)").matches;
 
 const CookieConsent = () => {
+  // Lazy init so the banner is interactive immediately after hydration
+  // (avoids a window where the prerendered HTML has show=false and was
+  // applying `pointer-events-none`, which made the buttons unclickable).
   const [show, setShow] = useState(false);
   const [showPrefs, setShowPrefs] = useState(false);
   const [adsToggle, setAdsToggle] = useState(true);
