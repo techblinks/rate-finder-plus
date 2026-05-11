@@ -34,7 +34,7 @@ function loadHtml(route) {
   const file =
     route.canonical === "/"
       ? join(DIST, "index.html")
-      : join(DIST, `${route.canonical.replace(/^\//, "")}.html`);
+      : join(DIST, route.canonical.replace(/^\//, ""), "index.html");
   if (!existsSync(file)) {
     fail(route.canonical, `prerendered file missing: ${file}`);
     return null;
