@@ -176,7 +176,7 @@ const Header = () => {
               alt="Calcy"
               width={h * 4}
               height={h}
-              style={{ height: `${h}px`, width: "auto", filter: "brightness(0) invert(1)" }}
+              style={{ height: `${h}px`, width: "auto" }}
               decoding="async"
               fetchPriority="high"
             />

@@ -38,7 +38,7 @@ const Footer = () => {
           <Link to="/" className="footer-brand-text inline-block">
             Calcy
           </Link>
-          <p className="mt-3 max-w-[280px] text-[13px] leading-relaxed text-white/40">
+          <p className="mt-3 max-w-[280px] text-[13px] leading-relaxed text-muted-foreground">
             Australia's free mortgage and property calculator suite. Live RBA rates, all 8 states, no sign-up.
           </p>
         </div>
@@ -63,7 +63,7 @@ const Footer = () => {
               </li>
             ))}
             <li>
-              <Link to="/guides" className="!text-white/85">
+              <Link to="/guides" className="!text-accent font-medium">
                 All guides →
               </Link>
             </li>
@@ -85,14 +85,14 @@ const Footer = () => {
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="footer-rba mt-2 flex flex-col items-start justify-between gap-2 px-0 py-5 sm:flex-row sm:items-center">
           <span>
-            RBA cash rate: <strong className="font-medium text-white/70">{rba.cashRate.toFixed(2)}%</strong> · Updated {rba.lastUpdated}
+            RBA cash rate: <strong className="font-semibold text-foreground">{rba.cashRate.toFixed(2)}%</strong> · Updated {rba.lastUpdated}
           </span>
           <span>© {year} Calcy — calcy.com.au</span>
         </div>
       </div>
 
-      <div className="border-t border-white/5">
-        <p className="mx-auto max-w-[900px] px-6 py-5 text-[11px] leading-relaxed text-white/30">
+      <div className="border-t border-border">
+        <p className="mx-auto max-w-[900px] px-6 py-5 text-[11px] leading-relaxed text-muted-foreground">
           Calculations are estimates for illustrative purposes only. Calcy is not a lender, broker, bank, or financial adviser
           and does not provide financial advice. All calculator results should be verified with a licensed Australian financial
           professional before making any financial decision. Stamp duty rates are indicative for {year} and subject to change —
