@@ -148,7 +148,11 @@ function validateSitemap(routes) {
   const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
   const set = new Set(locs);
   if (locs.length !== set.size) fail("sitemap-static.xml", "duplicate <loc> entries");
-  const expected = new Set(routes.map((r) => `${SITE}${r.canonical}`));
+  // Programmatic city guides live in sitemap-programmatic.xml (edge function),
+  // not sitemap-static.xml. Exclude them from the static "missing route" check.
+  const PROGRAMMATIC_RE = /^\/guides\/(mortgage|lmi|stamp-duty)-calculator-/;
+  const staticRoutes = routes.filter((r) => !PROGRAMMATIC_RE.test(r.canonical));
+  const expected = new Set(staticRoutes.map((r) => `${SITE}${r.canonical}`));
   for (const l of locs) {
     if (!expected.has(l)) fail("sitemap-static.xml", `unknown URL ${l}`);
     const path = l.replace(SITE, "");
