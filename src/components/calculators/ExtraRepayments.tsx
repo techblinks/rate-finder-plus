@@ -428,6 +428,8 @@ const ExtraRepayments = () => {
                 <div className="relative">
                   <input
                     type="number"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     min={1}
                     max={30}
                     step={1}
@@ -439,13 +441,13 @@ const ExtraRepayments = () => {
                     yr
                   </span>
                 </div>
-                <div className="mt-1 flex flex-wrap gap-1">
+                <div className="mt-1 flex flex-wrap gap-1.5">
                   {TERM_PILLS.map((y) => (
                     <button
                       key={y}
                       type="button"
                       onClick={() => set("term", y)}
-                      className={`rounded-full border px-2 py-0.5 text-[11px] font-medium ${
+                      className={`inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border px-3 text-[13px] font-medium ${
                         s.term === y
                           ? "border-accent bg-accent text-accent-foreground"
                           : "border-border bg-background text-foreground"

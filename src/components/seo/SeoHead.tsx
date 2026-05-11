@@ -25,7 +25,7 @@ export function deriveSeoTags(
   const finalTitle =
     tpl.includes("%s") && !title.includes(" | Calcy") ? tpl.replace("%s", title) : title;
   const finalDescription = description || settings.default_meta_description || "";
-  const ogImage = settings.default_og_image || `${SITE}/icon-512.png`;
+  const ogImage = settings.default_og_image || `${SITE}/og-image.png`;
   return { url, finalTitle, finalDescription, ogImage };
 }
 
@@ -55,6 +55,8 @@ export const SeoHead = ({ title, description, canonical }: SeoHeadProps) => {
       <meta property="og:site_name" content="Calcy" />
       <meta property="og:locale" content={LOCALES.au.htmlLang.replace("-", "_")} />
       <meta property="og:image" content={ogImage} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={finalTitle} />
       <meta name="twitter:description" content={finalDescription} />
