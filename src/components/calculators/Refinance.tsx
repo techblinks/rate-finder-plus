@@ -943,7 +943,7 @@ const Refinance = () => {
               <button
                 type="button"
                 onClick={reset}
-                className="rounded-xl border border-border bg-background px-3 py-2 text-[13px] font-semibold hover:border-accent"
+                className="min-h-[44px] rounded-xl border border-border bg-background px-3 py-2 text-[13px] font-semibold hover:border-accent"
               >
                 Reset
               </button>
