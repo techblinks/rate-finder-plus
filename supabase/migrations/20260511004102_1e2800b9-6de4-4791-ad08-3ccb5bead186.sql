@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS programmatic_pages_url_path_unique ON public.programmatic_pages (url_path);
