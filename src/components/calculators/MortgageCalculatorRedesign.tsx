@@ -473,6 +473,7 @@ const MortgageCalculatorRedesign = () => {
     onSave: scenarios.length < MAX_SCENARIOS ? saveScenario : undefined,
   });
 
+  return (
     <div className="space-y-6">
       <StickyResultsBar
         watchRef={inputsRef}
