@@ -413,6 +413,9 @@ const MortgageCalculatorRedesign = () => {
     setFreq(DEFAULTS.freq);
     setExtra(DEFAULTS.extra);
     setPropValue(DEFAULTS.propValue);
+    setOffsetStart(DEFAULTS.offsetStart);
+    setOffsetMonthly(DEFAULTS.offsetMonthly);
+    setOffsetOpen(false);
     clearLast();
     setRestored(null);
   };
