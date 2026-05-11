@@ -1,45 +1,54 @@
-# Calcy Anti-Vibe Redesign — Phased Plan
+## Mobile calculator: native premium experience
 
-Mobile (`MobileHomepage`, `MobileBottomNav`, mobile-scoped CSS) is intentionally untouched per user direction. All new visuals target ≥ md breakpoint. New tokens are added alongside existing ones (not replaced) so mobile semantics stay stable.
+Your project already has a strong mobile foundation that I want to **build on, not replace**: `CalculatorPageShell` branches on `useIsMobile()` and renders a dedicated mobile tree (no breadcrumbs, no SEO sections, no related links), plus `MobileCalcHeader`, `MobileBottomNav`, `MobileStickyResultBar` (wired via `usePublishMobileResult`), `MobileRelatedSections`, `MobileRestoreChip`, `MobileHomepage`. Many "fixes" in the doc are already shipped — replacing them with global `[class*=…]` `!important` selectors would fight Tailwind and the React mobile branch.
 
-## Batch 1 — Foundation + homepage (this turn)
-- `index.html`: DM Serif Display + DM Sans + DM Mono via Google Fonts (preconnect already present).
-- `index.css`: add `--c-navy*`, `--c-slate*`, `--c-bg`, `--font-display/body/data`, `--r-*`, `--shadow-*`. New utility/component classes for nav, hero data panel, calc data cards, rates table, navy buttons, section-title.
-- `tailwind.config.ts`: add `navy`, `slate-mid`, `slate-light`, font families `serif` (DM Serif), `mono` (DM Mono).
-- `Header.tsx`: dark navy bar, 4 primary links + "More calculators" hover dropdown + right-aligned Guides. Mobile (< md) keeps a clean logo-only bar.
-- `Footer.tsx`: navy background, brand column, link columns, RBA bar, legal — all on desktop (already hidden on mobile via Layout).
-- `Home.tsx`: full desktop rebuild — navy hero with live RBA chip + 4-link grid + data panel; remove "Why Calcy?" emoji section, blue quick-estimate widget, topic pills, old "Current in home loans" cards. Add data-style calculator grid (4×2) and Bloomberg-style rates table. Mobile branch (`<MobileHomepage />`) untouched.
+Below is what's already done, what's a real gap, and exactly what I'll change. Desktop is not touched.
 
-## Batch 2 — Calculator pages (DONE)
-- `CalculatorPageShell.tsx`: removed `header` AdSlot. H1 in DM Serif (clamp 32–48px), navy section H2s on desktop only.
-- `index.css`: `.tnum` adopts `var(--font-data)` at ≥768px so all numeric outputs render in DM Mono on desktop. Mobile typography untouched.
-- `StampDuty.tsx`: state pills + property-value pills become `rounded-md` with navy active state on desktop. Mobile pill style untouched.
+### Already done — no work needed
+- Mobile bottom tabs (`MobileBottomNav`, 4 tabs, sticky, safe-area inset).
+- Sticky result bar above tabs (`MobileStickyResultBar` + `usePublishMobileResult`, already used in mortgage/borrowing-power/etc.).
+- Mobile calc header with back + share + title (`MobileCalcHeader`).
+- Breadcrumbs hidden on mobile (shell renders different tree).
+- SEO sections / FAQs / related calcs replaced with `MobileRelatedSections` on mobile.
+- Welcome-back / restore moved to `MobileRestoreChip`.
+- 16px font on inputs preventing iOS zoom — already in place.
 
-## Batch 3 — Polish (DONE)
-- Selection pills in RentVsBuy, Lmi, Refinance, MortgageCalculatorRedesign now use `md:rounded-md` + navy active state on desktop. Mobile pill style untouched.
-- Numeric outputs site-wide already inherit DM Mono on desktop via the `.tnum` rule from Batch 2.
-- Remaining: keyboard a11y on hover dropdown + perf re-profile (deferred — out of scope for this redesign sweep).
+### Real gaps to fix
 
-## Batch 4 — Brand consistency: navy header on every inner page (DONE)
-- New `PageHeader` component (`src/components/layout/PageHeader.tsx`) renders the dark navy hero band on desktop only (`hidden md:block`) — white-on-navy breadcrumbs, optional live chip with pulsing dot, DM Serif Display H1, optional subtitle.
-- New CSS in `index.css`: `.page-header-band`, `.page-header-inner`, `.page-breadcrumb`, `.page-live-chip`, `.page-header-title`, `.page-header-sub`.
-- `CalculatorPageShell.tsx`: desktop now renders PageHeader (`liveChip="Rates current — updated today"`); legacy breadcrumb + serif H1 + RateFreshnessBadge wrapped in `md:hidden`.
-- `GuidesIndex.tsx` + `GuideArticleShell.tsx`: same treatment — PageHeader on desktop, original breadcrumb + H1 in `md:hidden`. Mobile untouched.
-- `AdSlot.tsx` (Part 10): empty placeholder removed — returns `null` until ads load, so the bare "Advertisement" label never appears.
+1. **Hamburger drawer in global header.** Desktop nav exposes all 8 calculators; on mobile the global header collapses but there's no in-header menu — users on a deep page can only reach 3 calcs via bottom tabs. Add a mobile-only hamburger that slides in a drawer listing all 8 calculators + Guides + RBA chip.
+2. **Two-column grids inside individual calculators.** Some calculators (`BorrowingPower`, `Refinance`, `RentVsBuy`, `Lmi`) use `md:grid-cols-[…]`; mobile already gets a single column from Tailwind, but the **result panel renders below the inputs**. On mobile, the result panel should come **first** (users see the answer immediately). Move the navy result block above inputs on mobile via `order-first md:order-none` (no DOM swap, just flex ordering wrapped in a flex container at `<md`).
+3. **Native input + segmented control polish on mobile only.** Bump number inputs to 52px height with DM Mono numerals; thicken slider track, enlarge thumb; full-width segmented `[role="tablist"]` with 44px tab height and navy active fill — all scoped to `@media (max-width: 767px)` against existing semantic classes (`.field-input`, `[role="tablist"]`, `input[type="range"]`).
+4. **Compact mobile result panel.** When `.result-panel-navy` renders at `<md`, make it full-bleed (edge-to-edge), drop border radius, scale the primary value to 44–48px, force stat cards into a 2-col grid.
+5. **Cookie banner top-anchor and overflow-x guards.** Anchor the cookie banner under the mobile header, and add `overflow-x: hidden` on `html, body` at `<md` to prevent any rogue horizontal scroll.
+6. **Hide noisy desktop-only affordances on mobile.** "Print result", Twitter/WhatsApp share intents, and the empty "Advertisement" label are clutter on mobile — hide via CSS.
 
-## Batch 5a — Navy result panels (DONE)
-- New `.result-panel-navy` opt-in CSS class in `index.css` (scoped to ≥768px). Provides: navy bg, white-on-navy text overrides for `.text-foreground`/`.text-muted-foreground`/`.text-success`/`.text-warning`/`.text-destructive`/`.text-accent`, translucent inner surfaces, plus styles for `.result-primary-label` / `.result-primary-value` / `.result-stat-card` / `.stat-label` / `.stat-value`.
-- Shared `ResultCard` (`ui-kit.tsx`) now wraps with `result-panel-navy` — auto-applies to MortgageRepayment, HecsBorrowingPower, LoanComparison.
-- `MortgageRepayment.tsx`: tagged primary value + 3 secondary stat cards with `result-primary-label`, `result-primary-value`, `result-stat-card`/`stat-label`/`stat-value` so DM Mono kicks in on desktop.
-- Per-calculator primary result wrappers tagged with `result-panel-navy md:p-7`:
-  StampDuty (sticky single-mode panel), BorrowingPower (sticky borrowing-power panel), Lmi (LVR + LMI cost panel), Refinance (verdict aside), ExtraRepayments ("you save" section), RentVsBuy (sticky verdict aside), MortgageCalculatorRedesign (primary repayment panel).
-- Mobile (<768px) untouched — class is inert below the breakpoint.
+### Implementation
 
-## Batch 5b — Deferred
-- Part 5: data-forward "Related calculators" cards with stat numbers.
-- Part 6/7: guides index card restyle + guide article 2-column sidebar w/ TOC + sticky calculator CTA.
+**File: `src/components/layout/Header.tsx`**
+- Add a mobile-only hamburger button (visible at `<md`, hidden at `≥md`).
+- New state-driven slide-in drawer (Radix `Sheet` or local state + fixed panel) listing: Mortgage, Stamp Duty, Borrowing Power, LMI, Compare Loans, Rent vs Buy, Refinance, Extra Repayments, Guides. Footer of drawer shows the RBA cash rate chip.
+- Do not change desktop nav markup.
 
-## Constraints
-- No calculator logic, Supabase queries, SEO content, guide articles, admin panel, or URLs change.
-- Mobile (< 768px) renders identically to before this redesign.
-- Existing semantic tokens (`--accent`, `--success`, `--surface`) stay; new navy palette layered on top.
+**File: each calculator with a 2-col `md:grid-cols-[…]` (BorrowingPower, Refinance, RentVsBuy, Lmi)**
+- Wrap the inputs + result divs in a `flex flex-col md:grid md:grid-cols-[…]` and add `order-first md:order-none` to the result panel div. No logic touched — just ordering classes.
+
+**File: `src/index.css` (new `@media (max-width: 767px)` block, scoped)**
+- `.field-input` → 52px height, 18–20px DM Mono value, focus ring navy at 8% alpha.
+- `input[type="range"]` → 6px track, 28px navy thumb with white ring.
+- `[role="tablist"]` → 100% width flex, 44px tabs; selected tab keeps the navy fill we already set on desktop.
+- `.result-panel-navy` → full-bleed (`margin-inline: calc(50% - 50vw)`, `border-radius: 0`, 24/20/28 padding); primary value `clamp(40px, 11vw, 48px)`; stat cards `grid-template-columns: 1fr 1fr; gap: 8px`.
+- `[role="dialog"][aria-label*="ookie" i]` → `top: 56px; bottom: auto; border-radius: 0`.
+- `html, body { overflow-x: hidden; max-width: 100vw; }`
+- Hide on mobile: `button[aria-label*="Print" i]`, `a[href*="twitter.com/intent"]`, `a[href*="wa.me"]`, the empty "Advertisement" label inside `AdSlot` when no ad is loaded (already handled — verify).
+
+### What I will NOT do
+- No global `[class*="…"]` `!important` selectors fighting Tailwind. CSS targets semantic hooks already in the codebase (`.field-input`, `.result-panel-navy`, `[role="tablist"]`, `[role="dialog"]`).
+- No rip-and-replace of `MobileBottomNav`, `MobileStickyResultBar`, or `MobileCalcHeader` — they already match the doc's intent.
+- No changes to calculator logic, SEO content, schemas, FAQs, related guides, or Supabase code.
+- No desktop changes.
+
+### Testing
+- Visual sweep at 390px (iPhone 14), 375px (SE), and 360px (Android) for each calculator: result on top, no horizontal scroll, sticky bottom result bar visible, tabs accessible, drawer opens/closes.
+- Verify navy result panel still renders correctly at `≥768px`.
+
+Say "go" and I'll ship this in one pass.
