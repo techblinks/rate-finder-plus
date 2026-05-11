@@ -1,5 +1,5 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
 import calcyLogo from "@/assets/calcy-logo.webp";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
