@@ -193,11 +193,12 @@ ROUTES.push({
 });
 
 // Editorial + city programmatic guides live under /guides/. Suburb guides
-// are intentionally excluded here — they're served by the /suburbs/:slug
-// React route and listed only in sitemap-suburbs.xml (the dynamic edge
-// function), keeping suburbs in a single namespace.
+// live under /suburbs/ in their own namespace. Both are registered here so
+// scripts/prerender.mjs emits static HTML for them; build-sitemap.mjs then
+// partitions URLs into the three sitemap files at build time.
 import { GUIDES } from "./guides";
 import { CITY_GUIDES } from "./cityGuides";
+import { SUBURB_GUIDES } from "./suburbGuides";
 
 for (const g of [...GUIDES, ...CITY_GUIDES]) {
   ROUTES.push({
@@ -206,6 +207,18 @@ for (const g of [...GUIDES, ...CITY_GUIDES]) {
     metaTitle: g.metaTitle,
     metaDescription: g.metaDescription,
     canonical: `/guides/${g.slug}`,
+    faqs: g.faqs,
+    isArticle: true,
+  });
+}
+
+for (const g of SUBURB_GUIDES) {
+  ROUTES.push({
+    path: `/suburbs/${g.slug}`,
+    title: g.title,
+    metaTitle: g.metaTitle,
+    metaDescription: g.metaDescription,
+    canonical: `/suburbs/${g.slug}`,
     faqs: g.faqs,
     isArticle: true,
   });
