@@ -116,16 +116,16 @@ const Home = () => {
       <BreadcrumbJsonLd items={[{ name: "Home", path: "/" }]} />
       <FaqJsonLd faqs={FAQS.home} />
 
-      {/* HERO — dark navy, two-column */}
+      {/* HERO — light, two-column */}
       <section className="hero-redesign">
         <div className="mx-auto grid max-w-[1200px] items-center gap-20 px-6 py-20 lg:grid-cols-[1fr_380px]">
           <div>
             <div className="live-indicator mb-6">
               <span className="live-dot" aria-hidden />
               <span>
-                RBA cash rate: <strong className="text-white/85">{rba.cashRate.toFixed(2)}%</strong>
+                RBA cash rate: <strong className="text-foreground">{rba.cashRate.toFixed(2)}%</strong>
               </span>
-              <span className="text-white/20">·</span>
+              <span className="text-border-strong">·</span>
               <span>Updated {today}</span>
             </div>
 
@@ -135,7 +135,7 @@ const Home = () => {
               calculators.
             </h1>
 
-            <p className="mb-10 max-w-[480px] text-[16px] leading-relaxed text-white/55">
+            <p className="mb-10 max-w-[480px] text-[16px] leading-relaxed text-muted-foreground">
               Updated with live RBA rates. Stamp duty for all 8 states. No sign-up.
               No ads disguised as results.
             </p>
@@ -143,19 +143,19 @@ const Home = () => {
             <div className="grid max-w-[480px] grid-cols-2 gap-2">
               <Link to="/mortgage-calculator" className="hero-calc-link primary">
                 <span>Mortgage repayments</span>
-                <span aria-hidden className="text-white/35">→</span>
+                <span aria-hidden>→</span>
               </Link>
               <Link to="/stamp-duty-calculator" className="hero-calc-link">
                 <span>Stamp duty</span>
-                <span aria-hidden className="text-white/35">→</span>
+                <span aria-hidden className="text-muted-foreground">→</span>
               </Link>
               <Link to="/borrowing-power-calculator" className="hero-calc-link">
                 <span>Borrowing power</span>
-                <span aria-hidden className="text-white/35">→</span>
+                <span aria-hidden className="text-muted-foreground">→</span>
               </Link>
               <Link to="/lmi-calculator" className="hero-calc-link">
                 <span>LMI calculator</span>
-                <span aria-hidden className="text-white/35">→</span>
+                <span aria-hidden className="text-muted-foreground">→</span>
               </Link>
             </div>
           </div>
