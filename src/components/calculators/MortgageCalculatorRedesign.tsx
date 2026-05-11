@@ -278,6 +278,57 @@ const MortgageCalculatorRedesign = () => {
     };
   }, [baseResult, result, dExtra]);
 
+  // Offset account modeling (Sprint 4). Only computed when offset is active.
+  const offset = useMemo(() => {
+    if (!offsetActive || loanType !== "pi" || dLoan <= 0 || dTerm <= 0) return null;
+    const payment = basePmt(dLoan, dRate, dTerm);
+    const r = calculateWithOffset({
+      loanAmount: dLoan,
+      annualRate: dRate,
+      termYears: dTerm,
+      monthlyPayment: payment + dExtra, // extra repayments boost principal portion
+      startingOffset: dOffsetStart,
+      monthlyOffsetContribution: dOffsetMonthly,
+    });
+    // Convert monthly schedule → yearly aggregates matching YearAmort shape.
+    const yearly: YearAmort[] = [];
+    let yOpen = dLoan;
+    let yPrin = 0;
+    let yInt = 0;
+    let yClose = dLoan;
+    for (let i = 0; i < r.schedule.length; i++) {
+      const row = r.schedule[i];
+      yPrin += row.principalPaid;
+      yInt += row.interestPaid;
+      yClose = row.loanBalance;
+      if ((i + 1) % 12 === 0 || i === r.schedule.length - 1) {
+        yearly.push({
+          year: Math.ceil((i + 1) / 12),
+          openingBalance: yOpen,
+          principalPaid: yPrin,
+          interestPaid: yInt,
+          closingBalance: yClose,
+        });
+        yOpen = yClose;
+        yPrin = 0;
+        yInt = 0;
+      }
+    }
+    const nowYear = new Date().getFullYear();
+    return {
+      ...r,
+      yearlySchedule: yearly,
+      payoffYearWith: nowYear + Math.ceil(r.payoffMonths / 12),
+      payoffYearWithout: nowYear + Math.ceil(r.baselinePayoffMonths / 12),
+    };
+  }, [offsetActive, loanType, dLoan, dRate, dTerm, dExtra, dOffsetStart, dOffsetMonthly]);
+
+  // Baseline yearly schedule for chart comparison (re-uses existing engine).
+  const baselineForChart = useMemo(
+    () => (offset ? buildAmortisation(dLoan, dRate, dTerm, freq, dExtra).schedule : null),
+    [offset, dLoan, dRate, dTerm, freq, dExtra],
+  );
+
   const lvr = propValue > 0 ? Math.min(999, (loan / propValue) * 100) : null;
 
   const shareText = `${fmt0(loan)} loan at ${rate.toFixed(2)}% over ${term} years = ${fmt0(headline)} per ${freq}. Calculated with Calcy.`;
