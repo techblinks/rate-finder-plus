@@ -38,7 +38,7 @@ const AmortisationTable = ({ rows, monthlyRows }: AmortisationTableProps) => {
                 type="button"
                 onClick={() => setView("annual")}
                 aria-pressed={view === "annual"}
-                className={`rounded-full px-4 py-1.5 text-[13px] font-medium ${
+                className={`min-h-[44px] rounded-full px-4 py-1.5 text-[13px] font-medium ${
                   view === "annual" ? "bg-accent text-accent-foreground" : "text-muted-foreground"
                 }`}
               >
@@ -48,7 +48,7 @@ const AmortisationTable = ({ rows, monthlyRows }: AmortisationTableProps) => {
                 type="button"
                 onClick={() => setView("monthly")}
                 aria-pressed={view === "monthly"}
-                className={`rounded-full px-4 py-1.5 text-[13px] font-medium ${
+                className={`min-h-[44px] rounded-full px-4 py-1.5 text-[13px] font-medium ${
                   view === "monthly" ? "bg-accent text-accent-foreground" : "text-muted-foreground"
                 }`}
               >
