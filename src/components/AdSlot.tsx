@@ -1,16 +1,28 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 /**
- * Display-ad placeholder. Reads publisher client ID, slot ID, and per-slot
- * enable flag from admin-managed site_settings. Renders a labelled empty
- * container until configured, so layout matches production.
+ * Production-ready display-ad slot.
+ *
+ * Behaviour:
+ *  - Reads publisher client ID, slot ID, and per-slot enable flag from
+ *    admin-managed site_settings (with VITE_ADSENSE_CLIENT fallback for client).
+ *  - Renders nothing when the slot isn't configured/enabled — so the calculator
+ *    UX is never pushed down by an empty ad container.
+ *  - When configured, reserves a min-height matching the AdSense unit to
+ *    prevent CLS, and lazy-loads the ad only when the placeholder is near the
+ *    viewport (IntersectionObserver). This keeps LCP fast and means the ad
+ *    request never blocks the calculator above the fold.
+ *  - Includes a small "Advertisement" caption + aria-label for IAB/Google
+ *    transparency requirements.
  */
 type SlotName = "header" | "inline" | "sidebar" | "stickyMobile";
 
 interface AdSlotProps {
   slot: SlotName;
   className?: string;
+  /** Hide the small "Advertisement" caption (e.g. inside sticky bar). */
+  hideLabel?: boolean;
 }
 
 const SLOT_CLASS: Record<SlotName, string> = {
@@ -26,9 +38,11 @@ declare global {
   }
 }
 
-const AdSlot = ({ slot, className = "" }: AdSlotProps) => {
+const AdSlot = ({ slot, className = "", hideLabel = false }: AdSlotProps) => {
   const settings = useSiteSettings();
-  const ref = useRef<HTMLModElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const pushedRef = useRef(false);
+  const [inView, setInView] = useState(false);
 
   const client =
     settings.adsense_client || (import.meta.env.VITE_ADSENSE_CLIENT as string | undefined);
@@ -48,32 +62,71 @@ const AdSlot = ({ slot, className = "" }: AdSlotProps) => {
 
   const slotId = slotIdMap[slot];
   const enabled = settings.adsense_enabled && enabledMap[slot];
+  const ready = !!(client && slotId && enabled);
+
+  // Lazy-load: wait until the slot scrolls within ~400 px of the viewport
+  // before pushing into adsbygoogle. This keeps the calculator above the fold
+  // completely unblocked by ads.
+  useEffect(() => {
+    if (!ready || !containerRef.current) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setInView(true);
+      return;
+    }
+    const el = containerRef.current;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            setInView(true);
+            io.disconnect();
+            break;
+          }
+        }
+      },
+      { rootMargin: "400px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [ready]);
 
   useEffect(() => {
-    if (!client || !slotId || !enabled) return;
+    if (!ready || !inView || pushedRef.current) return;
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
+      pushedRef.current = true;
     } catch {
-      // adsbygoogle not yet loaded; ignore
+      // adsbygoogle not yet loaded; will retry next render
     }
-  }, [client, slotId, enabled]);
+  }, [ready, inView]);
 
-  if (!client || !slotId || !enabled) {
-    // Collapse completely when no ad is configured/loaded — avoids a bare
-    // "Advertisement" label appearing on the page.
+  if (!ready) {
+    // Collapse completely — no label, no reserved space, never blocks layout.
     return null;
   }
 
   return (
-    <ins
-      ref={ref}
-      className={`adsbygoogle block ${SLOT_CLASS[slot]} ${className}`}
-      style={{ display: "block" }}
-      data-ad-client={client}
-      data-ad-slot={slotId}
-      data-ad-format="auto"
-      data-full-width-responsive="true"
-    />
+    <div
+      ref={containerRef}
+      role="complementary"
+      aria-label="Advertisement"
+      className={`w-full ${className}`}
+    >
+      {!hideLabel && (
+        <p className="mb-1 text-center text-[10px] uppercase tracking-[0.12em] text-muted-foreground/70">
+          Advertisement
+        </p>
+      )}
+      <ins
+        key={inView ? "live" : "pending"}
+        className={`adsbygoogle block ${SLOT_CLASS[slot]}`}
+        style={{ display: "block" }}
+        data-ad-client={client}
+        data-ad-slot={slotId}
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      />
+    </div>
   );
 };
 
