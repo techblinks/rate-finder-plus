@@ -99,6 +99,23 @@ export const FAQS: Record<string, FaqItem[]> = {
         "For most variable-rate borrowers, the offset wins. The interest savings are mathematically identical — $1 in offset reduces interest the same as $1 paid off principal — but the offset keeps your money fully accessible if you lose your job, have a baby, or face an emergency. Money paid directly onto the loan typically requires a redraw request, which can be slow or restricted. Plus, the implicit return on offset money is tax-free (you're avoiding interest, not earning income), so it usually beats a high-interest savings account on an after-tax basis.",
       links: [{ text: "offset account modeling", href: "/mortgage-calculator" }],
     },
+    {
+      question:
+        "How much can an offset account save on a $650,000 mortgage at 6.14%?",
+      answer:
+        "A $50,000 starting offset balance on a $650,000 loan at 6.14% over 30 years saves roughly $150,000 in interest and shaves about 4 years off the term. Adding $1,500/month into the offset alongside that pushes savings to around $250,000 and 7+ years off the loan. Calcy's offset modeller runs the same month-by-month simulation lenders use, so the figure matches what a Commonwealth Bank, Westpac, or Bankwest broker would quote.",
+      links: [{ text: "offset modeller", href: "/mortgage-calculator" }],
+    },
+    {
+      question: "Does an offset account change my monthly repayment?",
+      answer:
+        "No. Your contractual monthly P&I repayment stays the same. The offset reduces the interest portion of each repayment so a larger share goes to principal — that is why the loan is paid off sooner. The 'effective rate' figure shown next to the offset result is your headline rate weighted by the average offset position over the life of the loan.",
+    },
+    {
+      question: "Is an offset account the same as a redraw facility?",
+      answer:
+        "No. Redraw lets you pull back extra repayments you've already made, but access can be slow, capped, or restricted by the lender — and the rules can change. An offset account is a separate everyday transaction account you control like any bank account. Dollar-for-dollar the interest saving is identical, but offset is more flexible, and it's clearly preferable if the property might later become an investment, because redrawn funds can complicate the tax-deductibility of the loan interest.",
+    },
   ],
   stampDuty: [
     {
