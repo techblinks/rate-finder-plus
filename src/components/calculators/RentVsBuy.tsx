@@ -417,10 +417,10 @@ const RentVsBuy = () => {
 
   const verdictLabel =
     result.verdict === "buy"
-      ? "🏠 Buying wins"
+      ? "Buying wins"
       : result.verdict === "rent"
-        ? "💰 Renting + investing wins"
-        : "≈ It's very close";
+        ? "Renting + investing wins"
+        : "It's very close";
 
   const lmiNote =
     inputs.deposit < inputs.propertyValue * 0.2
