@@ -20,5 +20,4 @@ User-agent: cohere-ai
 Allow: /
 
 Sitemap: https://calcy.com.au/sitemap.xml
-Sitemap: https://calcy.com.au/sitemap-programmatic.xml
 Disallow: /admin
