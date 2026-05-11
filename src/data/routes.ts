@@ -192,6 +192,7 @@ ROUTES.push({
   isArticle: true,
 });
 
+import { ALL_GUIDES } from "./allGuides";
 
 for (const g of ALL_GUIDES) {
   ROUTES.push({
