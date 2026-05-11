@@ -85,7 +85,7 @@ const Footer = () => {
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="footer-rba mt-2 flex flex-col items-start justify-between gap-2 px-0 py-5 sm:flex-row sm:items-center">
           <span>
-            RBA cash rate: <strong className="font-medium text-white/70">{rba.cashRate.toFixed(2)}%</strong> · Updated {rba.lastUpdated}
+            RBA cash rate: <strong className="font-semibold text-foreground">{rba.cashRate.toFixed(2)}%</strong> · Updated {rba.lastUpdated}
           </span>
           <span>© {year} Calcy — calcy.com.au</span>
         </div>
