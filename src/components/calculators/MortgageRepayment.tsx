@@ -10,6 +10,7 @@ import DonutChart from "@/components/DonutChart";
 
 const AmortisationTable = lazy(() => import("@/components/AmortisationTable"));
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import QuickAdjustChips from "@/components/mobile/QuickAdjustChips";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import ResultActions from "@/components/ResultActions";
 import { usePublishMobileResult } from "@/lib/mobileResult";
@@ -91,6 +92,7 @@ const MortgageRepayment = () => {
   usePublishMobileResult({
     label: `${frequency.charAt(0).toUpperCase() + frequency.slice(1)} repayment`,
     value: AUD(display),
+    weekly: frequency === "weekly" ? undefined : AUD(result.weekly),
     sub: frequency === "monthly"
       ? `Fortnightly ${AUD(result.fortnightly)}`
       : `Monthly ${AUD(result.monthly)}`,
