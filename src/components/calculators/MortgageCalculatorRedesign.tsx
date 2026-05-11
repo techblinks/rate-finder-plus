@@ -56,6 +56,8 @@ const DEFAULTS = {
   freq: "fortnightly" as Frequency,
   extra: 0,
   propValue: 0,
+  offsetStart: 0,
+  offsetMonthly: 0,
 };
 
 type LoanType = "pi" | "io";
