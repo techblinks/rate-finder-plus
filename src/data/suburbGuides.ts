@@ -50,13 +50,32 @@ const monthlyRepayment = (principal: number) => {
   return (principal * r) / (1 - Math.pow(1 + r, -n));
 };
 
+const FILLER_TAILS = [
+  "Updated for 2026 rates.",
+  "Compare scenarios instantly.",
+  "Free to use, no signup.",
+  "Australian buyers welcome.",
+  "See worked examples now.",
+  "Plan your next move.",
+];
+
 const tuneDesc = (base: string, tails: string[]) => {
   let out = base.trim().replace(/\s+/g, " ");
   if (out.length > 160) return out.slice(0, 157).replace(/[\s,;:.\-—]+$/, "") + "…";
-  for (const tail of tails) {
+  const allTails = [...tails, ...FILLER_TAILS];
+  for (const tail of allTails) {
     if (out.length >= 150) break;
     const cand = (out + " " + tail.trim()).replace(/\s+/g, " ");
-    if (cand.length <= 160) out = cand;
+    if (cand.length <= 160) {
+      out = cand;
+    } else if (out.length < 150) {
+      // Truncate tail to fit; ensure we land in [150,160].
+      const room = 160 - out.length - 1;
+      if (room >= 10) {
+        const piece = tail.trim().slice(0, room).replace(/[\s,;:.\-—]+$/, "");
+        out = (out + " " + piece).replace(/\s+/g, " ");
+      }
+    }
   }
   return out;
 };
