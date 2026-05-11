@@ -464,7 +464,15 @@ const MortgageCalculatorRedesign = () => {
 
   const altFreqs = FREQS.filter((f) => f !== freq);
 
-  return (
+  // Mobile sticky result bar: primary repayment + weekly equivalent + actions.
+  usePublishMobileResult({
+    label: `${FREQ_LABEL[freq]} repayment`,
+    value: fmt0(headline),
+    weekly: freq === "weekly" ? undefined : fmt0(result.weekly),
+    onShare,
+    onSave: scenarios.length < MAX_SCENARIOS ? saveScenario : undefined,
+  });
+
     <div className="space-y-6">
       <StickyResultsBar
         watchRef={inputsRef}
