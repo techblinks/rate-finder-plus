@@ -887,8 +887,9 @@ const MortgageCalculatorRedesign = () => {
           />
 
           <p className="text-[12px] text-muted-foreground">
-            All calculations use {fmt2(result.monthly)} monthly base. Estimates only — confirm with
-            your lender.
+            Calculations use a {fmt2(result.monthly)} monthly base repayment. Offset figures are a
+            month-by-month simulation against this same engine — accurate to the cent for the
+            inputs above. Your lender's exact rate, fees, and timing may differ.
           </p>
         </div>
       </div>
