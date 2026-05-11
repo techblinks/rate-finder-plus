@@ -26,6 +26,8 @@ import RangeField from "@/components/RangeField";
 import ResultActions from "@/components/ResultActions";
 import ShareResult from "@/components/ShareResult";
 import StickyResultsBar from "@/components/StickyResultsBar";
+import QuickAdjustChips from "@/components/mobile/QuickAdjustChips";
+import { usePublishMobileResult } from "@/lib/mobileResult";
 
 const AmortChart = lazy(() => import("@/components/MortgageAmortChart"));
 const AmortTable = lazy(() => import("@/components/MortgageAmortTable"));
