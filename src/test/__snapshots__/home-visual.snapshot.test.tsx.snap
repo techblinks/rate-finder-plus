@@ -18,14 +18,14 @@ exports[`Home visual regression > matches desktop (1280px) snapshot 1`] = `
         <span>
           RBA cash rate: 
           <strong
-            class="text-white/85"
+            class="text-foreground"
           >
             4.10
             %
           </strong>
         </span>
         <span
-          class="text-white/20"
+          class="text-border-strong"
         >
           ·
         </span>
@@ -44,7 +44,7 @@ exports[`Home visual regression > matches desktop (1280px) snapshot 1`] = `
         calculators.
       </h1>
       <p
-        class="mb-10 max-w-[480px] text-[16px] leading-relaxed text-white/55"
+        class="mb-10 max-w-[480px] text-[16px] leading-relaxed text-muted-foreground"
       >
         Updated with live RBA rates. Stamp duty for all 8 states. No sign-up. No ads disguised as results.
       </p>
@@ -60,7 +60,6 @@ exports[`Home visual regression > matches desktop (1280px) snapshot 1`] = `
           </span>
           <span
             aria-hidden="true"
-            class="text-white/35"
           >
             →
           </span>
@@ -74,7 +73,7 @@ exports[`Home visual regression > matches desktop (1280px) snapshot 1`] = `
           </span>
           <span
             aria-hidden="true"
-            class="text-white/35"
+            class="text-muted-foreground"
           >
             →
           </span>
@@ -88,7 +87,7 @@ exports[`Home visual regression > matches desktop (1280px) snapshot 1`] = `
           </span>
           <span
             aria-hidden="true"
-            class="text-white/35"
+            class="text-muted-foreground"
           >
             →
           </span>
@@ -102,7 +101,7 @@ exports[`Home visual regression > matches desktop (1280px) snapshot 1`] = `
           </span>
           <span
             aria-hidden="true"
-            class="text-white/35"
+            class="text-muted-foreground"
           >
             →
           </span>
