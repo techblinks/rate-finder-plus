@@ -9,25 +9,25 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 
-await Promise.all([
-  build({
-    entryPoints: [join(ROOT, "src/data/routes.ts")],
-    bundle: true,
-    format: "esm",
-    platform: "node",
-    target: "node18",
-    outfile: join(__dirname, "routes.generated.mjs"),
-    logLevel: "warning",
-  }),
-  build({
-    entryPoints: [join(ROOT, "src/data/howTos.ts")],
-    bundle: true,
-    format: "esm",
-    platform: "node",
-    target: "node18",
-    outfile: join(__dirname, "howTos.generated.mjs"),
-    logLevel: "warning",
-  }),
-]);
+const targets = [
+  ["src/data/routes.ts", "routes.generated.mjs"],
+  ["src/data/howTos.ts", "howTos.generated.mjs"],
+  ["src/data/cityGuides.ts", "cityGuides.generated.mjs"],
+  ["src/data/suburbCatalogue.ts", "suburbCatalogue.generated.mjs"],
+];
 
-console.log("[prerender] Compiled route + howTo manifests");
+await Promise.all(
+  targets.map(([src, out]) =>
+    build({
+      entryPoints: [join(ROOT, src)],
+      bundle: true,
+      format: "esm",
+      platform: "node",
+      target: "node18",
+      outfile: join(__dirname, out),
+      logLevel: "warning",
+    }),
+  ),
+);
+
+console.log("[prerender] Compiled route + howTo + cityGuides + suburbCatalogue manifests");
