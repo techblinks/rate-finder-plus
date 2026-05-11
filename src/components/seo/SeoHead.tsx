@@ -25,7 +25,7 @@ export function deriveSeoTags(
   const finalTitle =
     tpl.includes("%s") && !title.includes(" | Calcy") ? tpl.replace("%s", title) : title;
   const finalDescription = description || settings.default_meta_description || "";
-  const ogImage = settings.default_og_image || `${SITE}/icon-512.png`;
+  const ogImage = settings.default_og_image || `${SITE}/og-image.png`;
   return { url, finalTitle, finalDescription, ogImage };
 }
 
