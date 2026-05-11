@@ -8,6 +8,8 @@ export interface MortgageScenarioInputs {
   freq: "weekly" | "fortnightly" | "monthly";
   extra: number;
   propValue?: number;
+  offsetStart?: number;
+  offsetMonthly?: number;
 }
 
 export interface SavedScenario extends MortgageScenarioInputs {
