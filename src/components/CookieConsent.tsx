@@ -68,9 +68,9 @@ const CookieConsent = () => {
         aria-label="Cookie consent"
         aria-hidden={!show}
         className={`fixed inset-x-0 z-[10000] border-t border-border bg-background shadow-[0_-4px_24px_hsl(var(--foreground)/0.06)] transition-transform duration-300 will-change-transform bottom-[calc(64px+env(safe-area-inset-bottom))] md:bottom-0 ${
-          show ? "translate-y-0" : "translate-y-full pointer-events-none"
+          show ? "translate-y-0" : "translate-y-full invisible"
         }`}
-        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+        style={{ paddingBottom: "env(safe-area-inset-bottom)", pointerEvents: "auto" }}
       >
         <div className="page-shell flex flex-col gap-3 px-6 py-4 md:flex-row md:items-center md:justify-between">
           <div className="flex items-start gap-3 text-[13px] text-foreground">
