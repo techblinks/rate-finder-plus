@@ -724,7 +724,82 @@ const MortgageCalculatorRedesign = () => {
                 </div>
               </div>
             )}
-          </div>
+                </div>
+
+                <div>
+                  <div className="mb-2 flex items-center justify-between gap-2">
+                    <p className="text-[12px] font-medium uppercase tracking-wide text-muted-foreground">
+                      My saved presets
+                    </p>
+                    <button
+                      type="button"
+                      onClick={saveCurrentOffsetPreset}
+                      disabled={offsetStart <= 0 && offsetMonthly <= 0}
+                      className="rounded-full border border-border bg-background px-3 py-1 text-[11px] font-semibold text-foreground transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      + Save current
+                    </button>
+                  </div>
+                  {offsetPresets.length === 0 ? (
+                    <p className="text-[12px] text-muted-foreground">
+                      Save up to {MAX_OFFSET_PRESETS} of your own setups (e.g. "Conservative",
+                      "After bonus") to compare in one tap.
+                    </p>
+                  ) : (
+                    <div className="flex flex-wrap gap-2">
+                      {offsetPresets.map((p) => {
+                        const active =
+                          Math.round(offsetStart) === p.start &&
+                          Math.round(offsetMonthly) === p.monthly;
+                        return (
+                          <span
+                            key={p.id}
+                            className={
+                              "inline-flex items-center gap-1 rounded-full border pl-3 pr-1 py-1 text-[12px] font-medium transition-colors " +
+                              (active
+                                ? "border-accent bg-accent text-accent-foreground"
+                                : "border-border bg-background text-foreground")
+                            }
+                          >
+                            <button
+                              type="button"
+                              onClick={() => applyOffsetPreset(p)}
+                              aria-pressed={active}
+                              title={`Apply: ${fmt0(p.start)} starting${
+                                p.monthly > 0 ? ` + ${fmt0(p.monthly)}/mo` : ""
+                              }`}
+                              className="text-left"
+                            >
+                              {p.name}
+                              <span
+                                className={
+                                  "ml-1.5 text-[10px] " +
+                                  (active ? "opacity-90" : "text-muted-foreground")
+                                }
+                              >
+                                {fmt0(p.start)}
+                                {p.monthly > 0 ? ` +${fmt0(p.monthly)}/mo` : ""}
+                              </span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => deleteOffsetPreset(p.id)}
+                              aria-label={`Delete preset ${p.name}`}
+                              className={
+                                "ml-1 flex h-5 w-5 items-center justify-center rounded-full transition-colors " +
+                                (active
+                                  ? "hover:bg-accent-foreground/20"
+                                  : "text-muted-foreground hover:bg-muted")
+                              }
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </span>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
 
           <div>
             <p className="mb-1 text-[13px] font-medium text-foreground">Loan type</p>
