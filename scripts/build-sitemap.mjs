@@ -19,17 +19,17 @@ const SITE = "https://calcy.com.au";
 const { ROUTES } = await import(
   pathToFileURL(join(__dirname, "routes.generated.mjs")).href
 );
+const { CITY_GUIDES } = await import(
+  pathToFileURL(join(__dirname, "cityGuides.generated.mjs")).href
+);
+const { SUBURB_CATALOGUE } = await import(
+  pathToFileURL(join(__dirname, "suburbCatalogue.generated.mjs")).href
+);
 
 const today = new Date().toISOString().slice(0, 10);
 
-// sitemap-static.xml: the urlset of canonical static routes (homepage,
-// calculators, editorial guides, etc.). Referenced by sitemap.xml (sitemap
-// index). City programmatic guides (mortgage|lmi|stamp-duty-calculator-<city>)
-// are intentionally excluded — they're listed in sitemap-programmatic.xml
-// served by the edge function. Suburb guides are excluded similarly via
-// sitemap-suburbs.xml.
-const PROGRAMMATIC_RE =
-  /^\/guides\/(mortgage|lmi|stamp-duty)-calculator-/;
+// ---- sitemap-static.xml (editorial + base routes; 37 URLs) ----
+const PROGRAMMATIC_RE = /^\/guides\/(mortgage|lmi|stamp-duty)-calculator-/;
 const STATIC_ROUTES = ROUTES.filter((r) => !PROGRAMMATIC_RE.test(r.canonical));
 writeFileSync(
   join(DIST, "sitemap-static.xml"),
@@ -38,9 +38,41 @@ writeFileSync(
 );
 console.log(`[sitemap] Wrote ${STATIC_ROUTES.length} URLs to dist/sitemap-static.xml`);
 
-// sitemap.xml: sitemap index that references both child sitemaps. The
-// programmatic child is served dynamically from the edge function via the
-// /sitemap-programmatic.xml rewrite in public/_redirects.
+// ---- sitemap-programmatic.xml (150 city × calculator URLs) ----
+// Mirrors the URL shape, priority, and changefreq previously emitted by the
+// sitemap-programmatic edge function. CITY_GUIDES already contains one entry
+// per city × topic; we just translate slug → /guides/<slug>.
+const programmaticEntries = CITY_GUIDES.map(
+  (g) =>
+    `  <url><loc>${SITE}/guides/${g.slug}</loc><lastmod>${today}</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>`,
+).join("\n");
+const programmaticXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${programmaticEntries}
+</urlset>
+`;
+writeFileSync(join(DIST, "sitemap-programmatic.xml"), programmaticXml, "utf8");
+console.log(`[sitemap] Wrote ${CITY_GUIDES.length} URLs to dist/sitemap-programmatic.xml`);
+
+// ---- sitemap-suburbs.xml (200 suburbs × 3 topics = 600 URLs) ----
+const SUBURB_TOPICS = ["mortgage-calculator", "lmi-calculator", "stamp-duty-calculator"];
+const suburbEntries = SUBURB_CATALOGUE.flatMap((s) =>
+  SUBURB_TOPICS.map(
+    (topic) =>
+      `  <url><loc>${SITE}/suburbs/${topic}-${s.slug}</loc><lastmod>${today}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>`,
+  ),
+).join("\n");
+const suburbXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${suburbEntries}
+</urlset>
+`;
+writeFileSync(join(DIST, "sitemap-suburbs.xml"), suburbXml, "utf8");
+console.log(
+  `[sitemap] Wrote ${SUBURB_CATALOGUE.length * SUBURB_TOPICS.length} URLs to dist/sitemap-suburbs.xml`,
+);
+
+// ---- sitemap.xml (index with 3 children) ----
 const indexXml = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
@@ -49,6 +81,10 @@ const indexXml = `<?xml version="1.0" encoding="UTF-8"?>
   </sitemap>
   <sitemap>
     <loc>${SITE}/sitemap-programmatic.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>${SITE}/sitemap-suburbs.xml</loc>
     <lastmod>${today}</lastmod>
   </sitemap>
 </sitemapindex>

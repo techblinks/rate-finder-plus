@@ -3,8 +3,3 @@ project_id = "newvydpcchjbuhcldckf"
 [functions.gsc-oauth-callback]
 verify_jwt = false
 
-[functions.sitemap-programmatic]
-verify_jwt = false
-
-[functions.sitemap-suburbs]
-verify_jwt = false
