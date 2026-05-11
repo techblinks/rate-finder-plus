@@ -234,10 +234,21 @@ const MortgageCalculatorRedesign = () => {
     sp.set("freq", freq);
     sp.set("extra", String(Math.round(dExtra)));
     if (propValue > 0) sp.set("pv", String(Math.round(propValue)));
+    if (dOffsetStart > 0) sp.set("offset_start", String(Math.round(dOffsetStart)));
+    if (dOffsetMonthly > 0) sp.set("offset_monthly", String(Math.round(dOffsetMonthly)));
     const url = `${window.location.pathname}?${sp.toString()}`;
     window.history.replaceState(null, "", url);
-    saveLast({ loan: dLoan, rate: dRate, term: dTerm, freq, extra: dExtra, propValue });
-  }, [dLoan, dRate, dTerm, freq, dExtra, propValue]);
+    saveLast({
+      loan: dLoan,
+      rate: dRate,
+      term: dTerm,
+      freq,
+      extra: dExtra,
+      propValue,
+      offsetStart: dOffsetStart,
+      offsetMonthly: dOffsetMonthly,
+    });
+  }, [dLoan, dRate, dTerm, freq, dExtra, propValue, dOffsetStart, dOffsetMonthly]);
 
   // Haptic snap on $50k loan boundaries
   useEffect(() => {
