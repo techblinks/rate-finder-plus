@@ -244,6 +244,13 @@ const LiveDataPanel = () => {
           >
             🔄 Sync Housing Aus.
           </button>
+          <button
+            onClick={runRbaEventScan}
+            disabled={!!busy}
+            className="rounded-lg bg-accent px-3 py-1.5 text-sm font-semibold text-accent-foreground disabled:opacity-50"
+          >
+            {busy === "rba-event-scan" ? "Running RBA event scan…" : "⚡ Run RBA Event Scan"}
+          </button>
         </div>
       </div>
 
