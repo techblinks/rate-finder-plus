@@ -182,7 +182,7 @@ const Pill = ({
   <button
     type="button"
     onClick={onClick}
-    className={`rounded-full md:rounded-md border px-3 py-1 text-[12px] font-medium transition-colors ${
+    className={`min-h-[44px] rounded-full md:rounded-md border px-3 py-1 text-[12px] font-medium transition-colors ${
       active
         ? "border-accent bg-accent text-accent-foreground md:border-[var(--c-navy)] md:bg-[var(--c-navy)] md:text-white"
         : "border-border bg-background text-foreground hover:border-accent/40 md:hover:border-[var(--c-navy)]"
@@ -252,7 +252,7 @@ const Segmented = <T extends string | number>({
         key={String(o.value)}
         type="button"
         onClick={() => onChange(o.value)}
-        className={`rounded-lg px-3 py-1.5 text-[12px] font-semibold transition-colors ${
+        className={`min-h-[44px] rounded-lg px-3 py-1.5 text-[12px] font-semibold transition-colors ${
           value === o.value
             ? "bg-accent text-accent-foreground"
             : "text-foreground hover:bg-accent/10"
@@ -936,14 +936,14 @@ const Refinance = () => {
               <button
                 type="button"
                 onClick={onShare}
-                className="flex-1 rounded-xl border border-border bg-background px-3 py-2 text-[13px] font-semibold hover:border-accent"
+                className="min-h-[44px] flex-1 rounded-xl border border-border bg-background px-3 py-2 text-[13px] font-semibold hover:border-accent"
               >
                 {shareCopied ? "Link copied" : "Share result"}
               </button>
               <button
                 type="button"
                 onClick={reset}
-                className="rounded-xl border border-border bg-background px-3 py-2 text-[13px] font-semibold hover:border-accent"
+                className="min-h-[44px] rounded-xl border border-border bg-background px-3 py-2 text-[13px] font-semibold hover:border-accent"
               >
                 Reset
               </button>

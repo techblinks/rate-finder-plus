@@ -18,7 +18,7 @@ const RbaRateIndicator = ({ loanType, onApply }: RbaRateIndicatorProps) => {
         <button
           type="button"
           onClick={() => onApply(activeRate)}
-          className="text-[12px] font-medium text-accent hover:underline"
+          className="min-h-[44px] inline-flex items-center px-2 text-[12px] font-medium text-accent hover:underline"
         >
           Use →
         </button>
