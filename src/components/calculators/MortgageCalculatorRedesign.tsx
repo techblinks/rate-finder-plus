@@ -116,6 +116,8 @@ function readUrlParams() {
     term: num("term", DEFAULTS.term),
     extra: num("extra", DEFAULTS.extra),
     propValue: num("pv", DEFAULTS.propValue),
+    offsetStart: num("offset_start", DEFAULTS.offsetStart),
+    offsetMonthly: num("offset_monthly", DEFAULTS.offsetMonthly),
     freq,
   };
 }
