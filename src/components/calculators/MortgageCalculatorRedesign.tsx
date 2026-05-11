@@ -475,6 +475,7 @@ const MortgageCalculatorRedesign = () => {
 
   return (
   return (
+  return (
     <div className="space-y-6">
       <StickyResultsBar
         watchRef={inputsRef}
