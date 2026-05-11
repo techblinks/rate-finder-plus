@@ -729,10 +729,68 @@ const MortgageCalculatorRedesign = () => {
             </div>
           )}
 
+          {offset && (
+            <div className="rounded-2xl border border-success/40 bg-success/5 p-5">
+              <p className="mb-3 text-[11px] font-bold uppercase tracking-wider text-success">
+                With offset account
+              </p>
+              {offset.clearedByOffsetAlone ? (
+                <p className="mb-3 text-[14px] font-semibold text-success">
+                  Your offset balance alone would clear this loan immediately.
+                </p>
+              ) : null}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <p className="text-[12px] uppercase tracking-wide text-muted-foreground">
+                    Interest saved
+                  </p>
+                  <p className="tnum text-[22px] font-bold text-success">
+                    {fmt0(offset.interestSaved)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[12px] uppercase tracking-wide text-muted-foreground">
+                    Years shaved off
+                  </p>
+                  <p className="tnum text-[22px] font-bold text-success">
+                    {offset.yearsSaved.toFixed(1)} years
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[12px] uppercase tracking-wide text-muted-foreground">
+                    Effective rate
+                  </p>
+                  <p className="tnum text-[18px] font-bold text-accent">
+                    {offset.effectiveRate.toFixed(2)}%
+                    <span className="ml-1 text-[12px] font-normal text-muted-foreground">
+                      vs {dRate.toFixed(2)}% nominal
+                    </span>
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[12px] uppercase tracking-wide text-muted-foreground">
+                    New payoff year
+                  </p>
+                  <p className="tnum text-[18px] font-bold text-foreground">
+                    {offset.payoffYearWith}
+                    <span className="ml-1 text-[12px] font-normal text-muted-foreground">
+                      (vs {offset.payoffYearWithout} without offset)
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="rounded-2xl border border-border bg-card p-4">
-            <h3 className="mb-3 text-[15px] font-semibold">Principal vs interest by year</h3>
+            <h3 className="mb-3 text-[15px] font-semibold">
+              {offset ? "Loan balance over time" : "Principal vs interest by year"}
+            </h3>
             <Suspense fallback={<div className="h-64 animate-pulse rounded-lg bg-muted/40" />}>
-              <AmortChart schedule={result.schedule} />
+              <AmortChart
+                schedule={offset ? offset.yearlySchedule : result.schedule}
+                baselineSchedule={offset && baselineForChart ? baselineForChart : undefined}
+              />
             </Suspense>
           </div>
 
