@@ -54,7 +54,7 @@ const guides = await loadCityGuides();
 let checked = 0;
 
 for (const g of guides) {
-  const file = join(DIST, "guides", g.slug, "index.html");
+  const file = join(DIST, "guides", `${g.slug}.html`);
   if (!existsSync(file)) {
     fail(g.slug, `missing prerendered file ${file}`);
     continue;
