@@ -73,7 +73,7 @@ async function validate({ url, rootTag, childTag, minEntries }) {
   const ct = (res.headers.get("content-type") ?? "").toLowerCase();
   ct.startsWith("application/xml")
     ? pass(`Content-Type: ${ct}`)
-    : fail(`Content-Type`, `expected application/xml, got "${ct}"`);
+    : fail(`Content-Type`, `expected application/xml or text/xml, got "${ct}"`);
 
   body.trim().startsWith("<?xml")
     ? pass("XML prolog present")
