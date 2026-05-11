@@ -252,7 +252,7 @@ const Segmented = <T extends string | number>({
         key={String(o.value)}
         type="button"
         onClick={() => onChange(o.value)}
-        className={`rounded-lg px-3 py-1.5 text-[12px] font-semibold transition-colors ${
+        className={`min-h-[44px] rounded-lg px-3 py-1.5 text-[12px] font-semibold transition-colors ${
           value === o.value
             ? "bg-accent text-accent-foreground"
             : "text-foreground hover:bg-accent/10"
