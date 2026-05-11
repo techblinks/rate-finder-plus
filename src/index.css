@@ -753,6 +753,9 @@
     font-weight: 600 !important;
   }
 
+  /* Mobile overflow guard — stop any stray negative margins blowing out layout */
+  html, body { overflow-x: hidden; }
+
   /* Navy result panel — full-bleed on mobile */
   .result-panel-navy {
     background: var(--c-navy) !important;
@@ -761,6 +764,7 @@
     border-radius: 0 !important;
     margin-left: calc(50% - 50vw) !important;
     margin-right: calc(50% - 50vw) !important;
+    max-width: 100vw !important;
     padding: 24px 20px 28px !important;
     box-shadow: 0 1px 3px rgba(10,22,40,0.3);
   }
