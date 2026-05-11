@@ -245,12 +245,12 @@ const Home = () => {
         </div>
       </section>
 
-      {/* RATES TABLE — Bloomberg style */}
-      <section className="border-y border-[var(--c-border-redesign)] bg-white">
+      {/* RATES TABLE */}
+      <section className="border-y border-border bg-background">
         <div className="mx-auto max-w-[1200px] px-6 py-16">
           <div className="mb-6 flex items-baseline justify-between">
             <h2 className="section-title-redesign text-[24px]">Live Australian property data</h2>
-            <span className="text-[12px] text-[var(--c-slate-light)]">Updated {rba.lastUpdated}</span>
+            <span className="text-[12px] text-muted-foreground">Updated {rba.lastUpdated}</span>
           </div>
 
           <div className="rates-table">
