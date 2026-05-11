@@ -46,6 +46,7 @@ export const NumberInput = ({
     <input
       type="number"
       inputMode="decimal"
+      pattern="[0-9]*"
       aria-label={ariaLabel}
       className={`field-input tnum w-full ${prefix ? "pl-7" : ""} ${suffix ? "pr-10" : ""}`}
       value={Number.isFinite(value) ? value : ""}
