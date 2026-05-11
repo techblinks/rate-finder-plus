@@ -3,7 +3,14 @@ import { useEffect } from "react";
 export interface MobileResult {
   label: string;
   value: string;
+  /** Optional secondary line (e.g. "Monthly $3,210"). */
   sub?: string;
+  /** Optional weekly-equivalent string shown below primary value on mobile. */
+  weekly?: string;
+  /** Optional share action wired into the sticky bar share button. */
+  onShare?: () => void;
+  /** Optional save action wired into the sticky bar save button. */
+  onSave?: () => void;
 }
 
 const EVENT = "calcy:mobile-result";
@@ -36,5 +43,6 @@ export function usePublishMobileResult(result: MobileResult | null) {
   useEffect(() => {
     setMobileResult(result);
     return () => setMobileResult(null);
-  }, [result?.label, result?.value, result?.sub]);
+    // Re-publish whenever any displayed field or callback identity changes.
+  }, [result?.label, result?.value, result?.sub, result?.weekly, result?.onShare, result?.onSave]);
 }

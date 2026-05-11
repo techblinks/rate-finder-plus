@@ -26,6 +26,8 @@ import RangeField from "@/components/RangeField";
 import ResultActions from "@/components/ResultActions";
 import ShareResult from "@/components/ShareResult";
 import StickyResultsBar from "@/components/StickyResultsBar";
+import QuickAdjustChips from "@/components/mobile/QuickAdjustChips";
+import { usePublishMobileResult } from "@/lib/mobileResult";
 
 const AmortChart = lazy(() => import("@/components/MortgageAmortChart"));
 const AmortTable = lazy(() => import("@/components/MortgageAmortTable"));
@@ -462,6 +464,15 @@ const MortgageCalculatorRedesign = () => {
 
   const altFreqs = FREQS.filter((f) => f !== freq);
 
+  // Mobile sticky result bar: primary repayment + weekly equivalent + actions.
+  usePublishMobileResult({
+    label: `${FREQ_LABEL[freq]} repayment`,
+    value: fmt0(headline),
+    weekly: freq === "weekly" ? undefined : fmt0(result.weekly),
+    onShare,
+    onSave: scenarios.length < MAX_SCENARIOS ? saveScenario : undefined,
+  });
+
   return (
     <div className="space-y-6">
       <StickyResultsBar
@@ -840,6 +851,17 @@ const MortgageCalculatorRedesign = () => {
 
         {/* RESULTS */}
         <div className="order-first lg:order-none space-y-4">
+          <QuickAdjustChips
+            loan={loan}
+            setLoan={setLoan}
+            loanBounds={{ min: 50000, max: 3000000 }}
+            rate={rate}
+            setRate={setRate}
+            rateBounds={{ min: 1, max: 15 }}
+            term={term}
+            setTerm={setTerm}
+            termBounds={{ min: 5, max: 30 }}
+          />
           <div className="result-panel-navy rounded-2xl border border-border bg-card p-6 text-center md:p-7">
             <p className="result-primary-label text-[12px] uppercase tracking-wide text-muted-foreground">
               {FREQ_LABEL[freq]} repayment
