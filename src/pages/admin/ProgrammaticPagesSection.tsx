@@ -1,5 +1,44 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
+
+const SUBURBS: { suburb: string; slug: string; state: string }[] = [
+  { suburb: "Sydney", slug: "sydney", state: "NSW" },
+  { suburb: "Melbourne", slug: "melbourne", state: "VIC" },
+  { suburb: "Brisbane", slug: "brisbane", state: "QLD" },
+  { suburb: "Perth", slug: "perth", state: "WA" },
+  { suburb: "Adelaide", slug: "adelaide", state: "SA" },
+  { suburb: "Canberra", slug: "canberra", state: "ACT" },
+  { suburb: "Gold Coast", slug: "gold-coast", state: "QLD" },
+  { suburb: "Newcastle", slug: "newcastle", state: "NSW" },
+];
+const PRICE_POINTS = [500_000, 600_000, 700_000, 800_000, 1_000_000];
+
+const fmtPriceLabel = (n: number) =>
+  n >= 1_000_000 ? `${n / 1_000_000}M` : `${Math.round(n / 1000)}k`;
+
+const buildSuburbRows = () =>
+  SUBURBS.flatMap(({ suburb, slug, state }) =>
+    PRICE_POINTS.map((price) => {
+      const priceLabel = fmtPriceLabel(price);
+      const priceFmt = new Intl.NumberFormat("en-AU", {
+        style: "currency",
+        currency: "AUD",
+        maximumFractionDigits: 0,
+      }).format(price);
+      return {
+        page_type: "stamp_duty",
+        url_path: `/calculate/stamp-duty/${state.toLowerCase()}/${slug}/${price}`,
+        params: { state, suburb, propertyValue: price, buyerType: "owner-occupier" },
+        target_keyword: `stamp duty ${suburb} ${priceLabel}`,
+        meta_title: `Stamp Duty on a ${priceFmt} Property in ${suburb} (${state}) — 2026 Calculator`,
+        meta_description: `Calculate the exact stamp duty on a ${priceFmt} property in ${suburb}, ${state}. See first-home-buyer concessions, total upfront costs, and a full breakdown for 2026.`,
+        h1: `Stamp duty on a ${priceFmt} ${suburb} property`,
+        intro_text: `Buying a ${priceFmt} home in ${suburb}, ${state}? See the exact 2026 stamp duty, eligible concessions, and total upfront costs below.`,
+        is_active: true,
+      };
+    }),
+  );
 
 interface ProgPage {
   id: string;
