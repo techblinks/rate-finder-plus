@@ -23,6 +23,36 @@ export const SEO_FAQS: Record<string, FaqItem[]> = {
       question: "What is the current RBA rate?",
       answer: "The RBA cash rate is 4.35% as of May 2026, following the 25bps hike on 5 May 2026.",
     },
+    {
+      question: "What is an offset account and how does it work?",
+      answer:
+        "A 100% offset account is a transaction account linked to your home loan. Each day, the balance in the offset is subtracted from your loan balance before interest is calculated. If you owe $650,000 and have $50,000 in offset, you only pay interest on $600,000 — your repayment stays the same, but more of it goes to principal. The savings are mathematically identical to paying that $50,000 directly off the loan, but the money stays fully accessible. Around 80% of Australian variable-rate mortgages include a 100% offset facility.",
+    },
+    {
+      question: "How much interest can an offset account save on a $650,000 mortgage?",
+      answer:
+        "On a $650,000 mortgage at 6.14% p.a. over 30 years, a $50,000 starting offset balance saves around $150,000 in interest and shaves roughly 4 years off the loan term. Adding $1,500 per month into the offset on top of that lifts total savings to approximately $250,000 and 7+ years off the term. Calcy's offset modeller runs a month-by-month simulation against the same engine the repayment calculator uses, so the savings figure matches what a major-bank broker would quote.",
+    },
+    {
+      question: "Should I put my savings in an offset account or pay down the loan directly?",
+      answer:
+        "For most variable-rate borrowers the offset wins. The interest savings are mathematically identical — $1 in offset reduces interest the same as $1 paid off principal — but the offset keeps your money fully accessible if you lose your job, have a baby, or face an emergency. Money paid directly onto the loan typically requires a redraw request, which can be slow, capped, or restricted by the lender. The implicit return on offset money is also tax-free (you're avoiding interest, not earning income), so it usually beats a high-interest savings account on an after-tax basis.",
+    },
+    {
+      question: "Does an offset account change my monthly repayment?",
+      answer:
+        "No. Your contractual monthly principal-and-interest repayment stays the same. The offset balance reduces the interest portion of each repayment, so more of every dollar goes to principal — that is why the loan is paid off sooner. The 'effective rate' shown in Calcy's offset card is your headline rate weighted by the average offset position over the life of the loan.",
+    },
+    {
+      question: "Is an offset account the same as redraw?",
+      answer:
+        "No. With redraw, extra repayments reduce your loan balance and you have to ask the lender to release the money back — access can be slow, capped, or restricted, and lenders can change the rules. An offset account is a separate everyday transaction account that you control like any other bank account. The dollar-for-dollar interest-saving effect is identical, but offset is more flexible. Offset is also clearly preferable when the property may later become an investment, because redrawn funds can complicate the tax-deductibility of the loan interest.",
+    },
+    {
+      question: "Do I need a 100% offset or is a partial offset enough?",
+      answer:
+        "Aim for a 100% offset. Partial offset accounts only offset a percentage of the balance (commonly 40–80%) or only offset against a portion of the loan, which materially reduces the saving. The vast majority of mainstream Australian variable-rate products offer a 100% offset either included or for a small annual package fee — usually $300–$400 per year, which is recouped by an average offset balance of about $7,000 at a 6% rate.",
+    },
   ],
   stampDuty: [
     {
