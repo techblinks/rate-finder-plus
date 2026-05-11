@@ -146,6 +146,11 @@ const MortgageCalculatorRedesign = () => {
   const [freq, setFreq] = useState<Frequency>(initial.freq);
   const [extra, setExtra] = useState(initial.extra);
   const [propValue, setPropValue] = useState(initial.propValue);
+  const [offsetOpen, setOffsetOpen] = useState(
+    (initial.offsetStart ?? 0) > 0 || (initial.offsetMonthly ?? 0) > 0,
+  );
+  const [offsetStart, setOffsetStart] = useState(initial.offsetStart ?? 0);
+  const [offsetMonthly, setOffsetMonthly] = useState(initial.offsetMonthly ?? 0);
   const [loanType, setLoanType] = useState<LoanType>("pi");
   const [ioYears, setIoYears] = useState(3);
   const [scenarios, setScenarios] = useState<SavedScenario[]>([]);
