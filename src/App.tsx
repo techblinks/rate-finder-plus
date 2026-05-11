@@ -27,6 +27,8 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const ProgrammaticPage = lazy(() => import("./pages/ProgrammaticPage"));
+const FhbGrantPage = lazy(() => import("./pages/FhbGrantPage"));
+const BestHomeLoansAustralia = lazy(() => import("./pages/BestHomeLoansAustralia"));
 
 const STATE_SLUGS = ["nsw", "vic", "qld", "wa", "sa", "tas", "act", "nt"] as const;
 
