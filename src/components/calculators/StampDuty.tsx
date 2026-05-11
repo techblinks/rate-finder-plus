@@ -127,7 +127,7 @@ const Segmented = <T extends string>({
           aria-selected={active}
           type="button"
           onClick={() => onChange(o.value)}
-          className={`rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors ${
+          className={`min-h-[44px] rounded-lg px-3 py-2 text-[13px] font-semibold transition-colors ${
             active ? "bg-background text-accent shadow-sm" : "text-muted-foreground hover:text-foreground"
           }`}
         >
