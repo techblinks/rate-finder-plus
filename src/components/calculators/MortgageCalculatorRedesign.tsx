@@ -722,9 +722,6 @@ const MortgageCalculatorRedesign = () => {
                     How much you'll add to the offset each month from leftover income.
                   </p>
                 </div>
-              </div>
-            )}
-                </div>
 
                 <div>
                   <div className="mb-2 flex items-center justify-between gap-2">
@@ -800,6 +797,9 @@ const MortgageCalculatorRedesign = () => {
                     </div>
                   )}
                 </div>
+              </div>
+            )}
+          </div>
 
           <div>
             <p className="mb-1 text-[13px] font-medium text-foreground">Loan type</p>
