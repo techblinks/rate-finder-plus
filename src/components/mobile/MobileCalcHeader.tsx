@@ -33,7 +33,8 @@ const MobileCalcHeader = ({ title }: MobileCalcHeaderProps) => {
         type="button"
         onClick={handleBack}
         aria-label="Back"
-        className="inline-flex h-10 w-10 items-center justify-center rounded-md text-accent active:scale-95 transition-transform"
+        title="Back"
+        className="inline-flex h-10 w-10 items-center justify-center rounded-md text-accent active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         <ArrowLeft className="h-5 w-5" />
       </button>
@@ -43,8 +44,9 @@ const MobileCalcHeader = ({ title }: MobileCalcHeaderProps) => {
       <button
         type="button"
         onClick={handleShare}
-        aria-label="Share"
-        className="inline-flex h-10 w-10 items-center justify-center rounded-md text-accent active:scale-95 transition-transform"
+        aria-label="Share this page"
+        title="Share"
+        className="inline-flex h-10 w-10 items-center justify-center rounded-md text-accent active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         <Share2 className="h-[18px] w-[18px]" />
       </button>
