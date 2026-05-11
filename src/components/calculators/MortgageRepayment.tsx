@@ -217,6 +217,18 @@ const MortgageRepayment = () => {
         </Card>
       </div>
 
+      <QuickAdjustChips
+        loan={amount}
+        setLoan={setAmount}
+        loanBounds={{ min: 50000, max: 2000000 }}
+        rate={rate}
+        setRate={setRate}
+        rateBounds={{ min: 1, max: 15 }}
+        term={term}
+        setTerm={setTerm}
+        termBounds={{ min: 5, max: 30 }}
+      />
+
       <ResultCard>
         <div className="border-b border-border pb-3 text-center">
           <p className="result-primary-label text-[13px] uppercase tracking-wide text-muted-foreground">
