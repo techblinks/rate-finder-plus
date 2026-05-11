@@ -46,12 +46,12 @@ const QuickAdjustChips = ({
   ];
 
   return (
-    <div className="md:hidden -mx-4 px-4 pb-1">
+    <div className="md:hidden pb-1 max-w-full">
       <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
         Quick adjust
       </p>
       <div
-        className="flex snap-x snap-mandatory gap-2 overflow-x-auto pb-1"
+        className="flex snap-x snap-mandatory gap-2 overflow-x-auto pb-1 -mx-1 px-1"
         style={{ scrollbarWidth: "none" }}
       >
         {chips.map((c) => (
