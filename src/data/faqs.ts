@@ -100,6 +100,7 @@ export const FAQS: Record<string, FaqItem[]> = {
       links: [{ text: "offset account modeling", href: "/mortgage-calculator" }],
     },
   ],
+  stampDuty: [
     {
       question: "How much is stamp duty on a $700,000 property in NSW?",
       answer:
