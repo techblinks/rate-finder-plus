@@ -174,6 +174,9 @@ const MortgageCalculatorRedesign = () => {
   const dRate = useDebouncedValue(rate);
   const dTerm = useDebouncedValue(term);
   const dExtra = useDebouncedValue(extra);
+  const dOffsetStart = useDebouncedValue(offsetOpen ? offsetStart : 0);
+  const dOffsetMonthly = useDebouncedValue(offsetOpen ? offsetMonthly : 0);
+  const offsetActive = offsetOpen && (dOffsetStart > 0 || dOffsetMonthly > 0);
 
   // Effective rate / amort accounts for IO mode by computing the IO-period
   // interest-only payment, then full amort over (term - ioYears).
