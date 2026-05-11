@@ -27,6 +27,8 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const ProgrammaticPage = lazy(() => import("./pages/ProgrammaticPage"));
+const FhbGrantPage = lazy(() => import("./pages/FhbGrantPage"));
+const BestHomeLoansAustralia = lazy(() => import("./pages/BestHomeLoansAustralia"));
 
 const STATE_SLUGS = ["nsw", "vic", "qld", "wa", "sa", "tas", "act", "nt"] as const;
 
@@ -78,6 +80,14 @@ const App = () => (
           <Route path="/lmi" element={<Navigate to="/lmi-calculator" replace />} />
           <Route path="/extra" element={<Navigate to="/extra-repayments-calculator" replace />} />
           <Route path="/compare" element={<Navigate to="/loan-comparison-calculator" replace />} />
+          {STATE_SLUGS.map((slug) => (
+            <Route
+              key={`fhb-${slug}`}
+              path={`/first-home-buyer-grant-${slug}`}
+              element={<FhbGrantPage slug={slug} />}
+            />
+          ))}
+          <Route path="/best-home-loans-australia" element={<BestHomeLoansAustralia />} />
           <Route path="/calculate/*" element={<ProgrammaticPage />} />
           <Route path="*" element={<NotFound />} />
         </Route>
