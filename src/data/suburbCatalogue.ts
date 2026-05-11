@@ -91,7 +91,7 @@ export const SUBURB_CATALOGUE: SuburbRecord[] = [
   { slug: "fairfield", name: "Fairfield", ...NSW, ...sydney, median: 850000 },
   { slug: "mount-druitt", name: "Mount Druitt", ...NSW, ...sydney, median: 760000 },
   { slug: "marrickville", name: "Marrickville", ...NSW, ...sydney, median: 1380000 },
-  { slug: "windsor-nsw", name: "Windsor", ...NSW, ...sydney, median: 830000 },
+  { slug: "windsor-nsw", name: "Windsor NSW", ...NSW, ...sydney, median: 830000 },
   { slug: "dee-why", name: "Dee Why", ...NSW, ...sydney, median: 1650000 },
   { slug: "mona-vale", name: "Mona Vale", ...NSW, ...sydney, median: 2150000 },
   { slug: "north-sydney", name: "North Sydney", ...NSW, ...sydney, median: 2250000 },
