@@ -54,24 +54,42 @@ interface ProgPage {
 const ProgrammaticPagesSection = () => {
   const [pages, setPages] = useState<ProgPage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [seeding, setSeeding] = useState(false);
+
+  const load = async () => {
+    setLoading(true);
+    const { data } = await supabase
+      .from("programmatic_pages")
+      .select("id,page_type,url_path,target_keyword,impressions_28d,clicks_28d,position,is_active")
+      .order("impressions_28d", { ascending: false });
+    setPages((data as ProgPage[] | null) ?? []);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    let cancel = false;
-    async function load() {
-      setLoading(true);
-      const { data } = await supabase
-        .from("programmatic_pages")
-        .select("id,page_type,url_path,target_keyword,impressions_28d,clicks_28d,position,is_active")
-        .order("impressions_28d", { ascending: false });
-      if (cancel) return;
-      setPages((data as ProgPage[] | null) ?? []);
-      setLoading(false);
-    }
     load();
-    return () => {
-      cancel = true;
-    };
   }, []);
+
+  const seedSuburbs = async () => {
+    if (seeding) return;
+    setSeeding(true);
+    try {
+      const rows = buildSuburbRows();
+      const { error, count } = await supabase
+        .from("programmatic_pages")
+        .upsert(rows as never, { onConflict: "url_path", count: "exact" });
+      if (error) throw error;
+      toast({
+        title: "Suburb pages seeded",
+        description: `${count ?? rows.length} suburb × price-point pages inserted/updated.`,
+      });
+      await load();
+    } catch (e: any) {
+      toast({ title: "Seed failed", description: e.message, variant: "destructive" });
+    } finally {
+      setSeeding(false);
+    }
+  };
 
   const total = pages.length;
   const active = pages.filter((p) => p.is_active).length;
@@ -80,11 +98,29 @@ const ProgrammaticPagesSection = () => {
 
   return (
     <section className="rounded-2xl border border-border bg-surface p-6">
-      <div className="flex items-baseline justify-between">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 className="text-lg font-semibold text-foreground">Programmatic pages</h2>
         <p className="text-xs text-muted-foreground">
           Auto-generated calculator scenario pages at <code className="text-[11px]">/calculate/*</code>
         </p>
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center gap-3">
+        <button
+          onClick={seedSuburbs}
+          disabled={seeding}
+          className="rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-accent-foreground disabled:opacity-60"
+        >
+          {seeding ? "Seeding…" : "🌱 Seed suburb pages (8 cities × 5 price points)"}
+        </button>
+        <a
+          href="/sitemap-programmatic.xml"
+          target="_blank"
+          rel="noreferrer"
+          className="rounded-lg border border-border px-3 py-1.5 text-xs hover:bg-muted"
+        >
+          📄 View sitemap-programmatic.xml
+        </a>
       </div>
 
       <div className="mt-3 flex flex-wrap gap-6 text-sm">
