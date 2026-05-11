@@ -820,6 +820,8 @@ const MortgageCalculatorRedesign = () => {
               freq,
               extra: Math.round(extra),
               pv: propValue > 0 ? Math.round(propValue) : undefined,
+              offset_start: offsetStart > 0 ? Math.round(offsetStart) : undefined,
+              offset_monthly: offsetMonthly > 0 ? Math.round(offsetMonthly) : undefined,
             }}
             shareText={`I calculated my mortgage repayment at ${fmt0(headline)} per ${freq}`}
           />
