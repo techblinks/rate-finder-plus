@@ -38,7 +38,7 @@ const Footer = () => {
           <Link to="/" className="footer-brand-text inline-block">
             Calcy
           </Link>
-          <p className="mt-3 max-w-[280px] text-[13px] leading-relaxed text-white/40">
+          <p className="mt-3 max-w-[280px] text-[13px] leading-relaxed text-muted-foreground">
             Australia's free mortgage and property calculator suite. Live RBA rates, all 8 states, no sign-up.
           </p>
         </div>
