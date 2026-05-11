@@ -936,7 +936,7 @@ const Refinance = () => {
               <button
                 type="button"
                 onClick={onShare}
-                className="flex-1 rounded-xl border border-border bg-background px-3 py-2 text-[13px] font-semibold hover:border-accent"
+                className="min-h-[44px] flex-1 rounded-xl border border-border bg-background px-3 py-2 text-[13px] font-semibold hover:border-accent"
               >
                 {shareCopied ? "Link copied" : "Share result"}
               </button>
