@@ -1,19 +1,44 @@
 import { Link } from "react-router-dom";
-import { ChevronRight, Clock, Tag, ArrowRight } from "lucide-react";
+import { ChevronRight, Clock, Tag, ArrowRight, Database } from "lucide-react";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { ArticleJsonLd, BreadcrumbJsonLd, FaqJsonLd } from "@/components/seo/JsonLd";
 import FAQ from "@/components/FAQ";
 import PageHeader from "@/components/layout/PageHeader";
+import FinancialDisclaimer from "@/components/FinancialDisclaimer";
 import type { GuideMeta } from "@/data/guides";
-import { ALL_GUIDES } from "@/data/allGuides";
+import { ALL_GUIDES, isSuburbGuide } from "@/data/allGuides";
 
-const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+const slugify = (s: string) =>
+  s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
-const GuideArticleShell = ({ guide }: { guide: GuideMeta }) => {
-  const canonical = `/guides/${guide.slug}`;
+interface Props {
+  guide: GuideMeta;
+  /** URL prefix the canonical URL is rendered under. Defaults to `/guides`. */
+  basePath?: "/guides" | "/suburbs";
+}
+
+/**
+ * Resolves the correct URL prefix for a related guide slug — suburb slugs
+ * resolve under /suburbs/, everything else under /guides/. This is what
+ * makes cross-mesh linking (city ↔ suburb) work transparently.
+ */
+const hrefFor = (slug: string) =>
+  isSuburbGuide(slug) ? `/suburbs/${slug}` : `/guides/${slug}`;
+
+const GuideArticleShell = ({ guide, basePath = "/guides" }: Props) => {
+  const canonical = `${basePath}/${guide.slug}`;
+  const breadcrumbLabel = basePath === "/suburbs" ? "Suburb guides" : "Guides";
   const related = guide.relatedGuides
     .map((s) => ALL_GUIDES.find((g) => g.slug === s))
     .filter((g): g is GuideMeta => Boolean(g));
+
+  // Human-readable "Last reviewed" date — kept consistent with the
+  // ArticleJsonLd dateModified so Google sees aligned freshness signals.
+  const reviewed = new Date(guide.dateModified).toLocaleDateString("en-AU", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 
   return (
     <>
@@ -25,7 +50,7 @@ const GuideArticleShell = ({ guide }: { guide: GuideMeta }) => {
       <BreadcrumbJsonLd
         items={[
           { name: "Home", path: "/" },
-          { name: "Guides", path: "/guides" },
+          { name: breadcrumbLabel, path: basePath === "/suburbs" ? "/suburbs" : "/guides" },
           { name: guide.title, path: canonical },
         ]}
       />
@@ -42,11 +67,11 @@ const GuideArticleShell = ({ guide }: { guide: GuideMeta }) => {
       <PageHeader
         breadcrumbs={[
           { label: "Home", href: "/" },
-          { label: "Guides", href: "/guides" },
+          { label: breadcrumbLabel, href: basePath === "/suburbs" ? "/suburbs" : "/guides" },
           { label: guide.title },
         ]}
         title={guide.title}
-        subtitle={`${guide.category} · ${guide.readMins} min read · Last updated May 2026`}
+        subtitle={`${guide.category} · ${guide.readMins} min read · Last reviewed ${reviewed}`}
       />
 
       <article className="page-shell py-8 md:py-10">
@@ -56,7 +81,7 @@ const GuideArticleShell = ({ guide }: { guide: GuideMeta }) => {
               <li><Link to="/" className="link-accent">Home</Link></li>
               <li className="flex items-center gap-1">
                 <ChevronRight className="h-3.5 w-3.5 opacity-60" />
-                <Link to="/guides" className="link-accent">Guides</Link>
+                <Link to={basePath === "/suburbs" ? "/suburbs" : "/guides"} className="link-accent">{breadcrumbLabel}</Link>
               </li>
               <li className="flex items-center gap-1">
                 <ChevronRight className="h-3.5 w-3.5 opacity-60" />
@@ -76,10 +101,16 @@ const GuideArticleShell = ({ guide }: { guide: GuideMeta }) => {
 
           <h1 className="mb-3">{guide.title}</h1>
 
-          <p className="mb-6 text-[13px] text-muted-foreground">
-            Last updated: May 2026 · By Calcy Editorial Team
+          <p className="mb-3 text-[13px] text-muted-foreground">
+            Last updated: <time dateTime={guide.dateModified}>{reviewed}</time> · By Calcy Editorial Team
           </p>
         </div>
+
+        {/* Trust signal — data attribution. Required for YMYL ranking eligibility. */}
+        <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-[12px] text-muted-foreground">
+          <Database className="h-3.5 w-3.5 text-accent" aria-hidden />
+          Median values: CoreLogic/Domain estimates, 2026. Rates: RBA cash rate 4.10%.
+        </p>
 
         <p className="mb-8 text-[16px] leading-relaxed text-foreground/90">{guide.intro}</p>
 
@@ -159,7 +190,7 @@ const GuideArticleShell = ({ guide }: { guide: GuideMeta }) => {
           </Link>
         </div>
 
-        {/* Related guides */}
+        {/* Related guides — cross-mesh aware (city ↔ suburb ↔ editorial). */}
         {related.length > 0 && (
           <section className="mt-12" aria-labelledby="related-guides">
             <h2 id="related-guides" className="mb-4">Related guides</h2>
@@ -167,7 +198,7 @@ const GuideArticleShell = ({ guide }: { guide: GuideMeta }) => {
               {related.map((g) => (
                 <li key={g.slug}>
                   <Link
-                    to={`/guides/${g.slug}`}
+                    to={hrefFor(g.slug)}
                     className="block rounded-lg border border-border bg-surface p-5 transition-colors hover:border-accent/50"
                   >
                     <p className="text-[12px] font-medium uppercase tracking-wide text-accent">
@@ -185,6 +216,9 @@ const GuideArticleShell = ({ guide }: { guide: GuideMeta }) => {
         <div className="mt-12">
           <FAQ items={guide.faqs} />
         </div>
+
+        {/* YMYL disclaimer — required on all guide and suburb pages. */}
+        <FinancialDisclaimer className="mt-12" />
       </article>
     </>
   );
