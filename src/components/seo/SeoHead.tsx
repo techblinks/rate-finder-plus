@@ -55,6 +55,8 @@ export const SeoHead = ({ title, description, canonical }: SeoHeadProps) => {
       <meta property="og:site_name" content="Calcy" />
       <meta property="og:locale" content={LOCALES.au.htmlLang.replace("-", "_")} />
       <meta property="og:image" content={ogImage} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={finalTitle} />
       <meta name="twitter:description" content={finalDescription} />
