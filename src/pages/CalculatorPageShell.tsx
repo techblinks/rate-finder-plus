@@ -141,9 +141,17 @@ const CalculatorPageShell = ({
         <RateFreshnessBadge className="mb-2" />
       </div>
 
+      {/* Top banner — above the fold but BELOW the calculator hero, so it
+          never delays interaction with the tool. Lazy-loaded by AdSlot. */}
+      <div className="page-shell pt-4">
+        <AdSlot slot="header" />
+      </div>
+
       <div className="page-shell py-8 md:py-10">
         <div className="min-w-0">
           {children}
+          {/* After-calculator slot: highest-value placement, right under the
+              result, before any SEO content. */}
           <AdSlot slot="inline" className="my-10" />
         </div>
         <div className="mt-12 space-y-10">

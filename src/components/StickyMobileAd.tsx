@@ -28,8 +28,12 @@ const StickyMobileAd = () => {
     <div
       role="complementary"
       aria-label="Advertisement"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 backdrop-blur md:hidden"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      className="fixed inset-x-0 z-30 border-t border-border bg-background/95 backdrop-blur md:hidden"
+      style={{
+        // Sit above the mobile bottom nav (64 px) + safe-area, so the ad
+        // never overlaps the calculator's primary navigation.
+        bottom: "calc(64px + env(safe-area-inset-bottom))",
+      }}
     >
       <button
         type="button"
@@ -47,7 +51,7 @@ const StickyMobileAd = () => {
         <X className="h-3.5 w-3.5" />
       </button>
       <div className="mx-auto max-w-2xl px-2 py-1">
-        <AdSlot slot="stickyMobile" />
+        <AdSlot slot="stickyMobile" hideLabel />
       </div>
     </div>
   );
