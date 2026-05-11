@@ -652,7 +652,7 @@ const BorrowingPower = () => {
         </div>
 
         {/* Results panel */}
-        <div className="md:sticky md:top-6 md:self-start">
+        <div className="order-first md:order-none md:sticky md:top-6 md:self-start">
           <div
             ref={resultsRef}
             className="result-panel-navy space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm md:p-7"
