@@ -196,6 +196,7 @@ const Header = () => {
             ))}
 
             <div
+              ref={moreRef}
               className="relative"
               onMouseEnter={() => setMoreOpen(true)}
               onMouseLeave={() => setMoreOpen(false)}
@@ -214,7 +215,7 @@ const Header = () => {
               {moreOpen && (
                 <div
                   role="menu"
-                  className="dropdown-panel-redesign absolute left-0 top-full mt-2"
+                  className="dropdown-panel-redesign absolute left-0 top-full pt-2"
                 >
                   {MORE.map((item) => (
                     <Link key={item.to} to={item.to} role="menuitem" onClick={() => setMoreOpen(false)}>
