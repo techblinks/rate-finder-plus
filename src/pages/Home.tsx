@@ -301,7 +301,7 @@ const Home = () => {
       </section>
 
       {/* FAQ */}
-      <section style={{ background: "var(--c-bg-redesign)" }}>
+      <section className="bg-surface/40">
         <div className="mx-auto max-w-[1200px] px-6 py-16">
           <h2 className="section-title-redesign mb-8 text-[clamp(24px,3vw,36px)]">
             Frequently asked
