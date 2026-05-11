@@ -210,7 +210,7 @@ const Home = () => {
       </div>
 
       {/* CALCULATOR DATA GRID */}
-      <section style={{ background: "var(--c-bg-redesign)" }}>
+      <section className="bg-surface/40">
         <div className="mx-auto max-w-[1200px] px-6 py-16">
           <div className="mb-8">
             <h2 className="section-title-redesign text-[clamp(24px,3vw,36px)]">
@@ -224,7 +224,12 @@ const Home = () => {
 
           <div className="calc-card-grid">
             {calculators.map((c) => (
-              <Link key={c.path} to={c.path} className="calc-data-card">
+              <Link
+                key={c.path}
+                to={c.path}
+                className="calc-data-card"
+                style={{ ["--cat-fg" as never]: `var(${c.catVar})` }}
+              >
                 <div className="flex items-start justify-between">
                   <span className="calc-name">{c.name}</span>
                   <span className="calc-arrow" aria-hidden>↗</span>
