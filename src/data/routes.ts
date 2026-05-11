@@ -167,7 +167,31 @@ for (const slug of Object.keys(STAMP_DUTY_STATE_CONTENT)) {
   });
 }
 
-import { ALL_GUIDES } from "./allGuides";
+import { FHB_GRANT_CONTENT } from "./fhbGrantContent";
+
+for (const slug of Object.keys(FHB_GRANT_CONTENT)) {
+  const cfg = FHB_GRANT_CONTENT[slug];
+  ROUTES.push({
+    path: `/first-home-buyer-grant-${cfg.slug}`,
+    title: cfg.h1,
+    metaTitle: cfg.metaTitle,
+    metaDescription: cfg.metaDescription,
+    canonical: `/first-home-buyer-grant-${cfg.slug}`,
+    faqs: cfg.faqs,
+    isArticle: true,
+  });
+}
+
+ROUTES.push({
+  path: "/best-home-loans-australia",
+  title: "Best Home Loans Australia 2026",
+  metaTitle: "Best Home Loans Australia 2026 — Compare Rates, Features & Lenders | Calcy",
+  metaDescription:
+    "Compare the best Australian home loans for 2026 — fixed vs variable, big-four vs neobanks, offset accounts, and how to switch. Independent, no sign-up.",
+  canonical: "/best-home-loans-australia",
+  isArticle: true,
+});
+
 
 for (const g of ALL_GUIDES) {
   ROUTES.push({
