@@ -16,7 +16,11 @@ import {
   clearLast,
   haptic,
   MAX_SCENARIOS,
+  loadOffsetPresets,
+  saveOffsetPresets,
+  MAX_OFFSET_PRESETS,
   type SavedScenario,
+  type OffsetPreset,
 } from "@/lib/mortgageState";
 import RangeField from "@/components/RangeField";
 import ResultActions from "@/components/ResultActions";
@@ -155,12 +159,14 @@ const MortgageCalculatorRedesign = () => {
   const [ioYears, setIoYears] = useState(3);
   const [scenarios, setScenarios] = useState<SavedScenario[]>([]);
   const [scenariosOpen, setScenariosOpen] = useState(false);
+  const [offsetPresets, setOffsetPresets] = useState<OffsetPreset[]>([]);
   const [copied, setCopied] = useState(false);
   const sliderHaptic = useRef(0);
   const inputsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setScenarios(loadScenarios());
+    setOffsetPresets(loadOffsetPresets());
   }, []);
 
   // Listen for the bottom-nav "Saved" tap → toggle the scenarios panel.
@@ -404,6 +410,40 @@ const MortgageCalculatorRedesign = () => {
     const arr = scenarios.map((s) => (s.id === id ? { ...s, label } : s));
     setScenarios(arr);
     saveScenarios(arr);
+  };
+
+  const applyOffsetPreset = (p: { start: number; monthly: number }) => {
+    haptic(10);
+    setOffsetStart(p.start);
+    setOffsetMonthly(p.monthly);
+    setOffsetOpen(true);
+  };
+
+  const saveCurrentOffsetPreset = () => {
+    if (offsetPresets.length >= MAX_OFFSET_PRESETS) {
+      alert(`You can save up to ${MAX_OFFSET_PRESETS} offset presets. Delete one to add another.`);
+      return;
+    }
+    if (offsetStart <= 0 && offsetMonthly <= 0) return;
+    const fallback = `My preset ${offsetPresets.length + 1}`;
+    const name = (prompt("Name this offset preset", fallback) || fallback).trim().slice(0, 32);
+    if (!name) return;
+    const next: OffsetPreset = {
+      id: crypto.randomUUID?.() ?? String(Date.now()),
+      name,
+      start: Math.round(offsetStart),
+      monthly: Math.round(offsetMonthly),
+    };
+    const arr = [...offsetPresets, next];
+    setOffsetPresets(arr);
+    saveOffsetPresets(arr);
+    haptic(15);
+  };
+
+  const deleteOffsetPreset = (id: string) => {
+    const arr = offsetPresets.filter((p) => p.id !== id);
+    setOffsetPresets(arr);
+    saveOffsetPresets(arr);
   };
 
   const resetDefaults = () => {
@@ -681,6 +721,81 @@ const MortgageCalculatorRedesign = () => {
                   <p className="mt-1 text-[12px] text-muted-foreground">
                     How much you'll add to the offset each month from leftover income.
                   </p>
+                </div>
+
+                <div>
+                  <div className="mb-2 flex items-center justify-between gap-2">
+                    <p className="text-[12px] font-medium uppercase tracking-wide text-muted-foreground">
+                      My saved presets
+                    </p>
+                    <button
+                      type="button"
+                      onClick={saveCurrentOffsetPreset}
+                      disabled={offsetStart <= 0 && offsetMonthly <= 0}
+                      className="rounded-full border border-border bg-background px-3 py-1 text-[11px] font-semibold text-foreground transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      + Save current
+                    </button>
+                  </div>
+                  {offsetPresets.length === 0 ? (
+                    <p className="text-[12px] text-muted-foreground">
+                      Save up to {MAX_OFFSET_PRESETS} of your own setups (e.g. "Conservative",
+                      "After bonus") to compare in one tap.
+                    </p>
+                  ) : (
+                    <div className="flex flex-wrap gap-2">
+                      {offsetPresets.map((p) => {
+                        const active =
+                          Math.round(offsetStart) === p.start &&
+                          Math.round(offsetMonthly) === p.monthly;
+                        return (
+                          <span
+                            key={p.id}
+                            className={
+                              "inline-flex items-center gap-1 rounded-full border pl-3 pr-1 py-1 text-[12px] font-medium transition-colors " +
+                              (active
+                                ? "border-accent bg-accent text-accent-foreground"
+                                : "border-border bg-background text-foreground")
+                            }
+                          >
+                            <button
+                              type="button"
+                              onClick={() => applyOffsetPreset(p)}
+                              aria-pressed={active}
+                              title={`Apply: ${fmt0(p.start)} starting${
+                                p.monthly > 0 ? ` + ${fmt0(p.monthly)}/mo` : ""
+                              }`}
+                              className="text-left"
+                            >
+                              {p.name}
+                              <span
+                                className={
+                                  "ml-1.5 text-[10px] " +
+                                  (active ? "opacity-90" : "text-muted-foreground")
+                                }
+                              >
+                                {fmt0(p.start)}
+                                {p.monthly > 0 ? ` +${fmt0(p.monthly)}/mo` : ""}
+                              </span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => deleteOffsetPreset(p.id)}
+                              aria-label={`Delete preset ${p.name}`}
+                              className={
+                                "ml-1 flex h-5 w-5 items-center justify-center rounded-full transition-colors " +
+                                (active
+                                  ? "hover:bg-accent-foreground/20"
+                                  : "text-muted-foreground hover:bg-muted")
+                              }
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </span>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
             )}

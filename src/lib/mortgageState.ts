@@ -95,6 +95,50 @@ export function getVisits(): number {
   }
 }
 
+/* ---------- User-defined offset presets (localStorage) ---------- */
+
+export interface OffsetPreset {
+  id: string;
+  name: string;
+  start: number;
+  monthly: number;
+}
+
+const OFFSET_PRESETS_KEY = "calcy_offset_presets";
+export const MAX_OFFSET_PRESETS = 6;
+
+export function loadOffsetPresets(): OffsetPreset[] {
+  try {
+    const raw = localStorage.getItem(OFFSET_PRESETS_KEY);
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    if (!Array.isArray(arr)) return [];
+    return arr
+      .filter(
+        (p) =>
+          p &&
+          typeof p.id === "string" &&
+          typeof p.name === "string" &&
+          Number.isFinite(p.start) &&
+          Number.isFinite(p.monthly),
+      )
+      .slice(0, MAX_OFFSET_PRESETS);
+  } catch {
+    return [];
+  }
+}
+
+export function saveOffsetPresets(presets: OffsetPreset[]) {
+  try {
+    localStorage.setItem(
+      OFFSET_PRESETS_KEY,
+      JSON.stringify(presets.slice(0, MAX_OFFSET_PRESETS)),
+    );
+  } catch {
+    /* ignore */
+  }
+}
+
 export function haptic(duration = 10) {
   try {
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
