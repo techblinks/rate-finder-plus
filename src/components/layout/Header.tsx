@@ -1,5 +1,5 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
 import calcyLogo from "@/assets/calcy-logo.webp";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
@@ -38,7 +38,27 @@ const Header = () => {
   const h = Math.max(20, Math.min(40, logo_height || 28));
   const [moreOpen, setMoreOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
   const moreActive = MORE.some((m) => pathname.startsWith(m.to));
+
+  // Close dropdown on outside click + Escape
+  useEffect(() => {
+    if (!moreOpen) return;
+    const onClick = (e: MouseEvent) => {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) {
+        setMoreOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMoreOpen(false);
+    };
+    document.addEventListener("mousedown", onClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [moreOpen]);
 
   // Close drawer on route change
   useEffect(() => {
@@ -176,6 +196,7 @@ const Header = () => {
             ))}
 
             <div
+              ref={moreRef}
               className="relative"
               onMouseEnter={() => setMoreOpen(true)}
               onMouseLeave={() => setMoreOpen(false)}
@@ -194,7 +215,7 @@ const Header = () => {
               {moreOpen && (
                 <div
                   role="menu"
-                  className="dropdown-panel-redesign absolute left-0 top-full mt-2"
+                  className="dropdown-panel-redesign absolute left-0 top-full pt-2"
                 >
                   {MORE.map((item) => (
                     <Link key={item.to} to={item.to} role="menuitem" onClick={() => setMoreOpen(false)}>

@@ -64,7 +64,7 @@ const CookieConsent = () => {
         role="dialog"
         aria-label="Cookie consent"
         aria-hidden={!show}
-        className={`fixed inset-x-0 bottom-0 z-[10000] border-t border-border bg-background shadow-[0_-4px_24px_hsl(var(--foreground)/0.06)] transition-transform duration-300 will-change-transform ${
+        className={`fixed inset-x-0 z-[10000] border-t border-border bg-background shadow-[0_-4px_24px_hsl(var(--foreground)/0.06)] transition-transform duration-300 will-change-transform bottom-[calc(64px+env(safe-area-inset-bottom))] md:bottom-0 ${
           show ? "translate-y-0" : "translate-y-full pointer-events-none"
         }`}
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}

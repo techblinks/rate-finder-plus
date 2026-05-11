@@ -34,12 +34,17 @@ function actuallyLoad(client: string, autoAds: boolean | undefined, consent: str
     });
   }
 
-  const s = document.createElement("script");
-  s.async = true;
-  s.crossOrigin = "anonymous";
-  s.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}`;
-  if (autoAds) s.setAttribute("data-ad-client", client);
-  document.head.appendChild(s);
+  const injectScript = () => {
+    const s = document.createElement("script");
+    s.async = true;
+    s.crossOrigin = "anonymous";
+    s.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}`;
+    if (autoAds) s.setAttribute("data-ad-client", client);
+    document.head.appendChild(s);
+  };
+  const ric = (window as unknown as { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => void }).requestIdleCallback;
+  if (ric) ric(injectScript, { timeout: 3000 });
+  else setTimeout(injectScript, 1500);
 }
 
 export function configureAdSense(cfg: AdSenseConfig) {
