@@ -456,7 +456,7 @@ const RentVsBuy = () => {
               role="tab"
               aria-selected={mobileTab === "buy"}
               onClick={() => setMobileTab("buy")}
-              className={`rounded-xl px-3 py-2 text-[13px] font-semibold transition-colors ${
+              className={`min-h-[44px] rounded-xl px-3 py-2 text-[13px] font-semibold transition-colors ${
                 mobileTab === "buy"
                   ? "bg-accent text-accent-foreground"
                   : "text-foreground hover:bg-accent/10"
@@ -469,7 +469,7 @@ const RentVsBuy = () => {
               role="tab"
               aria-selected={mobileTab === "rent"}
               onClick={() => setMobileTab("rent")}
-              className={`rounded-xl px-3 py-2 text-[13px] font-semibold transition-colors ${
+              className={`min-h-[44px] rounded-xl px-3 py-2 text-[13px] font-semibold transition-colors ${
                 mobileTab === "rent"
                   ? "bg-accent text-accent-foreground"
                   : "text-foreground hover:bg-accent/10"
