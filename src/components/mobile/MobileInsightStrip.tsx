@@ -60,19 +60,33 @@ const MobileInsightStrip = ({ loan, rate, term, freq, totalInterest, monthly, fo
   let icon = <Sparkles className="h-4 w-4 flex-shrink-0" aria-hidden />;
   let message: string | null = null;
 
-  if (freq === "monthly") {
+  // Priority 1 — high rate: tell user the most impactful lever.
+  if (rate >= 6.5) {
+    icon = <TrendingDown className="h-4 w-4 flex-shrink-0" aria-hidden />;
+    message = `Your rate (${rate.toFixed(2)}%) is high — drop it 0.5% above to save thousands.`;
+  }
+  // Priority 2 — long term + no extras: payoff lever.
+  else if (term >= 30 && extra === 0) {
+    icon = <TrendingDown className="h-4 w-4 flex-shrink-0" aria-hidden />;
+    message = `Open “Extra repayments” below — even $200/mo cuts ~4 years off this loan.`;
+  }
+  // Priority 3 — paying monthly on a long loan: frequency lever.
+  else if (freq === "monthly") {
     const saving = Math.max(0, totalInterest - fortInterest);
     if (saving > 1000) {
       icon = <TrendingDown className="h-4 w-4 flex-shrink-0" aria-hidden />;
-      message = `Switch to fortnightly to save about ${fmt(saving)} in interest`;
+      message = `Tap Fortnightly above to save about ${fmt(saving)} in interest.`;
     }
-  } else if (extra === 0) {
-    // Nudge to try extra repayments
-    icon = <TrendingDown className="h-4 w-4 flex-shrink-0" aria-hidden />;
-    message = `Try adding $200/mo extra — most users save 4+ years on this loan`;
-  } else {
+  }
+  // Priority 4 — extras already on: reinforce.
+  else if (extra > 0) {
     icon = <Sparkles className="h-4 w-4 flex-shrink-0" aria-hidden />;
-    message = `${fmt(extra)}/mo extra is working — see savings below`;
+    message = `${fmt(extra)}/mo extra is working — try $100 more to compound the saving.`;
+  }
+  // Priority 5 — short term, healthy rate: nudge fee/term sensitivity.
+  else {
+    icon = <Sparkles className="h-4 w-4 flex-shrink-0" aria-hidden />;
+    message = `Slide the loan term down to see how much interest you'd save overall.`;
   }
 
   if (!message) return null;
