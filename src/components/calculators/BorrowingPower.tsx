@@ -476,9 +476,43 @@ const BorrowingPower = () => {
   const gaugeMax = 1_500_000;
   const gaugePct = Math.min(100, (result.borrowingPower / gaugeMax) * 100);
 
+  const isMobile = useIsMobile();
+  const bpInsight = (() => {
+    if (s.creditCardLimit > 5000) {
+      return {
+        tone: "warn" as const,
+        msg: `Your ${fmt0(s.creditCardLimit)} credit card limit costs ~${fmt0(ccImpact)} of borrowing power. Lower “Credit card limit” below to see the lift.`,
+      };
+    }
+    if (s.otherRepayments >= 300) {
+      return {
+        tone: "warn" as const,
+        msg: `${fmt0(s.otherRepayments)}/mo in other loans costs ~${fmt0(otherImpact)}. Reduce “Other monthly debts” to test the gain.`,
+      };
+    }
+    if (!s.joint || s.partnerIncome === 0) {
+      return {
+        tone: "info" as const,
+        msg: `Add a partner income above (toggle “Joint application”) — second incomes typically add $200k–$300k.`,
+      };
+    }
+    if (debounced.interestRate >= 6.5) {
+      return {
+        tone: "info" as const,
+        msg: `Assessment uses your rate + 3% buffer (${result.assessmentRate.toFixed(2)}%). Drop “Interest rate” 0.25% to see how much more you could borrow.`,
+      };
+    }
+    return {
+      tone: "success" as const,
+      msg: `You can borrow ${fmt0(result.borrowingPower)}. Stretch “Loan term” to 30y or trim monthly expenses to push it higher.`,
+    };
+  })();
+
   return (
     <div className="space-y-6">
       <RestoreBanner show={restored === "local"} onReset={clearStored} />
+
+      {isMobile && <MobileInsightBar tone={bpInsight.tone} message={bpInsight.msg} />}
 
       <div className="grid gap-6 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         {/* Inputs */}
