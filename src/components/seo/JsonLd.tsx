@@ -1,5 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import type { FaqItem } from "@/data/faqs";
+import { useRbaRates } from "@/hooks/useRbaRates";
+import { substituteRateTokens } from "@/lib/rateTokens";
 
 const SITE = "https://calcy.com.au";
 
