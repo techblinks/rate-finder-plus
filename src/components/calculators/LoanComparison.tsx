@@ -92,6 +92,71 @@ const LoanComparisonCalc = () => {
     (s) => { setAmount(s.amount); setA(s.a); setB(s.b); },
   );
 
+  const tableNode = (
+    <div className="overflow-x-auto">
+      <table className="w-full min-w-[560px] text-[14px]">
+        <thead>
+          <tr className="text-left text-[13px] text-muted-foreground">
+            <th className="py-2 font-semibold"></th>
+            <th className="py-2 font-semibold">Loan A</th>
+            <th className="py-2 font-semibold">Loan B</th>
+            <th className="py-2 font-semibold">Difference</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="py-2 text-muted-foreground">Monthly repayment</td>
+            <td className="py-2 tnum">{AUD(result.a.monthly)}</td>
+            <td className="py-2 tnum">{AUD(result.b.monthly)}</td>
+            <td className="py-2 text-[13px]">
+              {result.a.monthly < result.b.monthly ? "Loan A" : "Loan B"} saves {AUD(monthlyDiff)}/mo
+            </td>
+          </tr>
+          <tr>
+            <td className="py-2 text-muted-foreground">Total repaid</td>
+            <td className="py-2 tnum">{AUD(result.a.totalRepaid)}</td>
+            <td className="py-2 tnum">{AUD(result.b.totalRepaid)}</td>
+            <td className="py-2 text-[13px]">
+              {result.a.totalRepaid < result.b.totalRepaid ? "Loan A" : "Loan B"} saves {AUD(totalRepaidDiff)}
+            </td>
+          </tr>
+          <tr>
+            <td className="py-2 text-muted-foreground">Total interest</td>
+            <td className="py-2 tnum">{AUD(result.a.totalInterest)}</td>
+            <td className="py-2 tnum">{AUD(result.b.totalInterest)}</td>
+            <td className="py-2 text-[13px]">
+              {result.a.totalInterest < result.b.totalInterest ? "Loan A" : "Loan B"} saves {AUD(interestDiff)}
+            </td>
+          </tr>
+          <tr>
+            <td className="py-2 text-muted-foreground">Upfront fees</td>
+            <td className="py-2 tnum">{AUD(a.fees)}</td>
+            <td className="py-2 tnum">{AUD(b.fees)}</td>
+            <td className="py-2"></td>
+          </tr>
+          <tr>
+            <td className="py-2 text-muted-foreground">True total cost</td>
+            <td className="py-2 tnum font-semibold">{AUD(result.a.trueCost)}</td>
+            <td className="py-2 tnum font-semibold">{AUD(result.b.trueCost)}</td>
+            <td className="py-2 text-[13px]">
+              {result.winner === "tie"
+                ? "Tie"
+                : `Loan ${result.winner.toUpperCase()} saves ${AUD(result.totalDiff)}`}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const chartNode = (
+    <BarCompare
+      caption="Total interest"
+      a={{ label: "Loan A", value: result.a.totalInterest }}
+      b={{ label: "Loan B", value: result.b.totalInterest }}
+    />
+  );
+
   return (
     <div className="space-y-6">
       <MobileRestoreChip show={showRestore} onRestore={restore} onDismiss={dismiss} />
@@ -107,61 +172,25 @@ const LoanComparisonCalc = () => {
         </div>
       </Card>
 
+      {isMobile && (
+        <MobileInsightBar
+          tone={result.winner === "tie" ? "info" : "success"}
+          message={
+            result.winner === "tie"
+              ? "These loans cost about the same — try changing fees or term."
+              : `Loan ${result.winner.toUpperCase()} saves ${AUD(result.totalDiff)} over ${dA.term} years`
+          }
+        />
+      )}
+
       <ResultCard>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[560px] text-[14px]">
-            <thead>
-              <tr className="text-left text-[13px] text-muted-foreground">
-                <th className="py-2 font-semibold"></th>
-                <th className="py-2 font-semibold">Loan A</th>
-                <th className="py-2 font-semibold">Loan B</th>
-                <th className="py-2 font-semibold">Difference</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              <tr>
-                <td className="py-2 text-muted-foreground">Monthly repayment</td>
-                <td className="py-2 tnum">{AUD(result.a.monthly)}</td>
-                <td className="py-2 tnum">{AUD(result.b.monthly)}</td>
-                <td className="py-2 text-[13px]">
-                  {result.a.monthly < result.b.monthly ? "Loan A" : "Loan B"} saves {AUD(monthlyDiff)}/mo
-                </td>
-              </tr>
-              <tr>
-                <td className="py-2 text-muted-foreground">Total repaid</td>
-                <td className="py-2 tnum">{AUD(result.a.totalRepaid)}</td>
-                <td className="py-2 tnum">{AUD(result.b.totalRepaid)}</td>
-                <td className="py-2 text-[13px]">
-                  {result.a.totalRepaid < result.b.totalRepaid ? "Loan A" : "Loan B"} saves {AUD(totalRepaidDiff)}
-                </td>
-              </tr>
-              <tr>
-                <td className="py-2 text-muted-foreground">Total interest</td>
-                <td className="py-2 tnum">{AUD(result.a.totalInterest)}</td>
-                <td className="py-2 tnum">{AUD(result.b.totalInterest)}</td>
-                <td className="py-2 text-[13px]">
-                  {result.a.totalInterest < result.b.totalInterest ? "Loan A" : "Loan B"} saves {AUD(interestDiff)}
-                </td>
-              </tr>
-              <tr>
-                <td className="py-2 text-muted-foreground">Upfront fees</td>
-                <td className="py-2 tnum">{AUD(a.fees)}</td>
-                <td className="py-2 tnum">{AUD(b.fees)}</td>
-                <td className="py-2"></td>
-              </tr>
-              <tr>
-                <td className="py-2 text-muted-foreground">True total cost</td>
-                <td className="py-2 tnum font-semibold">{AUD(result.a.trueCost)}</td>
-                <td className="py-2 tnum font-semibold">{AUD(result.b.trueCost)}</td>
-                <td className="py-2 text-[13px]">
-                  {result.winner === "tie"
-                    ? "Tie"
-                    : `Loan ${result.winner.toUpperCase()} saves ${AUD(result.totalDiff)}`}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        {isMobile ? (
+          <MobileCollapse title="Side-by-side breakdown" hint="Full numeric comparison">
+            {tableNode}
+          </MobileCollapse>
+        ) : (
+          tableNode
+        )}
 
         {result.winner !== "tie" && (
           <div
@@ -172,14 +201,15 @@ const LoanComparisonCalc = () => {
           </div>
         )}
 
-        <div className="mt-5">
-          <BarCompare
-            caption="Total interest"
-            a={{ label: "Loan A", value: result.a.totalInterest }}
-            b={{ label: "Loan B", value: result.b.totalInterest }}
-          />
-        </div>
-              <ResultActions calculator="loan_comparison" />
+        {isMobile ? (
+          <div className="mt-5">
+            <MobileCollapse title="Interest comparison chart">{chartNode}</MobileCollapse>
+          </div>
+        ) : (
+          <div className="mt-5">{chartNode}</div>
+        )}
+
+        {!isMobile && <ResultActions calculator="loan_comparison" />}
         <ShareResult
           calculator="loan_comparison"
           params={{
