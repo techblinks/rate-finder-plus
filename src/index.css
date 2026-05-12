@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @import "./styles/polish.css";
+@import "./styles/calculator-patch.css";
 
 @layer base {
   :root {
@@ -842,3 +843,4 @@
     display: none !important;
   }
 }
+

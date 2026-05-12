@@ -1,0 +1,347 @@
+/*
+ * ============================================================
+ * CALCY — MORTGAGE CALCULATOR VISUAL POLISH PATCH
+ * File: src/styles/calculator-patch.css
+ *
+ * HOW TO USE:
+ * Import this file in your mortgage calculator component:
+ * import '../styles/calculator-patch.css';
+ * OR add to your global index.css as a last import.
+ *
+ * RULES:
+ * - CSS overrides only. Zero HTML/JSX changes.
+ * - Zero content changes. Zero SEO/AEO impact.
+ * - Every rule is commented with what it fixes.
+ * ============================================================
+ */
+
+/* ── 1. BRAND BLUE SLIDERS ───────────────────────────────────
+   Problem: Slider thumbs are dark/black, inconsistent with
+   your #2563EB brand blue theme.
+   Fix: Override browser defaults with brand colour.
+   Risk: Zero — purely visual.
+──────────────────────────────────────────────────────────── */
+
+/* WebKit (Chrome, Safari, Edge, iOS) */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: #BFDBFE; /* blue-200 — track colour */
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #2563EB;           /* brand blue */
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.5);
+  transform: scale(1.1);
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(0.95);
+  box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.15);
+}
+
+/* Firefox */
+input[type="range"]::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #2563EB;
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: #BFDBFE;
+}
+
+/* Focus state — accessibility */
+input[type="range"]:focus-visible {
+  outline: 2px solid #2563EB;
+  outline-offset: 4px;
+}
+
+
+/* ── 2. CHART HEIGHT — AMORTISATION CHART ────────────────────
+   Problem: Bar chart feels cramped on mobile.
+   Fix: Increase min-height so bars have room to breathe.
+   Targets the recharts/chart container inside the calculator.
+   Risk: Zero — layout only, no content change.
+──────────────────────────────────────────────────────────── */
+
+/* Recharts responsive container */
+.recharts-responsive-container {
+  min-height: 220px !important;
+}
+
+/* If using a div wrapper around the chart */
+[class*="chart-container"],
+[class*="ChartContainer"],
+[class*="amortisation"],
+[class*="repayment-chart"] {
+  min-height: 220px;
+}
+
+/* Recharts bars — slightly more rounded for modern feel */
+.recharts-bar-rectangle path,
+.recharts-rectangle {
+  rx: 3px;
+}
+
+
+/* ── 3. BOTTOM NAV — CONTENT PADDING ─────────────────────────
+   Problem: Fixed bottom nav overlaps the last guide cards
+   and the disclaimer text at the bottom of the page.
+   Fix: Add bottom padding to the scroll container.
+   Risk: Zero — spacing only.
+──────────────────────────────────────────────────────────── */
+
+/* Main scroll area — push content above fixed mobile bottom nav */
+@media (max-width: 767px) {
+  main,
+  [class*="main-content"],
+  [class*="page-content"],
+  [class*="calculator-page"],
+  [class*="PageContent"] {
+    padding-bottom: 100px !important;
+  }
+}
+
+/* Ensure the last guide card isn't clipped */
+[class*="guide-card"]:last-child,
+[class*="GuideCard"]:last-child,
+[class*="insight-card"]:last-child {
+  margin-bottom: 24px;
+}
+
+
+/* ── 4. SAVINGS BOX — "You'll save X years" ─────────────────
+   Problem: The green savings callout text is too small.
+   The "8 years and 11 months" headline deserves more presence.
+   Fix: Increase font size of the key saving figure.
+   Risk: Zero — typography only, no content change.
+──────────────────────────────────────────────────────────── */
+
+/* Target the savings summary box */
+[class*="savings-box"],
+[class*="SavingsBox"],
+[class*="savings-callout"],
+[class*="SavingsCallout"] {
+  border-radius: 12px;
+  padding: 16px !important;
+}
+
+/* The headline "You'll save 8 years and 11 months" */
+[class*="savings-box"] p:first-child,
+[class*="savings-box"] h3,
+[class*="SavingsBox"] strong,
+[class*="savings-title"] {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+}
+
+/* The secondary line "You'll save $2,004,937 in total interest" */
+[class*="savings-box"] p:nth-child(2),
+[class*="savings-sub"] {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  margin-top: 4px !important;
+}
+
+
+/* ── 5. SHARE / PRINT ROW — REDUCE VISUAL CLUTTER ───────────
+   Problem: Three buttons (Share this calculation, Print result,
+   Share result) in a row look crowded and inconsistent sizing.
+   Fix: Align them, add consistent gap, subtle border separation.
+   Risk: Zero — layout only.
+──────────────────────────────────────────────────────────── */
+
+/* The row containing share/print buttons */
+[class*="share-row"],
+[class*="ShareRow"],
+[class*="action-row"],
+[class*="print-share"] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Individual share/print buttons */
+[class*="share-row"] button,
+[class*="ShareRow"] button,
+[class*="print-share"] button {
+  flex: 1;
+  min-height: 44px;          /* Apple HIG touch target */
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.15s, transform 0.1s;
+}
+
+[class*="share-row"] button:active,
+[class*="ShareRow"] button:active {
+  transform: scale(0.97);
+}
+
+
+/* ── 6. QUICK ADJUST CHIPS — POLISH ─────────────────────────
+   Problem: The -$10k / +$10k / -0.25% / +0.25% chips
+   are slightly small for reliable touch targets.
+   Fix: Ensure 44px min-height, better border, brand colours.
+   Risk: Zero.
+──────────────────────────────────────────────────────────── */
+
+[class*="quick-adjust"],
+[class*="QuickAdjust"],
+[class*="adjust-chip"],
+[class*="AdjustChip"] {
+  min-height: 44px !important;
+  min-width: 56px !important;
+  border-radius: 10px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  padding: 0 14px !important;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s !important;
+}
+
+[class*="quick-adjust"]:active,
+[class*="adjust-chip"]:active {
+  transform: scale(0.95) !important;
+}
+
+
+/* ── 7. RESULT HERO — WEEKLY REPAYMENT FIGURE ────────────────
+   Problem: The $5,148 hero number is good but on small screens
+   the sub-labels (Fortnightly / Monthly) are too close together.
+   Fix: Increase gap between the main figure and sub-labels.
+   Risk: Zero.
+──────────────────────────────────────────────────────────── */
+
+[class*="repayment-hero"],
+[class*="RepaymentHero"],
+[class*="weekly-result"],
+[class*="result-hero"] {
+  letter-spacing: -0.5px;
+}
+
+[class*="repayment-sub"],
+[class*="RepaymentSub"],
+[class*="frequency-labels"] {
+  margin-top: 8px !important;
+  gap: 16px !important;
+  font-size: 13px !important;
+}
+
+
+/* ── 8. ADVANCED BADGE (OFFSET) — ALIGNMENT FIX ─────────────
+   Problem: The "ADVANCED" pill badge next to "Add an offset
+   account" floats awkwardly — not vertically centred.
+   Fix: Flex align the row containing it.
+   Risk: Zero.
+──────────────────────────────────────────────────────────── */
+
+[class*="advanced-badge"],
+[class*="AdvancedBadge"],
+[class*="offset-label"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+
+/* ── 9. DATA SOURCES SECTION — SUBTLE IMPROVEMENT ───────────
+   Problem: DATA SOURCES block blends into surrounding content.
+   Fix: Slightly stronger top border and section header weight.
+   Risk: Zero — cosmetic only, no content touched.
+──────────────────────────────────────────────────────────── */
+
+[class*="data-sources"],
+[class*="DataSources"] {
+  border-top: 2px solid #E5E7EB !important;
+  margin-top: 24px !important;
+  padding-top: 20px !important;
+}
+
+[class*="data-sources"] h2,
+[class*="data-sources"] h3,
+[class*="DataSources"] h2,
+[class*="DataSources"] h3 {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: #9CA3AF !important;
+  margin-bottom: 10px !important;
+}
+
+
+/* ── 10. GLOBAL TOUCH TARGETS ────────────────────────────────
+   All interactive elements must be ≥44px (Apple HIG standard).
+   This catches any buttons/links that might be too small.
+   Risk: Zero.
+──────────────────────────────────────────────────────────── */
+
+/* Scoped: skip admin shell and small icon-only buttons */
+body:not(.admin-shell) button:not([aria-label="Search"]):not([aria-haspopup]),
+body:not(.admin-shell) [role="button"] {
+  min-height: 44px;
+}
+
+/* Exception: inline text links don't need 44px height */
+p a, li a, span a {
+  min-height: unset;
+}
+
+
+/* ── 11. SMOOTH TRANSITIONS GLOBAL ──────────────────────────
+   Add subtle transitions to interactive elements sitewide.
+   Makes the calculator feel more native/premium.
+   Risk: Zero — no functionality change.
+──────────────────────────────────────────────────────────── */
+
+button {
+  transition: opacity 0.15s ease, transform 0.15s ease,
+              box-shadow 0.15s ease, background 0.15s ease;
+}
+
+/* Prevent transitions on sliders (they should be instant) */
+input[type="range"] {
+  transition: none;
+}
+
+
+/* ── 12. BOTTOM NAV ACTIVE STATE ─────────────────────────────
+   Ensure the active "Calculate" nav item uses brand blue.
+   Risk: Zero.
+──────────────────────────────────────────────────────────── */
+
+/* Bottom nav frosted glass — already good, just reinforce */
+[class*="bottom-nav"],
+[class*="BottomNav"],
+nav[class*="fixed"] {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.07) !important;
+}
