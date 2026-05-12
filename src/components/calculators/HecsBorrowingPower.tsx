@@ -5,8 +5,11 @@ import { Card, ResultCard, ResultRow } from "@/components/ui-kit";
 import RangeField from "@/components/RangeField";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
+import { useIsPending } from "@/hooks/useIsPending";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { usePublishMobileResult } from "@/lib/mobileResult";
 import { shareCurrent } from "@/lib/shareCurrent";
+import { MobilePendingOverlay } from "@/components/mobile/MobileSkeleton";
 import ResultActions from "@/components/ResultActions";
 import ShareResult from "@/components/ShareResult";
 import HecsImpactChart from "@/components/HecsImpactChart";
@@ -52,10 +55,14 @@ const HecsBorrowingPower = () => {
     hecs_impact: Math.round(result.hecsImpact),
   });
 
+  const isMobile = useIsMobile();
+  const calcPending = useIsPending(`${income}|${hecs}|${rate}|${expenses}|${dti}`, 250);
+
   usePublishMobileResult({
     label: "You can borrow",
     value: AUD(result.borrowingPower),
     sub: `HECS impact ${AUD(result.hecsImpact)}`,
+    pending: calcPending,
     onShare: () =>
       shareCurrent({
         calculator: "hecs_borrowing_power",
@@ -120,40 +127,42 @@ const HecsBorrowingPower = () => {
       </Card>
 
       <ResultCard>
-        <div className="border-b border-border pb-3">
-          <p className="text-[13px] uppercase tracking-wide text-muted-foreground">
-            Estimated borrowing power
-          </p>
-          <p className="tnum text-[28px] font-semibold leading-tight text-accent">
-            {AUD(result.borrowingPower)}
-          </p>
-          <p className="mt-1 text-[13px] text-muted-foreground">
-            Assessed at {pct(result.assessmentRate, 2)} ({pct(rate, 2)} + 3% APRA buffer) over 30 years.
-          </p>
-        </div>
+        <MobilePendingOverlay pending={isMobile && calcPending}>
+          <div className="border-b border-border pb-3">
+            <p className="text-[13px] uppercase tracking-wide text-muted-foreground">
+              Estimated borrowing power
+            </p>
+            <p className="tnum text-[28px] font-semibold leading-tight text-accent">
+              {AUD(result.borrowingPower)}
+            </p>
+            <p className="mt-1 text-[13px] text-muted-foreground">
+              Assessed at {pct(result.assessmentRate, 2)} ({pct(rate, 2)} + 3% APRA buffer) over 30 years.
+            </p>
+          </div>
 
-        <div className="divide-y divide-border">
-          <ResultRow
-            label="HECS repayment rate"
-            value={result.hecsRate === 0 ? "0% (below threshold)" : pct(result.hecsRate * 100, 1)}
-          />
-          <ResultRow label="HECS annual repayment" value={AUD(result.hecsAnnual)} />
-          <ResultRow label="HECS monthly repayment" value={AUD(result.hecsMonthly)} />
-          {result.yearsToClear > 0 && (
+          <div className="divide-y divide-border">
             <ResultRow
-              label="Years to clear HECS (at this income)"
-              value={`~${result.yearsToClear} yr`}
+              label="HECS repayment rate"
+              value={result.hecsRate === 0 ? "0% (below threshold)" : pct(result.hecsRate * 100, 1)}
             />
-          )}
-          <ResultRow
-            label="Net monthly income (after tax & HECS)"
-            value={AUD(result.netMonthlyAfterHecs)}
-          />
-          <ResultRow
-            label="Borrowing power without HECS"
-            value={AUD(result.borrowingPowerWithoutHecs)}
-          />
-        </div>
+            <ResultRow label="HECS annual repayment" value={AUD(result.hecsAnnual)} />
+            <ResultRow label="HECS monthly repayment" value={AUD(result.hecsMonthly)} />
+            {result.yearsToClear > 0 && (
+              <ResultRow
+                label="Years to clear HECS (at this income)"
+                value={`~${result.yearsToClear} yr`}
+              />
+            )}
+            <ResultRow
+              label="Net monthly income (after tax & HECS)"
+              value={AUD(result.netMonthlyAfterHecs)}
+            />
+            <ResultRow
+              label="Borrowing power without HECS"
+              value={AUD(result.borrowingPowerWithoutHecs)}
+            />
+          </div>
+        </MobilePendingOverlay>
 
         <div className="mt-5">
           <div className="mb-2 flex flex-wrap items-end justify-between gap-2">
@@ -162,13 +171,15 @@ const HecsBorrowingPower = () => {
               Holds income, rate & expenses constant
             </p>
           </div>
-          <HecsImpactChart
-            grossIncome={dIncome}
-            ratePct={dRate}
-            monthlyExpenses={dExpenses}
-            dtiPct={dDti}
-            currentHecs={dHecs}
-          />
+          <MobilePendingOverlay pending={isMobile && calcPending}>
+            <HecsImpactChart
+              grossIncome={dIncome}
+              ratePct={dRate}
+              monthlyExpenses={dExpenses}
+              dtiPct={dDti}
+              currentHecs={dHecs}
+            />
+          </MobilePendingOverlay>
         </div>
 
         {result.hecsImpact > 0 && (
@@ -192,43 +203,45 @@ const HecsBorrowingPower = () => {
                 <span className="tnum font-semibold text-foreground">{AUD(totalRepaid)}</span>
               </p>
             </div>
-            <div className="overflow-x-auto rounded-lg border border-border">
-              <table className="w-full min-w-[480px] text-[13px]">
-                <thead className="bg-surface text-left text-muted-foreground">
-                  <tr>
-                    <th className="px-3 py-2 font-semibold">Year</th>
-                    <th className="px-3 py-2 font-semibold">Repayment</th>
-                    <th className="px-3 py-2 font-semibold">Cumulative repaid</th>
-                    <th className="px-3 py-2 font-semibold">Remaining balance</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {timeline.map((row) => {
-                    const progress = dHecs > 0 ? (row.cumulativeRepaid / dHecs) * 100 : 0;
-                    return (
-                      <tr key={row.year}>
-                        <td className="px-3 py-2 tnum font-medium text-foreground">
-                          Year {row.year}
-                        </td>
-                        <td className="px-3 py-2 tnum">{AUD(row.repayment)}</td>
-                        <td className="px-3 py-2 tnum">{AUD(row.cumulativeRepaid)}</td>
-                        <td className="px-3 py-2">
-                          <div className="flex items-center gap-2">
-                            <span className="tnum">{AUD(row.closingBalance)}</span>
-                            <div className="h-1.5 w-16 flex-shrink-0 rounded-full bg-muted">
-                              <div
-                                className="h-full rounded-full bg-accent"
-                                style={{ width: `${Math.min(100, progress)}%` }}
-                              />
+            <MobilePendingOverlay pending={isMobile && calcPending}>
+              <div className="overflow-x-auto rounded-lg border border-border">
+                <table className="w-full min-w-[480px] text-[13px]">
+                  <thead className="bg-surface text-left text-muted-foreground">
+                    <tr>
+                      <th className="px-3 py-2 font-semibold">Year</th>
+                      <th className="px-3 py-2 font-semibold">Repayment</th>
+                      <th className="px-3 py-2 font-semibold">Cumulative repaid</th>
+                      <th className="px-3 py-2 font-semibold">Remaining balance</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {timeline.map((row) => {
+                      const progress = dHecs > 0 ? (row.cumulativeRepaid / dHecs) * 100 : 0;
+                      return (
+                        <tr key={row.year}>
+                          <td className="px-3 py-2 tnum font-medium text-foreground">
+                            Year {row.year}
+                          </td>
+                          <td className="px-3 py-2 tnum">{AUD(row.repayment)}</td>
+                          <td className="px-3 py-2 tnum">{AUD(row.cumulativeRepaid)}</td>
+                          <td className="px-3 py-2">
+                            <div className="flex items-center gap-2">
+                              <span className="tnum">{AUD(row.closingBalance)}</span>
+                              <div className="h-1.5 w-16 flex-shrink-0 rounded-full bg-muted">
+                                <div
+                                  className="h-full rounded-full bg-accent"
+                                  style={{ width: `${Math.min(100, progress)}%` }}
+                                />
+                              </div>
                             </div>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </MobilePendingOverlay>
           </div>
         )}
 

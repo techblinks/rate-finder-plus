@@ -7,6 +7,7 @@ const CALC_LINKS = [
   { to: "/mortgage-calculator", label: "Mortgage" },
   { to: "/stamp-duty-calculator", label: "Stamp Duty" },
   { to: "/borrowing-power-calculator", label: "Borrowing Power" },
+  { to: "/hecs-borrowing-power", label: "HECS Borrowing Power" },
   { to: "/lmi-calculator", label: "LMI" },
   { to: "/extra-repayments-calculator", label: "Extra Repayments" },
   { to: "/loan-comparison-calculator", label: "Loan Comparison" },
