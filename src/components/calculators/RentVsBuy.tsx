@@ -853,76 +853,80 @@ const RentVsBuy = () => {
         </div>
         <div className="h-[300px] w-full md:h-[340px]">
           <ResponsiveContainer>
-            <AreaChart data={chartData} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="buyFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--accent))" stopOpacity={0.25} />
-                  <stop offset="100%" stopColor="hsl(var(--accent))" stopOpacity={0.02} />
-                </linearGradient>
-                <linearGradient id="rentFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--success))" stopOpacity={0.25} />
-                  <stop offset="100%" stopColor="hsl(var(--success))" stopOpacity={0.02} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" />
-              <XAxis
-                dataKey="year"
-                tickFormatter={(v) => `Yr ${v}`}
-                tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
-                axisLine={false}
-                tickLine={false}
-              />
-              <YAxis
-                tickFormatter={(v: number) =>
-                  v >= 1_000_000
-                    ? `$${(v / 1_000_000).toFixed(1)}M`
-                    : `$${Math.round(v / 1000)}k`
-                }
-                tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
-                axisLine={false}
-                tickLine={false}
-                width={56}
-              />
-              <Tooltip
-                formatter={(value: number, name: string) => [fmt0(value), name]}
-                labelFormatter={(l) => `Year ${l}`}
-                contentStyle={{
-                  borderRadius: 12,
-                  border: "1px solid hsl(var(--border))",
-                  background: "hsl(var(--background))",
-                }}
-              />
-              <Legend wrapperStyle={{ fontSize: 12 }} />
-              <Area
-                type="monotone"
-                dataKey="Buying"
-                stroke="hsl(var(--accent))"
-                strokeWidth={2.5}
-                fill="url(#buyFill)"
-              />
-              <Area
-                type="monotone"
-                dataKey="Renting"
-                stroke="hsl(var(--success))"
-                strokeWidth={2.5}
-                fill="url(#rentFill)"
-              />
-              {result.breakEvenYear && (
-                <ReferenceLine
-                  x={result.breakEvenYear}
-                  stroke="hsl(var(--warning))"
-                  strokeDasharray="5 5"
-                  label={{
-                    value: `Break-even`,
-                    position: "top",
-                    fill: "hsl(var(--warning-foreground))",
-                    fontSize: 11,
+        <MobilePendingOverlay pending={pendingMobile}>
+          <div className="h-[300px] w-full md:h-[340px]">
+            <ResponsiveContainer>
+              <AreaChart data={chartData} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="buyFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="hsl(var(--accent))" stopOpacity={0.25} />
+                    <stop offset="100%" stopColor="hsl(var(--accent))" stopOpacity={0.02} />
+                  </linearGradient>
+                  <linearGradient id="rentFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="hsl(var(--success))" stopOpacity={0.25} />
+                    <stop offset="100%" stopColor="hsl(var(--success))" stopOpacity={0.02} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="year"
+                  tickFormatter={(v) => `Yr ${v}`}
+                  tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <YAxis
+                  tickFormatter={(v: number) =>
+                    v >= 1_000_000
+                      ? `$${(v / 1_000_000).toFixed(1)}M`
+                      : `$${Math.round(v / 1000)}k`
+                  }
+                  tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                  axisLine={false}
+                  tickLine={false}
+                  width={56}
+                />
+                <Tooltip
+                  formatter={(value: number, name: string) => [fmt0(value), name]}
+                  labelFormatter={(l) => `Year ${l}`}
+                  contentStyle={{
+                    borderRadius: 12,
+                    border: "1px solid hsl(var(--border))",
+                    background: "hsl(var(--background))",
                   }}
                 />
-              )}
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Area
+                  type="monotone"
+                  dataKey="Buying"
+                  stroke="hsl(var(--accent))"
+                  strokeWidth={2.5}
+                  fill="url(#buyFill)"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="Renting"
+                  stroke="hsl(var(--success))"
+                  strokeWidth={2.5}
+                  fill="url(#rentFill)"
+                />
+                {result.breakEvenYear && (
+                  <ReferenceLine
+                    x={result.breakEvenYear}
+                    stroke="hsl(var(--warning))"
+                    strokeDasharray="5 5"
+                    label={{
+                      value: `Break-even`,
+                      position: "top",
+                      fill: "hsl(var(--warning-foreground))",
+                      fontSize: 11,
+                    }}
+                  />
+                )}
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </MobilePendingOverlay>
         {!result.breakEvenYear && (
           <p className="mt-2 text-[12px] text-muted-foreground">
             The lines do not cross within {inputs.analysisYears} years — renting + investing remains better throughout this period.
