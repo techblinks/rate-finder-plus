@@ -106,7 +106,7 @@ const MobileHomepage = () => {
       <section className="px-4 pt-4 pb-3">
         <h1 className="text-[30px] font-semibold leading-[1.12] tracking-[-0.01em] text-foreground">
           <em
-            className="font-serif italic font-normal text-accent"
+            className="font-serif italic font-medium text-accent"
             style={{ fontFamily: "var(--font-display-serif)" }}
           >
             Australian
