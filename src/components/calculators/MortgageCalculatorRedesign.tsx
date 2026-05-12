@@ -133,6 +133,7 @@ function readUrlParams() {
 
 const MortgageCalculatorRedesign = () => {
   const rbaRates = useRbaRates();
+  const isMobile = useIsMobile();
   // Initial state from URL → localStorage → defaults
   const [restored, setRestored] = useState<"url" | "local" | null>(null);
   const initial = useMemo(() => {
