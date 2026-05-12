@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "./styles/polish.css";
+
 @layer base {
   :root {
     /* Backgrounds */
