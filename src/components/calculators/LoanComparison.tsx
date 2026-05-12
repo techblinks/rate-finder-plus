@@ -6,6 +6,7 @@ import BarCompare from "@/components/BarCompare";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import { usePublishMobileResult } from "@/lib/mobileResult";
+import { shareCurrent } from "@/lib/shareCurrent";
 import { useCalcPersist } from "@/lib/calcPersist";
 import { useIsMobile } from "@/hooks/use-mobile";
 import MobileRestoreChip from "@/components/mobile/MobileRestoreChip";
