@@ -28,11 +28,12 @@ export const BreadcrumbJsonLd = ({ items }: BreadcrumbProps) => {
 };
 
 export const FaqJsonLd = ({ faqs }: { faqs: FaqItem[] }) => {
+  const { cashRate } = useRbaRates();
   // Google Rich Results requires the FAQPage to have at least 2 valid Q/A pairs.
   const cleaned = (faqs ?? [])
     .map((f) => ({
-      q: (f.question ?? "").replace(/\s+/g, " ").trim(),
-      a: (f.answer ?? "")
+      q: substituteRateTokens(f.question ?? "", { cashRate }).replace(/\s+/g, " ").trim(),
+      a: substituteRateTokens(f.answer ?? "", { cashRate })
         .replace(/<[^>]+>/g, " ")
         .replace(/\s+/g, " ")
         .trim(),
