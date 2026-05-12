@@ -84,6 +84,12 @@ const LoanComparisonCalc = () => {
     label: `${cheaperLabel} saves`,
     value: AUD(interestDiff),
     sub: `${AUD(monthlyDiff)}/mo difference`,
+    onShare: () =>
+      shareCurrent({
+        calculator: "loan_comparison",
+        title: "Loan comparison — Calcy",
+        text: `${cheaperLabel} saves ${AUD(interestDiff)} in interest (${AUD(monthlyDiff)}/mo difference) on a ${AUD(amount)} loan.`,
+      }),
   });
 
   const persistState = useMemo(() => ({ amount, a, b }), [amount, a, b]);
