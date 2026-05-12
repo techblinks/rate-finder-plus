@@ -19,7 +19,10 @@ import {
 import { STATES, type StateCode } from "@/lib/calc/stampDuty";
 import { useRbaRates } from "@/hooks/useRbaRates";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useIsPending } from "@/hooks/useIsPending";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { usePublishMobileResult } from "@/lib/mobileResult";
+import { MobilePendingOverlay } from "@/components/mobile/MobileSkeleton";
 
 const AUD0 = new Intl.NumberFormat("en-AU", {
   style: "currency",
@@ -329,6 +332,10 @@ const RentVsBuy = () => {
 
   const result = useMemo(() => calculateRentVsBuy(inputs), [inputs]);
 
+  const isMobile = useIsMobile();
+  const calcPending = useIsPending(JSON.stringify(s), 250);
+  const pendingMobile = isMobile && (calcPending || isStale);
+
   // Mobile sticky bar — show verdict + share CTA
   usePublishMobileResult({
     label:
@@ -342,6 +349,7 @@ const RentVsBuy = () => {
         ? fmt0(0)
         : fmtAbs0(result.difference),
     sub: `over ${inputs.analysisYears} years`,
+    pending: pendingMobile,
     onShare: () => onShare(),
   });
 
@@ -843,78 +851,80 @@ const RentVsBuy = () => {
             </span>
           )}
         </div>
-        <div className="h-[300px] w-full md:h-[340px]">
-          <ResponsiveContainer>
-            <AreaChart data={chartData} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="buyFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--accent))" stopOpacity={0.25} />
-                  <stop offset="100%" stopColor="hsl(var(--accent))" stopOpacity={0.02} />
-                </linearGradient>
-                <linearGradient id="rentFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--success))" stopOpacity={0.25} />
-                  <stop offset="100%" stopColor="hsl(var(--success))" stopOpacity={0.02} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" />
-              <XAxis
-                dataKey="year"
-                tickFormatter={(v) => `Yr ${v}`}
-                tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
-                axisLine={false}
-                tickLine={false}
-              />
-              <YAxis
-                tickFormatter={(v: number) =>
-                  v >= 1_000_000
-                    ? `$${(v / 1_000_000).toFixed(1)}M`
-                    : `$${Math.round(v / 1000)}k`
-                }
-                tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
-                axisLine={false}
-                tickLine={false}
-                width={56}
-              />
-              <Tooltip
-                formatter={(value: number, name: string) => [fmt0(value), name]}
-                labelFormatter={(l) => `Year ${l}`}
-                contentStyle={{
-                  borderRadius: 12,
-                  border: "1px solid hsl(var(--border))",
-                  background: "hsl(var(--background))",
-                }}
-              />
-              <Legend wrapperStyle={{ fontSize: 12 }} />
-              <Area
-                type="monotone"
-                dataKey="Buying"
-                stroke="hsl(var(--accent))"
-                strokeWidth={2.5}
-                fill="url(#buyFill)"
-              />
-              <Area
-                type="monotone"
-                dataKey="Renting"
-                stroke="hsl(var(--success))"
-                strokeWidth={2.5}
-                fill="url(#rentFill)"
-              />
-              {result.breakEvenYear && (
-                <ReferenceLine
-                  x={result.breakEvenYear}
-                  stroke="hsl(var(--warning))"
-                  strokeDasharray="5 5"
-                  label={{
-                    value: `Break-even`,
-                    position: "top",
-                    fill: "hsl(var(--warning-foreground))",
-                    fontSize: 11,
+        <MobilePendingOverlay pending={pendingMobile}>
+          <div className="h-[300px] w-full md:h-[340px]">
+            <ResponsiveContainer>
+              <AreaChart data={chartData} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="buyFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="hsl(var(--accent))" stopOpacity={0.25} />
+                    <stop offset="100%" stopColor="hsl(var(--accent))" stopOpacity={0.02} />
+                  </linearGradient>
+                  <linearGradient id="rentFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="hsl(var(--success))" stopOpacity={0.25} />
+                    <stop offset="100%" stopColor="hsl(var(--success))" stopOpacity={0.02} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="year"
+                  tickFormatter={(v) => `Yr ${v}`}
+                  tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <YAxis
+                  tickFormatter={(v: number) =>
+                    v >= 1_000_000
+                      ? `$${(v / 1_000_000).toFixed(1)}M`
+                      : `$${Math.round(v / 1000)}k`
+                  }
+                  tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                  axisLine={false}
+                  tickLine={false}
+                  width={56}
+                />
+                <Tooltip
+                  formatter={(value: number, name: string) => [fmt0(value), name]}
+                  labelFormatter={(l) => `Year ${l}`}
+                  contentStyle={{
+                    borderRadius: 12,
+                    border: "1px solid hsl(var(--border))",
+                    background: "hsl(var(--background))",
                   }}
                 />
-              )}
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Area
+                  type="monotone"
+                  dataKey="Buying"
+                  stroke="hsl(var(--accent))"
+                  strokeWidth={2.5}
+                  fill="url(#buyFill)"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="Renting"
+                  stroke="hsl(var(--success))"
+                  strokeWidth={2.5}
+                  fill="url(#rentFill)"
+                />
+                {result.breakEvenYear && (
+                  <ReferenceLine
+                    x={result.breakEvenYear}
+                    stroke="hsl(var(--warning))"
+                    strokeDasharray="5 5"
+                    label={{
+                      value: `Break-even`,
+                      position: "top",
+                      fill: "hsl(var(--warning-foreground))",
+                      fontSize: 11,
+                    }}
+                  />
+                )}
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </MobilePendingOverlay>
         {!result.breakEvenYear && (
           <p className="mt-2 text-[12px] text-muted-foreground">
             The lines do not cross within {inputs.analysisYears} years — renting + investing remains better throughout this period.
@@ -928,72 +938,74 @@ const RentVsBuy = () => {
         <p className="mt-1 text-[13px] text-muted-foreground">
           Break-even year at different property growth and investment return rates. The cell that matches your current assumptions is highlighted.
         </p>
-        <div className="mt-3 overflow-x-auto">
-          <table className="w-full min-w-[520px] text-[13px]">
-            <thead>
-              <tr>
-                <th className="px-2 py-2 text-left text-[11px] uppercase text-muted-foreground" colSpan={2} rowSpan={2}>
-                  &nbsp;
-                </th>
-                <th className="px-2 py-2 text-center text-[11px] uppercase text-muted-foreground" colSpan={growthCols.length}>
-                  Property growth →
-                </th>
-              </tr>
-              <tr>
-                {growthCols.map((g) => (
-                  <th key={g} className="px-2 py-2 text-center text-[12px] font-semibold">
-                    {g}%
+        <MobilePendingOverlay pending={pendingMobile}>
+          <div className="mt-3 overflow-x-auto">
+            <table className="w-full min-w-[520px] text-[13px]">
+              <thead>
+                <tr>
+                  <th className="px-2 py-2 text-left text-[11px] uppercase text-muted-foreground" colSpan={2} rowSpan={2}>
+                    &nbsp;
                   </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {grid.map((row, ri) => (
-                <tr key={returnRows[ri]} className="border-t border-border">
-                  {ri === 0 && (
-                    <td
-                      className="w-3 align-middle text-[10px] font-semibold uppercase text-muted-foreground"
-                      rowSpan={returnRows.length}
-                      style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
-                    >
-                      Investment return ↓
-                    </td>
-                  )}
-                  <td className="px-2 py-2 font-semibold">{returnRows[ri]}%</td>
-                  {row.map((cell, ci) => {
-                    const isCurrent =
-                      Math.abs(cell.growthPct - inputs.annualPropertyGrowth) < 0.01 &&
-                      Math.abs(cell.returnPct - inputs.investmentReturn) < 0.01;
-                    let cls =
-                      "bg-accent/5 text-foreground";
-                    let label = "Rent";
-                    if (cell.breakEvenYear != null) {
-                      label = `Yr ${cell.breakEvenYear}`;
-                      if (cell.breakEvenYear <= 5)
-                        cls = "bg-success/15 text-success";
-                      else if (cell.breakEvenYear <= 15)
-                        cls = "bg-warning/15 text-warning-foreground";
-                      else cls = "bg-muted text-foreground";
-                    } else {
-                      cls = "bg-accent-light/40 text-accent";
-                    }
-                    return (
-                      <td
-                        key={ci}
-                        className={`px-2 py-2 text-center text-[12px] font-semibold tnum ${cls} ${
-                          isCurrent ? "outline outline-2 outline-foreground" : ""
-                        }`}
-                        title={isCurrent ? "You are here" : undefined}
-                      >
-                        {label}
-                      </td>
-                    );
-                  })}
+                  <th className="px-2 py-2 text-center text-[11px] uppercase text-muted-foreground" colSpan={growthCols.length}>
+                    Property growth →
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                <tr>
+                  {growthCols.map((g) => (
+                    <th key={g} className="px-2 py-2 text-center text-[12px] font-semibold">
+                      {g}%
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {grid.map((row, ri) => (
+                  <tr key={returnRows[ri]} className="border-t border-border">
+                    {ri === 0 && (
+                      <td
+                        className="w-3 align-middle text-[10px] font-semibold uppercase text-muted-foreground"
+                        rowSpan={returnRows.length}
+                        style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+                      >
+                        Investment return ↓
+                      </td>
+                    )}
+                    <td className="px-2 py-2 font-semibold">{returnRows[ri]}%</td>
+                    {row.map((cell, ci) => {
+                      const isCurrent =
+                        Math.abs(cell.growthPct - inputs.annualPropertyGrowth) < 0.01 &&
+                        Math.abs(cell.returnPct - inputs.investmentReturn) < 0.01;
+                      let cls =
+                        "bg-accent/5 text-foreground";
+                      let label = "Rent";
+                      if (cell.breakEvenYear != null) {
+                        label = `Yr ${cell.breakEvenYear}`;
+                        if (cell.breakEvenYear <= 5)
+                          cls = "bg-success/15 text-success";
+                        else if (cell.breakEvenYear <= 15)
+                          cls = "bg-warning/15 text-warning-foreground";
+                        else cls = "bg-muted text-foreground";
+                      } else {
+                        cls = "bg-accent-light/40 text-accent";
+                      }
+                      return (
+                        <td
+                          key={ci}
+                          className={`px-2 py-2 text-center text-[12px] font-semibold tnum ${cls} ${
+                            isCurrent ? "outline outline-2 outline-foreground" : ""
+                          }`}
+                          title={isCurrent ? "You are here" : undefined}
+                        >
+                          {label}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </MobilePendingOverlay>
         <div className="mt-3 flex flex-wrap gap-3 text-[11px] text-muted-foreground">
           <span><span className="mr-1 inline-block h-2 w-2 rounded-sm bg-success" />Yr 1–5 — buying wins quickly</span>
           <span><span className="mr-1 inline-block h-2 w-2 rounded-sm bg-warning" />Yr 6–15 — buying wins eventually</span>
@@ -1013,45 +1025,47 @@ const RentVsBuy = () => {
             {showAllYears ? "Show key years" : "Show all years"}
           </button>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[640px] text-[13px]">
-            <thead>
-              <tr className="text-left text-[11px] uppercase text-muted-foreground">
-                <th className="py-2 font-semibold">Year</th>
-                <th className="py-2 font-semibold">Property value</th>
-                <th className="py-2 font-semibold">Buyer equity</th>
-                <th className="py-2 font-semibold">Renter portfolio</th>
-                <th className="py-2 font-semibold">Winner</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {yearRows.map((i) => {
-                const buy = result.buyData[i];
-                const rent = result.rentData[i];
-                const buyWins = buy.netWorth >= rent.netWorth;
-                return (
-                  <tr key={buy.year}>
-                    <td className="py-2 font-medium">Year {buy.year}</td>
-                    <td className="py-2 tnum">{fmt0(buy.propertyValue)}</td>
-                    <td className="py-2 tnum">{fmt0(buy.equity)}</td>
-                    <td className="py-2 tnum">{fmt0(rent.investmentPortfolio)}</td>
-                    <td className="py-2">
-                      <span
-                        className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
-                          buyWins
-                            ? "bg-success/15 text-success"
-                            : "bg-accent/15 text-accent"
-                        }`}
-                      >
-                        {buyWins ? "Buy ✓" : "Rent ✓"}
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <MobilePendingOverlay pending={pendingMobile}>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[640px] text-[13px]">
+              <thead>
+                <tr className="text-left text-[11px] uppercase text-muted-foreground">
+                  <th className="py-2 font-semibold">Year</th>
+                  <th className="py-2 font-semibold">Property value</th>
+                  <th className="py-2 font-semibold">Buyer equity</th>
+                  <th className="py-2 font-semibold">Renter portfolio</th>
+                  <th className="py-2 font-semibold">Winner</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {yearRows.map((i) => {
+                  const buy = result.buyData[i];
+                  const rent = result.rentData[i];
+                  const buyWins = buy.netWorth >= rent.netWorth;
+                  return (
+                    <tr key={buy.year}>
+                      <td className="py-2 font-medium">Year {buy.year}</td>
+                      <td className="py-2 tnum">{fmt0(buy.propertyValue)}</td>
+                      <td className="py-2 tnum">{fmt0(buy.equity)}</td>
+                      <td className="py-2 tnum">{fmt0(rent.investmentPortfolio)}</td>
+                      <td className="py-2">
+                        <span
+                          className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                            buyWins
+                              ? "bg-success/15 text-success"
+                              : "bg-accent/15 text-accent"
+                          }`}
+                        >
+                          {buyWins ? "Buy ✓" : "Rent ✓"}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </MobilePendingOverlay>
       </section>
 
       {/* Why assumptions matter */}
