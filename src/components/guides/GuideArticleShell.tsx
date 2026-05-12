@@ -10,6 +10,7 @@ import { GUIDE_DIRECT_ANSWERS } from "@/data/guideDirectAnswers";
 import type { GuideMeta } from "@/data/guides";
 import { ALL_GUIDES, isSuburbGuide } from "@/data/allGuides";
 import { useRbaRates } from "@/hooks/useRbaRates";
+import { substituteRateTokens } from "@/lib/rateTokens";
 
 const slugify = (s: string) =>
   s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
