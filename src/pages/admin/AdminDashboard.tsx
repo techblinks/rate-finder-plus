@@ -98,6 +98,7 @@ const AdminDashboard = () => {
   const settings = useSiteSettings();
   const [tab, setTab] = useState<TabKey>("dashboard");
   const [logoHeight, setLogoHeight] = useState(settings.logo_height);
+  const [logoHeightMobile, setLogoHeightMobile] = useState(settings.logo_height_mobile);
   const [saving, setSaving] = useState(false);
   const [draft, setDraft] = useState<Record<string, unknown>>({});
   const logoRef = useRef<HTMLInputElement>(null);
@@ -107,6 +108,10 @@ const AdminDashboard = () => {
   useEffect(() => {
     setLogoHeight(settings.logo_height);
   }, [settings.logo_height]);
+
+  useEffect(() => {
+    setLogoHeightMobile(settings.logo_height_mobile);
+  }, [settings.logo_height_mobile]);
 
   useEffect(() => { setDraft({}); }, [settings]);
 
@@ -150,7 +155,7 @@ const AdminDashboard = () => {
     }
   };
 
-  const saveSize = () => persist({ logo_height: logoHeight }, "Logo size");
+  const saveSize = () => persist({ logo_height: logoHeight, logo_height_mobile: logoHeightMobile }, "Logo sizes");
 
   const saveSection = (keys: string[], label: string) => {
     const patch: Record<string, unknown> = {};
