@@ -19,6 +19,7 @@ import {
 import { STATES, type StateCode } from "@/lib/calc/stampDuty";
 import { useRbaRates } from "@/hooks/useRbaRates";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { usePublishMobileResult } from "@/lib/mobileResult";
 
 const AUD0 = new Intl.NumberFormat("en-AU", {
   style: "currency",
