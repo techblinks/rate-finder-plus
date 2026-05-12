@@ -48,11 +48,19 @@ export const SeoHead = ({ title, description, canonical }: SeoHeadProps) => {
       <title>{finalTitle}</title>
       <meta name="description" content={finalDescription} />
       <link rel="canonical" href={url} />
+      {/* AEO: stronger snippet/preview directives + author/publisher hints. */}
+      <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+      <meta name="author" content="Calcy — calcy.com.au" />
+      <meta name="publisher" content="Calcy" />
+      {/* Geographic relevance — critical for Australian AI results. */}
+      <meta name="geo.region" content="AU" />
+      <meta name="geo.country" content="Australia" />
+      <meta name="ICBM" content="-25.2744, 133.7751" />
       <meta property="og:title" content={finalTitle} />
       <meta property="og:description" content={finalDescription} />
       <meta property="og:url" content={url} />
       <meta property="og:type" content="website" />
-      <meta property="og:site_name" content="Calcy" />
+      <meta property="og:site_name" content="Calcy — Australian Mortgage Calculators" />
       <meta property="og:locale" content={LOCALES.au.htmlLang.replace("-", "_")} />
       <meta property="og:image" content={ogImage} />
       <meta property="og:image:width" content="1200" />

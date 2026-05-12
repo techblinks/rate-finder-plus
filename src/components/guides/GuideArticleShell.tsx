@@ -5,6 +5,8 @@ import { ArticleJsonLd, BreadcrumbJsonLd, FaqJsonLd } from "@/components/seo/Jso
 import FAQ from "@/components/FAQ";
 import PageHeader from "@/components/layout/PageHeader";
 import FinancialDisclaimer from "@/components/FinancialDisclaimer";
+import DirectAnswers from "@/components/seo/DirectAnswers";
+import { GUIDE_DIRECT_ANSWERS } from "@/data/guideDirectAnswers";
 import type { GuideMeta } from "@/data/guides";
 import { ALL_GUIDES, isSuburbGuide } from "@/data/allGuides";
 
@@ -113,6 +115,12 @@ const GuideArticleShell = ({ guide, basePath = "/guides" }: Props) => {
         </p>
 
         <p className="mb-8 text-[16px] leading-relaxed text-foreground/90">{guide.intro}</p>
+
+        {/* AEO: direct-answer Q&A block — citation-friendly for AI Overviews. */}
+        {GUIDE_DIRECT_ANSWERS[guide.slug] && (
+          <DirectAnswers items={GUIDE_DIRECT_ANSWERS[guide.slug]} className="mb-10" />
+        )}
+
 
         {/* TOC */}
         <nav aria-label="Table of contents" className="mb-10 rounded-lg border border-border bg-surface p-5">

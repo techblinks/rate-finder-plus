@@ -1,6 +1,7 @@
 import CalculatorPageShell from "./CalculatorPageShell";
 import StampDuty from "@/components/calculators/StampDuty";
 import NextStepsLinks from "@/components/NextStepsLinks";
+import StampDutyRatesTable from "@/components/seo/StampDutyRatesTable";
 import { FAQS } from "@/data/faqs";
 
 
@@ -22,6 +23,10 @@ const StampDutyPage = () => (
       { to: "/refinance-calculator", label: "Should I refinance?" },
     ]}
     sections={[
+      {
+        heading: "Stamp duty rates by state — 2026",
+        body: <StampDutyRatesTable />,
+      },
       {
         heading: "How to use this calculator",
         body: (

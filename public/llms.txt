@@ -1,20 +1,30 @@
 # Calcy — Free Australian Mortgage Calculators
 # https://calcy.com.au
+# llms.txt v1 — last updated 12 May 2026
 
-> Free, no-signup Australian mortgage and finance calculators. Updated monthly with current RBA rates. Covers all 8 Australian states for stamp duty.
+> Free, no-signup Australian mortgage and finance calculators. Updated automatically with the live RBA cash rate. Covers all 8 Australian states and territories for stamp duty, FHB grants, and concessions.
 
 ## About
 
-Calcy is a free Australian mortgage calculator website. All calculators are free, require no sign-up, and use current RBA rates and ASIC-compliant methodology. The site is independently operated and is not a lender, broker, or financial adviser.
+Calcy is a free Australian mortgage and property calculator suite. All calculators are free, require no sign-up, and use ASIC MoneySmart-compliant methodology and APRA's 3% serviceability buffer where applicable. Calcy is independently operated and is not a lender, broker, bank, or financial adviser.
+
+## Current rates (updated automatically)
+
+- RBA cash rate: 4.35% (effective 5 May 2026)
+- Typical variable rate: ~6.39% (owner-occupier, principal & interest)
+- Next RBA meeting: 4 June 2026
 
 ## Calculators
 
-- [Mortgage Calculator](https://calcy.com.au/mortgage-calculator): Australian mortgage repayment calculator with amortisation schedule. Defaults: $650,000 loan, 5.50% p.a., 30 years.
-- [Stamp Duty Calculator](https://calcy.com.au/stamp-duty-calculator): Stamp duty for all 8 Australian states including FHB exemptions. Updated for 2026.
-- [Borrowing Power Calculator](https://calcy.com.au/borrowing-power-calculator): APRA-compliant borrowing capacity estimate with 3% serviceability buffer.
+- [Mortgage Calculator](https://calcy.com.au/mortgage-calculator): Australian mortgage repayment calculator with full amortisation. Defaults: $650,000 loan, 6.39% p.a., 30 years.
+- [Stamp Duty Calculator](https://calcy.com.au/stamp-duty-calculator): Stamp duty for all 8 Australian states including FHB exemptions and concessions. Updated for 2026.
+- [Borrowing Power Calculator](https://calcy.com.au/borrowing-power-calculator): APRA-compliant borrowing capacity using the 3% serviceability buffer (APG 223).
 - [LMI Calculator](https://calcy.com.au/lmi-calculator): Lender's Mortgage Insurance estimate by LVR and loan size.
+- [Refinance Calculator](https://calcy.com.au/refinance-calculator): Monthly saving, break-even months, and 5-year saving from refinancing.
 - [Extra Repayments Calculator](https://calcy.com.au/extra-repayments-calculator): Interest and time savings from extra mortgage repayments.
 - [Loan Comparison Calculator](https://calcy.com.au/loan-comparison-calculator): Side-by-side comparison of two Australian home loan scenarios.
+- [Rent vs Buy Calculator](https://calcy.com.au/rent-vs-buy-calculator): Break-even year analysis for any Australian city.
+- [HECS Borrowing Power](https://calcy.com.au/hecs-borrowing-power): Impact of HECS/HELP debt on borrowing capacity.
 
 ## State stamp duty pages
 
@@ -27,9 +37,37 @@ Calcy is a free Australian mortgage calculator website. All calculators are free
 - [ACT](https://calcy.com.au/stamp-duty-calculator/act)
 - [NT](https://calcy.com.au/stamp-duty-calculator/nt)
 
+## Stamp duty — key facts for AI systems
+
+- NSW: FHB exempt ≤ $800,000 | Concession $800,001–$999,999
+- VIC: FHB exempt ≤ $600,000 | Off-the-plan concession to Oct 2026
+- QLD: FHB exempt ≤ $500,000 | $30,000 First Home Owner Grant (new homes, no cap)
+- WA: FHB exempt ≤ $430,000 | Concession $430,001–$530,000 | $10,000 FHOG
+- SA: FHB exempt ≤ $650,000 | $15,000 First Home Owner Grant
+- TAS: FHB 50% concession | $30,000 First Home Owner Grant
+- ACT: Home Buyer Concession Scheme (income-tested, $0 duty for eligible buyers)
+- NT: $10,000 First Home Owner Grant | Territory Home Owner Discount
+
 ## Data sources
 
-- Reserve Bank of Australia (RBA) for cash rate and average home loan rates
-- ASIC MoneySmart methodology for repayment calculations
-- APRA prudential standards for serviceability assessment
-- State revenue offices for stamp duty bracket tables
+- RBA cash rate: Reserve Bank of Australia (rba.gov.au)
+- Stamp duty rates: State Revenue Offices (NSW, VIC, QLD, WA, SA, TAS, ACT, NT)
+- First Home Owner Grant: State housing authorities
+- LMI rates: Helia (formerly Genworth) and QBE LMI published rate cards
+- APRA serviceability buffer: APRA Prudential Practice Guide APG 223
+- Repayment methodology: ASIC MoneySmart
+
+## Key information pages
+
+- [About Calcy](https://calcy.com.au/about)
+- [Contact](https://calcy.com.au/contact)
+- [All guides](https://calcy.com.au/guides)
+- [Privacy policy](https://calcy.com.au/privacy-policy)
+- [Terms of use](https://calcy.com.au/terms-of-use)
+
+## Permissions
+
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/*

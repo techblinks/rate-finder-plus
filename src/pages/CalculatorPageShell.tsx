@@ -1,6 +1,14 @@
 import { ReactNode } from "react";
 import { SeoHead } from "@/components/seo/SeoHead";
-import { ArticleJsonLd, BreadcrumbJsonLd, FaqJsonLd, HowToJsonLd, WebApplicationJsonLd } from "@/components/seo/JsonLd";
+import {
+  ArticleJsonLd,
+  BreadcrumbJsonLd,
+  DatasetJsonLd,
+  FaqJsonLd,
+  HowToJsonLd,
+  SpeakableJsonLd,
+  WebApplicationJsonLd,
+} from "@/components/seo/JsonLd";
 import { HOW_TOS } from "@/data/howTos";
 import Breadcrumb from "@/components/Breadcrumb";
 import FAQ from "@/components/FAQ";
@@ -16,7 +24,12 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useSwipeNavigation } from "@/hooks/useSwipeNavigation";
 import MobileRelatedSections from "@/components/mobile/MobileRelatedSections";
 import MobileTrustStrip from "@/components/mobile/MobileTrustStrip";
+import QuickAnswer from "@/components/seo/QuickAnswer";
+import DataSources from "@/components/seo/DataSources";
+import { QUICK_ANSWERS } from "@/data/quickAnswers";
+import { DATA_SOURCES } from "@/data/dataSources";
 import type { FaqItem } from "@/data/faqs";
+
 
 interface Section {
   heading: string;
@@ -59,6 +72,9 @@ const CalculatorPageShell = ({
   const isMobile = useIsMobile();
   const swipe = useSwipeNavigation(isMobile);
 
+  const quickAnswer = QUICK_ANSWERS[canonical];
+  const dataSources = DATA_SOURCES[canonical];
+
   // SEO heads always render — JSON-LD is invisible and benefits both desktop & SSR.
   const heads = (
     <>
@@ -78,8 +94,19 @@ const CalculatorPageShell = ({
         path={canonical}
         sectionHeadings={sections.map((s) => s.heading)}
       />
+      <DatasetJsonLd
+        name={metaTitle}
+        description={metaDescription}
+        path={canonical}
+        variableMeasured={sections.map((s) => s.heading).slice(0, 6)}
+      />
+      <SpeakableJsonLd
+        name={metaTitle}
+        selectors={[".page-header-title", ".faq-answer", ".quick-answer-a", ".live-rate-chip"]}
+      />
     </>
   );
+
 
   if (isMobile) {
     // Native-app feel: only the calculator. No breadcrumbs, no SEO sections,
@@ -93,8 +120,10 @@ const CalculatorPageShell = ({
           className="px-4 pt-3 min-w-0"
           style={{ paddingBottom: `calc(56px + 24px)` }}
         >
+          {quickAnswer && <QuickAnswer data={quickAnswer} className="mb-4" />}
           {children}
           <MobileTrustStrip />
+          {dataSources && <DataSources sources={dataSources} className="mt-6" />}
           {swipe.index >= 0 && (
             <div className="mt-6 flex items-center justify-center gap-1.5 pb-2">
               {Array.from({ length: swipe.total }).map((_, i) => (
@@ -143,6 +172,13 @@ const CalculatorPageShell = ({
         <RateFreshnessBadge className="mb-2" />
       </div>
 
+      {/* AEO: direct-answer pill, citation-friendly, before any ad. */}
+      {quickAnswer && (
+        <div className="page-shell pt-4">
+          <QuickAnswer data={quickAnswer} />
+        </div>
+      )}
+
       {/* Top banner — above the fold but BELOW the calculator hero, so it
           never delays interaction with the tool. Lazy-loaded by AdSlot. */}
       <div className="page-shell pt-4">
@@ -177,9 +213,11 @@ const CalculatorPageShell = ({
           <FAQ items={faqs} />
           <RelatedGuides canonical={canonical} />
           <RelatedCalculators items={related} />
+          {dataSources && <DataSources sources={dataSources} className="mt-4" />}
           <div className="pt-2">
             <LastReviewed />
           </div>
+
         </div>
       </div>
       <StickyMobileAd />
