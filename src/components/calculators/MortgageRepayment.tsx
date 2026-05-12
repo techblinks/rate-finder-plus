@@ -245,49 +245,53 @@ const MortgageRepayment = () => {
       />
 
       <ResultCard>
-        <div className="border-b border-border pb-3 text-center">
-          <p className="result-primary-label text-[13px] uppercase tracking-wide text-muted-foreground">
-            {frequency} repayment
-          </p>
-          <p className="result-primary-value tnum text-[32px] font-semibold leading-tight text-success">
-            {AUD(display)}
-          </p>
-        </div>
-
-        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <div className="result-stat-card rounded-lg border border-border bg-surface p-3">
-            <p className="stat-label text-[13px] text-muted-foreground">Total repaid</p>
-            <p className="stat-value tnum text-[18px] font-semibold text-foreground">{AUD(result.totalRepaid)}</p>
-          </div>
-          <div className="result-stat-card rounded-lg border border-border bg-surface p-3">
-            <p className="stat-label text-[13px] text-muted-foreground">Total interest</p>
-            <p className="stat-value tnum text-[18px] font-semibold text-foreground">{AUD(result.totalInterest)}</p>
-          </div>
-          <div className="result-stat-card rounded-lg border border-border bg-surface p-3">
-            <p className="stat-label text-[13px] text-muted-foreground">Loan paid off</p>
-            <p className="stat-value tnum text-[18px] font-semibold text-foreground">{monthName(result.payoffDate)}</p>
-          </div>
-        </div>
-
-        <p className="mt-3 text-[13px] font-medium text-warning">
-          Interest makes up {interestPctOfRepayments.toFixed(0)}% of your total repayments
-        </p>
-
-        {baseResult && dExtra > 0 && (
-          <div className="mt-4 rounded-md bg-surface p-3 text-[14px] leading-relaxed text-success">
-            <p className="font-semibold">With {AUD(dExtra)} extra per month:</p>
-            <p className="text-foreground">
-              Pay off {monthName(result.payoffDate)} —{" "}
-              {Math.max(0, monthsBetween(result.payoffDate, baseResult.payoffDate))} months earlier
+        <MobilePendingOverlay pending={pendingMobile}>
+          <div className="border-b border-border pb-3 text-center">
+            <p className="result-primary-label text-[13px] uppercase tracking-wide text-muted-foreground">
+              {frequency} repayment
             </p>
-            <p className="text-foreground">
-              Save {AUD(Math.max(0, baseResult.totalInterest - result.totalInterest))} in interest
+            <p className="result-primary-value tnum text-[32px] font-semibold leading-tight text-success">
+              {AUD(display)}
             </p>
           </div>
-        )}
+
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="result-stat-card rounded-lg border border-border bg-surface p-3">
+              <p className="stat-label text-[13px] text-muted-foreground">Total repaid</p>
+              <p className="stat-value tnum text-[18px] font-semibold text-foreground">{AUD(result.totalRepaid)}</p>
+            </div>
+            <div className="result-stat-card rounded-lg border border-border bg-surface p-3">
+              <p className="stat-label text-[13px] text-muted-foreground">Total interest</p>
+              <p className="stat-value tnum text-[18px] font-semibold text-foreground">{AUD(result.totalInterest)}</p>
+            </div>
+            <div className="result-stat-card rounded-lg border border-border bg-surface p-3">
+              <p className="stat-label text-[13px] text-muted-foreground">Loan paid off</p>
+              <p className="stat-value tnum text-[18px] font-semibold text-foreground">{monthName(result.payoffDate)}</p>
+            </div>
+          </div>
+
+          <p className="mt-3 text-[13px] font-medium text-warning">
+            Interest makes up {interestPctOfRepayments.toFixed(0)}% of your total repayments
+          </p>
+
+          {baseResult && dExtra > 0 && (
+            <div className="mt-4 rounded-md bg-surface p-3 text-[14px] leading-relaxed text-success">
+              <p className="font-semibold">With {AUD(dExtra)} extra per month:</p>
+              <p className="text-foreground">
+                Pay off {monthName(result.payoffDate)} —{" "}
+                {Math.max(0, monthsBetween(result.payoffDate, baseResult.payoffDate))} months earlier
+              </p>
+              <p className="text-foreground">
+                Save {AUD(Math.max(0, baseResult.totalInterest - result.totalInterest))} in interest
+              </p>
+            </div>
+          )}
+        </MobilePendingOverlay>
 
         <div className="mt-5">
-          <DonutChart principal={amount} interest={result.totalInterest} />
+          <MobilePendingOverlay pending={pendingMobile}>
+            <DonutChart principal={amount} interest={result.totalInterest} />
+          </MobilePendingOverlay>
         </div>
 
         <div className="mt-5">
