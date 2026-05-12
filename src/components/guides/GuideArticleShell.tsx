@@ -29,6 +29,7 @@ const hrefFor = (slug: string) =>
   isSuburbGuide(slug) ? `/suburbs/${slug}` : `/guides/${slug}`;
 
 const GuideArticleShell = ({ guide, basePath = "/guides" }: Props) => {
+  const { cashRate, lastUpdated } = useRbaRates();
   const canonical = `${basePath}/${guide.slug}`;
   const breadcrumbLabel = basePath === "/suburbs" ? "Suburb guides" : "Guides";
   const related = guide.relatedGuides
