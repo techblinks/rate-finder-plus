@@ -172,6 +172,13 @@ const CalculatorPageShell = ({
         <RateFreshnessBadge className="mb-2" />
       </div>
 
+      {/* AEO: direct-answer pill, citation-friendly, before any ad. */}
+      {quickAnswer && (
+        <div className="page-shell pt-4">
+          <QuickAnswer data={quickAnswer} />
+        </div>
+      )}
+
       {/* Top banner — above the fold but BELOW the calculator hero, so it
           never delays interaction with the tool. Lazy-loaded by AdSlot. */}
       <div className="page-shell pt-4">
