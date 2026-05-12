@@ -885,7 +885,10 @@ const MortgageCalculatorRedesign = () => {
             setTerm={setTerm}
             termBounds={{ min: 5, max: 30 }}
           />
-          <div className="result-panel-navy rounded-2xl border border-border bg-card p-6 text-center md:p-7">
+          <div
+            className={`result-panel-navy rounded-2xl border border-border bg-card p-6 text-center md:p-7 transition-opacity duration-150 ${isMobile && calcPending ? "opacity-50" : "opacity-100"}`}
+            aria-busy={isMobile && calcPending ? "true" : undefined}
+          >
             <p className="result-primary-label text-[12px] uppercase tracking-wide text-muted-foreground">
               {FREQ_LABEL[freq]} repayment
             </p>
