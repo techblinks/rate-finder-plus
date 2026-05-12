@@ -480,7 +480,45 @@ const Refinance = () => {
 
   return (
     <div className="space-y-6 pb-32 md:pb-0">
+  const isMobile = useIsMobile();
+  const refiInsight = (() => {
+    const rateGap = inputs.currentRate - inputs.newRate;
+    const upfront = inputs.exitFees + inputs.newLenderFees - inputs.cashback;
+    if (rateGap <= 0) {
+      return {
+        tone: "warn" as const,
+        msg: `New rate is no lower than your current rate. Drop “New interest rate” below ${inputs.currentRate.toFixed(2)}% to see real savings.`,
+      };
+    }
+    if (result.monthlySaving > 0 && result.breakEvenMonth != null && result.breakEvenMonth <= 24) {
+      return {
+        tone: "success" as const,
+        msg: `Break-even in ~${result.breakEvenMonth} months. Refinancing looks worthwhile — verify “Exit fees” & “New lender fees” match your quotes.`,
+      };
+    }
+    if (result.breakEvenMonth != null && result.breakEvenMonth > 36) {
+      return {
+        tone: "warn" as const,
+        msg: `Break-even is ${result.breakEvenMonth} months away. Try lowering “New lender fees” or asking for cashback to bring it under 24 months.`,
+      };
+    }
+    if (result.monthlySaving < 0) {
+      return {
+        tone: "warn" as const,
+        msg: `Refinancing currently costs you ${fmt0(Math.abs(result.monthlySaving))}/mo extra. Drop the new rate or extend the new term to test alternatives.`,
+      };
+    }
+    return {
+      tone: "info" as const,
+      msg: `You'd save ${fmt0(result.monthlySaving)}/mo. Add quoted upfront costs (~${fmt0(upfront)}) under “Switching costs” for an accurate break-even.`,
+    };
+  })();
+
+  return (
+    <div className="space-y-6 pb-32 md:pb-0">
       <RestoreBanner show={!!restored} onReset={reset} />
+
+      {isMobile && <MobileInsightBar tone={refiInsight.tone} message={refiInsight.msg} />}
 
       <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(320px,420px)]">
         {/* LEFT — Inputs */}
