@@ -682,8 +682,11 @@ const ExtraRepayments = () => {
       </div>
 
       {/* Loan balance decline chart */}
-      <section className="rounded-2xl border border-border bg-card p-4 md:p-6">
-        <h3 className="mb-3 text-[15px] font-semibold">Loan balance over time</h3>
+      <MobileChartTableSection
+        title="Loan balance over time"
+        hint="Tap to view chart"
+        sectionClassName="rounded-2xl border border-border bg-card p-4 md:p-6"
+      >
         <div className="h-[280px] w-full md:h-[320px]">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData} margin={{ top: 10, right: 10, bottom: 0, left: 0 }}>
@@ -737,7 +740,7 @@ const ExtraRepayments = () => {
             </AreaChart>
           </ResponsiveContainer>
         </div>
-      </section>
+      </MobileChartTableSection>
 
       {/* Payoff timeline */}
       <section className="rounded-2xl border border-border bg-card p-5">
