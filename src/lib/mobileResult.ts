@@ -11,6 +11,8 @@ export interface MobileResult {
   onShare?: () => void;
   /** Optional save action wired into the sticky bar save button. */
   onSave?: () => void;
+  /** True while a debounced calculation is in-flight. Drives skeleton shimmer. */
+  pending?: boolean;
 }
 
 const EVENT = "calcy:mobile-result";
