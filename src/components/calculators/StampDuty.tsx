@@ -15,6 +15,7 @@ import {
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import { usePublishMobileResult } from "@/lib/mobileResult";
+import { shareCurrent } from "@/lib/shareCurrent";
 import Tooltip from "@/components/Tooltip";
 import ResultActions from "@/components/ResultActions";
 
