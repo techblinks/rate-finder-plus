@@ -450,3 +450,114 @@ nav[aria-label*="bottom"],
   /* Mobile: full-bleed result panel (native-app feel) */
   [class*="result-panel"] { border-radius: 0 !important; }
 }
+
+/* =============================================================
+ * MOBILE HOMEPAGE — unified card system + frosted nav
+ * Visual layer only. No content/SEO/AEO changes.
+ * =========================================================== */
+.mobile-home {
+  background: #F5F6FA !important;
+}
+
+/* Section labels — recessive */
+.mobile-home section > p.uppercase {
+  font-size: 11px !important;
+  letter-spacing: 0.08em !important;
+  color: #9CA3AF !important;
+}
+
+/* Calculator cards — uniform white with icon-only color */
+.mobile-home .calc-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04) !important;
+  padding: 18px 16px !important;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  animation: fadeUp 0.4s ease forwards;
+}
+.mobile-home .calc-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: var(--card-accent, transparent);
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+.mobile-home .calc-card:hover::before,
+.mobile-home .calc-card:active::before { opacity: 1; }
+
+.mobile-home .calc-card span.font-semibold {
+  font-weight: 600 !important;
+  font-size: 15px !important;
+  color: #0A0A0F !important;
+}
+.mobile-home .calc-card span.text-muted-foreground {
+  font-size: 12px !important;
+  color: #9CA3AF !important;
+  margin-top: 4px;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.mobile-home .calc-card:nth-child(1) { animation-delay: 0.05s; }
+.mobile-home .calc-card:nth-child(2) { animation-delay: 0.10s; }
+.mobile-home .calc-card:nth-child(3) { animation-delay: 0.15s; }
+.mobile-home .calc-card:nth-child(4) { animation-delay: 0.20s; }
+.mobile-home .calc-card:nth-child(5) { animation-delay: 0.25s; }
+.mobile-home .calc-card:nth-child(6) { animation-delay: 0.30s; }
+.mobile-home .calc-card:nth-child(7) { animation-delay: 0.35s; }
+.mobile-home .calc-card:nth-child(8) { animation-delay: 0.40s; }
+
+/* RBA badge — brand tinted */
+.mobile-home section:first-of-type .inline-flex.rounded-full {
+  background: #EEF3FF !important;
+  border-color: #C7D7FF !important;
+}
+.mobile-home section:first-of-type .inline-flex.rounded-full span.text-muted-foreground,
+.mobile-home section:first-of-type .inline-flex.rounded-full strong {
+  color: #1A5CFF !important;
+}
+
+/* List-style cards (live data, popular, guides, FAQ) — match unified system */
+.mobile-home section .overflow-hidden.rounded-2xl {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04) !important;
+}
+
+/* Section H2 polish */
+.mobile-home section h2 {
+  font-size: 17px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+  color: #0A0A0F !important;
+}
+
+/* Last-result / resume chip — brand tint */
+.mobile-home a.bg-accent-light {
+  background: #EEF3FF !important;
+  border-color: #C7D7FF !important;
+}
+
+/* Trust footer */
+.mobile-home > p.text-center {
+  color: #9CA3AF !important;
+  font-size: 12px !important;
+}
+
+/* Frosted bottom nav (mobile only) */
+@media (max-width: 767px) {
+  nav[aria-label="Mobile bottom navigation"] {
+    background: rgba(255,255,255,0.92) !important;
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border-top-color: rgba(0,0,0,0.06) !important;
+  }
+}

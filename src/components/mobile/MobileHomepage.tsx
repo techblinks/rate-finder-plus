@@ -99,7 +99,7 @@ const MobileHomepage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="mobile-home min-h-screen bg-background pb-24">
       <FaqJsonLd faqs={faqs.map((f) => ({ question: f.q, answer: f.a }))} />
 
       {/* Hero */}
@@ -153,8 +153,8 @@ const MobileHomepage = () => {
               <Link
                 key={calc.path}
                 to={calc.path}
-                className="flex min-h-[96px] flex-col justify-between rounded-2xl border border-black/5 p-4 active:scale-[0.97] transition-transform"
-                style={{ background: calc.bg }}
+                className="calc-card flex min-h-[120px] flex-col justify-between rounded-2xl border border-black/5 bg-white p-4 active:scale-[0.97] transition-transform"
+                style={{ ['--card-accent' as any]: calc.fg }}
               >
                 <Icon className="h-6 w-6" style={{ color: calc.fg }} strokeWidth={2} />
                 <div>
