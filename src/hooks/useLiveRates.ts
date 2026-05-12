@@ -170,7 +170,7 @@ export function useLiveRates(): UseLiveRatesReturn {
 function getDefaultRates(): RateData {
   return {
     rba_cash_rate: {
-      national: { cash_rate: { rate: 4.1, effective_date: "2026-03-18" } },
+      national: { cash_rate: { rate: 4.35, effective_date: "2026-05-05" } },
     },
     fhog: {
       NSW: { grant: { amount: 10000, new_homes_only: true, max_property_value: 600000 } },
