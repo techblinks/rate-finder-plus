@@ -240,6 +240,12 @@ const ExtraRepayments = () => {
     label: "Interest saved",
     value: fmt0(result.interestSaved),
     sub: `${formatYearsMonths(result.monthsSaved)} sooner`,
+    onShare: () =>
+      shareCurrent({
+        calculator: "extra_repayments",
+        title: "Extra repayments — Calcy",
+        text: `Adding extra repayments saves me ${fmt0(result.interestSaved)} in interest and pays off ${formatYearsMonths(result.monthsSaved)} sooner.`,
+      }),
   });
 
   // Chart data — merge year arrays so both lines share the X axis
