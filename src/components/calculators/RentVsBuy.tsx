@@ -851,8 +851,6 @@ const RentVsBuy = () => {
             </span>
           )}
         </div>
-        <div className="h-[300px] w-full md:h-[340px]">
-          <ResponsiveContainer>
         <MobilePendingOverlay pending={pendingMobile}>
           <div className="h-[300px] w-full md:h-[340px]">
             <ResponsiveContainer>
