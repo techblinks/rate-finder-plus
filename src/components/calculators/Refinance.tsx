@@ -478,9 +478,7 @@ const Refinance = () => {
     ? "border-success/60 bg-success/5"
     : "border-destructive/60 bg-destructive/5";
 
-  return (
-    <div className="space-y-6 pb-32 md:pb-0">
-      {/* placeholder removed */}
+  const isMobile = useIsMobile();
   const refiInsight = (() => {
     const rateGap = inputs.currentRate - inputs.newRate;
     const upfront = inputs.exitFees + inputs.newLenderFees - inputs.cashback;
