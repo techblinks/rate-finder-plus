@@ -14,6 +14,7 @@ import QuickAdjustChips from "@/components/mobile/QuickAdjustChips";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import ResultActions from "@/components/ResultActions";
 import { usePublishMobileResult } from "@/lib/mobileResult";
+import { shareCurrent } from "@/lib/shareCurrent";
 import { useCalcPersist } from "@/lib/calcPersist";
 import MobileRestoreChip from "@/components/mobile/MobileRestoreChip";
 
@@ -96,6 +97,12 @@ const MortgageRepayment = () => {
     sub: frequency === "monthly"
       ? `Fortnightly ${AUD(result.fortnightly)}`
       : `Monthly ${AUD(result.monthly)}`,
+    onShare: () =>
+      shareCurrent({
+        calculator: "mortgage_repayment",
+        title: "Mortgage repayment — Calcy",
+        text: `My ${frequency} repayment is ${AUD(display)} on a ${AUD(amount)} loan at ${rate}% over ${term} years.`,
+      }),
   });
 
   const persistState = useMemo(

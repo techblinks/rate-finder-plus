@@ -19,6 +19,7 @@ import {
 import { STATES, type StateCode } from "@/lib/calc/stampDuty";
 import { useRbaRates } from "@/hooks/useRbaRates";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { usePublishMobileResult } from "@/lib/mobileResult";
 
 const AUD0 = new Intl.NumberFormat("en-AU", {
   style: "currency",
@@ -327,6 +328,22 @@ const RentVsBuy = () => {
   );
 
   const result = useMemo(() => calculateRentVsBuy(inputs), [inputs]);
+
+  // Mobile sticky bar — show verdict + share CTA
+  usePublishMobileResult({
+    label:
+      result.verdict === "buy"
+        ? "Buying wins by"
+        : result.verdict === "rent"
+          ? "Renting wins by"
+          : "Roughly even",
+    value:
+      result.verdict === "close"
+        ? fmt0(0)
+        : fmtAbs0(result.difference),
+    sub: `over ${inputs.analysisYears} years`,
+    onShare: () => onShare(),
+  });
 
   // Sensitivity grid
   const grid = useMemo(() => sensitivityGrid(inputs), [inputs]);

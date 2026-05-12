@@ -5,6 +5,8 @@ import { Card, ResultCard, ResultRow } from "@/components/ui-kit";
 import RangeField from "@/components/RangeField";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
+import { usePublishMobileResult } from "@/lib/mobileResult";
+import { shareCurrent } from "@/lib/shareCurrent";
 import ResultActions from "@/components/ResultActions";
 import ShareResult from "@/components/ShareResult";
 import HecsImpactChart from "@/components/HecsImpactChart";
@@ -48,6 +50,18 @@ const HecsBorrowingPower = () => {
     dti: dDti,
     borrowing_power: Math.round(result.borrowingPower),
     hecs_impact: Math.round(result.hecsImpact),
+  });
+
+  usePublishMobileResult({
+    label: "You can borrow",
+    value: AUD(result.borrowingPower),
+    sub: `HECS impact ${AUD(result.hecsImpact)}`,
+    onShare: () =>
+      shareCurrent({
+        calculator: "hecs_borrowing_power",
+        title: "HECS borrowing power — Calcy",
+        text: `With ${AUD(dIncome)} income and a ${AUD(dHecs)} HECS balance, I can borrow up to ${AUD(result.borrowingPower)} (HECS reduces it by ${AUD(result.hecsImpact)}).`,
+      }),
   });
 
   return (

@@ -6,6 +6,7 @@ import BarCompare from "@/components/BarCompare";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import { usePublishMobileResult } from "@/lib/mobileResult";
+import { shareCurrent } from "@/lib/shareCurrent";
 import { useCalcPersist } from "@/lib/calcPersist";
 import { useIsMobile } from "@/hooks/use-mobile";
 import MobileRestoreChip from "@/components/mobile/MobileRestoreChip";
@@ -83,6 +84,12 @@ const LoanComparisonCalc = () => {
     label: `${cheaperLabel} saves`,
     value: AUD(interestDiff),
     sub: `${AUD(monthlyDiff)}/mo difference`,
+    onShare: () =>
+      shareCurrent({
+        calculator: "loan_comparison",
+        title: "Loan comparison — Calcy",
+        text: `${cheaperLabel} saves ${AUD(interestDiff)} in interest (${AUD(monthlyDiff)}/mo difference) on a ${AUD(amount)} loan.`,
+      }),
   });
 
   const persistState = useMemo(() => ({ amount, a, b }), [amount, a, b]);

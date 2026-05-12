@@ -15,6 +15,7 @@ import {
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import { usePublishMobileResult } from "@/lib/mobileResult";
+import { shareCurrent } from "@/lib/shareCurrent";
 import Tooltip from "@/components/Tooltip";
 import ResultActions from "@/components/ResultActions";
 
@@ -230,6 +231,12 @@ const StampDuty = ({ lockedState }: StampDutyProps) => {
     label: "Stamp duty",
     value: fmt0(result.netDuty),
     sub: `${dState.state} · ${fmt0(dState.value)}`,
+    onShare: () =>
+      shareCurrent({
+        calculator: "stamp_duty",
+        title: "My stamp duty calculation — Calcy",
+        text: `Stamp duty on a ${fmt0(s.value)} property in ${s.state}: ${fmt0(result.netDuty)}${s.fhb ? " (first home buyer rate)" : ""}.`,
+      }),
   });
 
   const stateName = STATES.find((st) => st.code === s.state)?.name ?? s.state;
