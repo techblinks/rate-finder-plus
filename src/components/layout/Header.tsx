@@ -20,10 +20,11 @@ const MORE = [
 ];
 
 const Header = () => {
-  const { logo_url, logo_height } = useSiteSettings();
+  const { logo_url, logo_height, logo_height_mobile } = useSiteSettings();
   const { pathname } = useLocation();
   const src = logo_url || calcyLogo;
-  const h = Math.max(20, Math.min(40, logo_height || 28));
+  const hDesktop = Math.max(20, Math.min(72, logo_height || 32));
+  const hMobile = Math.max(20, Math.min(60, logo_height_mobile || 28));
   const [moreOpen, setMoreOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
