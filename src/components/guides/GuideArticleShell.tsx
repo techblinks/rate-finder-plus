@@ -5,6 +5,8 @@ import { ArticleJsonLd, BreadcrumbJsonLd, FaqJsonLd } from "@/components/seo/Jso
 import FAQ from "@/components/FAQ";
 import PageHeader from "@/components/layout/PageHeader";
 import FinancialDisclaimer from "@/components/FinancialDisclaimer";
+import DirectAnswers from "@/components/seo/DirectAnswers";
+import { GUIDE_DIRECT_ANSWERS } from "@/data/guideDirectAnswers";
 import type { GuideMeta } from "@/data/guides";
 import { ALL_GUIDES, isSuburbGuide } from "@/data/allGuides";
 
