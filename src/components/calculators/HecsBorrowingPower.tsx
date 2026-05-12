@@ -52,6 +52,18 @@ const HecsBorrowingPower = () => {
     hecs_impact: Math.round(result.hecsImpact),
   });
 
+  usePublishMobileResult({
+    label: "You can borrow",
+    value: AUD(result.borrowingPower),
+    sub: `HECS impact ${AUD(result.hecsImpact)}`,
+    onShare: () =>
+      shareCurrent({
+        calculator: "hecs_borrowing_power",
+        title: "HECS borrowing power — Calcy",
+        text: `With ${AUD(dIncome)} income and a ${AUD(dHecs)} HECS balance, I can borrow up to ${AUD(result.borrowingPower)} (HECS reduces it by ${AUD(result.hecsImpact)}).`,
+      }),
+  });
+
   return (
     <div className="space-y-6">
       <Card>
