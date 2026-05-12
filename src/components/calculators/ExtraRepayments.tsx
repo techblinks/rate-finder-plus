@@ -22,6 +22,7 @@ import { usePublishMobileResult } from "@/lib/mobileResult";
 import { shareCurrent } from "@/lib/shareCurrent";
 import { useIsMobile } from "@/hooks/use-mobile";
 import MobileInsightBar from "@/components/mobile/MobileInsightBar";
+import MobileChartTableSection from "@/components/mobile/MobileChartTableSection";
 import ResultActions from "@/components/ResultActions";
 import ShareResult from "@/components/ShareResult";
 import { useRbaRates } from "@/hooks/useRbaRates";
