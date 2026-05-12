@@ -338,6 +338,7 @@ const Refinance = () => {
     sub: result.breakEvenMonth != null
       ? `Break-even: month ${result.breakEvenMonth}`
       : "No break-even",
+    onShare: () => onShare(),
   });
 
   // Persist + URL sync (debounced)
