@@ -21,6 +21,7 @@ const CALC_ITEMS: Item[] = [
   { group: "Calculators", label: "Mortgage calculator", desc: "Repayments + amortisation", path: "/mortgage-calculator", icon: Home },
   { group: "Calculators", label: "Stamp duty calculator", desc: "All 8 states", path: "/stamp-duty-calculator", icon: FileText },
   { group: "Calculators", label: "Borrowing power", desc: "APRA buffer", path: "/borrowing-power-calculator", icon: BarChart3 },
+  { group: "Calculators", label: "HECS borrowing power", desc: "How HECS affects your loan", path: "/hecs-borrowing-power", icon: BarChart3 },
   { group: "Calculators", label: "LMI calculator", desc: "Avoid $15k+", path: "/lmi-calculator", icon: Shield },
   { group: "Calculators", label: "Compare loans", desc: "Side by side", path: "/loan-comparison-calculator", icon: ArrowLeftRight },
   { group: "Calculators", label: "Rent vs Buy", desc: "Break-even", path: "/rent-vs-buy-calculator", icon: Building2 },
