@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Share2, Check, ExternalLink } from "lucide-react";
 import { calcLmi, lmiCapitalisedCost, payNowVsWait, type BuyerType } from "@/lib/calc/lmi";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useIsPending } from "@/hooks/useIsPending";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import { usePublishMobileResult } from "@/lib/mobileResult";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -344,11 +345,14 @@ const Lmi = () => {
     }
   };
 
+  const calcPending = useIsPending(`${JSON.stringify(s)}|${monthlyRent}|${extraSavings}`, 200);
+
   usePublishMobileResult({
     label: "Estimated LMI",
     value: fmt0(lmi),
     sub: `LVR ${lvr.toFixed(1)}%`,
     onShare,
+    pending: calcPending,
   });
 
   const clearStored = () => {

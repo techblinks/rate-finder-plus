@@ -3,6 +3,7 @@ import RestoreBanner from "@/components/RestoreBanner";
 import { Minus, Plus, Share2, Check, ChevronDown } from "lucide-react";
 import { calcBorrowingPowerV2, calcHem } from "@/lib/calc/borrowingPower";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useIsPending } from "@/hooks/useIsPending";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import { usePublishMobileResult } from "@/lib/mobileResult";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -369,11 +370,14 @@ const BorrowingPower = () => {
     }
   };
 
+  const calcPending = useIsPending(JSON.stringify(s), 250);
+
   usePublishMobileResult({
     label: "You can borrow",
     value: fmt0(result.borrowingPower),
     sub: `at ${debounced.interestRate}% over ${debounced.loanTerm}yr`,
     onShare,
+    pending: calcPending,
   });
 
   const clearStored = () => {

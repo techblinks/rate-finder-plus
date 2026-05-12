@@ -7,6 +7,7 @@ import Tooltip from "@/components/Tooltip";
 import CurrencyInput from "@/components/CurrencyInput";
 import { useRbaRates } from "@/hooks/useRbaRates";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useIsPending } from "@/hooks/useIsPending";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import {
   loadLast,
@@ -468,6 +469,10 @@ const MortgageCalculatorRedesign = () => {
 
   const altFreqs = FREQS.filter((f) => f !== freq);
 
+  // True while live inputs differ from the debounced snapshot — drives
+  // mobile sticky-bar shimmer and result/chart dim states.
+  const calcPending = useIsPending(`${loan}|${rate}|${term}|${extra}|${offsetStart}|${offsetMonthly}`);
+
   // Mobile sticky result bar: primary repayment + weekly equivalent + actions.
   usePublishMobileResult({
     label: `${FREQ_LABEL[freq]} repayment`,
@@ -475,6 +480,7 @@ const MortgageCalculatorRedesign = () => {
     weekly: freq === "weekly" ? undefined : fmt0(result.weekly),
     onShare,
     onSave: scenarios.length < MAX_SCENARIOS ? saveScenario : undefined,
+    pending: calcPending,
   });
 
   return (
@@ -879,7 +885,10 @@ const MortgageCalculatorRedesign = () => {
             setTerm={setTerm}
             termBounds={{ min: 5, max: 30 }}
           />
-          <div className="result-panel-navy rounded-2xl border border-border bg-card p-6 text-center md:p-7">
+          <div
+            className={`result-panel-navy rounded-2xl border border-border bg-card p-6 text-center md:p-7 transition-opacity duration-150 ${isMobile && calcPending ? "opacity-50" : "opacity-100"}`}
+            aria-busy={isMobile && calcPending ? "true" : undefined}
+          >
             <p className="result-primary-label text-[12px] uppercase tracking-wide text-muted-foreground">
               {FREQ_LABEL[freq]} repayment
             </p>

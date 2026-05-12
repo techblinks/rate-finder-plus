@@ -13,6 +13,7 @@ import {
   type StateCode,
 } from "@/lib/calc/stampDuty";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useIsPending } from "@/hooks/useIsPending";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import { usePublishMobileResult } from "@/lib/mobileResult";
 import { shareCurrent } from "@/lib/shareCurrent";
@@ -227,6 +228,8 @@ const StampDuty = ({ lockedState }: StampDutyProps) => {
     net_duty: result.netDuty,
   });
 
+  const calcPending = useIsPending(JSON.stringify(s), 200);
+
   usePublishMobileResult({
     label: "Stamp duty",
     value: fmt0(result.netDuty),
@@ -237,6 +240,7 @@ const StampDuty = ({ lockedState }: StampDutyProps) => {
         title: "My stamp duty calculation — Calcy",
         text: `Stamp duty on a ${fmt0(s.value)} property in ${s.state}: ${fmt0(result.netDuty)}${s.fhb ? " (first home buyer rate)" : ""}.`,
       }),
+    pending: calcPending,
   });
 
   const stateName = STATES.find((st) => st.code === s.state)?.name ?? s.state;

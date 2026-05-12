@@ -4,6 +4,7 @@ import { AUD } from "@/lib/format";
 import { Card, Field, NumberInput, ResultCard } from "@/components/ui-kit";
 import BarCompare from "@/components/BarCompare";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useIsPending } from "@/hooks/useIsPending";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import { usePublishMobileResult } from "@/lib/mobileResult";
 import { shareCurrent } from "@/lib/shareCurrent";
@@ -80,6 +81,8 @@ const LoanComparisonCalc = () => {
   const interestDiff = Math.abs(result.a.totalInterest - result.b.totalInterest);
   const cheaperLabel = result.a.totalInterest <= result.b.totalInterest ? "Loan A" : "Loan B";
 
+  const calcPending = useIsPending(`${amount}|${JSON.stringify(a)}|${JSON.stringify(b)}`, 250);
+
   usePublishMobileResult({
     label: `${cheaperLabel} saves`,
     value: AUD(interestDiff),
@@ -90,6 +93,7 @@ const LoanComparisonCalc = () => {
         title: "Loan comparison — Calcy",
         text: `${cheaperLabel} saves ${AUD(interestDiff)} in interest (${AUD(monthlyDiff)}/mo difference) on a ${AUD(amount)} loan.`,
       }),
+    pending: calcPending,
   });
 
   const persistState = useMemo(() => ({ amount, a, b }), [amount, a, b]);

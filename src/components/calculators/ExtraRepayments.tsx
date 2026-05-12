@@ -16,6 +16,7 @@ import {
   type Frequency,
 } from "@/lib/calc/extraRepayments";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useIsPending } from "@/hooks/useIsPending";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import { usePublishMobileResult } from "@/lib/mobileResult";
 import { shareCurrent } from "@/lib/shareCurrent";
@@ -238,6 +239,8 @@ const ExtraRepayments = () => {
     interest_saved: result.interestSaved,
   });
 
+  const calcPending = useIsPending(`${s.balance}|${s.rate}|${s.term}|${s.extra}|${s.lumpSum}|${s.lumpSumYear}|${s.extraFrequency}`, 250);
+
   usePublishMobileResult({
     label: "Interest saved",
     value: fmt0(result.interestSaved),
@@ -248,6 +251,7 @@ const ExtraRepayments = () => {
         title: "Extra repayments — Calcy",
         text: `Adding extra repayments saves me ${fmt0(result.interestSaved)} in interest and pays off ${formatYearsMonths(result.monthsSaved)} sooner.`,
       }),
+    pending: calcPending,
   });
 
   // Chart data — merge year arrays so both lines share the X axis
