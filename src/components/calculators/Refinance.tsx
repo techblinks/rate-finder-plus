@@ -997,15 +997,17 @@ const Refinance = () => {
       </div>
 
       {/* Savings timeline chart */}
-      <section className="rounded-2xl border border-border bg-card p-5">
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-          <h3 className="text-[15px] font-semibold">Cumulative cost — current vs refinanced</h3>
-          {result.breakEvenMonth != null && result.breakEvenMonth > 0 && (
+      <MobileChartTableSection
+        title="Cumulative cost — current vs refinanced"
+        hint="Tap to view chart"
+        headerExtra={
+          result.breakEvenMonth != null && result.breakEvenMonth > 0 ? (
             <span className="rounded-full bg-warning/15 px-3 py-1 text-[12px] font-semibold text-warning-foreground">
               Break-even: Month {result.breakEvenMonth}
             </span>
-          )}
-        </div>
+          ) : null
+        }
+      >
         <div className="h-[280px] w-full md:h-[320px]">
           <ResponsiveContainer>
             <AreaChart data={timeline} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
@@ -1093,7 +1095,7 @@ const Refinance = () => {
             <strong className="text-foreground">{fmt0(result.totalInterestSaved)}</strong>
           </p>
         )}
-      </section>
+      </MobileChartTableSection>
 
       {/* Checklist */}
       <section className="rounded-2xl border border-border bg-card p-5">
