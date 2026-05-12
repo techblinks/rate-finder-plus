@@ -8,6 +8,7 @@ import InstallPrompt from "@/components/InstallPrompt";
 import CookieConsent from "@/components/CookieConsent";
 import RouteTransition from "@/components/RouteTransition";
 import PullToRefresh from "@/components/PullToRefresh";
+import { Toaster } from "@/components/ui/sonner";
 
 const Layout = () => {
   const { pathname } = useLocation();
@@ -31,6 +32,7 @@ const Layout = () => {
       <MobileBottomNav />
       <InstallPrompt />
       <CookieConsent />
+      <Toaster />
     </div>
   );
 };

@@ -5,6 +5,7 @@ import RouteAnalytics from "@/components/RouteAnalytics";
 import FaviconManager from "@/components/FaviconManager";
 import CustomScripts from "@/components/CustomScripts";
 import { LocaleProvider } from "@/contexts/LocaleContext";
+import { useSupabaseHealth } from "@/hooks/useSupabaseHealth";
 import Home from "./pages/Home";
 
 const MortgageCalculatorPage = lazy(() => import("./pages/MortgageCalculatorPage"));
@@ -40,15 +41,17 @@ const RouteFallback = () => (
   </div>
 );
 
-const App = () => (
-  <BrowserRouter>
-    <LocaleProvider>
-      <RouteAnalytics />
-      <FaviconManager />
-      <CustomScripts />
-      <Suspense fallback={<RouteFallback />}>
-        <Routes>
-        <Route element={<Layout />}>
+const App = () => {
+  useSupabaseHealth();
+  return (
+    <BrowserRouter>
+      <LocaleProvider>
+        <RouteAnalytics />
+        <FaviconManager />
+        <CustomScripts />
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
+          <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/mortgage-calculator" element={<MortgageCalculatorPage />} />
           <Route path="/stamp-duty-calculator" element={<StampDutyPage />} />
@@ -99,6 +102,7 @@ const App = () => (
       </Suspense>
     </LocaleProvider>
   </BrowserRouter>
-);
+  );
+};
 
 export default App;
