@@ -116,6 +116,12 @@ const GuideArticleShell = ({ guide, basePath = "/guides" }: Props) => {
 
         <p className="mb-8 text-[16px] leading-relaxed text-foreground/90">{guide.intro}</p>
 
+        {/* AEO: direct-answer Q&A block — citation-friendly for AI Overviews. */}
+        {GUIDE_DIRECT_ANSWERS[guide.slug] && (
+          <DirectAnswers items={GUIDE_DIRECT_ANSWERS[guide.slug]} className="mb-10" />
+        )}
+
+
         {/* TOC */}
         <nav aria-label="Table of contents" className="mb-10 rounded-lg border border-border bg-surface p-5">
           <h2 className="mb-3 text-[14px] font-semibold uppercase tracking-wide text-muted-foreground">
