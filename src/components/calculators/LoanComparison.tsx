@@ -179,16 +179,26 @@ const LoanComparisonCalc = () => {
         </div>
       </Card>
 
-      {isMobile && (
-        <MobileInsightBar
-          tone={result.winner === "tie" ? "info" : "success"}
-          message={
-            result.winner === "tie"
-              ? "These loans cost about the same — try changing fees or term."
-              : `Loan ${result.winner.toUpperCase()} saves ${AUD(result.totalDiff)} over ${dA.term} years`
-          }
-        />
-      )}
+      {isMobile && (() => {
+        const rateDiff = Math.abs(dA.rate - dB.rate);
+        const feeDiff = Math.abs((dA.fees ?? 0) - (dB.fees ?? 0));
+        const termDiff = Math.abs(dA.term - dB.term);
+        let msg: string;
+        let tone: "info" | "success" = "success";
+        if (result.winner === "tie") {
+          tone = "info";
+          msg = "These loans cost about the same — try changing the rate, fees or term on either side.";
+        } else if (rateDiff >= 0.1) {
+          msg = `Loan ${result.winner.toUpperCase()} wins by ${AUD(result.totalDiff)}. The rate gap (${rateDiff.toFixed(2)}%) is the main driver — adjust “Interest rate” to test sensitivity.`;
+        } else if (feeDiff >= 200) {
+          msg = `Loan ${result.winner.toUpperCase()} wins by ${AUD(result.totalDiff)} — mostly from lower fees. Tweak “Fees” to compare lender offers.`;
+        } else if (termDiff >= 1) {
+          msg = `Loan ${result.winner.toUpperCase()} wins by ${AUD(result.totalDiff)} — the term difference matters. Match terms to compare like-for-like.`;
+        } else {
+          msg = `Loan ${result.winner.toUpperCase()} saves ${AUD(result.totalDiff)} over ${dA.term} years — change rate, term or fees to stress-test.`;
+        }
+        return <MobileInsightBar tone={tone} message={msg} />;
+      })()}
 
       <ResultCard>
         {isMobile ? (
