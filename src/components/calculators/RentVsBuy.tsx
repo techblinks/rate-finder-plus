@@ -19,7 +19,10 @@ import {
 import { STATES, type StateCode } from "@/lib/calc/stampDuty";
 import { useRbaRates } from "@/hooks/useRbaRates";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useIsPending } from "@/hooks/useIsPending";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { usePublishMobileResult } from "@/lib/mobileResult";
+import { MobilePendingOverlay } from "@/components/mobile/MobileSkeleton";
 
 const AUD0 = new Intl.NumberFormat("en-AU", {
   style: "currency",
