@@ -104,8 +104,15 @@ const MobileHomepage = () => {
 
       {/* Hero */}
       <section className="px-4 pt-4 pb-3">
-        <h1 className="text-[24px] font-bold leading-tight tracking-tight text-foreground">
-          Australian mortgage calculators
+        <h1 className="text-[28px] font-bold leading-[1.1] tracking-tight text-foreground">
+          Australian{" "}
+          <em
+            className="font-serif italic font-normal text-accent"
+            style={{ fontFamily: "var(--font-display-serif)" }}
+          >
+            mortgage
+          </em>{" "}
+          calculators
         </h1>
         <p className="mt-1.5 text-[14px] text-muted-foreground">
           Free. Live RBA rates. All 8 states. No sign-up.
