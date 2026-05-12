@@ -1,0 +1,452 @@
+/* =============================================================
+ * Calcy — World-Class UI Polish Layer
+ * Single, additive CSS pass. Maps the polish prompt's hard-coded
+ * navy values to existing semantic tokens (--accent, --foreground,
+ * --border, --surface) so the brand palette stays intact.
+ * Imported once from src/index.css.  Delete that import to revert.
+ * ============================================================= */
+
+/* ---------- 1. TYPOGRAPHY SCALE ---------- */
+:root {
+  --text-hero:    clamp(36px, 5vw, 56px);
+  --text-title:   clamp(26px, 3vw, 40px);
+  --text-heading: 22px;
+  --text-subhead: 16px;
+  --text-body:    15px;
+  --text-small:   13px;
+  --text-micro:   11px;
+
+  --num-xl: 56px;
+  --num-lg: 32px;
+  --num-md: 20px;
+  --num-sm: 15px;
+  --num-xs: 13px;
+
+  --tracking-tight:  -0.04em;
+  --tracking-normal: -0.02em;
+  --tracking-loose:   0.07em;
+
+  --leading-tight:   1.1;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.75;
+}
+
+/* ---------- 2. SPACING GRID ---------- */
+:root {
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;
+  --space-9: 96px; --space-10: 128px;
+}
+
+/* ---------- 10. RADIUS SYSTEM ---------- */
+:root {
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 16px;
+}
+
+/* ---------- 11. SHADOW SYSTEM ---------- */
+:root {
+  --shadow-xs:    0 1px 2px hsl(var(--foreground) / 0.06);
+  --shadow-sm:    0 1px 3px hsl(var(--foreground) / 0.08), 0 2px 8px hsl(var(--foreground) / 0.04);
+  --shadow-md:    0 4px 16px hsl(var(--foreground) / 0.10), 0 1px 4px hsl(var(--foreground) / 0.06);
+  --shadow-dark:  0 4px 24px hsl(var(--foreground) / 0.20), 0 1px 4px hsl(var(--foreground) / 0.12);
+  --shadow-floating:
+    0 -4px 20px hsl(var(--foreground) / 0.10),
+    0 -1px 0  hsl(var(--foreground) / 0.04);
+}
+
+/* =============================================================
+ * BLOCK 1 — typography application
+ * =========================================================== */
+.page-header-title,
+h1 {
+  font-size: var(--text-title) !important;
+  letter-spacing: var(--tracking-tight) !important;
+  line-height: var(--leading-tight) !important;
+  font-weight: 400 !important;
+}
+
+.input-label,
+[class*="stat-label"],
+th {
+  font-size: var(--text-micro) !important;
+  letter-spacing: var(--tracking-loose) !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+}
+
+/* Tabular numerals on every numeric input/value */
+input[type="number"],
+[class*="amount"],
+[class*="stat-value"],
+[class*="data-value"] {
+  font-family: var(--font-data) !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+/* =============================================================
+ * BLOCK 5 — primary result number (Bloomberg-terminal feel)
+ * Use existing .result-primary-value hook already on calculators.
+ * =========================================================== */
+.result-primary-value,
+[class*="primary-value"],
+.fortnightly-amount,
+.stamp-duty-amount,
+.borrowing-amount,
+.lmi-cost,
+.monthly-saving,
+.you-save-amount {
+  font-family: var(--font-data) !important;
+  font-size: clamp(40px, 5vw, 58px) !important;
+  font-weight: 500 !important;
+  letter-spacing: var(--tracking-tight) !important;
+  font-variant-numeric: tabular-nums !important;
+  font-feature-settings: "tnum", "lnum" !important;
+  line-height: 0.95 !important;
+}
+
+.result-primary-label {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  margin-bottom: 6px !important;
+}
+
+.result-secondary-text,
+[class*="secondary-result"],
+[class*="sub-result"] {
+  font-family: var(--font-data) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.01em !important;
+  font-variant-numeric: tabular-nums !important;
+  margin-top: 8px !important;
+}
+
+[class*="stat-card"],
+[class*="result-stat"] {
+  border-radius: 8px !important;
+  transition: background-color 150ms ease !important;
+}
+
+/* =============================================================
+ * BLOCK 2 — spacing application
+ * =========================================================== */
+[class*="input-panel"],
+[class*="result-panel"] {
+  padding: var(--space-6);
+}
+
+[class*="input-group"],
+[class*="form-field"] {
+  margin-bottom: var(--space-6);
+}
+
+input[type="range"] + div { margin-top: var(--space-2); }
+
+/* =============================================================
+ * BLOCK 3 — header → body transition
+ * =========================================================== */
+.page-header-band {
+  position: relative;
+  z-index: 10;
+  box-shadow:
+    0 1px 0 hsl(var(--foreground) / 0.04),
+    0 4px 24px hsl(var(--foreground) / 0.06);
+}
+
+[class*="input-panel"] {
+  box-shadow: var(--shadow-sm) !important;
+  border: 1px solid hsl(var(--border)) !important;
+}
+
+[class*="result-panel"] {
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* =============================================================
+ * BLOCK 4 — interaction states (universal)
+ * =========================================================== */
+button,
+a,
+input,
+select,
+[role="button"],
+[role="tab"],
+[class*="pill"],
+[class*="btn"],
+[class*="card"] {
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    box-shadow 150ms ease,
+    transform 80ms ease !important;
+}
+
+/* PRESSED — applies to ALL buttons, pills, term/freq tabs */
+button:active,
+[role="button"]:active,
+[role="tab"]:active,
+a:active,
+[class*="pill"]:active,
+[class*="quick-pill"]:active,
+[class*="amount-pill"]:active,
+[class*="term-btn"]:active,
+[class*="freq-btn"]:active,
+[class*="state-pill"]:active {
+  transform: scale(0.98) !important;
+}
+
+/* FOCUS RING — branded accent */
+button:focus-visible,
+input:focus-visible,
+a:focus-visible,
+[role="tab"]:focus-visible,
+select:focus-visible {
+  outline: 2px solid hsl(var(--accent)) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px hsl(var(--accent) / 0.18) !important;
+}
+
+/* Calc card hover lift */
+[class*="calc-card"],
+[class*="calc-tile"] {
+  transition: all 150ms ease !important;
+}
+[class*="calc-card"]:hover,
+[class*="calc-tile"]:hover {
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-2px);
+  border-color: hsl(var(--accent) / 0.5) !important;
+}
+
+/* Hero calc-link hover lift (already styled in index.css; reinforce) */
+.hero-calc-link:hover {
+  transform: translateY(-1px);
+}
+
+/* Input focus — branded ring */
+input[type="number"]:focus,
+input[type="text"]:focus,
+select:focus {
+  border-color: hsl(var(--accent)) !important;
+  box-shadow: 0 0 0 3px hsl(var(--accent) / 0.15) !important;
+  outline: none !important;
+}
+
+/* Slider — grab cursor + thumb hover */
+input[type="range"]            { cursor: grab !important; }
+input[type="range"]:active     { cursor: grabbing !important; }
+input[type="range"]::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 0 6px hsl(var(--accent) / 0.18) !important;
+  transform: scale(1.1) !important;
+}
+
+/* Amount/quick pills hover */
+[class*="quick-pill"]:hover:not(.active),
+[class*="amount-pill"]:hover:not(.active) {
+  border-color: hsl(var(--accent)) !important;
+  color: hsl(var(--accent)) !important;
+  background: hsl(var(--accent-light)) !important;
+}
+
+/* =============================================================
+ * BLOCK 7 — button consistency
+ * Class-hook based; never collides with shadcn variants.
+ * =========================================================== */
+.btn-primary {
+  background: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+  border: none !important;
+  border-radius: var(--radius-md) !important;
+  padding: 11px 22px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.01em !important;
+  height: 44px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+.btn-primary:hover { background: hsl(var(--accent-hover)) !important; }
+
+.btn-secondary {
+  background: transparent !important;
+  color: hsl(var(--text-secondary)) !important;
+  border: 1.5px solid hsl(var(--border)) !important;
+  border-radius: var(--radius-md) !important;
+  padding: 11px 22px !important;
+  font-size: 14px !important;
+  height: 44px !important;
+}
+.btn-secondary:hover {
+  border-color: hsl(var(--accent)) !important;
+  color: hsl(var(--accent)) !important;
+}
+
+.btn-ghost {
+  background: hsl(var(--surface)) !important;
+  color: hsl(var(--foreground)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: var(--radius-md) !important;
+  padding: 10px 18px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  height: 40px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+}
+
+.btn-primary svg,
+.btn-secondary svg,
+.btn-ghost svg {
+  width: 16px !important;
+  height: 16px !important;
+  flex-shrink: 0 !important;
+}
+
+/* =============================================================
+ * BLOCK 8 — input refinement
+ * =========================================================== */
+input[type="number"],
+input[type="text"]:not([class*="search"]) {
+  height: 48px;
+  border: 1.5px solid hsl(var(--border));
+  border-radius: var(--radius-md);
+  padding: 0 14px;
+  font-family: var(--font-data);
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+  width: 100%;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+
+[class*="input-prefix"],
+[class*="prefix"] {
+  font-family: var(--font-data) !important;
+  font-size: 16px !important;
+  color: hsl(var(--muted-foreground)) !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+/* =============================================================
+ * BLOCK 9 — homepage refinement
+ * =========================================================== */
+.live-dot {
+  width: 7px !important;
+  height: 7px !important;
+  animation: livePulse 3s ease-in-out infinite !important;
+}
+@keyframes livePulse {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--success) / 0); opacity: 1; }
+  50%      { box-shadow: 0 0 0 5px hsl(var(--success) / 0.18); opacity: 0.85; }
+}
+
+.hero-data-panel .data-row { padding: 11px 20px !important; }
+.hero-data-panel .data-value {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.02em !important;
+}
+.hero-data-panel .data-label { font-size: 13px !important; }
+
+.hero-calc-link { padding: 13px 16px !important; }
+
+.trust-bar {
+  padding: 14px 24px !important;
+  font-size: 13px !important;
+  letter-spacing: 0.01em !important;
+}
+
+/* =============================================================
+ * BLOCK 10 — radius application
+ * =========================================================== */
+[class*="input-panel"] { border-radius: var(--radius-lg) !important; }
+[class*="result-panel"] { border-radius: var(--radius-lg) !important; }
+[class*="quick-pill"],
+[class*="amount-pill"],
+[class*="state-pill"] { border-radius: var(--radius-md) !important; }
+[class*="badge"],
+[class*="chip"],
+[class*="live-chip"] { border-radius: 20px !important; }
+
+/* =============================================================
+ * BLOCK 11 — shadow application
+ * =========================================================== */
+nav[aria-label*="Mobile"],
+nav[aria-label*="bottom"],
+[class*="bottom-tab"] {
+  box-shadow: var(--shadow-floating) !important;
+}
+
+/* =============================================================
+ * BLOCK 6 — MOBILE CALIBRATION
+ * =========================================================== */
+@media (max-width: 767px) {
+  .result-primary-value,
+  [class*="primary-value"],
+  .fortnightly-amount {
+    font-size: 52px !important;
+    letter-spacing: -0.04em !important;
+  }
+
+  .result-secondary-text,
+  [class*="secondary-result"] { font-size: 15px !important; }
+
+  input[type="number"] {
+    font-size: 22px !important;
+    height: 56px !important;
+    padding: 0 16px !important;
+    border-radius: 8px !important;
+  }
+
+  input[type="range"] { height: 6px !important; }
+  input[type="range"]::-webkit-slider-thumb {
+    width: 30px !important;
+    height: 30px !important;
+    box-shadow: 0 2px 12px hsl(var(--foreground) / 0.35) !important;
+  }
+
+  [class*="quick-pill"],
+  [class*="amount-pill"] {
+    min-height: 40px !important;
+    padding: 0 14px !important;
+    font-size: 13px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+
+  [role="tab"],
+  [class*="term-btn"],
+  [class*="freq-btn"] {
+    min-height: 44px !important;
+    font-size: 15px !important;
+  }
+
+  .page-header-band { padding: 20px 16px 24px !important; }
+  .page-header-title, h1 {
+    font-size: clamp(24px, 7vw, 32px) !important;
+    line-height: 1.15 !important;
+  }
+
+  [class*="stat-card"],
+  [class*="result-stat"] { padding: 12px 14px !important; }
+  [class*="stat-value"]  { font-size: 20px !important; }
+
+  /* Mobile: full-bleed result panel (native-app feel) */
+  [class*="result-panel"] { border-radius: 0 !important; }
+}
