@@ -362,11 +362,17 @@ const AdminDashboard = () => {
                         )}
                       </div>
                     </div>
-                    <div className="mt-6">
-                      <label className="text-sm font-medium text-[hsl(var(--admin-text))]">Logo height: <span className="tnum">{logoHeight}px</span></label>
-                      <input type="range" min={20} max={72} step={1} value={logoHeight} onChange={(e) => setLogoHeight(Number(e.target.value))} className="mt-2 w-full" />
-                      <button onClick={saveSize} disabled={logoHeight === settings.logo_height}
-                        className="mt-3 rounded-lg bg-[hsl(var(--admin-primary))] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">Save size</button>
+                    <div className="mt-6 space-y-4">
+                      <div>
+                        <label className="text-sm font-medium text-[hsl(var(--admin-text))]">Desktop logo height: <span className="tnum">{logoHeight}px</span></label>
+                        <input type="range" min={20} max={72} step={1} value={logoHeight} onChange={(e) => setLogoHeight(Number(e.target.value))} className="mt-2 w-full" />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-[hsl(var(--admin-text))]">Mobile logo height: <span className="tnum">{logoHeightMobile}px</span></label>
+                        <input type="range" min={20} max={60} step={1} value={logoHeightMobile} onChange={(e) => setLogoHeightMobile(Number(e.target.value))} className="mt-2 w-full" />
+                      </div>
+                      <button onClick={saveSize} disabled={saving || (logoHeight === settings.logo_height && logoHeightMobile === settings.logo_height_mobile)}
+                        className="rounded-lg bg-[hsl(var(--admin-primary))] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">Save sizes</button>
                     </div>
                   </section>
 
