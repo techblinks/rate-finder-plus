@@ -345,12 +345,6 @@ const BorrowingPower = () => {
     term: debounced.loanTerm,
   });
 
-  usePublishMobileResult({
-    label: "You can borrow",
-    value: fmt0(result.borrowingPower),
-    sub: `at ${debounced.interestRate}% over ${debounced.loanTerm}yr`,
-  });
-
   const onShare = async () => {
     const url = window.location.href;
     const text = `Based on my income and expenses, I could borrow up to ${fmt0(
@@ -372,6 +366,13 @@ const BorrowingPower = () => {
       /* ignore */
     }
   };
+
+  usePublishMobileResult({
+    label: "You can borrow",
+    value: fmt0(result.borrowingPower),
+    sub: `at ${debounced.interestRate}% over ${debounced.loanTerm}yr`,
+    onShare,
+  });
 
   const clearStored = () => {
     try {
