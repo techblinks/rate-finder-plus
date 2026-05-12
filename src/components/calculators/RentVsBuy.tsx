@@ -329,6 +329,22 @@ const RentVsBuy = () => {
 
   const result = useMemo(() => calculateRentVsBuy(inputs), [inputs]);
 
+  // Mobile sticky bar — show verdict + share CTA
+  usePublishMobileResult({
+    label:
+      result.verdict === "buy"
+        ? "Buying wins by"
+        : result.verdict === "rent"
+          ? "Renting wins by"
+          : "Roughly even",
+    value:
+      result.verdict === "tie"
+        ? fmt0(0)
+        : fmtAbs0(result.difference),
+    sub: `over ${inputs.analysisYears} years`,
+    onShare: () => onShare(),
+  });
+
   // Sensitivity grid
   const grid = useMemo(() => sensitivityGrid(inputs), [inputs]);
   const growthCols = [3, 5, 7, 9, 11];
