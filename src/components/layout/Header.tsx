@@ -25,6 +25,7 @@ const Header = () => {
   const src = logo_url || calcyLogo;
   const h = Math.max(20, Math.min(40, logo_height || 28));
   const [moreOpen, setMoreOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
   const moreActive = MORE.some((m) => pathname.startsWith(m.to));
 
