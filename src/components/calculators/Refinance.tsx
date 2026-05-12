@@ -29,6 +29,7 @@ import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useIsPending } from "@/hooks/useIsPending";
 import { useIsMobile } from "@/hooks/use-mobile";
 import MobileInsightBar from "@/components/mobile/MobileInsightBar";
+import MobileChartTableSection from "@/components/mobile/MobileChartTableSection";
 
 const AUD = new Intl.NumberFormat("en-AU", {
   style: "currency",
