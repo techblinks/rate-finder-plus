@@ -61,9 +61,9 @@ const Header = () => {
             <img
               src={src}
               alt="Calcy"
-              width={h * 4}
-              height={h}
-              style={{ height: `${h}px`, width: "auto" }}
+              width={hMobile * 4}
+              height={hMobile}
+              style={{ height: `${hMobile}px`, width: "auto" }}
               decoding="async"
               fetchPriority="high"
             />
@@ -87,9 +87,9 @@ const Header = () => {
             <img
               src={src}
               alt="Calcy"
-              width={h * 4}
-              height={h}
-              style={{ height: `${h}px`, width: "auto" }}
+              width={hDesktop * 4}
+              height={hDesktop}
+              style={{ height: `${hDesktop}px`, width: "auto" }}
               decoding="async"
               fetchPriority="high"
             />
