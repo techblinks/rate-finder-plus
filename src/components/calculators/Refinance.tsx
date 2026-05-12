@@ -480,7 +480,7 @@ const Refinance = () => {
 
   return (
     <div className="space-y-6 pb-32 md:pb-0">
-  const isMobile = useIsMobile();
+      {/* placeholder removed */}
   const refiInsight = (() => {
     const rateGap = inputs.currentRate - inputs.newRate;
     const upfront = inputs.exitFees + inputs.newLenderFees - inputs.cashback;
