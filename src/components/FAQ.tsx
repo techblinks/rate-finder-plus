@@ -66,7 +66,7 @@ const FAQ = ({ items }: { items: FaqItem[] }) => {
                 aria-expanded={isOpen}
                 className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
               >
-                <span className="text-[15px] font-medium text-foreground">{f.question}</span>
+                <span className="text-[15px] font-medium text-foreground">{question}</span>
                 <ChevronDown
                   className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${
                     isOpen ? "rotate-180" : ""
@@ -77,7 +77,7 @@ const FAQ = ({ items }: { items: FaqItem[] }) => {
                 hidden={!isOpen}
                 className="px-4 pb-4 text-[14px] leading-relaxed text-muted-foreground"
               >
-                {renderAnswer(f.answer, f.links)}
+                {renderAnswer(answer, f.links)}
               </div>
             </li>
           );
