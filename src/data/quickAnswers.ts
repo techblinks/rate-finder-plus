@@ -12,7 +12,7 @@ export const QUICK_ANSWERS: Record<string, QuickAnswer> = {
   "/mortgage-calculator": {
     question: "What are the repayments on a $650,000 mortgage?",
     answer:
-      "On a $650,000 loan at 6.39% over 30 years: about $2,038/week — sorry, $4,061/month, $1,874/fortnight, or $937/week. Total interest over the loan: ~$811,930. Use the calculator below for your exact figures.",
+      "On a $650,000 loan at 6.39% over 30 years: ~$4,061/month, $1,874/fortnight, or $937/week. Total interest: ~$811,930. Use the calculator below for your exact figures.",
   },
   "/stamp-duty-calculator": {
     question: "How much is stamp duty in Australia?",
