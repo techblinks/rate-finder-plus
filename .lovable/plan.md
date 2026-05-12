@@ -1,36 +1,29 @@
 ## Goal
-Allow separate logo height control for **mobile** and **desktop** from the admin backend.
+Apply the uploaded CSS polish patch to the mortgage calculator (and sitewide where the rules generically match) — pure CSS overrides, no JSX/HTML or content changes.
 
 ## Changes
 
-### 1. Database migration
-Add a new column `logo_height_mobile` to `site_settings` (existing `logo_height` becomes the desktop value).
-```sql
-alter table public.site_settings
-  add column if not exists logo_height_mobile int not null default 28;
+### 1. Add the CSS file
+Copy the uploaded patch verbatim to `src/styles/calculator-patch.css` (all 12 sections: brand-blue sliders, chart min-height, bottom-nav padding, savings box typography, share/print row, quick-adjust chips, repayment hero, advanced badge, data sources, touch targets, transitions, bottom nav frosted glass).
+
+### 2. Wire it up globally
+Add a single import at the bottom of `src/index.css`:
+```css
+@import "./styles/calculator-patch.css";
 ```
-No data loss; existing `logo_height` stays as desktop value.
+This ensures it loads after Tailwind + existing `polish.css` so `!important` overrides stick.
 
-### 2. `src/hooks/useSiteSettings.ts`
-- Add `logo_height_mobile: number` to `SiteSettings` interface.
-- Add `logo_height_mobile: 28` to `DEFAULTS`.
-- Add `logo_height_mobile` to `SELECT_COLS`.
+### 3. Guardrails / minor adjustments to avoid regressions
+The patch's broad selectors (e.g. `button { min-height: 44px }`, `main { padding-bottom: 100px !important }`) could affect the admin dashboard and small icon buttons. Two safe scoping tweaks before saving:
 
-### 3. `src/components/layout/Header.tsx`
-- Destructure `logo_height_mobile` alongside `logo_height`.
-- Use `logo_height_mobile` (clamped 20–60) for the mobile branch (`md:hidden` block).
-- Use `logo_height` (clamped 20–72) for the desktop branch (unchanged behavior).
+- Scope the global `button, [role="button"], a { min-height: 44px }` rule to **exclude admin** (`:not(.admin-shell *)`) and exclude small icon-only buttons used in the header search (`:not([aria-label="Search"])`). Keeps native feel on public pages, doesn't break admin sliders/toggles.
+- Scope the `main { padding-bottom: 100px }` rule to mobile only via `@media (max-width: 767px)` — desktop doesn't have the fixed bottom nav, so 100px of dead space at the bottom would be wasted.
 
-### 4. `src/pages/admin/AdminDashboard.tsx`
-In the Branding → Logo card, replace the single slider with **two sliders**:
-- **Desktop logo height** — slider 20–72px, bound to `logoHeight` state, saves `logo_height`.
-- **Mobile logo height** — new slider 20–60px, bound to new `logoHeightMobile` state, saves `logo_height_mobile`.
-Each has its own "Save size" button (or one combined button that saves both). Plan: one "Save sizes" button that persists both at once for simplicity.
-Add live preview note showing both px values.
+Everything else (sliders, chart heights, savings box, chips, transitions, bottom nav blur) is safe sitewide as-written.
 
-### 5. Tests
-- Update `src/test/seo-regression.test.ts` mock to include `logo_height_mobile: 28`.
-- Run vitest; update homepage snapshot only if affected (shouldn't be — default mobile height stays 28, same as current clamp result).
+### 4. Verify
+- Run vitest (831 tests should still pass — pure CSS, no logic).
+- Visually sanity-check mortgage calculator and admin in the preview.
 
 ## Out of scope
-No changes to copy, SEO, or other settings. No UI redesign — same admin card, just an extra slider.
+No JSX edits, no copy changes, no SEO/schema changes, no design-token refactor.
