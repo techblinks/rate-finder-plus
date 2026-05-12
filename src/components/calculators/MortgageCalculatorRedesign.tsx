@@ -7,6 +7,7 @@ import Tooltip from "@/components/Tooltip";
 import CurrencyInput from "@/components/CurrencyInput";
 import { useRbaRates } from "@/hooks/useRbaRates";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useIsPending } from "@/hooks/useIsPending";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import {
   loadLast,
