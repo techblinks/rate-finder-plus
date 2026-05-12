@@ -24,6 +24,10 @@ const StampDutyPage = () => (
     ]}
     sections={[
       {
+        heading: "Stamp duty rates by state — 2026",
+        body: <StampDutyRatesTable />,
+      },
+      {
         heading: "How to use this calculator",
         body: (
           <p>
