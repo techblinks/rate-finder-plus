@@ -93,9 +93,6 @@ const MortgageRepayment = () => {
   const calcRef = useRef<HTMLDivElement>(null);
 
   const isMobile = useIsMobile();
-  const calcPending = useIsMobile()
-    ? false
-    : false;
   const pending = useIsPending(`${amount}|${rate}|${term}|${frequency}|${extraOpen ? extra : 0}`, 250);
   const pendingMobile = isMobile && pending;
 
