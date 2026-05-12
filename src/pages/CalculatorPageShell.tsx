@@ -1,6 +1,14 @@
 import { ReactNode } from "react";
 import { SeoHead } from "@/components/seo/SeoHead";
-import { ArticleJsonLd, BreadcrumbJsonLd, FaqJsonLd, HowToJsonLd, WebApplicationJsonLd } from "@/components/seo/JsonLd";
+import {
+  ArticleJsonLd,
+  BreadcrumbJsonLd,
+  DatasetJsonLd,
+  FaqJsonLd,
+  HowToJsonLd,
+  SpeakableJsonLd,
+  WebApplicationJsonLd,
+} from "@/components/seo/JsonLd";
 import { HOW_TOS } from "@/data/howTos";
 import Breadcrumb from "@/components/Breadcrumb";
 import FAQ from "@/components/FAQ";
@@ -16,7 +24,12 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useSwipeNavigation } from "@/hooks/useSwipeNavigation";
 import MobileRelatedSections from "@/components/mobile/MobileRelatedSections";
 import MobileTrustStrip from "@/components/mobile/MobileTrustStrip";
+import QuickAnswer from "@/components/seo/QuickAnswer";
+import DataSources from "@/components/seo/DataSources";
+import { QUICK_ANSWERS } from "@/data/quickAnswers";
+import { DATA_SOURCES } from "@/data/dataSources";
 import type { FaqItem } from "@/data/faqs";
+
 
 interface Section {
   heading: string;
