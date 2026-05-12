@@ -695,9 +695,15 @@
     font-family: var(--font-data) !important;
     font-variant-numeric: tabular-nums !important;
     border-radius: 8px !important;
-    padding-left: 14px !important;
-    padding-right: 14px !important;
   }
+  /* Default horizontal padding only when no Tailwind pl-/pr- override is present,
+     so currency prefix ($) and suffix (%) do not collide with the value. */
+  .field-input:not([class*="pl-"]) { padding-left: 14px !important; }
+  .field-input:not([class*="pr-"]) { padding-right: 14px !important; }
+  /* Ensure prefix/suffix-aware inputs keep enough room on mobile. */
+  .field-input.pl-7 { padding-left: 28px !important; }
+  .field-input.pl-8 { padding-left: 32px !important; }
+  .field-input.pr-10 { padding-right: 40px !important; }
   .field-input:focus {
     border-color: var(--c-navy) !important;
     box-shadow: 0 0 0 3px rgba(10,22,40,0.08) !important;
