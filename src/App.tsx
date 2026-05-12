@@ -102,6 +102,7 @@ const App = () => {
       </Suspense>
     </LocaleProvider>
   </BrowserRouter>
-);
+  );
+};
 
 export default App;
