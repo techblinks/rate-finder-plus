@@ -469,6 +469,10 @@ const MortgageCalculatorRedesign = () => {
 
   const altFreqs = FREQS.filter((f) => f !== freq);
 
+  // True while live inputs differ from the debounced snapshot — drives
+  // mobile sticky-bar shimmer and result/chart dim states.
+  const calcPending = useIsPending(`${loan}|${rate}|${term}|${extra}|${offsetStart}|${offsetMonthly}`);
+
   // Mobile sticky result bar: primary repayment + weekly equivalent + actions.
   usePublishMobileResult({
     label: `${FREQ_LABEL[freq]} repayment`,
@@ -476,6 +480,7 @@ const MortgageCalculatorRedesign = () => {
     weekly: freq === "weekly" ? undefined : fmt0(result.weekly),
     onShare,
     onSave: scenarios.length < MAX_SCENARIOS ? saveScenario : undefined,
+    pending: calcPending,
   });
 
   return (
