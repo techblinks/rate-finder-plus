@@ -114,7 +114,12 @@ export const CurrencyInput = ({
       value={display}
       onChange={handleChange}
       onBlur={() => {
-        setDisplay(value > 0 ? AUD0.format(value) : "");
+        let n = value;
+        if (Number.isFinite(n) && n > 0 && typeof min === "number" && n < min) {
+          n = min;
+          onChange(n);
+        }
+        setDisplay(n > 0 ? AUD0.format(n) : "");
       }}
       className={className ?? "field-input tnum w-full"}
     />
