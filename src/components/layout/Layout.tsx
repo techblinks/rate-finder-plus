@@ -32,6 +32,7 @@ const Layout = () => {
       <MobileBottomNav />
       <InstallPrompt />
       <CookieConsent />
+      <Toaster />
     </div>
   );
 };
