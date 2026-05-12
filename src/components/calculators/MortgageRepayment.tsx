@@ -92,6 +92,13 @@ const MortgageRepayment = () => {
 
   const calcRef = useRef<HTMLDivElement>(null);
 
+  const isMobile = useIsMobile();
+  const calcPending = useIsMobile()
+    ? false
+    : false;
+  const pending = useIsPending(`${amount}|${rate}|${term}|${frequency}|${extraOpen ? extra : 0}`, 250);
+  const pendingMobile = isMobile && pending;
+
   // Publish primary result to the mobile sticky bottom bar (no-op on desktop).
   usePublishMobileResult({
     label: `${frequency.charAt(0).toUpperCase() + frequency.slice(1)} repayment`,
@@ -100,6 +107,7 @@ const MortgageRepayment = () => {
     sub: frequency === "monthly"
       ? `Fortnightly ${AUD(result.fortnightly)}`
       : `Monthly ${AUD(result.monthly)}`,
+    pending: pendingMobile,
     onShare: () =>
       shareCurrent({
         calculator: "mortgage_repayment",
