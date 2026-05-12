@@ -55,11 +55,3 @@ export const QUICK_ANSWERS: Record<string, QuickAnswer> = {
       "Yes. Lenders treat HECS/HELP repayments as ongoing liabilities. A $40,000 HECS balance on a $90,000 salary typically reduces borrowing capacity by $35,000–$55,000.",
   },
 };
-
-// Replace mortgage answer with a corrected, concise version (kept separate so
-// the literal above stays readable in code review).
-QUICK_ANSWERS["/mortgage-calculator"] = {
-  question: "What are the repayments on a $650,000 mortgage?",
-  answer:
-    "On a $650,000 loan at 6.39% over 30 years: ~$4,061/month, $1,874/fortnight, or $937/week. Total interest: ~$811,930. Use the calculator below for your exact figures.",
-};
