@@ -1009,34 +1009,54 @@ const MortgageCalculatorRedesign = () => {
             </div>
           )}
 
-          <div className="rounded-2xl border border-border bg-card p-4">
-            <h3 className="mb-3 text-[15px] font-semibold">
-              {offset ? "Loan balance over time" : "Principal vs interest by year"}
-            </h3>
-            <Suspense fallback={<div className="h-64 animate-pulse rounded-lg bg-muted/40" />}>
-              <AmortChart
-                schedule={offset ? offset.yearlySchedule : result.schedule}
-                baselineSchedule={offset && baselineForChart ? baselineForChart : undefined}
-              />
+          {(() => {
+            const chart = (
+              <Suspense fallback={<div className="h-64 animate-pulse rounded-lg bg-muted/40" />}>
+                <AmortChart
+                  schedule={offset ? offset.yearlySchedule : result.schedule}
+                  baselineSchedule={offset && baselineForChart ? baselineForChart : undefined}
+                />
+              </Suspense>
+            );
+            const title = offset ? "Loan balance over time" : "Principal vs interest by year";
+            return isMobile ? (
+              <MobileCollapse title={title} hint="Tap to see year-by-year chart">
+                {chart}
+              </MobileCollapse>
+            ) : (
+              <div className="rounded-2xl border border-border bg-card p-4">
+                <h3 className="mb-3 text-[15px] font-semibold">{title}</h3>
+                {chart}
+              </div>
+            );
+          })()}
+
+          {!isMobile && (
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={onShare}
+                className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-[14px] font-semibold text-accent-foreground hover:bg-accent-hover"
+              >
+                {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
+                {copied ? "Copied!" : "Share this calculation"}
+              </button>
+            </div>
+          )}
+
+          {isMobile ? (
+            <MobileCollapse title="Year-by-year schedule" hint="Full amortisation table">
+              <Suspense fallback={<div className="h-32 animate-pulse rounded-xl bg-muted/40" />}>
+                <AmortTable schedule={result.schedule} />
+              </Suspense>
+            </MobileCollapse>
+          ) : (
+            <Suspense fallback={<div className="h-32 animate-pulse rounded-xl bg-muted/40" />}>
+              <AmortTable schedule={result.schedule} />
             </Suspense>
-          </div>
+          )}
 
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={onShare}
-              className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-[14px] font-semibold text-accent-foreground hover:bg-accent-hover"
-            >
-              {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
-              {copied ? "Copied!" : "Share this calculation"}
-            </button>
-          </div>
-
-          <Suspense fallback={<div className="h-32 animate-pulse rounded-xl bg-muted/40" />}>
-            <AmortTable schedule={result.schedule} />
-          </Suspense>
-
-          <ResultActions calculator="mortgage_repayment" />
+          {!isMobile && <ResultActions calculator="mortgage_repayment" />}
 
           <ShareResult
             calculator="mortgage_repayment"
