@@ -370,11 +370,14 @@ const BorrowingPower = () => {
     }
   };
 
+  const calcPending = useIsPending(JSON.stringify(s), 250);
+
   usePublishMobileResult({
     label: "You can borrow",
     value: fmt0(result.borrowingPower),
     sub: `at ${debounced.interestRate}% over ${debounced.loanTerm}yr`,
     onShare,
+    pending: calcPending,
   });
 
   const clearStored = () => {
