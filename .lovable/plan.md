@@ -1,34 +1,42 @@
-## Problem
+## What's wrong
 
-In the mortgage calculator (and every other calculator that uses a `$` amount field), the loan/amount text box clamps to the minimum on **every keystroke**.
+The guide article header strip shows a hardcoded **"RBA cash rate 4.10%"** even though the live database already holds **4.35%** (post the May 2026 hike). Every other surface that reads the rate via the `useRbaRates()` / `useLiveRates()` hooks (calculators, RBA indicator, hero, footer, FAQs that were manually rewritten) is already correct.
 
-Example: the loan field has `min={50000}`. The user clears the field and types `7` to start typing `750000`. The handler immediately sees `7 < 50000` and rewrites the value to `$50,000`. The cursor then sits after the formatted value, and any further digits are appended to `50000` instead of replacing it — so the user perceives the field as "stuck at $50,000" and cannot type a smaller or different number.
+The bug is one stale string in `src/components/guides/GuideArticleShell.tsx` plus two stale **fallback** constants used when the DB fetch fails:
 
-The same logic also blocks typing values larger than `max` mid-entry (e.g. typing `3` when max is `3,000,000` is fine, but typing `30000000` clamps once you exceed the cap).
+- `src/components/guides/GuideArticleShell.tsx:114` — literal `"…RBA cash rate 4.10%."`
+- `src/data/rbaRates.ts:5` — `cashRate: 4.10` (static fallback)
+- `src/hooks/useLiveRates.ts:116, 173` — fallback `4.1` and seed `{ rate: 4.1 }`
 
-This affects every screen that uses `CurrencyInput`, which `RangeField` renders whenever `prefix === "$"`. That includes Mortgage, Borrowing Power, Extra Repayments, LMI, Loan Comparison, Refinance, Rent vs Buy, Stamp Duty, HECS — i.e. every calculator's dollar fields.
+## Auto-sync — already wired, just verifying
 
-The slider itself works correctly; only the typed input is broken. The non-currency `NumberInput` (rate %, term yr) does **not** clamp while typing, so those fields are fine.
+The site already has a backend pipeline so this never has to be edited by hand again:
+
+- DB table `rate_data` stores the live cash rate (currently `4.35`, verified 2026-05-09).
+- Edge function `supabase/functions/sync-rba-rate/index.ts` runs daily via pg_cron and writes the latest rate.
+- `useLiveRates()` fetches from `rate_data`, caches for 1 hour per session, and exposes `rbaRate`.
+- `useRbaRates()` wraps it for calculators.
+
+Everything that calls these hooks updates automatically. The guide trust-strip is the only place that bypassed the hook.
 
 ## Fix
 
-Edit `src/components/CurrencyInput.tsx` (the `handleChange` function):
+1. **`src/components/guides/GuideArticleShell.tsx`** — call `useRbaRates()` and render the rate dynamically:
+   `…RBA cash rate {cashRate.toFixed(2)}%.`
+   Also include the `lastUpdated` month so the strip stays self-explanatory.
 
-1. Remove the `n < min` clamp from the keystroke handler so users can freely type any value, including transitional ones below `min`.
-2. Keep the `n > max` clamp on keystroke (prevents pasting/typing past the hard ceiling without surprise).
-3. Apply the `min` clamp in `onBlur` instead — when the user leaves the field, if the value is below `min` (and not zero/empty), snap it up to `min`. Empty stays empty/0.
-4. Re-format the display in `onBlur` accordingly so the parent state and the visible text agree.
+2. **`src/data/rbaRates.ts`** — update the static fallback `cashRate: 4.10` → `cashRate: 4.35`. This is only used when both the DB and the in-memory default fail, but keeping it current avoids wrong numbers flashing during cold loads.
 
-This is the standard "validate on blur, not on every keystroke" pattern and is the minimum change needed to unstick the input.
+3. **`src/hooks/useLiveRates.ts`** — bump the two `4.1` fallbacks to `4.35` for the same reason (line 116 default and the `getDefaultRates()` seed at line 173).
 
-## Audit / scope
+After these edits every surface — guides, calculators, hero, FAQs, footer — sources the cash rate from the same live `rate_data` row. When the RBA changes the rate, the daily sync function updates that row and the whole site reflects it within an hour (cache TTL) without any code change.
 
-- `RangeField` → `CurrencyInput` is the only path where this clamp-on-type bug exists. Fixing `CurrencyInput` automatically fixes every calculator's dollar field (loan amount, deposit, property value, extra repayments, offset balance, income, expenses, etc.).
-- Sliders are unaffected — they cannot produce out-of-range values.
-- `NumberInput` (rate, term, percentages) already has no clamp-on-type and needs no change.
+## Audit summary (no other stale numbers found)
 
-No business logic, calculation, or layout changes. Frontend-only, single file.
+`rg` for `4.10`, `4.1%`, hardcoded "cash rate" mentions returned only the three locations above. All page copy that references the rate (FAQs, SEO FAQs, guide bodies, Best Home Loans page, RBA calendar comments) already says **4.35% as of May 2026**.
 
 ## Files to change
 
-- `src/components/CurrencyInput.tsx` — adjust `handleChange` (drop min clamp) and `onBlur` (apply min clamp + reformat).
+- `src/components/guides/GuideArticleShell.tsx`
+- `src/data/rbaRates.ts`
+- `src/hooks/useLiveRates.ts`
