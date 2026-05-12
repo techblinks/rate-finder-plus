@@ -434,7 +434,8 @@
   .dropdown-panel-redesign a:hover { background: hsl(var(--accent-light)); color: hsl(var(--accent)); }
 
   .hero-redesign { background: hsl(var(--background)); color: hsl(var(--foreground)); font-family: var(--font-body-redesign); border-bottom: 1px solid hsl(var(--border)); }
-  .hero-redesign h1 { font-family: var(--font-display-serif); font-weight: 400; color: hsl(var(--foreground)); line-height: 1.1; letter-spacing: -0.03em; }
+  .hero-redesign h1 { font-family: var(--font-display); font-weight: 600; color: hsl(var(--foreground)); line-height: 1.08; letter-spacing: -0.022em; }
+  .hero-redesign h1 em { font-style: italic; font-family: var(--font-display-serif); font-weight: 500; color: #003680; font-size: 0.94em; letter-spacing: -0.005em; }
 
   .live-indicator { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: hsl(var(--muted-foreground)); font-family: var(--font-data); }
   .live-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,0.2); animation: live-pulse 2s infinite; }
