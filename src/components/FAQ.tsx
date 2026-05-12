@@ -2,6 +2,8 @@ import { useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import type { FaqItem, FaqLink } from "@/data/faqs";
 import { ChevronDown } from "lucide-react";
+import { useRbaRates } from "@/hooks/useRbaRates";
+import { substituteRateTokens } from "@/lib/rateTokens";
 
 /**
  * Render a plain answer string with internal links injected for the configured
@@ -46,6 +48,7 @@ function renderAnswer(answer: string, links?: FaqLink[]): ReactNode {
 }
 
 const FAQ = ({ items }: { items: FaqItem[] }) => {
+  const { cashRate } = useRbaRates();
   const [open, setOpen] = useState<number | null>(0);
   return (
     <section aria-labelledby="faq-heading">
@@ -53,6 +56,8 @@ const FAQ = ({ items }: { items: FaqItem[] }) => {
       <ul className="divide-y divide-border rounded-lg border border-border bg-card">
         {items.map((f, i) => {
           const isOpen = open === i;
+          const question = substituteRateTokens(f.question, { cashRate });
+          const answer = substituteRateTokens(f.answer, { cashRate });
           return (
             <li key={i}>
               <button
@@ -61,7 +66,7 @@ const FAQ = ({ items }: { items: FaqItem[] }) => {
                 aria-expanded={isOpen}
                 className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
               >
-                <span className="text-[15px] font-medium text-foreground">{f.question}</span>
+                <span className="text-[15px] font-medium text-foreground">{question}</span>
                 <ChevronDown
                   className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${
                     isOpen ? "rotate-180" : ""
@@ -72,7 +77,7 @@ const FAQ = ({ items }: { items: FaqItem[] }) => {
                 hidden={!isOpen}
                 className="px-4 pb-4 text-[14px] leading-relaxed text-muted-foreground"
               >
-                {renderAnswer(f.answer, f.links)}
+                {renderAnswer(answer, f.links)}
               </div>
             </li>
           );
