@@ -295,13 +295,15 @@ const MortgageRepayment = () => {
         </div>
 
         <div className="mt-5">
-          <Suspense
-            fallback={
-              <div className="h-32 animate-pulse rounded-xl bg-muted/40" aria-hidden="true" />
-            }
-          >
-            <AmortisationTable rows={result.yearlySchedule} monthlyRows={result.monthlySchedule} />
-          </Suspense>
+          <MobilePendingOverlay pending={pendingMobile}>
+            <Suspense
+              fallback={
+                <div className="h-32 animate-pulse rounded-xl bg-muted/40" aria-hidden="true" />
+              }
+            >
+              <AmortisationTable rows={result.yearlySchedule} monthlyRows={result.monthlySchedule} />
+            </Suspense>
+          </MobilePendingOverlay>
         </div>
               <ResultActions calculator="mortgage_repayment" />
       </ResultCard>
