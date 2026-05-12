@@ -113,7 +113,7 @@ export function useLiveRates(): UseLiveRatesReturn {
   }, []);
 
   const rbaRate =
-    (rates?.rba_cash_rate?.national?.cash_rate as { rate?: number } | undefined)?.rate ?? 4.1;
+    (rates?.rba_cash_rate?.national?.cash_rate as { rate?: number } | undefined)?.rate ?? 4.35;
 
   const getFHOG: UseLiveRatesReturn["getFHOG"] = (state) => {
     const data = rates?.fhog?.[state]?.grant as
