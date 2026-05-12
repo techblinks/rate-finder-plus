@@ -72,6 +72,9 @@ const CalculatorPageShell = ({
   const isMobile = useIsMobile();
   const swipe = useSwipeNavigation(isMobile);
 
+  const quickAnswer = QUICK_ANSWERS[canonical];
+  const dataSources = DATA_SOURCES[canonical];
+
   // SEO heads always render — JSON-LD is invisible and benefits both desktop & SSR.
   const heads = (
     <>
@@ -91,8 +94,19 @@ const CalculatorPageShell = ({
         path={canonical}
         sectionHeadings={sections.map((s) => s.heading)}
       />
+      <DatasetJsonLd
+        name={metaTitle}
+        description={metaDescription}
+        path={canonical}
+        variableMeasured={sections.map((s) => s.heading).slice(0, 6)}
+      />
+      <SpeakableJsonLd
+        name={metaTitle}
+        selectors={[".page-header-title", ".faq-answer", ".quick-answer-a", ".live-rate-chip"]}
+      />
     </>
   );
+
 
   if (isMobile) {
     // Native-app feel: only the calculator. No breadcrumbs, no SEO sections,
