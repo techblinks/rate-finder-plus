@@ -1,8 +1,9 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
 import calcyLogo from "@/assets/calcy-logo.webp";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import MobileSearchSheet from "@/components/mobile/MobileSearchSheet";
 
 const PRIMARY = [
   { to: "/mortgage-calculator", label: "Mortgage" },
