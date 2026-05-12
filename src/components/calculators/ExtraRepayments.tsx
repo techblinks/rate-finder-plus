@@ -780,8 +780,7 @@ const ExtraRepayments = () => {
       </section>
 
       {/* What-if scenarios */}
-      <section className="rounded-2xl border border-border bg-card p-5">
-        <h3 className="mb-1 text-[15px] font-semibold">What if you paid more?</h3>
+      <MobileChartTableSection title="What if you paid more?" hint="Tap to see scenarios">
         <p className="mb-4 text-[13px] text-muted-foreground">
           Click any row to apply that extra amount.
         </p>
@@ -823,7 +822,7 @@ const ExtraRepayments = () => {
             </tbody>
           </table>
         </div>
-      </section>
+      </MobileChartTableSection>
 
       {/* Year-by-year table */}
       <section className="rounded-2xl border border-border bg-card p-5">
