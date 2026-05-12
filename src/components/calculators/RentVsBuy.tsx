@@ -332,6 +332,10 @@ const RentVsBuy = () => {
 
   const result = useMemo(() => calculateRentVsBuy(inputs), [inputs]);
 
+  const isMobile = useIsMobile();
+  const calcPending = useIsPending(JSON.stringify(s), 250);
+  const pendingMobile = isMobile && (calcPending || isStale);
+
   // Mobile sticky bar — show verdict + share CTA
   usePublishMobileResult({
     label:
@@ -345,6 +349,7 @@ const RentVsBuy = () => {
         ? fmt0(0)
         : fmtAbs0(result.difference),
     sub: `over ${inputs.analysisYears} years`,
+    pending: pendingMobile,
     onShare: () => onShare(),
   });
 
