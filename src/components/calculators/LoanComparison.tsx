@@ -4,6 +4,7 @@ import { AUD } from "@/lib/format";
 import { Card, Field, NumberInput, ResultCard } from "@/components/ui-kit";
 import BarCompare from "@/components/BarCompare";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useIsPending } from "@/hooks/useIsPending";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import { usePublishMobileResult } from "@/lib/mobileResult";
 import { shareCurrent } from "@/lib/shareCurrent";
