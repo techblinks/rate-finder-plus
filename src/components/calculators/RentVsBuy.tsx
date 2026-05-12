@@ -1025,45 +1025,47 @@ const RentVsBuy = () => {
             {showAllYears ? "Show key years" : "Show all years"}
           </button>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[640px] text-[13px]">
-            <thead>
-              <tr className="text-left text-[11px] uppercase text-muted-foreground">
-                <th className="py-2 font-semibold">Year</th>
-                <th className="py-2 font-semibold">Property value</th>
-                <th className="py-2 font-semibold">Buyer equity</th>
-                <th className="py-2 font-semibold">Renter portfolio</th>
-                <th className="py-2 font-semibold">Winner</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {yearRows.map((i) => {
-                const buy = result.buyData[i];
-                const rent = result.rentData[i];
-                const buyWins = buy.netWorth >= rent.netWorth;
-                return (
-                  <tr key={buy.year}>
-                    <td className="py-2 font-medium">Year {buy.year}</td>
-                    <td className="py-2 tnum">{fmt0(buy.propertyValue)}</td>
-                    <td className="py-2 tnum">{fmt0(buy.equity)}</td>
-                    <td className="py-2 tnum">{fmt0(rent.investmentPortfolio)}</td>
-                    <td className="py-2">
-                      <span
-                        className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
-                          buyWins
-                            ? "bg-success/15 text-success"
-                            : "bg-accent/15 text-accent"
-                        }`}
-                      >
-                        {buyWins ? "Buy ✓" : "Rent ✓"}
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <MobilePendingOverlay pending={pendingMobile}>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[640px] text-[13px]">
+              <thead>
+                <tr className="text-left text-[11px] uppercase text-muted-foreground">
+                  <th className="py-2 font-semibold">Year</th>
+                  <th className="py-2 font-semibold">Property value</th>
+                  <th className="py-2 font-semibold">Buyer equity</th>
+                  <th className="py-2 font-semibold">Renter portfolio</th>
+                  <th className="py-2 font-semibold">Winner</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {yearRows.map((i) => {
+                  const buy = result.buyData[i];
+                  const rent = result.rentData[i];
+                  const buyWins = buy.netWorth >= rent.netWorth;
+                  return (
+                    <tr key={buy.year}>
+                      <td className="py-2 font-medium">Year {buy.year}</td>
+                      <td className="py-2 tnum">{fmt0(buy.propertyValue)}</td>
+                      <td className="py-2 tnum">{fmt0(buy.equity)}</td>
+                      <td className="py-2 tnum">{fmt0(rent.investmentPortfolio)}</td>
+                      <td className="py-2">
+                        <span
+                          className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                            buyWins
+                              ? "bg-success/15 text-success"
+                              : "bg-accent/15 text-accent"
+                          }`}
+                        >
+                          {buyWins ? "Buy ✓" : "Rent ✓"}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </MobilePendingOverlay>
       </section>
 
       {/* Why assumptions matter */}
