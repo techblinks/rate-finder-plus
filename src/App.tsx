@@ -41,15 +41,17 @@ const RouteFallback = () => (
   </div>
 );
 
-const App = () => (
-  <BrowserRouter>
-    <LocaleProvider>
-      <RouteAnalytics />
-      <FaviconManager />
-      <CustomScripts />
-      <Suspense fallback={<RouteFallback />}>
-        <Routes>
-        <Route element={<Layout />}>
+const App = () => {
+  useSupabaseHealth();
+  return (
+    <BrowserRouter>
+      <LocaleProvider>
+        <RouteAnalytics />
+        <FaviconManager />
+        <CustomScripts />
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
+          <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/mortgage-calculator" element={<MortgageCalculatorPage />} />
           <Route path="/stamp-duty-calculator" element={<StampDutyPage />} />
