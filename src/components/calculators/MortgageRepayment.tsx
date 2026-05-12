@@ -97,6 +97,12 @@ const MortgageRepayment = () => {
     sub: frequency === "monthly"
       ? `Fortnightly ${AUD(result.fortnightly)}`
       : `Monthly ${AUD(result.monthly)}`,
+    onShare: () =>
+      shareCurrent({
+        calculator: "mortgage_repayment",
+        title: "Mortgage repayment — Calcy",
+        text: `My ${frequency} repayment is ${AUD(display)} on a ${AUD(amount)} loan at ${rate}% over ${term} years.`,
+      }),
   });
 
   const persistState = useMemo(
