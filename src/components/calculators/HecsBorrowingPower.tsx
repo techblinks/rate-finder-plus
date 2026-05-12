@@ -55,10 +55,14 @@ const HecsBorrowingPower = () => {
     hecs_impact: Math.round(result.hecsImpact),
   });
 
+  const isMobile = useIsMobile();
+  const calcPending = useIsPending(`${income}|${hecs}|${rate}|${expenses}|${dti}`, 250);
+
   usePublishMobileResult({
     label: "You can borrow",
     value: AUD(result.borrowingPower),
     sub: `HECS impact ${AUD(result.hecsImpact)}`,
+    pending: calcPending,
     onShare: () =>
       shareCurrent({
         calculator: "hecs_borrowing_power",
