@@ -9,6 +9,7 @@ import DirectAnswers from "@/components/seo/DirectAnswers";
 import { GUIDE_DIRECT_ANSWERS } from "@/data/guideDirectAnswers";
 import type { GuideMeta } from "@/data/guides";
 import { ALL_GUIDES, isSuburbGuide } from "@/data/allGuides";
+import { useRbaRates } from "@/hooks/useRbaRates";
 
 const slugify = (s: string) =>
   s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -28,6 +29,7 @@ const hrefFor = (slug: string) =>
   isSuburbGuide(slug) ? `/suburbs/${slug}` : `/guides/${slug}`;
 
 const GuideArticleShell = ({ guide, basePath = "/guides" }: Props) => {
+  const { cashRate, lastUpdated } = useRbaRates();
   const canonical = `${basePath}/${guide.slug}`;
   const breadcrumbLabel = basePath === "/suburbs" ? "Suburb guides" : "Guides";
   const related = guide.relatedGuides
@@ -111,7 +113,7 @@ const GuideArticleShell = ({ guide, basePath = "/guides" }: Props) => {
         {/* Trust signal — data attribution. Required for YMYL ranking eligibility. */}
         <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-[12px] text-muted-foreground">
           <Database className="h-3.5 w-3.5 text-accent" aria-hidden />
-          Median values: CoreLogic/Domain estimates, 2026. Rates: RBA cash rate 4.10%.
+          Median values: CoreLogic/Domain estimates, 2026. Rates: RBA cash rate {cashRate.toFixed(2)}% ({lastUpdated}).
         </p>
 
         <p className="mb-8 text-[16px] leading-relaxed text-foreground/90">{guide.intro}</p>
