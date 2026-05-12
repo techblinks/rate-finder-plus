@@ -5,6 +5,7 @@ import RouteAnalytics from "@/components/RouteAnalytics";
 import FaviconManager from "@/components/FaviconManager";
 import CustomScripts from "@/components/CustomScripts";
 import { LocaleProvider } from "@/contexts/LocaleContext";
+import { useSupabaseHealth } from "@/hooks/useSupabaseHealth";
 import Home from "./pages/Home";
 
 const MortgageCalculatorPage = lazy(() => import("./pages/MortgageCalculatorPage"));
