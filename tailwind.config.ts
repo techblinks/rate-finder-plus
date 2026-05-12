@@ -7,10 +7,11 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"DM Sans"', '"Inter"', "ui-sans-serif", "system-ui", "sans-serif"],
-        display: ['"DM Serif Display"', "Georgia", "serif"],
-        serif: ['"DM Serif Display"', "Georgia", "serif"],
-        mono: ['"DM Mono"', "ui-monospace", "Menlo", "monospace"],
+        sans: ['"Inter"', "ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
+        display: ['"Inter Tight"', '"Inter"', "ui-sans-serif", "system-ui", "sans-serif"],
+        editorial: ['"Fraunces"', "Georgia", "serif"],
+        serif: ['"Fraunces"', "Georgia", "serif"],
+        mono: ['"JetBrains Mono"', "ui-monospace", "Menlo", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
