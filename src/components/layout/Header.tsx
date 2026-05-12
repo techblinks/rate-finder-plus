@@ -17,6 +17,7 @@ const MORE = [
   { to: "/rent-vs-buy-calculator", label: "Rent vs Buy" },
   { to: "/refinance-calculator", label: "Refinance" },
   { to: "/extra-repayments-calculator", label: "Extra Repayments" },
+  { to: "/hecs-borrowing-power", label: "HECS Borrowing Power" },
 ];
 
 const Header = () => {
