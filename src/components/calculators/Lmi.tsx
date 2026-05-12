@@ -322,12 +322,6 @@ const Lmi = () => {
     lvr: Math.round(lvr * 10) / 10,
   });
 
-  usePublishMobileResult({
-    label: "Estimated LMI",
-    value: fmt0(lmi),
-    sub: `LVR ${lvr.toFixed(1)}%`,
-  });
-
   const onShare = async () => {
     const url = window.location.href;
     const text = `On a ${fmt0(propertyValue)} property with a ${fmt0(deposit)} deposit (${lvr.toFixed(1)}% LVR), my estimated LMI is ${fmt0(lmi)}. Calculated with Calcy.`;
@@ -347,6 +341,13 @@ const Lmi = () => {
       /* ignore */
     }
   };
+
+  usePublishMobileResult({
+    label: "Estimated LMI",
+    value: fmt0(lmi),
+    sub: `LVR ${lvr.toFixed(1)}%`,
+    onShare,
+  });
 
   const clearStored = () => {
     try {
