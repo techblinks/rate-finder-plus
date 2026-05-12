@@ -10,6 +10,8 @@ import DonutChart from "@/components/DonutChart";
 
 const AmortisationTable = lazy(() => import("@/components/AmortisationTable"));
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useIsPending } from "@/hooks/useIsPending";
+import { useIsMobile } from "@/hooks/use-mobile";
 import QuickAdjustChips from "@/components/mobile/QuickAdjustChips";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import ResultActions from "@/components/ResultActions";
@@ -17,6 +19,7 @@ import { usePublishMobileResult } from "@/lib/mobileResult";
 import { shareCurrent } from "@/lib/shareCurrent";
 import { useCalcPersist } from "@/lib/calcPersist";
 import MobileRestoreChip from "@/components/mobile/MobileRestoreChip";
+import { MobilePendingOverlay } from "@/components/mobile/MobileSkeleton";
 
 type Frequency = "monthly" | "fortnightly" | "weekly";
 type LoanType = "owner" | "investor";
