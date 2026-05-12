@@ -5,6 +5,8 @@ import { Card, ResultCard, ResultRow } from "@/components/ui-kit";
 import RangeField from "@/components/RangeField";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
+import { usePublishMobileResult } from "@/lib/mobileResult";
+import { shareCurrent } from "@/lib/shareCurrent";
 import ResultActions from "@/components/ResultActions";
 import ShareResult from "@/components/ShareResult";
 import HecsImpactChart from "@/components/HecsImpactChart";
