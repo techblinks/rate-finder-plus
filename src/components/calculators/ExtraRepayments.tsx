@@ -825,9 +825,10 @@ const ExtraRepayments = () => {
       </MobileChartTableSection>
 
       {/* Year-by-year table */}
-      <section className="rounded-2xl border border-border bg-card p-5">
-        <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-[15px] font-semibold">Year-by-year breakdown</h3>
+      <MobileChartTableSection
+        title="Year-by-year breakdown"
+        hint="Tap to view table"
+        headerExtra={
           <button
             type="button"
             onClick={downloadCsv}
@@ -835,7 +836,8 @@ const ExtraRepayments = () => {
           >
             ↓ Download full CSV
           </button>
-        </div>
+        }
+      >
         <div className="overflow-x-auto">
           <table className="w-full min-w-[520px] text-[13px]">
             <thead>
@@ -862,7 +864,16 @@ const ExtraRepayments = () => {
             </tbody>
           </table>
         </div>
-      </section>
+        <div className="mt-3 sm:hidden">
+          <button
+            type="button"
+            onClick={downloadCsv}
+            className="text-[12px] font-semibold text-accent hover:underline"
+          >
+            ↓ Download full CSV
+          </button>
+        </div>
+      </MobileChartTableSection>
 
       {/* Mobile sticky savings bar */}
     </div>
