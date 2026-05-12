@@ -62,14 +62,20 @@ const MobileStickyResultBar = () => {
           <div className="flex items-baseline gap-2">
             <span
               id={valueId}
-              className="text-[20px] font-bold tracking-tight text-foreground tnum leading-none"
+              className={`text-[20px] font-bold tracking-tight text-foreground tnum leading-none transition-opacity duration-150 ${result.pending ? "opacity-40" : "opacity-100"}`}
             >
               {result.value}
             </span>
             {result.weekly && (
-              <span className="text-[11px] font-medium text-muted-foreground tnum">
+              <span className={`text-[11px] font-medium text-muted-foreground tnum transition-opacity duration-150 ${result.pending ? "opacity-30" : "opacity-100"}`}>
                 = {result.weekly}/wk
               </span>
+            )}
+            {result.pending && (
+              <span
+                aria-hidden
+                className="ml-1 h-2 w-2 animate-pulse rounded-full bg-accent"
+              />
             )}
           </div>
         </div>
