@@ -28,7 +28,15 @@ const Home = () => {
 
   const rba = useRbaRates();
 
-  if (isMobile) return <MobileHomepage />;
+  if (isMobile) {
+    return (
+      <>
+        <BreadcrumbJsonLd items={[{ name: "Home", path: "/" }]} />
+        <FaqJsonLd faqs={FAQS.home} />
+        <MobileHomepage />
+      </>
+    );
+  }
 
   const today = new Date().toLocaleDateString("en-AU", {
     day: "numeric",
