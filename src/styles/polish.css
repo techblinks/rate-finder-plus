@@ -651,3 +651,52 @@ section[aria-labelledby="m-related-guides"] a {
 body {
   background: #F5F6FA;
 }
+
+/* =============================================================
+ * PHASE 3 — Premium polish: motion, focus, link refinement
+ * ============================================================= */
+
+/* Subtle, premium focus ring on all interactive elements (overrides BLOCK 4) */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="tab"]:focus-visible,
+[role="button"]:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 3px hsl(var(--accent) / 0.28) !important;
+  border-radius: 8px;
+}
+
+/* Refined link hover */
+a:not([class*="btn"]):not([class*="card"]):not([class*="nav"]) {
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+/* Smoother accordion chevron */
+[data-radix-collection-item] svg { transition: transform 220ms cubic-bezier(.2,.7,.2,1) !important; }
+
+/* Premium scrollbar (desktop only) */
+@media (min-width: 768px) {
+  *::-webkit-scrollbar { width: 10px; height: 10px; }
+  *::-webkit-scrollbar-thumb {
+    background: hsl(var(--border-strong) / 0.6);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  *::-webkit-scrollbar-thumb:hover { background: hsl(var(--accent) / 0.5); background-clip: padding-box; }
+  *::-webkit-scrollbar-track { background: transparent; }
+}
+
+/* Honour reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
