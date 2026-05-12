@@ -45,6 +45,6 @@ export function usePublishMobileResult(result: MobileResult | null) {
   useEffect(() => {
     setMobileResult(result);
     return () => setMobileResult(null);
-    // Re-publish whenever any displayed field or callback identity changes.
-  }, [result?.label, result?.value, result?.sub, result?.weekly, result?.onShare, result?.onSave]);
+    // Re-publish whenever any displayed field, callback, or pending flag changes.
+  }, [result?.label, result?.value, result?.sub, result?.weekly, result?.onShare, result?.onSave, result?.pending]);
 }
