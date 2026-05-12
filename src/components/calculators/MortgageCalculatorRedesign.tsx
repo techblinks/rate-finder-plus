@@ -27,6 +27,9 @@ import ResultActions from "@/components/ResultActions";
 import ShareResult from "@/components/ShareResult";
 import StickyResultsBar from "@/components/StickyResultsBar";
 import QuickAdjustChips from "@/components/mobile/QuickAdjustChips";
+import MobileCollapse from "@/components/mobile/MobileCollapse";
+import MobileInsightStrip from "@/components/mobile/MobileInsightStrip";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { usePublishMobileResult } from "@/lib/mobileResult";
 
 const AmortChart = lazy(() => import("@/components/MortgageAmortChart"));
@@ -130,6 +133,7 @@ function readUrlParams() {
 
 const MortgageCalculatorRedesign = () => {
   const rbaRates = useRbaRates();
+  const isMobile = useIsMobile();
   // Initial state from URL → localStorage → defaults
   const [restored, setRestored] = useState<"url" | "local" | null>(null);
   const initial = useMemo(() => {
@@ -812,41 +816,54 @@ const MortgageCalculatorRedesign = () => {
             )}
           </div>
 
-          <div>
-            <p className="mb-1 text-[13px] font-medium text-foreground">Loan type</p>
-            <Segmented<LoanType>
-              ariaLabel="Loan type"
-              value={loanType}
-              onChange={setLoanType}
-              options={[
-                { value: "pi", label: "Principal & Interest" },
-                { value: "io", label: "Interest Only" },
-              ]}
-            />
-            {loanType === "io" && (
-              <div className="mt-3">
-                <p className="mb-1 text-[13px] font-medium text-foreground">IO period</p>
-                <Segmented
-                  ariaLabel="Interest only years"
-                  value={ioYears}
-                  onChange={(v) => setIoYears(Number(v))}
-                  options={[1, 2, 3, 5, 10].map((y) => ({ value: y, label: `${y} yr` }))}
-                />
-              </div>
-            )}
-          </div>
+          {(() => {
+            const advancedInner = (
+              <div className="space-y-5">
+                <div>
+                  <p className="mb-1 text-[13px] font-medium text-foreground">Loan type</p>
+                  <Segmented<LoanType>
+                    ariaLabel="Loan type"
+                    value={loanType}
+                    onChange={setLoanType}
+                    options={[
+                      { value: "pi", label: "Principal & Interest" },
+                      { value: "io", label: "Interest Only" },
+                    ]}
+                  />
+                  {loanType === "io" && (
+                    <div className="mt-3">
+                      <p className="mb-1 text-[13px] font-medium text-foreground">IO period</p>
+                      <Segmented
+                        ariaLabel="Interest only years"
+                        value={ioYears}
+                        onChange={(v) => setIoYears(Number(v))}
+                        options={[1, 2, 3, 5, 10].map((y) => ({ value: y, label: `${y} yr` }))}
+                      />
+                    </div>
+                  )}
+                </div>
 
-          <div>
-            <RangeField
-              label="Property value (optional, for LVR)"
-              value={propValue}
-              onChange={setPropValue}
-              min={0}
-              max={5000000}
-              step={10000}
-              prefix="$"
-            />
-          </div>
+                <div>
+                  <RangeField
+                    label="Property value (optional, for LVR)"
+                    value={propValue}
+                    onChange={setPropValue}
+                    min={0}
+                    max={5000000}
+                    step={10000}
+                    prefix="$"
+                  />
+                </div>
+              </div>
+            );
+            return isMobile ? (
+              <MobileCollapse title="Advanced loan settings" hint="Loan type, IO period, property value">
+                {advancedInner}
+              </MobileCollapse>
+            ) : (
+              advancedInner
+            );
+          })()}
         </div>
 
         {/* RESULTS */}
@@ -875,6 +892,19 @@ const MortgageCalculatorRedesign = () => {
                 .join(" · ")}
             </p>
           </div>
+
+          {isMobile && (
+            <MobileInsightStrip
+              loan={dLoan}
+              rate={dRate}
+              term={dTerm}
+              freq={freq}
+              totalInterest={result.totalInterest}
+              monthly={result.monthly}
+              fortnightly={result.fortnightly}
+              extra={dExtra}
+            />
+          )}
 
           <div className="grid grid-cols-2 gap-3">
             <StatCard label="Total repayments" value={fmt0(result.totalRepaid)} />
@@ -979,34 +1009,54 @@ const MortgageCalculatorRedesign = () => {
             </div>
           )}
 
-          <div className="rounded-2xl border border-border bg-card p-4">
-            <h3 className="mb-3 text-[15px] font-semibold">
-              {offset ? "Loan balance over time" : "Principal vs interest by year"}
-            </h3>
-            <Suspense fallback={<div className="h-64 animate-pulse rounded-lg bg-muted/40" />}>
-              <AmortChart
-                schedule={offset ? offset.yearlySchedule : result.schedule}
-                baselineSchedule={offset && baselineForChart ? baselineForChart : undefined}
-              />
+          {(() => {
+            const chart = (
+              <Suspense fallback={<div className="h-64 animate-pulse rounded-lg bg-muted/40" />}>
+                <AmortChart
+                  schedule={offset ? offset.yearlySchedule : result.schedule}
+                  baselineSchedule={offset && baselineForChart ? baselineForChart : undefined}
+                />
+              </Suspense>
+            );
+            const title = offset ? "Loan balance over time" : "Principal vs interest by year";
+            return isMobile ? (
+              <MobileCollapse title={title} hint="Tap to see year-by-year chart">
+                {chart}
+              </MobileCollapse>
+            ) : (
+              <div className="rounded-2xl border border-border bg-card p-4">
+                <h3 className="mb-3 text-[15px] font-semibold">{title}</h3>
+                {chart}
+              </div>
+            );
+          })()}
+
+          {!isMobile && (
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={onShare}
+                className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-[14px] font-semibold text-accent-foreground hover:bg-accent-hover"
+              >
+                {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
+                {copied ? "Copied!" : "Share this calculation"}
+              </button>
+            </div>
+          )}
+
+          {isMobile ? (
+            <MobileCollapse title="Year-by-year schedule" hint="Full amortisation table">
+              <Suspense fallback={<div className="h-32 animate-pulse rounded-xl bg-muted/40" />}>
+                <AmortTable schedule={result.schedule} />
+              </Suspense>
+            </MobileCollapse>
+          ) : (
+            <Suspense fallback={<div className="h-32 animate-pulse rounded-xl bg-muted/40" />}>
+              <AmortTable schedule={result.schedule} />
             </Suspense>
-          </div>
+          )}
 
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={onShare}
-              className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-[14px] font-semibold text-accent-foreground hover:bg-accent-hover"
-            >
-              {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
-              {copied ? "Copied!" : "Share this calculation"}
-            </button>
-          </div>
-
-          <Suspense fallback={<div className="h-32 animate-pulse rounded-xl bg-muted/40" />}>
-            <AmortTable schedule={result.schedule} />
-          </Suspense>
-
-          <ResultActions calculator="mortgage_repayment" />
+          {!isMobile && <ResultActions calculator="mortgage_repayment" />}
 
           <ShareResult
             calculator="mortgage_repayment"
