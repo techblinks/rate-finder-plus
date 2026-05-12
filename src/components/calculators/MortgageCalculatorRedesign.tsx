@@ -893,6 +893,19 @@ const MortgageCalculatorRedesign = () => {
             </p>
           </div>
 
+          {isMobile && (
+            <MobileInsightStrip
+              loan={dLoan}
+              rate={dRate}
+              term={dTerm}
+              freq={freq}
+              totalInterest={result.totalInterest}
+              monthly={result.monthly}
+              fortnightly={result.fortnightly}
+              extra={dExtra}
+            />
+          )}
+
           <div className="grid grid-cols-2 gap-3">
             <StatCard label="Total repayments" value={fmt0(result.totalRepaid)} />
             <StatCard
