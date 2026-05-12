@@ -120,8 +120,10 @@ const CalculatorPageShell = ({
           className="px-4 pt-3 min-w-0"
           style={{ paddingBottom: `calc(56px + 24px)` }}
         >
+          {quickAnswer && <QuickAnswer data={quickAnswer} className="mb-4" />}
           {children}
           <MobileTrustStrip />
+          {dataSources && <DataSources sources={dataSources} className="mt-6" />}
           {swipe.index >= 0 && (
             <div className="mt-6 flex items-center justify-center gap-1.5 pb-2">
               {Array.from({ length: swipe.total }).map((_, i) => (
