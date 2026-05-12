@@ -213,9 +213,11 @@ const CalculatorPageShell = ({
           <FAQ items={faqs} />
           <RelatedGuides canonical={canonical} />
           <RelatedCalculators items={related} />
+          {dataSources && <DataSources sources={dataSources} className="mt-4" />}
           <div className="pt-2">
             <LastReviewed />
           </div>
+
         </div>
       </div>
       <StickyMobileAd />
