@@ -938,72 +938,74 @@ const RentVsBuy = () => {
         <p className="mt-1 text-[13px] text-muted-foreground">
           Break-even year at different property growth and investment return rates. The cell that matches your current assumptions is highlighted.
         </p>
-        <div className="mt-3 overflow-x-auto">
-          <table className="w-full min-w-[520px] text-[13px]">
-            <thead>
-              <tr>
-                <th className="px-2 py-2 text-left text-[11px] uppercase text-muted-foreground" colSpan={2} rowSpan={2}>
-                  &nbsp;
-                </th>
-                <th className="px-2 py-2 text-center text-[11px] uppercase text-muted-foreground" colSpan={growthCols.length}>
-                  Property growth →
-                </th>
-              </tr>
-              <tr>
-                {growthCols.map((g) => (
-                  <th key={g} className="px-2 py-2 text-center text-[12px] font-semibold">
-                    {g}%
+        <MobilePendingOverlay pending={pendingMobile}>
+          <div className="mt-3 overflow-x-auto">
+            <table className="w-full min-w-[520px] text-[13px]">
+              <thead>
+                <tr>
+                  <th className="px-2 py-2 text-left text-[11px] uppercase text-muted-foreground" colSpan={2} rowSpan={2}>
+                    &nbsp;
                   </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {grid.map((row, ri) => (
-                <tr key={returnRows[ri]} className="border-t border-border">
-                  {ri === 0 && (
-                    <td
-                      className="w-3 align-middle text-[10px] font-semibold uppercase text-muted-foreground"
-                      rowSpan={returnRows.length}
-                      style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
-                    >
-                      Investment return ↓
-                    </td>
-                  )}
-                  <td className="px-2 py-2 font-semibold">{returnRows[ri]}%</td>
-                  {row.map((cell, ci) => {
-                    const isCurrent =
-                      Math.abs(cell.growthPct - inputs.annualPropertyGrowth) < 0.01 &&
-                      Math.abs(cell.returnPct - inputs.investmentReturn) < 0.01;
-                    let cls =
-                      "bg-accent/5 text-foreground";
-                    let label = "Rent";
-                    if (cell.breakEvenYear != null) {
-                      label = `Yr ${cell.breakEvenYear}`;
-                      if (cell.breakEvenYear <= 5)
-                        cls = "bg-success/15 text-success";
-                      else if (cell.breakEvenYear <= 15)
-                        cls = "bg-warning/15 text-warning-foreground";
-                      else cls = "bg-muted text-foreground";
-                    } else {
-                      cls = "bg-accent-light/40 text-accent";
-                    }
-                    return (
-                      <td
-                        key={ci}
-                        className={`px-2 py-2 text-center text-[12px] font-semibold tnum ${cls} ${
-                          isCurrent ? "outline outline-2 outline-foreground" : ""
-                        }`}
-                        title={isCurrent ? "You are here" : undefined}
-                      >
-                        {label}
-                      </td>
-                    );
-                  })}
+                  <th className="px-2 py-2 text-center text-[11px] uppercase text-muted-foreground" colSpan={growthCols.length}>
+                    Property growth →
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                <tr>
+                  {growthCols.map((g) => (
+                    <th key={g} className="px-2 py-2 text-center text-[12px] font-semibold">
+                      {g}%
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {grid.map((row, ri) => (
+                  <tr key={returnRows[ri]} className="border-t border-border">
+                    {ri === 0 && (
+                      <td
+                        className="w-3 align-middle text-[10px] font-semibold uppercase text-muted-foreground"
+                        rowSpan={returnRows.length}
+                        style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+                      >
+                        Investment return ↓
+                      </td>
+                    )}
+                    <td className="px-2 py-2 font-semibold">{returnRows[ri]}%</td>
+                    {row.map((cell, ci) => {
+                      const isCurrent =
+                        Math.abs(cell.growthPct - inputs.annualPropertyGrowth) < 0.01 &&
+                        Math.abs(cell.returnPct - inputs.investmentReturn) < 0.01;
+                      let cls =
+                        "bg-accent/5 text-foreground";
+                      let label = "Rent";
+                      if (cell.breakEvenYear != null) {
+                        label = `Yr ${cell.breakEvenYear}`;
+                        if (cell.breakEvenYear <= 5)
+                          cls = "bg-success/15 text-success";
+                        else if (cell.breakEvenYear <= 15)
+                          cls = "bg-warning/15 text-warning-foreground";
+                        else cls = "bg-muted text-foreground";
+                      } else {
+                        cls = "bg-accent-light/40 text-accent";
+                      }
+                      return (
+                        <td
+                          key={ci}
+                          className={`px-2 py-2 text-center text-[12px] font-semibold tnum ${cls} ${
+                            isCurrent ? "outline outline-2 outline-foreground" : ""
+                          }`}
+                          title={isCurrent ? "You are here" : undefined}
+                        >
+                          {label}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </MobilePendingOverlay>
         <div className="mt-3 flex flex-wrap gap-3 text-[11px] text-muted-foreground">
           <span><span className="mr-1 inline-block h-2 w-2 rounded-sm bg-success" />Yr 1–5 — buying wins quickly</span>
           <span><span className="mr-1 inline-block h-2 w-2 rounded-sm bg-warning" />Yr 6–15 — buying wins eventually</span>
