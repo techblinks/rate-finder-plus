@@ -100,7 +100,20 @@ export function useLiveRates(): UseLiveRatesReturn {
       } catch (err) {
         if (!cancelled) {
           setError(err instanceof Error ? err.message : "Failed to load rates");
-          setRates(getDefaultRates());
+          const fallbackRates = getDefaultRates();
+          try {
+            const workerRes = await fetch("https://calcy-rba-worker.yadavabikash.workers.dev/rate");
+            const workerData = await workerRes.json();
+            if (workerData?.rate) {
+              fallbackRates.rba_cash_rate.national.cash_rate = {
+                rate: parseFloat(workerData.rate),
+                effective_date: new Date().toISOString().split("T")[0],
+              };
+            }
+          } catch {
+            // Worker also failed — use hardcoded defaults as-is
+          }
+          if (!cancelled) setRates(fallbackRates);
         }
       } finally {
         if (!cancelled) setLoading(false);
