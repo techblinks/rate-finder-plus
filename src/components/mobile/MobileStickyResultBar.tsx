@@ -44,7 +44,7 @@ const MobileStickyResultBar = () => {
       aria-live="polite"
       aria-atomic="true"
       aria-label="Calculation result"
-      className="fixed inset-x-0 z-40 border-t border-border bg-background/95 backdrop-blur shadow-[0_-6px_18px_rgba(0,0,0,0.08)] transition-transform duration-300 ease-out"
+      className="fixed inset-x-0 z-40 border-t border-border/70 bg-background/85 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70 shadow-[0_-1px_0_hsl(var(--foreground)/0.04),0_-8px_24px_hsl(var(--foreground)/0.08)] transition-transform duration-300 ease-out"
       style={{
         bottom: `calc(64px + env(safe-area-inset-bottom))`,
         height: 60,

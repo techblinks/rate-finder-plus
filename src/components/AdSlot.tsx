@@ -113,19 +113,21 @@ const AdSlot = ({ slot, className = "", hideLabel = false }: AdSlotProps) => {
       className={`w-full ${className}`}
     >
       {!hideLabel && (
-        <p className="mb-1 text-center text-[10px] uppercase tracking-[0.12em] text-muted-foreground/70">
+        <p className="mb-1.5 text-center text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground/60">
           Advertisement
         </p>
       )}
-      <ins
-        key={inView ? "live" : "pending"}
-        className={`adsbygoogle block ${SLOT_CLASS[slot]}`}
-        style={{ display: "block" }}
-        data-ad-client={client}
-        data-ad-slot={slotId}
-        data-ad-format="auto"
-        data-full-width-responsive="true"
-      />
+      <div className="overflow-hidden rounded-xl border border-border/60 bg-[hsl(var(--surface))]/40">
+        <ins
+          key={inView ? "live" : "pending"}
+          className={`adsbygoogle block ${SLOT_CLASS[slot]}`}
+          style={{ display: "block" }}
+          data-ad-client={client}
+          data-ad-slot={slotId}
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        />
+      </div>
     </div>
   );
 };
