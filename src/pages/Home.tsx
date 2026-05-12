@@ -129,8 +129,20 @@ const Home = () => {
               <span>Updated {today}</span>
             </div>
 
-            <h1 className="text-[clamp(36px,4vw,54px)] mb-5">
-              Australia's most<br />
+            <h1 className="text-[clamp(36px,4vw,54px)] font-semibold leading-[1.08] tracking-[-0.018em] mb-5">
+              <em
+                className="font-serif italic font-semibold not-italic-fallback"
+                style={{
+                  fontFamily: "var(--font-display-serif)",
+                  color: "#003680",
+                  fontSize: "0.94em",
+                  letterSpacing: "-0.005em",
+                  fontStyle: "italic",
+                }}
+              >
+                Australia's
+              </em>{" "}
+              most<br />
               accurate mortgage<br />
               calculators.
             </h1>
