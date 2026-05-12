@@ -27,6 +27,7 @@ const baseSettings: SiteSettings = {
   logo_url: null,
   favicon_url: null,
   logo_height: 32,
+  logo_height_mobile: 28,
   ga4_id: null,
   gtm_id: null,
   fb_pixel_id: null,

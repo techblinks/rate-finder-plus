@@ -5,6 +5,7 @@ export interface SiteSettings {
   logo_url: string | null;
   favicon_url: string | null;
   logo_height: number;
+  logo_height_mobile: number;
 
   // Analytics
   ga4_id: string | null;
@@ -41,6 +42,7 @@ const DEFAULTS: SiteSettings = {
   logo_url: null,
   favicon_url: null,
   logo_height: 32,
+  logo_height_mobile: 28,
   ga4_id: null,
   gtm_id: null,
   fb_pixel_id: null,
@@ -71,7 +73,7 @@ let cache: SiteSettings | null = null;
 const listeners = new Set<(s: SiteSettings) => void>();
 
 const SELECT_COLS =
-  "logo_url, favicon_url, logo_height, ga4_id, gtm_id, fb_pixel_id, head_html, body_html, adsense_client, adsense_slot_header, adsense_slot_inline, adsense_slot_sidebar, adsense_slot_sticky_mobile, adsense_enabled, adsense_auto_ads, slot_header_enabled, slot_inline_enabled, slot_sidebar_enabled, slot_sticky_mobile_enabled, ads_txt, default_og_image, default_meta_description, title_template, gsc_verification, bing_verification, robots_txt, indexing_enabled";
+  "logo_url, favicon_url, logo_height, logo_height_mobile, ga4_id, gtm_id, fb_pixel_id, head_html, body_html, adsense_client, adsense_slot_header, adsense_slot_inline, adsense_slot_sidebar, adsense_slot_sticky_mobile, adsense_enabled, adsense_auto_ads, slot_header_enabled, slot_inline_enabled, slot_sidebar_enabled, slot_sticky_mobile_enabled, ads_txt, default_og_image, default_meta_description, title_template, gsc_verification, bing_verification, robots_txt, indexing_enabled";
 
 const fetchSettings = async () => {
   const { data } = await supabase
