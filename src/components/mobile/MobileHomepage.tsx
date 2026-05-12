@@ -104,7 +104,7 @@ const MobileHomepage = () => {
 
       {/* Hero */}
       <section className="px-4 pt-4 pb-3">
-        <h1 className="text-[28px] font-bold leading-[1.1] tracking-tight text-foreground">
+        <h1 className="text-[30px] font-semibold leading-[1.12] tracking-[-0.01em] text-foreground">
           <em
             className="font-serif italic font-normal text-accent"
             style={{ fontFamily: "var(--font-display-serif)" }}
