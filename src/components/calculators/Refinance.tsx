@@ -1111,19 +1111,6 @@ const Refinance = () => {
       </section>
 
       {/* Mobile sticky bar */}
-      <div className="fixed inset-x-0 bottom-16 z-40 flex items-center justify-between border-t border-border bg-background px-4 py-3 md:hidden">
-        <span className="text-[12px] uppercase text-muted-foreground">
-          {savingPositive ? "Monthly saving" : "Monthly increase"}
-        </span>
-        <span
-          className={`text-[18px] font-bold tnum ${
-            savingPositive ? "text-success" : "text-destructive"
-          }`}
-        >
-          {fmt0(Math.abs(result.monthlySaving))}/mo
-        </span>
-      </div>
-    </div>
   );
 };
 

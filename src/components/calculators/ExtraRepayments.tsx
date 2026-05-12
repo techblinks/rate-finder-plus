@@ -821,12 +821,6 @@ const ExtraRepayments = () => {
       </section>
 
       {/* Mobile sticky savings bar */}
-      <div className="fixed inset-x-0 bottom-16 z-40 flex items-center justify-between border-t border-border bg-background px-4 py-3 md:hidden">
-        <span className="text-[12px] uppercase text-muted-foreground">Interest saved</span>
-        <span className="text-[18px] font-bold text-success tnum">
-          {fmt0(result.interestSaved)}
-        </span>
-      </div>
     </div>
   );
 };

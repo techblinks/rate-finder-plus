@@ -714,7 +714,7 @@ const BorrowingPower = () => {
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="hidden md:flex flex-wrap items-center gap-2">
               <button
                 type="button"
                 onClick={onShare}
