@@ -75,7 +75,9 @@ export const CurrencyInput = ({
     }
     let n = parseInt(digitsOnly, 10);
     if (!Number.isFinite(n)) n = 0;
-    if (typeof min === "number" && n < min) n = min;
+    // Only clamp the upper bound while typing. The lower bound is enforced
+    // on blur so users can freely edit the value (e.g. clear the field and
+    // type a new number) without the input snapping to `min` mid-keystroke.
     if (typeof max === "number" && n > max) n = max;
 
     const formatted = AUD0.format(n);
