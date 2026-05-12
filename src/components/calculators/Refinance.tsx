@@ -26,6 +26,8 @@ import {
 import { useRbaRates } from "@/hooks/useRbaRates";
 import { usePublishMobileResult } from "@/lib/mobileResult";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useIsMobile } from "@/hooks/use-mobile";
+import MobileInsightBar from "@/components/mobile/MobileInsightBar";
 
 const AUD = new Intl.NumberFormat("en-AU", {
   style: "currency",
