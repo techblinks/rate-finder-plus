@@ -1,76 +1,47 @@
+## Goal
+Make the mobile homepage feel like a native app, matching the second reference:
+- Logo on the **left**, a **search button** on the **right**
+- **No divider line** under the header
+- Hero keeps "Australian mortgage calculators", but **"mortgage"** is rendered in **italic blue**
 
-# Mobile UX Enhancement Pass
+## 1. Mobile header (`src/components/layout/Header.tsx`)
+Replace the centered logo bar (mobile branch only, `md:hidden`) with:
+- `flex items-center justify-between`, height 60px, **no `border-b`**, white background blending into hero
+- **Left:** existing `<Link to="/">` Calcy logo (unchanged size)
+- **Right:** 40×40 icon button (lucide `Search`) that opens a global search sheet
+- Keep `env(safe-area-inset-top)` padding
+- Desktop branch (`hidden md:block`) untouched
 
-Scope: improve the mobile experience only. Desktop layout, SEO content, schemas, routes, calculator logic, and branding tokens stay untouched. All work is gated by `useIsMobile()` or `md:hidden` so desktop renders unchanged.
+## 2. Global search (mobile)
+New component `src/components/mobile/MobileSearchSheet.tsx`:
+- Open state lifted into Header via `useState`
+- Full-screen slide-down overlay with:
+  - Search input (autoFocus) + Cancel button
+  - Live filter over a static index of routes: 8 calculators, Guides index, top guide slugs, Stamp Duty state pages
+  - Grouped results: **Calculators**, **Guides**, **Pages**
+  - Tap → navigate + close; ESC / Cancel / backdrop closes
+- Index built from existing `CALCULATORS` list + `src/data/allGuides.ts` + `src/data/routes.ts` (no new data files)
+- Pure client-side lowercase `includes` match, no backend
 
-## What stays exactly the same
-- Desktop hero (`PageHeader`), desktop SEO sections, FAQ, related guides, AdSlots on desktop.
-- All JSON-LD, meta, canonical, breadcrumbs, internal links.
-- Calculator math in `src/lib/calc/*`. No formula changes.
-- Color tokens, fonts, radii, shadows in `index.css` / `tailwind.config.ts`. Reuse existing semantic tokens only.
+## 3. Hero copy (`src/components/mobile/MobileHomepage.tsx`)
+Keep the H1 text as **"Australian mortgage calculators"** but render "mortgage" as `<em>` styled `font-serif italic text-accent` (brand blue `#0162E3`):
+```
+Australian <em>mortgage</em> calculators
+```
+- Bump H1 to `text-[28px]`, tighten leading to match reference proportions
+- Subhead, RBA chip, and everything below unchanged
 
-## Audit findings (mobile)
-1. `MobileStickyResultBar` shows only one number; no weekly equivalent, no share/save.
-2. No quick-tweak chips (±$10k, ±1yr, ±0.5%) — every change requires opening sliders.
-3. `RangeField` value chip is narrow (44%) and sliders feel small for one-hand use.
-4. `MortgageCalculatorRedesign` mobile screen has multiple parallel sections (offset, presets, scenarios) without strong progressive disclosure — heavy first paint.
-5. Share works via system share text only; no branded share card image.
-6. No trust strip on mobile (rate freshness exists but is desktop-only in shell).
-7. Result card numbers good size, but secondary stats stack in 3-col grid that gets cramped under 380px.
-8. `MobileCalcHeader` share button shares URL only — doesn't include current scenario in a friendly way.
+## 4. SEO / AEO safety
+- Visible H1 text reads identically to before — only "mortgage" gets italic styling
+- Page `<title>`, meta description, JSON-LD, llms.txt all unchanged
+- Desktop H1 unchanged
+- No changes to FAQ schema, sitemaps, or content data
 
-## Changes
+## 5. Tests
+- Run vitest suite; update only the mobile homepage snapshot if it fails (cosmetic-only diff)
+- Confirm 831 tests pass
 
-### 1. Sticky result bar v2 (`src/components/mobile/MobileStickyResultBar.tsx`)
-- Add optional `weeklyEquivalent`, `onShare`, `onSave` to `MobileResult` type.
-- Show primary value + small "= $X/wk" line + two icon buttons (Share, Save).
-- Subtle slide-up on first publish (transform, no layout shift). Keep current height (56px) and offset above bottom nav.
-
-### 2. Quick scenario chips (new `src/components/mobile/QuickAdjustChips.tsx`)
-- Horizontal scroll row of chips: −$10k, +$10k, −1yr, +1yr, −0.25%, +0.25%.
-- Rendered only on mobile, directly above the result card in `MortgageCalculatorRedesign` and `MortgageRepayment`.
-- Each chip calls existing setters and clamps to current min/max. `haptic.light()` on tap.
-- Active "just-tapped" pulse (200ms) using existing accent token.
-
-### 3. Inputs polish (mobile only, scoped via media query in `index.css`)
-- Bump `.range-slider` thumb to 28px on `(max-width: 768px)` for thumb-friendly drag.
-- Widen `.range-value-chip` to 52% on mobile, larger 16px font to defeat iOS zoom.
-- Ensure `inputMode="decimal"` / `numeric"` on the relevant inputs in `CurrencyInput` and `NumberInput` (verify, add if missing). No logic change.
-
-### 4. Branded share card (new `src/components/mobile/ShareCardCanvas.tsx`)
-- Renders an offscreen 1080×1350 canvas with brand navy header, monthly repayment, weekly equivalent, loan/rate/term, "Updated for Australia 2026", logo wordmark.
-- `MobileCalcHeader` share handler: try `navigator.share({ files: [pngBlob] })`; fall back to current text+URL share. Generated lazily on tap (no first-paint cost).
-
-### 5. Trust strip (new `src/components/mobile/MobileTrustStrip.tsx`)
-- Tiny one-line row under the calculator on mobile: "Updated for Australia 2026 · No signup · Calculations match lender amortisation".
-- Renders inside `CalculatorPageShell` mobile branch only.
-
-### 6. Progressive disclosure tidy (`MortgageCalculatorRedesign.tsx`)
-- On mobile only (`md:hidden` wrappers), collapse Offset, Saved scenarios, Saved offset presets into a single "Advanced" collapsible group, keeping all existing content and state intact. Desktop keeps current layout.
-
-### 7. Result hierarchy on tiny widths
-- Add `min-[360px]:grid-cols-3` / `grid-cols-1` fallback to the secondary stat grid where it currently forces 3 columns on <360px.
-
-### 8. AdSlot UX (mobile)
-- Reserve explicit min-height on mobile `AdSlot` to prevent CLS (using the existing slot sizes). No new ad placements, no removals.
-
-## Files touched
-- New: `src/components/mobile/QuickAdjustChips.tsx`, `src/components/mobile/ShareCardCanvas.tsx`, `src/components/mobile/MobileTrustStrip.tsx`.
-- Edit (mobile branches / `md:hidden` / mobile media queries only):
-  - `src/components/mobile/MobileStickyResultBar.tsx`
-  - `src/components/mobile/MobileCalcHeader.tsx`
-  - `src/lib/mobileResult.ts` (extend type, backward compatible)
-  - `src/components/calculators/MortgageCalculatorRedesign.tsx`
-  - `src/components/calculators/MortgageRepayment.tsx`
-  - `src/pages/CalculatorPageShell.tsx` (mobile branch only)
-  - `src/index.css` (mobile `@media (max-width: 767px)` rules)
-  - `src/components/AdSlot.tsx` (mobile min-height only)
-
-## Non-goals
-- No new routes, no new content sections, no copy rewrites on desktop, no schema edits, no calculator math edits, no branding/token edits, no removal of any visible content or links.
-
-## Verification
-- Run vitest suite (existing 831+ tests must still pass).
-- Visual check at 360, 390, 414 px widths.
-- Confirm desktop screenshot test snapshot unchanged.
-- Lighthouse mobile: CLS still <0.05 with new sticky bar + ad min-heights.
+## Technical notes
+- Search sheet rendered as portal sibling so it overlays everything below safe-area
+- Search button uses existing `text-accent` + `active:scale-95` pattern from `MobileCalcHeader`
+- No changes to `MobileBottomNav`, routing, or any calculator logic
