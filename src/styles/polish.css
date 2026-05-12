@@ -578,3 +578,76 @@ nav[aria-label*="bottom"],
   font-size: 16px !important;
   letter-spacing: -0.01em !important;
 }
+
+/* =============================================================
+ * UNIFIED CARD SYSTEM — apply reference styling site-wide
+ * (Desktop home grid, Related calculators, mobile Try-next/Guides)
+ * Visual layer only. No content/SEO/AEO changes.
+ * =========================================================== */
+
+/* Desktop home calc-data-card — match unified white system */
+.calc-data-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04) !important;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 150ms ease, transform 150ms ease, border-color 150ms ease !important;
+}
+.calc-data-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: var(--cat-fg, hsl(var(--accent)));
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+.calc-data-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06) !important;
+  border-color: color-mix(in srgb, var(--cat-fg, #1A5CFF) 40%, transparent) !important;
+}
+.calc-data-card:hover::before { opacity: 1; }
+
+/* Related calculators (desktop) — soft white cards with accent hover */
+section[aria-labelledby="related-heading"] ul a {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+  transition: all 150ms ease !important;
+}
+section[aria-labelledby="related-heading"] ul a:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08) !important;
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, hsl(var(--accent)) 40%, transparent) !important;
+  color: hsl(var(--accent)) !important;
+}
+
+/* Mobile Try-next horizontal pills + guide cards */
+section[aria-labelledby="m-related-calcs"] a,
+section[aria-labelledby="m-related-guides"] a {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04) !important;
+}
+
+/* Calculator page header band — subtle white surface lift */
+.page-header-band {
+  background: #FFFFFF !important;
+  border-bottom: 1px solid rgba(0,0,0,0.06) !important;
+}
+
+/* Calculator panels — already styled, ensure radius matches reference */
+[class*="calc-input-panel"],
+[class*="calc-result-panel"] {
+  border-radius: 16px !important;
+}
+
+/* Body background on all calculator pages — soft warm grey for card lift */
+body {
+  background: #F5F6FA;
+}
