@@ -210,3 +210,61 @@ export const ArticleJsonLd = ({
     </Helmet>
   );
 };
+
+interface DatasetProps {
+  name: string;
+  description: string;
+  path: string;
+  variableMeasured: string[];
+}
+
+/**
+ * schema.org/Dataset — signals to AI systems that the page is a
+ * structured Australian financial data source. Improves citation
+ * eligibility in AI Overviews and Perplexity.
+ */
+export const DatasetJsonLd = ({ name, description, path, variableMeasured }: DatasetProps) => {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name,
+    description,
+    url: `${SITE}${path}`,
+    provider: { "@type": "Organization", name: "Calcy", url: SITE },
+    temporalCoverage: String(new Date().getFullYear()),
+    spatialCoverage: "Australia",
+    variableMeasured,
+    isAccessibleForFree: true,
+    license: `${SITE}/terms-of-use`,
+  };
+  return (
+    <Helmet>
+      <script type="application/ld+json">{JSON.stringify(data)}</script>
+    </Helmet>
+  );
+};
+
+/**
+ * schema.org SpeakableSpecification — tells voice assistants
+ * (Google Assistant, Siri, Alexa) which CSS selectors to read aloud.
+ */
+export const SpeakableJsonLd = ({
+  name,
+  selectors,
+}: {
+  name: string;
+  selectors: string[];
+}) => {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name,
+    speakable: { "@type": "SpeakableSpecification", cssSelector: selectors },
+  };
+  return (
+    <Helmet>
+      <script type="application/ld+json">{JSON.stringify(data)}</script>
+    </Helmet>
+  );
+};
+
