@@ -12,7 +12,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import { useRbaRates } from "@/hooks/useRbaRates";
-import { FaqJsonLd } from "@/components/seo/JsonLd";
+
 import AdSlot from "@/components/AdSlot";
 import MobileFaqAccordion from "./MobileFaqAccordion";
 
