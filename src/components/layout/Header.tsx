@@ -1,8 +1,9 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
 import calcyLogo from "@/assets/calcy-logo.webp";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import MobileSearchSheet from "@/components/mobile/MobileSearchSheet";
 
 const PRIMARY = [
   { to: "/mortgage-calculator", label: "Mortgage" },
@@ -24,6 +25,7 @@ const Header = () => {
   const src = logo_url || calcyLogo;
   const h = Math.max(20, Math.min(40, logo_height || 28));
   const [moreOpen, setMoreOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
   const moreActive = MORE.some((m) => pathname.startsWith(m.to));
 
@@ -50,10 +52,10 @@ const Header = () => {
       {/* Mobile (< md): clean logo bar — no hamburger.
           All calculators reachable via bottom tab + homepage card grid. */}
       <div
-        className="md:hidden border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85"
+        className="md:hidden bg-background"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
-        <div className="page-shell flex h-[60px] items-center justify-center">
+        <div className="flex h-[60px] items-center justify-between px-4">
           <Link to="/" aria-label="Calcy home" className="flex items-center">
             <img
               src={src}
@@ -65,8 +67,17 @@ const Header = () => {
               fetchPriority="high"
             />
           </Link>
+          <button
+            type="button"
+            onClick={() => setSearchOpen(true)}
+            aria-label="Search"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full text-foreground/70 active:scale-95 transition-transform"
+          >
+            <Search className="h-[20px] w-[20px]" strokeWidth={2} />
+          </button>
         </div>
       </div>
+      <MobileSearchSheet open={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {/* Desktop (≥ md) */}
       <div className="hidden md:block site-nav-redesign">

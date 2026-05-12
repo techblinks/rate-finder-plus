@@ -226,15 +226,24 @@ exports[`Home visual regression > matches desktop (1280px) snapshot 1`] = `
 
 exports[`Home visual regression > matches mobile (375px) snapshot 1`] = `
 <div
-  class="min-h-screen bg-background pb-24"
+  class="mobile-home min-h-screen bg-background pb-24"
 >
   <section
     class="px-4 pt-4 pb-3"
   >
     <h1
-      class="text-[24px] font-bold leading-tight tracking-tight text-foreground"
+      class="text-[28px] font-bold leading-[1.1] tracking-tight text-foreground"
     >
-      Australian mortgage calculators
+      Australian
+       
+      <em
+        class="font-serif italic font-normal text-accent"
+        style="font-family: var(--font-display-serif);"
+      >
+        mortgage
+      </em>
+       
+      calculators
     </h1>
     <p
       class="mt-1.5 text-[14px] text-muted-foreground"
@@ -277,9 +286,9 @@ exports[`Home visual regression > matches mobile (375px) snapshot 1`] = `
       class="grid grid-cols-2 gap-2.5"
     >
       <a
-        class="flex min-h-[96px] flex-col justify-between rounded-2xl border border-black/5 p-4 active:scale-[0.97] transition-transform"
+        class="calc-card flex min-h-[120px] flex-col justify-between rounded-2xl border border-black/5 bg-white p-4 active:scale-[0.97] transition-transform"
         href="/mortgage-calculator"
-        style="background: rgb(239, 246, 255);"
+        style="--card-accent: #2563eb;"
       >
         <svg
           class="lucide lucide-house h-6 w-6"
@@ -315,9 +324,9 @@ exports[`Home visual regression > matches mobile (375px) snapshot 1`] = `
         </div>
       </a>
       <a
-        class="flex min-h-[96px] flex-col justify-between rounded-2xl border border-black/5 p-4 active:scale-[0.97] transition-transform"
+        class="calc-card flex min-h-[120px] flex-col justify-between rounded-2xl border border-black/5 bg-white p-4 active:scale-[0.97] transition-transform"
         href="/stamp-duty-calculator"
-        style="background: rgb(240, 253, 244);"
+        style="--card-accent: #16a34a;"
       >
         <svg
           class="lucide lucide-file-text h-6 w-6"
@@ -362,9 +371,9 @@ exports[`Home visual regression > matches mobile (375px) snapshot 1`] = `
         </div>
       </a>
       <a
-        class="flex min-h-[96px] flex-col justify-between rounded-2xl border border-black/5 p-4 active:scale-[0.97] transition-transform"
+        class="calc-card flex min-h-[120px] flex-col justify-between rounded-2xl border border-black/5 bg-white p-4 active:scale-[0.97] transition-transform"
         href="/borrowing-power-calculator"
-        style="background: rgb(253, 244, 255);"
+        style="--card-accent: #a855f7;"
       >
         <svg
           class="lucide lucide-chart-column h-6 w-6"
@@ -406,9 +415,9 @@ exports[`Home visual regression > matches mobile (375px) snapshot 1`] = `
         </div>
       </a>
       <a
-        class="flex min-h-[96px] flex-col justify-between rounded-2xl border border-black/5 p-4 active:scale-[0.97] transition-transform"
+        class="calc-card flex min-h-[120px] flex-col justify-between rounded-2xl border border-black/5 bg-white p-4 active:scale-[0.97] transition-transform"
         href="/lmi-calculator"
-        style="background: rgb(255, 247, 237);"
+        style="--card-accent: #ea580c;"
       >
         <svg
           class="lucide lucide-shield h-6 w-6"
@@ -441,9 +450,9 @@ exports[`Home visual regression > matches mobile (375px) snapshot 1`] = `
         </div>
       </a>
       <a
-        class="flex min-h-[96px] flex-col justify-between rounded-2xl border border-black/5 p-4 active:scale-[0.97] transition-transform"
+        class="calc-card flex min-h-[120px] flex-col justify-between rounded-2xl border border-black/5 bg-white p-4 active:scale-[0.97] transition-transform"
         href="/loan-comparison-calculator"
-        style="background: rgb(248, 250, 252);"
+        style="--card-accent: #475569;"
       >
         <svg
           class="lucide lucide-arrow-left-right h-6 w-6"
@@ -485,9 +494,9 @@ exports[`Home visual regression > matches mobile (375px) snapshot 1`] = `
         </div>
       </a>
       <a
-        class="flex min-h-[96px] flex-col justify-between rounded-2xl border border-black/5 p-4 active:scale-[0.97] transition-transform"
+        class="calc-card flex min-h-[120px] flex-col justify-between rounded-2xl border border-black/5 bg-white p-4 active:scale-[0.97] transition-transform"
         href="/rent-vs-buy-calculator"
-        style="background: rgb(254, 242, 242);"
+        style="--card-accent: #dc2626;"
       >
         <svg
           class="lucide lucide-building2 h-6 w-6"
@@ -538,9 +547,9 @@ exports[`Home visual regression > matches mobile (375px) snapshot 1`] = `
         </div>
       </a>
       <a
-        class="flex min-h-[96px] flex-col justify-between rounded-2xl border border-black/5 p-4 active:scale-[0.97] transition-transform"
+        class="calc-card flex min-h-[120px] flex-col justify-between rounded-2xl border border-black/5 bg-white p-4 active:scale-[0.97] transition-transform"
         href="/refinance-calculator"
-        style="background: rgb(240, 253, 244);"
+        style="--card-accent: #0d9488;"
       >
         <svg
           class="lucide lucide-repeat h-6 w-6"
@@ -582,9 +591,9 @@ exports[`Home visual regression > matches mobile (375px) snapshot 1`] = `
         </div>
       </a>
       <a
-        class="flex min-h-[96px] flex-col justify-between rounded-2xl border border-black/5 p-4 active:scale-[0.97] transition-transform"
+        class="calc-card flex min-h-[120px] flex-col justify-between rounded-2xl border border-black/5 bg-white p-4 active:scale-[0.97] transition-transform"
         href="/extra-repayments-calculator"
-        style="background: rgb(255, 251, 235);"
+        style="--card-accent: #d97706;"
       >
         <svg
           class="lucide lucide-circle-plus h-6 w-6"
