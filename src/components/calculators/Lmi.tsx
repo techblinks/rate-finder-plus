@@ -390,9 +390,38 @@ const Lmi = () => {
 
   const buyNowQs = `?value=${Math.round(propertyValue)}&deposit=${Math.round(deposit)}`;
 
+  const isMobile = useIsMobile();
+  const lmiInsight = (() => {
+    const depositTo20 = Math.max(0, propertyValue * 0.2 - deposit);
+    if (lmi === 0) {
+      return {
+        tone: "success" as const,
+        msg: `LVR ${lvr.toFixed(1)}% — no LMI payable. Lower “Your deposit” to see how much LMI kicks in below 20%.`,
+      };
+    }
+    if (lvr > 90) {
+      return {
+        tone: "warn" as const,
+        msg: `LVR ${lvr.toFixed(1)}% is high. Adding ${fmt0(depositTo20)} to “Your deposit” avoids ${fmt0(lmi)} in LMI.`,
+      };
+    }
+    if (lvr > 80) {
+      return {
+        tone: "info" as const,
+        msg: `You're ${fmt0(depositTo20)} away from a 20% deposit. Increase “Your deposit” above to wipe out the ${fmt0(lmi)} LMI premium.`,
+      };
+    }
+    return {
+      tone: "info" as const,
+      msg: `Try lowering “Your deposit” to model 90% or 95% LVR scenarios — useful if you'd rather buy sooner.`,
+    };
+  })();
+
   return (
     <div className="space-y-6">
       <RestoreBanner show={restored === "local"} onReset={clearStored} />
+
+      {isMobile && <MobileInsightBar tone={lmiInsight.tone} message={lmiInsight.msg} />}
 
       <div className="grid gap-6 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
         {/* Inputs */}
