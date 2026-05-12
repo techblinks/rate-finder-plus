@@ -561,3 +561,20 @@ nav[aria-label*="bottom"],
     border-top-color: rgba(0,0,0,0.06) !important;
   }
 }
+
+/* =============================================================
+ * MOBILE HOMEPAGE — icon tile refinement (matches reference)
+ * =========================================================== */
+.mobile-home .calc-card > svg {
+  width: 22px !important;
+  height: 22px !important;
+  padding: 9px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--card-accent, #1A5CFF) 12%, #FFFFFF);
+  box-sizing: content-box;
+  margin-bottom: 8px;
+}
+.mobile-home .calc-card span.font-semibold {
+  font-size: 16px !important;
+  letter-spacing: -0.01em !important;
+}
