@@ -104,10 +104,15 @@ const MobileHomepage = () => {
 
       {/* Hero */}
       <section className="px-4 pt-4 pb-3">
-        <h1 className="text-[30px] font-semibold leading-[1.12] tracking-[-0.01em] text-foreground">
+        <h1 className="text-[clamp(28px,7.6vw,34px)] font-semibold leading-[1.1] tracking-[-0.015em] text-foreground">
           <em
-            className="font-serif italic font-medium text-accent"
-            style={{ fontFamily: "var(--font-display-serif)" }}
+            className="font-serif italic font-semibold"
+            style={{
+              fontFamily: "var(--font-display-serif)",
+              color: "#003680",
+              fontSize: "0.94em",
+              letterSpacing: "-0.005em",
+            }}
           >
             Australian
           </em>{" "}
