@@ -816,41 +816,54 @@ const MortgageCalculatorRedesign = () => {
             )}
           </div>
 
-          <div>
-            <p className="mb-1 text-[13px] font-medium text-foreground">Loan type</p>
-            <Segmented<LoanType>
-              ariaLabel="Loan type"
-              value={loanType}
-              onChange={setLoanType}
-              options={[
-                { value: "pi", label: "Principal & Interest" },
-                { value: "io", label: "Interest Only" },
-              ]}
-            />
-            {loanType === "io" && (
-              <div className="mt-3">
-                <p className="mb-1 text-[13px] font-medium text-foreground">IO period</p>
-                <Segmented
-                  ariaLabel="Interest only years"
-                  value={ioYears}
-                  onChange={(v) => setIoYears(Number(v))}
-                  options={[1, 2, 3, 5, 10].map((y) => ({ value: y, label: `${y} yr` }))}
-                />
-              </div>
-            )}
-          </div>
+          {(() => {
+            const advancedInner = (
+              <div className="space-y-5">
+                <div>
+                  <p className="mb-1 text-[13px] font-medium text-foreground">Loan type</p>
+                  <Segmented<LoanType>
+                    ariaLabel="Loan type"
+                    value={loanType}
+                    onChange={setLoanType}
+                    options={[
+                      { value: "pi", label: "Principal & Interest" },
+                      { value: "io", label: "Interest Only" },
+                    ]}
+                  />
+                  {loanType === "io" && (
+                    <div className="mt-3">
+                      <p className="mb-1 text-[13px] font-medium text-foreground">IO period</p>
+                      <Segmented
+                        ariaLabel="Interest only years"
+                        value={ioYears}
+                        onChange={(v) => setIoYears(Number(v))}
+                        options={[1, 2, 3, 5, 10].map((y) => ({ value: y, label: `${y} yr` }))}
+                      />
+                    </div>
+                  )}
+                </div>
 
-          <div>
-            <RangeField
-              label="Property value (optional, for LVR)"
-              value={propValue}
-              onChange={setPropValue}
-              min={0}
-              max={5000000}
-              step={10000}
-              prefix="$"
-            />
-          </div>
+                <div>
+                  <RangeField
+                    label="Property value (optional, for LVR)"
+                    value={propValue}
+                    onChange={setPropValue}
+                    min={0}
+                    max={5000000}
+                    step={10000}
+                    prefix="$"
+                  />
+                </div>
+              </div>
+            );
+            return isMobile ? (
+              <MobileCollapse title="Advanced loan settings" hint="Loan type, IO period, property value">
+                {advancedInner}
+              </MobileCollapse>
+            ) : (
+              advancedInner
+            );
+          })()}
         </div>
 
         {/* RESULTS */}
