@@ -234,16 +234,14 @@ exports[`Home visual regression > matches mobile (375px) snapshot 1`] = `
     <h1
       class="text-[28px] font-bold leading-[1.1] tracking-tight text-foreground"
     >
-      Australian
+      Australian mortgage
        
       <em
         class="font-serif italic font-normal text-accent"
         style="font-family: var(--font-display-serif);"
       >
-        mortgage
+        tools
       </em>
-       
-      calculators
     </h1>
     <p
       class="mt-1.5 text-[14px] text-muted-foreground"
