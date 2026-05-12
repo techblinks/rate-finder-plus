@@ -1110,7 +1110,7 @@ const Refinance = () => {
         </div>
       </section>
 
-      {/* Mobile sticky bar */}
+    </div>
   );
 };
 
