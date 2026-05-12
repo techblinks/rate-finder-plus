@@ -26,6 +26,7 @@ import {
 import { useRbaRates } from "@/hooks/useRbaRates";
 import { usePublishMobileResult } from "@/lib/mobileResult";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useIsPending } from "@/hooks/useIsPending";
 import { useIsMobile } from "@/hooks/use-mobile";
 import MobileInsightBar from "@/components/mobile/MobileInsightBar";
 
