@@ -100,7 +100,7 @@ const MobileHomepage = () => {
 
   return (
     <div className="mobile-home min-h-screen bg-background pb-24">
-      <FaqJsonLd faqs={faqs.map((f) => ({ question: f.q, answer: f.a }))} />
+      {/* FAQ JSON-LD is emitted once by the parent Home page to avoid duplicate FAQPage schema */}
 
       {/* Hero */}
       <section className="px-4 pt-4 pb-3">
