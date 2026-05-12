@@ -27,6 +27,9 @@ import ResultActions from "@/components/ResultActions";
 import ShareResult from "@/components/ShareResult";
 import StickyResultsBar from "@/components/StickyResultsBar";
 import QuickAdjustChips from "@/components/mobile/QuickAdjustChips";
+import MobileCollapse from "@/components/mobile/MobileCollapse";
+import MobileInsightStrip from "@/components/mobile/MobileInsightStrip";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { usePublishMobileResult } from "@/lib/mobileResult";
 
 const AmortChart = lazy(() => import("@/components/MortgageAmortChart"));
