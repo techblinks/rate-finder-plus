@@ -1,0 +1,1 @@
+alter table public.site_settings add column if not exists logo_height_mobile integer not null default 28;

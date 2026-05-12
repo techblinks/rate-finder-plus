@@ -1,47 +1,36 @@
 ## Goal
-Make the mobile homepage feel like a native app, matching the second reference:
-- Logo on the **left**, a **search button** on the **right**
-- **No divider line** under the header
-- Hero keeps "Australian mortgage calculators", but **"mortgage"** is rendered in **italic blue**
+Allow separate logo height control for **mobile** and **desktop** from the admin backend.
 
-## 1. Mobile header (`src/components/layout/Header.tsx`)
-Replace the centered logo bar (mobile branch only, `md:hidden`) with:
-- `flex items-center justify-between`, height 60px, **no `border-b`**, white background blending into hero
-- **Left:** existing `<Link to="/">` Calcy logo (unchanged size)
-- **Right:** 40×40 icon button (lucide `Search`) that opens a global search sheet
-- Keep `env(safe-area-inset-top)` padding
-- Desktop branch (`hidden md:block`) untouched
+## Changes
 
-## 2. Global search (mobile)
-New component `src/components/mobile/MobileSearchSheet.tsx`:
-- Open state lifted into Header via `useState`
-- Full-screen slide-down overlay with:
-  - Search input (autoFocus) + Cancel button
-  - Live filter over a static index of routes: 8 calculators, Guides index, top guide slugs, Stamp Duty state pages
-  - Grouped results: **Calculators**, **Guides**, **Pages**
-  - Tap → navigate + close; ESC / Cancel / backdrop closes
-- Index built from existing `CALCULATORS` list + `src/data/allGuides.ts` + `src/data/routes.ts` (no new data files)
-- Pure client-side lowercase `includes` match, no backend
-
-## 3. Hero copy (`src/components/mobile/MobileHomepage.tsx`)
-Keep the H1 text as **"Australian mortgage calculators"** but render "mortgage" as `<em>` styled `font-serif italic text-accent` (brand blue `#0162E3`):
+### 1. Database migration
+Add a new column `logo_height_mobile` to `site_settings` (existing `logo_height` becomes the desktop value).
+```sql
+alter table public.site_settings
+  add column if not exists logo_height_mobile int not null default 28;
 ```
-Australian <em>mortgage</em> calculators
-```
-- Bump H1 to `text-[28px]`, tighten leading to match reference proportions
-- Subhead, RBA chip, and everything below unchanged
+No data loss; existing `logo_height` stays as desktop value.
 
-## 4. SEO / AEO safety
-- Visible H1 text reads identically to before — only "mortgage" gets italic styling
-- Page `<title>`, meta description, JSON-LD, llms.txt all unchanged
-- Desktop H1 unchanged
-- No changes to FAQ schema, sitemaps, or content data
+### 2. `src/hooks/useSiteSettings.ts`
+- Add `logo_height_mobile: number` to `SiteSettings` interface.
+- Add `logo_height_mobile: 28` to `DEFAULTS`.
+- Add `logo_height_mobile` to `SELECT_COLS`.
 
-## 5. Tests
-- Run vitest suite; update only the mobile homepage snapshot if it fails (cosmetic-only diff)
-- Confirm 831 tests pass
+### 3. `src/components/layout/Header.tsx`
+- Destructure `logo_height_mobile` alongside `logo_height`.
+- Use `logo_height_mobile` (clamped 20–60) for the mobile branch (`md:hidden` block).
+- Use `logo_height` (clamped 20–72) for the desktop branch (unchanged behavior).
 
-## Technical notes
-- Search sheet rendered as portal sibling so it overlays everything below safe-area
-- Search button uses existing `text-accent` + `active:scale-95` pattern from `MobileCalcHeader`
-- No changes to `MobileBottomNav`, routing, or any calculator logic
+### 4. `src/pages/admin/AdminDashboard.tsx`
+In the Branding → Logo card, replace the single slider with **two sliders**:
+- **Desktop logo height** — slider 20–72px, bound to `logoHeight` state, saves `logo_height`.
+- **Mobile logo height** — new slider 20–60px, bound to new `logoHeightMobile` state, saves `logo_height_mobile`.
+Each has its own "Save size" button (or one combined button that saves both). Plan: one "Save sizes" button that persists both at once for simplicity.
+Add live preview note showing both px values.
+
+### 5. Tests
+- Update `src/test/seo-regression.test.ts` mock to include `logo_height_mobile: 28`.
+- Run vitest; update homepage snapshot only if affected (shouldn't be — default mobile height stays 28, same as current clamp result).
+
+## Out of scope
+No changes to copy, SEO, or other settings. No UI redesign — same admin card, just an extra slider.

@@ -525,6 +525,7 @@ export type Database = {
           id: number
           indexing_enabled: boolean
           logo_height: number
+          logo_height_mobile: number
           logo_url: string | null
           robots_txt: string | null
           slot_header_enabled: boolean
@@ -556,6 +557,7 @@ export type Database = {
           id?: number
           indexing_enabled?: boolean
           logo_height?: number
+          logo_height_mobile?: number
           logo_url?: string | null
           robots_txt?: string | null
           slot_header_enabled?: boolean
@@ -587,6 +589,7 @@ export type Database = {
           id?: number
           indexing_enabled?: boolean
           logo_height?: number
+          logo_height_mobile?: number
           logo_url?: string | null
           robots_txt?: string | null
           slot_header_enabled?: boolean
