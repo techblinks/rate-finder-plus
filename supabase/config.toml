@@ -3,3 +3,6 @@ project_id = "newvydpcchjbuhcldckf"
 [functions.gsc-oauth-callback]
 verify_jwt = false
 
+[functions.health-check]
+verify_jwt = false
+
