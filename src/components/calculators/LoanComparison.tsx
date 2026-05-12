@@ -7,7 +7,10 @@ import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import { usePublishMobileResult } from "@/lib/mobileResult";
 import { useCalcPersist } from "@/lib/calcPersist";
+import { useIsMobile } from "@/hooks/use-mobile";
 import MobileRestoreChip from "@/components/mobile/MobileRestoreChip";
+import MobileCollapse from "@/components/mobile/MobileCollapse";
+import MobileInsightBar from "@/components/mobile/MobileInsightBar";
 import ResultActions from "@/components/ResultActions";
 import ShareResult from "@/components/ShareResult";
 
