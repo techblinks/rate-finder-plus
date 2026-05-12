@@ -335,6 +335,8 @@ const Refinance = () => {
     [inputs, result],
   );
 
+  const calcPending = useIsPending(JSON.stringify(s), 200);
+
   usePublishMobileResult({
     label: result.monthlySaving >= 0 ? "Monthly saving" : "Monthly extra cost",
     value: fmt0(Math.abs(result.monthlySaving)),
@@ -342,6 +344,7 @@ const Refinance = () => {
       ? `Break-even: month ${result.breakEvenMonth}`
       : "No break-even",
     onShare: () => onShare(),
+    pending: calcPending,
   });
 
   // Persist + URL sync (debounced)
