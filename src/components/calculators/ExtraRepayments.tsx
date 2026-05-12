@@ -22,6 +22,7 @@ import { usePublishMobileResult } from "@/lib/mobileResult";
 import { shareCurrent } from "@/lib/shareCurrent";
 import { useIsMobile } from "@/hooks/use-mobile";
 import MobileInsightBar from "@/components/mobile/MobileInsightBar";
+import MobileChartTableSection from "@/components/mobile/MobileChartTableSection";
 import ResultActions from "@/components/ResultActions";
 import ShareResult from "@/components/ShareResult";
 import { useRbaRates } from "@/hooks/useRbaRates";
@@ -681,8 +682,11 @@ const ExtraRepayments = () => {
       </div>
 
       {/* Loan balance decline chart */}
-      <section className="rounded-2xl border border-border bg-card p-4 md:p-6">
-        <h3 className="mb-3 text-[15px] font-semibold">Loan balance over time</h3>
+      <MobileChartTableSection
+        title="Loan balance over time"
+        hint="Tap to view chart"
+        sectionClassName="rounded-2xl border border-border bg-card p-4 md:p-6"
+      >
         <div className="h-[280px] w-full md:h-[320px]">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData} margin={{ top: 10, right: 10, bottom: 0, left: 0 }}>
@@ -736,7 +740,7 @@ const ExtraRepayments = () => {
             </AreaChart>
           </ResponsiveContainer>
         </div>
-      </section>
+      </MobileChartTableSection>
 
       {/* Payoff timeline */}
       <section className="rounded-2xl border border-border bg-card p-5">
@@ -776,8 +780,7 @@ const ExtraRepayments = () => {
       </section>
 
       {/* What-if scenarios */}
-      <section className="rounded-2xl border border-border bg-card p-5">
-        <h3 className="mb-1 text-[15px] font-semibold">What if you paid more?</h3>
+      <MobileChartTableSection title="What if you paid more?" hint="Tap to see scenarios">
         <p className="mb-4 text-[13px] text-muted-foreground">
           Click any row to apply that extra amount.
         </p>
@@ -819,12 +822,13 @@ const ExtraRepayments = () => {
             </tbody>
           </table>
         </div>
-      </section>
+      </MobileChartTableSection>
 
       {/* Year-by-year table */}
-      <section className="rounded-2xl border border-border bg-card p-5">
-        <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-[15px] font-semibold">Year-by-year breakdown</h3>
+      <MobileChartTableSection
+        title="Year-by-year breakdown"
+        hint="Tap to view table"
+        headerExtra={
           <button
             type="button"
             onClick={downloadCsv}
@@ -832,7 +836,8 @@ const ExtraRepayments = () => {
           >
             ↓ Download full CSV
           </button>
-        </div>
+        }
+      >
         <div className="overflow-x-auto">
           <table className="w-full min-w-[520px] text-[13px]">
             <thead>
@@ -859,7 +864,16 @@ const ExtraRepayments = () => {
             </tbody>
           </table>
         </div>
-      </section>
+        <div className="mt-3 sm:hidden">
+          <button
+            type="button"
+            onClick={downloadCsv}
+            className="text-[12px] font-semibold text-accent hover:underline"
+          >
+            ↓ Download full CSV
+          </button>
+        </div>
+      </MobileChartTableSection>
 
       {/* Mobile sticky savings bar */}
     </div>
