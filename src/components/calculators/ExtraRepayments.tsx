@@ -19,6 +19,8 @@ import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useDebouncedCalculate } from "@/lib/useDebouncedCalculate";
 import { usePublishMobileResult } from "@/lib/mobileResult";
 import { shareCurrent } from "@/lib/shareCurrent";
+import { useIsMobile } from "@/hooks/use-mobile";
+import MobileInsightBar from "@/components/mobile/MobileInsightBar";
 import ResultActions from "@/components/ResultActions";
 import ShareResult from "@/components/ShareResult";
 import { useRbaRates } from "@/hooks/useRbaRates";
@@ -360,9 +362,37 @@ const ExtraRepayments = () => {
   const accMonths = result.accelerated.payoffMonths || 1;
   const accPct = Math.min(100, (accMonths / stdMonths) * 100);
 
+  const isMobile = useIsMobile();
+  const erInsight = (() => {
+    if (s.extra === 0 && s.lumpSum === 0) {
+      return {
+        tone: "info" as const,
+        msg: `No extras yet. Set “Extra repayments” above to $200/mo and watch interest savings update instantly.`,
+      };
+    }
+    if (s.lumpSum === 0 && s.extra > 0) {
+      return {
+        tone: "info" as const,
+        msg: `${fmt0(s.extra)}/${s.extraFrequency} saves ${fmt0(result.interestSaved)}. Add a “Lump sum” above to compound the saving further.`,
+      };
+    }
+    if (result.interestSaved > 0) {
+      return {
+        tone: "success" as const,
+        msg: `You save ${fmt0(result.interestSaved)} and finish ${formatYearsMonths(result.monthsSaved)} sooner — increase “Extra repayments” to push higher.`,
+      };
+    }
+    return {
+      tone: "info" as const,
+      msg: `Adjust “Extra repayments” or “Lump sum” above to model how fast you can clear this loan.`,
+    };
+  })();
+
   return (
     <div className="space-y-6 pb-32 md:pb-0">
       <RestoreBanner show={!!restored} onReset={reset} />
+
+      {isMobile && <MobileInsightBar tone={erInsight.tone} message={erInsight.msg} />}
 
       <div className="grid gap-6 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
         {/* INPUTS */}
