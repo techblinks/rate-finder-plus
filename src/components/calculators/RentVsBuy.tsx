@@ -338,7 +338,7 @@ const RentVsBuy = () => {
           ? "Renting wins by"
           : "Roughly even",
     value:
-      result.verdict === "tie"
+      result.verdict === "close"
         ? fmt0(0)
         : fmtAbs0(result.difference),
     sub: `over ${inputs.analysisYears} years`,
