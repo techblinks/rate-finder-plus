@@ -869,7 +869,7 @@ export const GUIDES: GuideMeta[] = [
       {
         h2: "What the current rate environment means for your decision",
         blocks: [
-          p("As of May 2026, the RBA cash rate is 4.35% following three consecutive hikes in February, March, and May 2026. Variable home loan rates are sitting broadly in the 6.1%–6.75% range depending on lender and loan type. Fixed rates for 2–3 year terms are priced in the 5.9%–6.5% range from most major lenders."),
+          p("As of May 2026, the RBA cash rate is {{rbaCashRate}}% following three consecutive hikes in February, March, and May 2026. Variable home loan rates are sitting broadly in the 6.1%–6.75% range depending on lender and loan type. Fixed rates for 2–3 year terms are priced in the 5.9%–6.5% range from most major lenders."),
           p("When fixed rates are lower than variable rates — which is the case in some segments of the current market — fixing locks in the cheaper rate for the short term. However, the premium or discount of fixed vs variable rates reflects the market's expectation of where rates are heading."),
           p("Key considerations in the current environment:"),
           ul(
