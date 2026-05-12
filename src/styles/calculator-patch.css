@@ -114,13 +114,15 @@ input[type="range"]:focus-visible {
    Risk: Zero — spacing only.
 ──────────────────────────────────────────────────────────── */
 
-/* Main scroll area — push content above fixed nav */
-main,
-[class*="main-content"],
-[class*="page-content"],
-[class*="calculator-page"],
-[class*="PageContent"] {
-  padding-bottom: 100px !important;
+/* Main scroll area — push content above fixed mobile bottom nav */
+@media (max-width: 767px) {
+  main,
+  [class*="main-content"],
+  [class*="page-content"],
+  [class*="calculator-page"],
+  [class*="PageContent"] {
+    padding-bottom: 100px !important;
+  }
 }
 
 /* Ensure the last guide card isn't clipped */
@@ -300,7 +302,9 @@ main,
    Risk: Zero.
 ──────────────────────────────────────────────────────────── */
 
-button, [role="button"], a {
+/* Scoped: skip admin shell and small icon-only buttons */
+body:not(.admin-shell) button:not([aria-label="Search"]):not([aria-haspopup]),
+body:not(.admin-shell) [role="button"] {
   min-height: 44px;
 }
 

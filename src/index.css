@@ -842,3 +842,5 @@
     display: none !important;
   }
 }
+
+@import "./styles/calculator-patch.css";
