@@ -2,6 +2,8 @@ import { useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import type { FaqItem, FaqLink } from "@/data/faqs";
 import { ChevronDown } from "lucide-react";
+import { useRbaRates } from "@/hooks/useRbaRates";
+import { substituteRateTokens } from "@/lib/rateTokens";
 
 /**
  * Render a plain answer string with internal links injected for the configured
