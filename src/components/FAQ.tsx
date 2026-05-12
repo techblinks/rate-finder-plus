@@ -48,6 +48,7 @@ function renderAnswer(answer: string, links?: FaqLink[]): ReactNode {
 }
 
 const FAQ = ({ items }: { items: FaqItem[] }) => {
+  const { cashRate } = useRbaRates();
   const [open, setOpen] = useState<number | null>(0);
   return (
     <section aria-labelledby="faq-heading">
@@ -55,6 +56,8 @@ const FAQ = ({ items }: { items: FaqItem[] }) => {
       <ul className="divide-y divide-border rounded-lg border border-border bg-card">
         {items.map((f, i) => {
           const isOpen = open === i;
+          const question = substituteRateTokens(f.question, { cashRate });
+          const answer = substituteRateTokens(f.answer, { cashRate });
           return (
             <li key={i}>
               <button
