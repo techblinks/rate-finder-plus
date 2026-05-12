@@ -345,11 +345,14 @@ const Lmi = () => {
     }
   };
 
+  const calcPending = useIsPending(`${JSON.stringify(s)}|${monthlyRent}|${extraSavings}`, 200);
+
   usePublishMobileResult({
     label: "Estimated LMI",
     value: fmt0(lmi),
     sub: `LVR ${lvr.toFixed(1)}%`,
     onShare,
+    pending: calcPending,
   });
 
   const clearStored = () => {
