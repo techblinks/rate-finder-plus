@@ -143,12 +143,75 @@ const NewsArticlePage = () => {
 
         {article.body && (
           <div
-            className="prose prose-slate max-w-none text-foreground"
+            className="article-content prose prose-slate max-w-none text-foreground"
             dangerouslySetInnerHTML={{ __html: article.body }}
           />
         )}
 
-        <section className="mt-12 rounded-2xl border border-border bg-card p-6">
+        <style>{`
+          .article-content h2 {
+            color: #0A0A0F;
+            font-size: 22px;
+            font-weight: 700;
+            margin-top: 32px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #EEF4FF;
+          }
+          .article-content p {
+            line-height: 1.8;
+            color: #374151;
+            margin-bottom: 16px;
+          }
+          .article-content a {
+            color: #2563EB;
+            font-weight: 500;
+            text-decoration: underline;
+          }
+          .article-content ul {
+            list-style-type: disc;
+            padding-left: 24px;
+            margin-bottom: 16px;
+          }
+          .article-content ul li {
+            line-height: 1.8;
+            color: #374151;
+            margin-bottom: 4px;
+          }
+          .article-content ul li::marker {
+            color: #2563EB;
+          }
+          .article-content div.faq-section {
+            background: #EEF4FF;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 32px;
+          }
+          .article-content div.faq-item {
+            border-bottom: 1px solid #E5E7EB;
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+          }
+          .article-content div.faq-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+          }
+          .article-content div.faq-item h3 {
+            color: #2563EB;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+          }
+        `}</style>
+
+        <section
+          className="mt-12 rounded-xl border p-5"
+          style={{
+            borderColor: "#BFDBFE",
+            backgroundColor: "#EEF4FF",
+          }}
+        >
           <h2 className="text-lg font-semibold text-foreground">Related calculators</h2>
           <ul className="mt-3 space-y-2">
             {RELATED.map((r) => (
