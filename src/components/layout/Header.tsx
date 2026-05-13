@@ -141,14 +141,24 @@ const Header = () => {
             </div>
           </nav>
 
-          <NavLink
-            to="/guides"
-            className={({ isActive }) =>
-              `nav-link-redesign ml-auto ${isActive ? "active" : ""}`
-            }
-          >
-            Guides
-          </NavLink>
+          <div className="ml-auto flex items-center gap-6">
+            <NavLink
+              to="/guides"
+              className={({ isActive }) =>
+                `nav-link-redesign ${isActive ? "active" : ""}`
+              }
+            >
+              Guides
+            </NavLink>
+            <NavLink
+              to="/news"
+              className={({ isActive }) =>
+                `nav-link-redesign ${isActive ? "active" : ""}`
+              }
+            >
+              News
+            </NavLink>
+          </div>
         </div>
       </div>
     </header>
