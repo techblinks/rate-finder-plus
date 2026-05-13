@@ -95,7 +95,7 @@ const NewsPanel = () => {
 
   const togglePublish = async (a: NewsArticle) => {
     const next = !a.is_published;
-    const patch: Record<string, unknown> = { is_published: next };
+    const patch: { is_published: boolean; published_at?: string } = { is_published: next };
     if (next && !a.published_at) patch.published_at = new Date().toISOString();
     const { error } = await supabase.from("news_articles").update(patch).eq("id", a.id);
     if (error) {
