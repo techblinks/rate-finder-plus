@@ -29,6 +29,13 @@ export const BreadcrumbJsonLd = ({ items }: BreadcrumbProps) => {
 
 export const FaqJsonLd = ({ faqs }: { faqs: FaqItem[] }) => {
   const { cashRate } = useRbaRates();
+  // Skip if prerender already injected a FAQPage block — avoids GSC "Duplicate field FAQPage".
+  if (typeof document !== "undefined") {
+    const existing = document.querySelectorAll('script[type="application/ld+json"]');
+    for (const el of Array.from(existing)) {
+      if ((el.textContent || "").includes('"FAQPage"')) return null;
+    }
+  }
   // Google Rich Results requires the FAQPage to have at least 2 valid Q/A pairs.
   const cleaned = (faqs ?? [])
     .map((f) => ({
