@@ -1,52 +1,29 @@
 name: RBA Rate Announcement Publisher
 
 on:
-  # Runs every RBA Tuesday at 2:30pm AEST (4:30am UTC)
   schedule:
     - cron: '30 4 * * 2'
-
-  # Also allows manual trigger for testing
   workflow_dispatch:
-    inputs:
-      force_publish:
-        description: 'Force publish even if no new announcement'
-        required: false
-        default: 'false'
 
 jobs:
   publish-rba-news:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check RBA website for announcement
+      - name: Check RBA rate
         id: check_rba
         run: |
-          # Fetch RBA cash rate page
-          RBA_HTML=$(curl -s "https://www.rba.gov.au/statistics/cash-rate/" \
-            -H "User-Agent: CalcyBot/1.0 (calcy.com.au)")
-
-          # Extract current rate
-          RATE=$(echo "$RBA_HTML" | grep -oP 'Cash Rate Target.*?<td[^>]*>\K[\d.]+' | head -1)
-
-          if [ -z "$RATE" ]; then
-            echo "Could not parse rate — using fallback"
-            RATE="4.35"
-          fi
-
+          RBA_HTML=$(curl -s "https://www.rba.gov.au/statistics/cash-rate/" -H "User-Agent: CalcyBot/1.0")
+          RATE=$(echo "$RBA_HTML" | grep -oP '[\d.]+(?=%\s*p\.a)' | head -1)
+          if [ -z "$RATE" ]; then RATE="4.35"; fi
           echo "rate=$RATE" >> $GITHUB_OUTPUT
-          echo "Found RBA rate: $RATE%"
-
-          # Get today's date for slug
-          TODAY=$(date +%Y-%m-%d)
-          MONTH=$(date +%B)
-          YEAR=$(date +%Y)
-
-          echo "today=$TODAY" >> $GITHUB_OUTPUT
-          echo "month=$MONTH" >> $GITHUB_OUTPUT
-          echo "year=$YEAR" >> $GITHUB_OUTPUT
+          echo "today=$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
+          echo "month=$(date +%B)" >> $GITHUB_OUTPUT
+          echo "year=$(date +%Y)" >> $GITHUB_OUTPUT
+          echo "Rate: $RATE%"
 
       - name: Generate article with Claude
-        id: generate_article
+        id: generate
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
@@ -54,72 +31,85 @@ jobs:
           MONTH="${{ steps.check_rba.outputs.month }}"
           YEAR="${{ steps.check_rba.outputs.year }}"
 
-          # Call Claude API to write the article
-          RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
-            -H "x-api-key: $ANTHROPIC_API_KEY" \
-            -H "anthropic-version: 2023-06-01" \
-            -H "content-type: application/json" \
-            -d "{
-              \"model\": \"claude-sonnet-4-20250514\",
-              \"max_tokens\": 2000,
-              \"messages\": [{
-                \"role\": \"user\",
-                \"content\": \"Write a professional Australian mortgage news article about the RBA cash rate decision for $MONTH $YEAR. The current cash rate is $RATE%. Write in a helpful, informative tone for Australian homeowners and property buyers. Include: 1) What the RBA decided, 2) What this means for mortgage repayments, 3) Impact on fixed vs variable rates, 4) Advice for homeowners. Format as JSON with these exact fields: title (string, max 80 chars), excerpt (string, max 200 chars, no quotes), body (string, HTML formatted with p and h2 tags, no quotes inside, escape any special chars). Return ONLY the JSON object, no markdown, no backticks.\"
-              }]
-            }")
+          python3 << EOF
+          import json, urllib.request, os
 
-          # Extract the text content from Claude response
-          ARTICLE=$(echo "$RESPONSE" | python3 -c "
-          import sys, json
-          data = json.load(sys.stdin)
-          text = data['content'][0]['text']
-          print(text)
-          ")
+          prompt = f"""Write a news article about the RBA cash rate for {MONTH} {YEAR}. Rate is {RATE}%.
+          Write for Australian homeowners. Cover: the decision, mortgage repayment impact, fixed vs variable rates, homeowner advice.
+          Return ONLY a JSON object with keys: title (string, max 80 chars), excerpt (string, max 200 chars), body (string, HTML paragraphs with <p> and <h2> tags).
+          No markdown. No backticks. Pure JSON only."""
 
-          echo "article<<EOF" >> $GITHUB_OUTPUT
-          echo "$ARTICLE" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          payload = json.dumps({
+              "model": "claude-haiku-4-5-20251001",
+              "max_tokens": 2000,
+              "messages": [{"role": "user", "content": prompt}]
+          }).encode()
 
-      - name: Publish to Calcy news
+          req = urllib.request.Request(
+              "https://api.anthropic.com/v1/messages",
+              data=payload,
+              headers={
+                  "x-api-key": os.environ["ANTHROPIC_API_KEY"],
+                  "anthropic-version": "2023-06-01",
+                  "content-type": "application/json"
+              }
+          )
+
+          with urllib.request.urlopen(req) as r:
+              data = json.loads(r.read())
+
+          text = data["content"][0]["text"].strip()
+
+          # Strip markdown if present
+          if text.startswith("```"):
+              lines = text.split("\n")
+              text = "\n".join(l for l in lines if not l.startswith("```"))
+
+          article = json.loads(text)
+
+          with open("/tmp/article.json", "w") as f:
+              json.dump(article, f)
+
+          print("Article generated:", article["title"])
+          EOF
+
+      - name: Publish to Calcy
         env:
           PUBLISH_SECRET: ${{ secrets.PUBLISH_SECRET }}
         run: |
-          RATE="${{ steps.check_rba.outputs.rate }}"
           TODAY="${{ steps.check_rba.outputs.today }}"
-          MONTH="${{ steps.check_rba.outputs.month }}"
-          YEAR="${{ steps.check_rba.outputs.year }}"
+          RATE="${{ steps.check_rba.outputs.rate }}"
 
-          ARTICLE='${{ steps.generate_article.outputs.article }}'
+          python3 << EOF
+          import json, urllib.request, os
 
-          # Parse article fields
-          TITLE=$(echo "$ARTICLE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['title'])")
-          EXCERPT=$(echo "$ARTICLE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['excerpt'])")
-          BODY=$(echo "$ARTICLE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['body'])")
+          with open("/tmp/article.json") as f:
+              article = json.load(f)
 
-          # Create slug from date and rate
-          SLUG="rba-rate-${RATE//./-}-${TODAY}"
+          rate_slug = "${RATE}".replace(".", "-")
+          slug = f"rba-{rate_slug}-${TODAY}"
 
-          # Publish to Calcy via Edge Function
-          RESULT=$(curl -s -X POST \
-            "https://newvydpcchjbuhcldckf.supabase.co/functions/v1/publish-news" \
-            -H "Content-Type: application/json" \
-            -d "{
-              \"title\": $(echo "$TITLE" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip()))"),
-              \"slug\": \"$SLUG\",
-              \"excerpt\": $(echo "$EXCERPT" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip()))"),
-              \"body\": $(echo "$BODY" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip()))"),
-              \"published_at\": \"${TODAY}T04:30:00Z\",
-              \"secret\": \"$PUBLISH_SECRET\"
-            }")
+          payload = json.dumps({
+              "title": article["title"],
+              "slug": slug,
+              "excerpt": article["excerpt"],
+              "body": article["body"],
+              "published_at": "${TODAY}T04:30:00Z",
+              "secret": os.environ["PUBLISH_SECRET"]
+          }).encode()
 
-          echo "Publish result: $RESULT"
+          req = urllib.request.Request(
+              "https://newvydpcchjbuhcldckf.supabase.co/functions/v1/publish-news",
+              data=payload,
+              headers={"Content-Type": "application/json"}
+          )
 
-          # Check if successful
-          SUCCESS=$(echo "$RESULT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('success', False))")
+          with urllib.request.urlopen(req) as r:
+              result = json.loads(r.read())
 
-          if [ "$SUCCESS" = "True" ]; then
-            echo "✅ Article published successfully!"
-          else
-            echo "❌ Failed to publish: $RESULT"
-            exit 1
-          fi
+          if result.get("success"):
+              print("Article published! ID:", result.get("id"))
+          else:
+              print("Failed:", result)
+              exit(1)
+          EOF
