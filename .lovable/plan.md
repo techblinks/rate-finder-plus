@@ -1,76 +1,30 @@
-# Add News Section to Calcy
+## Create `publish-news` Edge Function
 
-A new `/news` content area for RBA, mortgage and property news, backed by a new Supabase table, with listing + article pages, NewsArticle JSON-LD, and nav entries. No existing calculators, guides, or SEO content will be touched.
+### Function: `supabase/functions/publish-news/index.ts`
 
-## Database
+- POST-only endpoint (return 405 otherwise) with full CORS headers (OPTIONS preflight handler).
+- Parse JSON body; validate required fields (`title`, `slug`, `body`, `secret`) with Zod. `excerpt` and `published_at` optional.
+- Compare `secret` against `Deno.env.get("PUBLISH_SECRET")` using constant-time comparison. Mismatch → `401 {"error":"Unauthorized"}`.
+- Use service-role Supabase client (`SUPABASE_SERVICE_ROLE_KEY`) to insert into `news_articles` with `is_published = true`, `published_at = body.published_at ?? new Date().toISOString()`, `author` left to default (`'Calcy Team'`).
+- On success: `200 {"success": true, "id": <uuid>}`. On DB error: `500 {"error": <message>}`. Duplicate slug → `409 {"error":"Slug already exists"}`.
+- Configured with `verify_jwt = false` in `supabase/config.toml` so GitHub Actions can call it without a Supabase user JWT (auth handled by `PUBLISH_SECRET`).
 
-New table `public.news_articles`:
+### Secret
 
-- `id` uuid primary key (default `gen_random_uuid()`)
-- `title` text not null
-- `slug` text not null unique
-- `excerpt` text
-- `body` text
-- `published_at` timestamptz
-- `is_published` boolean default false
-- `author` text default `'Calcy Team'`
-- `created_at` timestamptz default `now()`
+- Generate a strong random value (32-byte base64url) and store via the secrets tool as `PUBLISH_SECRET`. Requires user to confirm in the secure form — I'll prefill the generated value so you just click save.
 
-RLS:
-- Public can read only rows where `is_published = true`.
-- Admins (via existing `has_role(auth.uid(), 'admin')`) have full access.
+### Deliverable to user
 
-Index on `(is_published, published_at desc)` for listing performance.
+After deploy, share the function URL:
+`https://newvydpcchjbuhcldckf.supabase.co/functions/v1/publish-news`
 
-## Routes & Pages
+Example GitHub Actions curl:
+```bash
+curl -X POST https://newvydpcchjbuhcldckf.supabase.co/functions/v1/publish-news \
+  -H "Content-Type: application/json" \
+  -d '{"title":"...","slug":"...","excerpt":"...","body":"...","published_at":"2026-05-13T14:30:00Z","secret":"'"$PUBLISH_SECRET"'"}'
+```
 
-- `/news` — `src/pages/NewsIndex.tsx`
-  - Title: "Australian Mortgage & Property News"
-  - Meta description: "Latest RBA rate decisions, property market updates and mortgage news for Australian homeowners and buyers."
-  - H1: "Latest mortgage & property news"
-  - Fetches published articles ordered by `published_at desc`.
-  - Card grid: headline, formatted date, 150-char excerpt (truncated from `excerpt` or `body`), "Read more" link to `/news/[slug]`.
-  - Pagination: 12 per page using `?page=N` query param (range query against Supabase).
-  - Empty state: "Check back soon for the latest RBA and property news."
+### Out of scope
 
-- `/news/:slug` — `src/pages/NewsArticlePage.tsx`
-  - Fetches single published article by slug; 404 if missing.
-  - H1 = headline; shows published date and author (default "Calcy Team"); renders body.
-  - Meta title = headline (via existing title template); meta description = excerpt.
-  - JSON-LD `NewsArticle` (headline, datePublished, author, description, mainEntityOfPage) emitted via the existing `JsonLd` component pattern.
-  - Bottom "Related calculators" section linking to `/mortgage-calculator`, `/borrowing-power`, `/refinance` (using existing route paths).
-
-Both routes registered in `src/App.tsx` as lazy-loaded routes alongside existing entries.
-
-## Navigation
-
-- Desktop: add "News" link in `src/components/layout/Header.tsx`, placed alongside the existing Guides/Compare entries.
-- Mobile: add "News" item in `src/components/MobileBottomNav.tsx` between Guides and Compare.
-
-No other nav items are reordered or restyled.
-
-## SEO
-
-- Listing page: standard Helmet meta + canonical.
-- Article page: NewsArticle JSON-LD only (no FAQ/Breadcrumb duplication concerns since these are new routes and prerender will not target them initially).
-
-## Out of scope
-
-- No admin CRUD UI for news in this task (content can be inserted directly in the backend until an editor is requested).
-- No prerender/sitemap integration changes — can be added in a follow-up.
-- No edits to existing calculators, guides, or SEO content.
-
-## Files
-
-New:
-- `src/pages/NewsIndex.tsx`
-- `src/pages/NewsArticlePage.tsx`
-- `src/components/news/NewsCard.tsx` (small card component)
-
-Edited:
-- `src/App.tsx` (route registration)
-- `src/components/layout/Header.tsx` (desktop nav)
-- `src/components/MobileBottomNav.tsx` (mobile nav)
-
-Migration:
-- New `news_articles` table + RLS policies + index.
+- No update/delete endpoints, no auth beyond shared secret, no markdown→HTML conversion (body stored as-is).
