@@ -100,7 +100,11 @@ const Toggle = ({ label, checked, onChange, hint }: { label: string; checked: bo
 const AdminDashboard = () => {
   const { session, isAdmin, loading } = useAuth();
   const settings = useSiteSettings();
-  const [tab, setTab] = useState<TabKey>("dashboard");
+  const [tab, setTab] = useState<TabKey>(() =>
+    typeof window !== "undefined" && window.location.pathname.startsWith("/admin/news")
+      ? "news"
+      : "dashboard"
+  );
   const [logoHeight, setLogoHeight] = useState(settings.logo_height);
   const [logoHeightMobile, setLogoHeightMobile] = useState(settings.logo_height_mobile);
   const [saving, setSaving] = useState(false);
@@ -278,6 +282,7 @@ const AdminDashboard = () => {
             <fieldset disabled={!isAdmin || saving} className="space-y-6 disabled:opacity-60">
               {tab === "dashboard" && <CommandCentre onNavigate={(k) => setTab(k as TabKey)} />}
               {tab === "content" && <ContentPanel />}
+              {tab === "news" && <NewsPanel />}
               {tab === "seo_intel" && <SeoPanel />}
               {tab === "live_data" && <LiveDataPanel />}
 
