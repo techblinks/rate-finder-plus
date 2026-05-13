@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Calculator, BookOpen, ArrowLeftRight } from "lucide-react";
+import { Home, Calculator, BookOpen, ArrowLeftRight, Newspaper } from "lucide-react";
 import { haptic } from "@/lib/haptic";
 
 const TABS = [
@@ -18,6 +18,12 @@ const TABS = [
     match: (p: string) => p.startsWith("/guides"),
   },
   {
+    to: "/news",
+    label: "News",
+    icon: Newspaper,
+    match: (p: string) => p.startsWith("/news"),
+  },
+  {
     to: "/loan-comparison-calculator",
     label: "Compare",
     icon: ArrowLeftRight,
@@ -34,7 +40,7 @@ const MobileBottomNav = () => {
       className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background md:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <ul className="grid grid-cols-4">
+      <ul className="grid grid-cols-5">
         {TABS.map((t) => {
           const active = t.match(pathname);
           const Icon = t.icon;

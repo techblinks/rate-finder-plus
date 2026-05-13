@@ -31,6 +31,8 @@ const ProgrammaticPage = lazy(() => import("./pages/ProgrammaticPage"));
 const FhbGrantPage = lazy(() => import("./pages/FhbGrantPage"));
 const BestHomeLoansAustralia = lazy(() => import("./pages/BestHomeLoansAustralia"));
 const SuburbGuidePage = lazy(() => import("./pages/SuburbGuidePage"));
+const NewsIndex = lazy(() => import("./pages/NewsIndex"));
+const NewsArticlePage = lazy(() => import("./pages/NewsArticlePage"));
 
 const STATE_SLUGS = ["nsw", "vic", "qld", "wa", "sa", "tas", "act", "nt"] as const;
 
@@ -94,6 +96,8 @@ const App = () => {
           <Route path="/best-home-loans-australia" element={<BestHomeLoansAustralia />} />
           <Route path="/suburbs/:slug" element={<SuburbGuidePage />} />
           <Route path="/calculate/*" element={<ProgrammaticPage />} />
+          <Route path="/news" element={<NewsIndex />} />
+          <Route path="/news/:slug" element={<NewsArticlePage />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route path="/admin/login" element={<AdminLogin />} />
