@@ -20,24 +20,32 @@ jobs:
           echo "today=$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
           echo "month=$(date +%B)" >> $GITHUB_OUTPUT
           echo "year=$(date +%Y)" >> $GITHUB_OUTPUT
-          echo "Rate: $RATE%"
+          echo "Rate found: $RATE%"
 
       - name: Generate article with Claude
         id: generate
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          RBA_RATE: ${{ steps.check_rba.outputs.rate }}
+          RBA_MONTH: ${{ steps.check_rba.outputs.month }}
+          RBA_YEAR: ${{ steps.check_rba.outputs.year }}
         run: |
-          RATE="${{ steps.check_rba.outputs.rate }}"
-          MONTH="${{ steps.check_rba.outputs.month }}"
-          YEAR="${{ steps.check_rba.outputs.year }}"
+          cat > /tmp/generate.py << 'PYEOF'
+          import json, urllib.request, os, sys
 
-          python3 << EOF
-          import json, urllib.request, os
+          rate = os.environ["RBA_RATE"]
+          month = os.environ["RBA_MONTH"]
+          year = os.environ["RBA_YEAR"]
+          api_key = os.environ["ANTHROPIC_API_KEY"]
 
-          prompt = f"""Write a news article about the RBA cash rate for {MONTH} {YEAR}. Rate is {RATE}%.
-          Write for Australian homeowners. Cover: the decision, mortgage repayment impact, fixed vs variable rates, homeowner advice.
-          Return ONLY a JSON object with keys: title (string, max 80 chars), excerpt (string, max 200 chars), body (string, HTML paragraphs with <p> and <h2> tags).
-          No markdown. No backticks. Pure JSON only."""
+          prompt = (
+              f"Write a news article about the RBA cash rate decision for {month} {year}. "
+              f"The cash rate is {rate}%. Write for Australian homeowners and buyers. "
+              f"Cover: the RBA decision, mortgage repayment impact, fixed vs variable rates, advice. "
+              f"Return ONLY a JSON object with these keys: "
+              f"title (string max 80 chars), excerpt (string max 200 chars), body (HTML string with p and h2 tags). "
+              f"Pure JSON only. No markdown. No backticks. No explanation."
+          )
 
           payload = json.dumps({
               "model": "claude-haiku-4-5-20251001",
@@ -49,53 +57,66 @@ jobs:
               "https://api.anthropic.com/v1/messages",
               data=payload,
               headers={
-                  "x-api-key": os.environ["ANTHROPIC_API_KEY"],
+                  "x-api-key": api_key,
                   "anthropic-version": "2023-06-01",
                   "content-type": "application/json"
               }
           )
 
-          with urllib.request.urlopen(req) as r:
-              data = json.loads(r.read())
+          try:
+              with urllib.request.urlopen(req) as r:
+                  data = json.loads(r.read())
+          except urllib.error.HTTPError as e:
+              print("API Error:", e.read().decode())
+              sys.exit(1)
 
           text = data["content"][0]["text"].strip()
 
-          # Strip markdown if present
-          if text.startswith("```"):
+          # Strip markdown backticks if present
+          if "```" in text:
               lines = text.split("\n")
-              text = "\n".join(l for l in lines if not l.startswith("```"))
+              text = "\n".join(l for l in lines if not l.strip().startswith("```"))
 
-          article = json.loads(text)
+          try:
+              article = json.loads(text)
+          except json.JSONDecodeError as e:
+              print("JSON parse error:", e)
+              print("Raw text:", text)
+              sys.exit(1)
 
           with open("/tmp/article.json", "w") as f:
               json.dump(article, f)
 
-          print("Article generated:", article["title"])
-          EOF
+          print("Generated:", article["title"])
+          PYEOF
+          python3 /tmp/generate.py
 
       - name: Publish to Calcy
         env:
           PUBLISH_SECRET: ${{ secrets.PUBLISH_SECRET }}
+          RBA_TODAY: ${{ steps.check_rba.outputs.today }}
+          RBA_RATE: ${{ steps.check_rba.outputs.rate }}
         run: |
-          TODAY="${{ steps.check_rba.outputs.today }}"
-          RATE="${{ steps.check_rba.outputs.rate }}"
+          cat > /tmp/publish.py << 'PYEOF'
+          import json, urllib.request, os, sys
 
-          python3 << EOF
-          import json, urllib.request, os
+          today = os.environ["RBA_TODAY"]
+          rate = os.environ["RBA_RATE"]
+          secret = os.environ["PUBLISH_SECRET"]
 
           with open("/tmp/article.json") as f:
               article = json.load(f)
 
-          rate_slug = "${RATE}".replace(".", "-")
-          slug = f"rba-{rate_slug}-${TODAY}"
+          rate_slug = rate.replace(".", "-")
+          slug = f"rba-{rate_slug}-{today}"
 
           payload = json.dumps({
               "title": article["title"],
               "slug": slug,
               "excerpt": article["excerpt"],
               "body": article["body"],
-              "published_at": "${TODAY}T04:30:00Z",
-              "secret": os.environ["PUBLISH_SECRET"]
+              "published_at": f"{today}T04:30:00Z",
+              "secret": secret
           }).encode()
 
           req = urllib.request.Request(
@@ -104,12 +125,18 @@ jobs:
               headers={"Content-Type": "application/json"}
           )
 
-          with urllib.request.urlopen(req) as r:
-              result = json.loads(r.read())
+          try:
+              with urllib.request.urlopen(req) as r:
+                  result = json.loads(r.read())
+          except urllib.error.HTTPError as e:
+              print("Publish error:", e.read().decode())
+              sys.exit(1)
 
           if result.get("success"):
-              print("Article published! ID:", result.get("id"))
+              print("Published! ID:", result.get("id"))
+              print("Live at: https://calcy.com.au/news/" + slug)
           else:
               print("Failed:", result)
-              exit(1)
-          EOF
+              sys.exit(1)
+          PYEOF
+          python3 /tmp/publish.py
