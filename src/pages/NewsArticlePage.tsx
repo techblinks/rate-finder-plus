@@ -143,7 +143,7 @@ const NewsArticlePage = () => {
 
         {article.body && (
           <div
-            className="prose prose-slate max-w-none text-foreground"
+            className="article-content prose prose-slate max-w-none text-foreground"
             dangerouslySetInnerHTML={{ __html: article.body }}
           />
         )}
