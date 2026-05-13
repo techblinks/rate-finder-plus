@@ -102,6 +102,7 @@ const App = () => {
         </Route>
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/news" element={<AdminDashboard />} />
         </Routes>
       </Suspense>
     </LocaleProvider>
