@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
       - name: Check RBA rate
         id: check_rba
         run: |
@@ -20,179 +23,14 @@ jobs:
           echo "today=$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
           echo "month=$(date +%B)" >> $GITHUB_OUTPUT
           echo "year=$(date +%Y)" >> $GITHUB_OUTPUT
-          echo "Rate found: $RATE%"
+          echo "Rate: $RATE%"
 
-      - name: Generate SEO-optimised article with Claude
-        id: generate
+      - name: Generate and publish article
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          RBA_RATE: ${{ steps.check_rba.outputs.rate }}
-          RBA_MONTH: ${{ steps.check_rba.outputs.month }}
-          RBA_YEAR: ${{ steps.check_rba.outputs.year }}
-        run: |
-          cat > /tmp/generate.py << 'PYEOF'
-          import json, urllib.request, os, sys
-
-          rate = os.environ["RBA_RATE"]
-          month = os.environ["RBA_MONTH"]
-          year = os.environ["RBA_YEAR"]
-          api_key = os.environ["ANTHROPIC_API_KEY"]
-
-          # Calculate repayment impact for common loan sizes
-          # Monthly repayment formula: P * r * (1+r)^n / ((1+r)^n - 1)
-          import math
-          def monthly_repayment(principal, annual_rate, years=30):
-              r = annual_rate / 100 / 12
-              n = years * 12
-              if r == 0:
-                  return principal / n
-              return principal * (r * (1 + r)**n) / ((1 + r)**n - 1)
-
-          r = float(rate)
-          rep_500k = round(monthly_repayment(500000, r))
-          rep_600k = round(monthly_repayment(600000, r))
-          rep_750k = round(monthly_repayment(750000, r))
-          rep_1m   = round(monthly_repayment(1000000, r))
-
-          prompt = f"""You are an expert Australian mortgage journalist writing for calcy.com.au.
-
-Write a comprehensive, SEO-optimised news article about the RBA cash rate decision for {month} {year}.
-The RBA cash rate is {rate}%.
-
-USE THESE EXACT REPAYMENT FIGURES (calculated for 30-year P&I loans at {rate}%):
-- $500,000 loan: ${rep_500k:,}/month
-- $600,000 loan: ${rep_600k:,}/month
-- $750,000 loan: ${rep_750k:,}/month
-- $1,000,000 loan: ${rep_1m:,}/month
-
-ARTICLE REQUIREMENTS:
-1. Length: 650-800 words
-2. Tone: helpful, clear, trustworthy — like a knowledgeable friend explaining finance
-3. Target audience: Australian homeowners and first home buyers
-4. Include specific dollar figures for repayments (use the figures above)
-5. Mention impact on variable rate borrowers vs fixed rate borrowers
-6. Include practical advice for 3 types of readers: current variable rate holders, those considering fixing, first home buyers
-7. End with a FAQ section with exactly 4 questions and answers
-8. Naturally mention calcy.com.au mortgage calculator at least twice
-9. Include these keywords naturally: RBA cash rate, mortgage repayments Australia, home loan interest rates, variable rate mortgage
-
-HTML STRUCTURE REQUIRED:
-- Use <h2> for section headings
-- Use <p> for paragraphs
-- Use <ul> and <li> for the repayment table
-- Use <div class="faq-section"> wrapping a <h2>Frequently asked questions</h2> then each FAQ as <div class="faq-item"><h3>question</h3><p>answer</p></div>
-- Include this CTA link naturally in the text: <a href="/mortgage-calculator">Calcy mortgage calculator</a>
-- Include this CTA link naturally: <a href="/borrowing-power">borrowing power calculator</a>
-
-Return ONLY a valid JSON object with these exact keys:
-- title: SEO title string, format "RBA [holds/cuts/raises] cash rate at {rate}% — {month} {year}: What it means for your mortgage" (max 90 chars)
-- excerpt: compelling meta description, 150-160 chars, include the rate and month
-- body: the full HTML article string (escape all quotes inside with backslash)
-
-Pure JSON only. No markdown. No backticks. No explanation before or after."""
-
-          payload = json.dumps({
-              "model": "claude-haiku-4-5-20251001",
-              "max_tokens": 3000,
-              "messages": [{"role": "user", "content": prompt}]
-          }).encode()
-
-          req = urllib.request.Request(
-              "https://api.anthropic.com/v1/messages",
-              data=payload,
-              headers={
-                  "x-api-key": api_key,
-                  "anthropic-version": "2023-06-01",
-                  "content-type": "application/json"
-              }
-          )
-
-          try:
-              with urllib.request.urlopen(req) as r:
-                  data = json.loads(r.read())
-          except urllib.error.HTTPError as e:
-              print("API Error:", e.read().decode())
-              sys.exit(1)
-
-          text = data["content"][0]["text"].strip()
-
-          # Strip markdown backticks if present
-          if "```" in text:
-              lines = text.split("\n")
-              text = "\n".join(l for l in lines if not l.strip().startswith("```"))
-
-          try:
-              article = json.loads(text)
-          except json.JSONDecodeError as e:
-              print("JSON parse error:", e)
-              print("Raw text:", text[:500])
-              sys.exit(1)
-
-          with open("/tmp/article.json", "w") as f:
-              json.dump(article, f)
-
-          print("Title:", article["title"])
-          print("Excerpt:", article["excerpt"])
-          PYEOF
-          python3 /tmp/generate.py
-
-      - name: Publish to Calcy
-        env:
           PUBLISH_SECRET: ${{ secrets.PUBLISH_SECRET }}
-          RBA_TODAY: ${{ steps.check_rba.outputs.today }}
           RBA_RATE: ${{ steps.check_rba.outputs.rate }}
           RBA_MONTH: ${{ steps.check_rba.outputs.month }}
           RBA_YEAR: ${{ steps.check_rba.outputs.year }}
-        run: |
-          cat > /tmp/publish.py << 'PYEOF'
-          import json, urllib.request, os, sys
-
-          today = os.environ["RBA_TODAY"]
-          rate = os.environ["RBA_RATE"]
-          month = os.environ["RBA_MONTH"]
-          year = os.environ["RBA_YEAR"]
-          secret = os.environ["PUBLISH_SECRET"]
-
-          with open("/tmp/article.json") as f:
-              article = json.load(f)
-
-          rate_slug = rate.replace(".", "-")
-          month_slug = month.lower()
-          slug = f"rba-cash-rate-{rate_slug}-{month_slug}-{year}"
-
-          payload = json.dumps({
-              "title": article["title"],
-              "slug": slug,
-              "excerpt": article["excerpt"],
-              "body": article["body"],
-              "published_at": f"{today}T04:30:00Z",
-              "secret": secret
-          }).encode()
-
-          req = urllib.request.Request(
-              "https://newvydpcchjbuhcldckf.supabase.co/functions/v1/publish-news",
-              data=payload,
-              headers={"Content-Type": "application/json"}
-          )
-
-          try:
-              with urllib.request.urlopen(req) as r:
-                  result = json.loads(r.read())
-          except urllib.error.HTTPError as e:
-              body = e.read().decode()
-              print("Publish error:", body)
-              # If duplicate slug (409) that's actually OK — article exists
-              if "Slug already exists" in body:
-                  print("Article already published for this rate/month — skipping")
-                  sys.exit(0)
-              sys.exit(1)
-
-          if result.get("success"):
-              print("Published successfully!")
-              print("ID:", result.get("id"))
-              print("Live at: https://calcy.com.au/news/" + slug)
-          else:
-              print("Failed:", result)
-              sys.exit(1)
-          PYEOF
-          python3 /tmp/publish.py
+          RBA_TODAY: ${{ steps.check_rba.outputs.today }}
+        run: python3 .github/scripts/rba_publish.py
