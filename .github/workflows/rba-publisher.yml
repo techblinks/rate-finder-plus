@@ -1,0 +1,125 @@
+name: RBA Rate Announcement Publisher
+
+on:
+  # Runs every RBA Tuesday at 2:30pm AEST (4:30am UTC)
+  schedule:
+    - cron: '30 4 * * 2'
+
+  # Also allows manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      force_publish:
+        description: 'Force publish even if no new announcement'
+        required: false
+        default: 'false'
+
+jobs:
+  publish-rba-news:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check RBA website for announcement
+        id: check_rba
+        run: |
+          # Fetch RBA cash rate page
+          RBA_HTML=$(curl -s "https://www.rba.gov.au/statistics/cash-rate/" \
+            -H "User-Agent: CalcyBot/1.0 (calcy.com.au)")
+
+          # Extract current rate
+          RATE=$(echo "$RBA_HTML" | grep -oP 'Cash Rate Target.*?<td[^>]*>\K[\d.]+' | head -1)
+
+          if [ -z "$RATE" ]; then
+            echo "Could not parse rate — using fallback"
+            RATE="4.35"
+          fi
+
+          echo "rate=$RATE" >> $GITHUB_OUTPUT
+          echo "Found RBA rate: $RATE%"
+
+          # Get today's date for slug
+          TODAY=$(date +%Y-%m-%d)
+          MONTH=$(date +%B)
+          YEAR=$(date +%Y)
+
+          echo "today=$TODAY" >> $GITHUB_OUTPUT
+          echo "month=$MONTH" >> $GITHUB_OUTPUT
+          echo "year=$YEAR" >> $GITHUB_OUTPUT
+
+      - name: Generate article with Claude
+        id: generate_article
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          RATE="${{ steps.check_rba.outputs.rate }}"
+          MONTH="${{ steps.check_rba.outputs.month }}"
+          YEAR="${{ steps.check_rba.outputs.year }}"
+
+          # Call Claude API to write the article
+          RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
+            -H "x-api-key: $ANTHROPIC_API_KEY" \
+            -H "anthropic-version: 2023-06-01" \
+            -H "content-type: application/json" \
+            -d "{
+              \"model\": \"claude-sonnet-4-20250514\",
+              \"max_tokens\": 2000,
+              \"messages\": [{
+                \"role\": \"user\",
+                \"content\": \"Write a professional Australian mortgage news article about the RBA cash rate decision for $MONTH $YEAR. The current cash rate is $RATE%. Write in a helpful, informative tone for Australian homeowners and property buyers. Include: 1) What the RBA decided, 2) What this means for mortgage repayments, 3) Impact on fixed vs variable rates, 4) Advice for homeowners. Format as JSON with these exact fields: title (string, max 80 chars), excerpt (string, max 200 chars, no quotes), body (string, HTML formatted with p and h2 tags, no quotes inside, escape any special chars). Return ONLY the JSON object, no markdown, no backticks.\"
+              }]
+            }")
+
+          # Extract the text content from Claude response
+          ARTICLE=$(echo "$RESPONSE" | python3 -c "
+          import sys, json
+          data = json.load(sys.stdin)
+          text = data['content'][0]['text']
+          print(text)
+          ")
+
+          echo "article<<EOF" >> $GITHUB_OUTPUT
+          echo "$ARTICLE" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Publish to Calcy news
+        env:
+          PUBLISH_SECRET: ${{ secrets.PUBLISH_SECRET }}
+        run: |
+          RATE="${{ steps.check_rba.outputs.rate }}"
+          TODAY="${{ steps.check_rba.outputs.today }}"
+          MONTH="${{ steps.check_rba.outputs.month }}"
+          YEAR="${{ steps.check_rba.outputs.year }}"
+
+          ARTICLE='${{ steps.generate_article.outputs.article }}'
+
+          # Parse article fields
+          TITLE=$(echo "$ARTICLE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['title'])")
+          EXCERPT=$(echo "$ARTICLE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['excerpt'])")
+          BODY=$(echo "$ARTICLE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['body'])")
+
+          # Create slug from date and rate
+          SLUG="rba-rate-${RATE//./-}-${TODAY}"
+
+          # Publish to Calcy via Edge Function
+          RESULT=$(curl -s -X POST \
+            "https://newvydpcchjbuhcldckf.supabase.co/functions/v1/publish-news" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"title\": $(echo "$TITLE" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip()))"),
+              \"slug\": \"$SLUG\",
+              \"excerpt\": $(echo "$EXCERPT" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip()))"),
+              \"body\": $(echo "$BODY" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip()))"),
+              \"published_at\": \"${TODAY}T04:30:00Z\",
+              \"secret\": \"$PUBLISH_SECRET\"
+            }")
+
+          echo "Publish result: $RESULT"
+
+          # Check if successful
+          SUCCESS=$(echo "$RESULT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('success', False))")
+
+          if [ "$SUCCESS" = "True" ]; then
+            echo "✅ Article published successfully!"
+          else
+            echo "❌ Failed to publish: $RESULT"
+            exit 1
+          fi
