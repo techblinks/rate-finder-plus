@@ -7,6 +7,7 @@ import { toast } from "@/hooks/use-toast";
 import LiveDataPanel from "./LiveDataPanel";
 import SeoPanel from "./SeoPanel";
 import ContentPanel from "./ContentPanel";
+import NewsPanel from "./NewsPanel";
 import CommandCentre from "./CommandCentre";
 
 const BUCKET = "branding";
@@ -27,6 +28,7 @@ type TabKey =
   | "dashboard"
   | "seo_intel"
   | "content"
+  | "news"
   | "live_data"
   | "adsense"
   | "branding"
@@ -41,6 +43,7 @@ const NAV: NavGroup[] = [
   { label: "Growth", items: [
     { key: "seo_intel", label: "SEO Intelligence", icon: "📈" },
     { key: "content", label: "Content Engine", icon: "✍" },
+    { key: "news", label: "News Articles", icon: "📰" },
   ]},
   { label: "Data", items: [
     { key: "live_data", label: "Live Rates", icon: "📡" },
@@ -57,14 +60,15 @@ const MOBILE_TABS: NavItem[] = [
   { key: "dashboard", label: "Home", icon: "⚡" },
   { key: "seo_intel", label: "SEO", icon: "📈" },
   { key: "content", label: "Content", icon: "✍" },
+  { key: "news", label: "News", icon: "📰" },
   { key: "live_data", label: "Rates", icon: "📡" },
-  { key: "adsense", label: "AdSense", icon: "💰" },
 ];
 
 const PAGE_META: Record<TabKey, { title: string; desc: string }> = {
   dashboard: { title: "Command Centre", desc: "" },
   seo_intel: { title: "SEO Intelligence", desc: "Track keyword rankings and find opportunities to reach page 1." },
   content: { title: "Content Engine", desc: "Generate SEO-optimised articles from your top keyword opportunities." },
+  news: { title: "News Articles", desc: "Manage published news articles — edit content and toggle visibility." },
   live_data: { title: "Live Rates", desc: "Manage rate data, FHOG amounts, LMI bands, and verify freshness." },
   adsense: { title: "AdSense", desc: "Configure ad slots and monitor revenue once approved." },
   branding: { title: "Branding", desc: "Logo, favicon, and OG image used across the site." },
