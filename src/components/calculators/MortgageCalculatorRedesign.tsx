@@ -342,6 +342,23 @@ const MortgageCalculatorRedesign = () => {
     [offset, dLoan, dRate, dTerm, freq, dExtra],
   );
 
+  // Rate change scenarios
+  const rateScenarios = useMemo(() => {
+    const currentMonthly = result.monthly;
+    const compute = (r: number) => {
+      if (loanType === "io") {
+        return (dLoan * r) / 100 / 12;
+      }
+      return basePmt(dLoan, r, dTerm) + dExtra;
+    };
+    return [
+      { label: "Drop 0.25%", rate: Math.max(0.01, dRate - 0.25), tone: "success" as const, monthly: compute(Math.max(0.01, dRate - 0.25)) },
+      { label: "Current", rate: dRate, tone: "accent" as const, monthly: currentMonthly },
+      { label: "Rise 0.5%", rate: dRate + 0.5, tone: "warning" as const, monthly: compute(dRate + 0.5) },
+      { label: "Rise 1%", rate: dRate + 1.0, tone: "destructive" as const, monthly: compute(dRate + 1.0) },
+    ].map((s) => ({ ...s, diff: s.monthly - currentMonthly }));
+  }, [dLoan, dRate, dTerm, dExtra, loanType, result.monthly]);
+
   const lvr = propValue > 0 ? Math.min(999, (loan / propValue) * 100) : null;
 
   const shareText = `${fmt0(loan)} loan at ${rate.toFixed(2)}% over ${term} years = ${fmt0(headline)} per ${freq}. Calculated with Calcy.`;
@@ -914,6 +931,68 @@ const MortgageCalculatorRedesign = () => {
               extra={dExtra}
             />
           )}
+
+          {/* Rate change scenarios */}
+          <div className="space-y-3">
+            <div>
+              <h3 className="text-[15px] font-semibold text-foreground">
+                What if rates change?
+              </h3>
+              <p className="text-[13px] text-muted-foreground">
+                The RBA meets 8 times per year. See how rate changes affect your repayments.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              {rateScenarios.map((s) => {
+                const isCurrent = s.label === "Current";
+                const diffText =
+                  s.diff === 0
+                    ? "Same as now"
+                    : `${s.diff > 0 ? "+" : "-"}${fmt0(Math.abs(s.diff))}/month`;
+                const toneConfig = {
+                  success: {
+                    border: "border-success/30",
+                    bg: "bg-success/10",
+                    text: "text-success",
+                  },
+                  accent: {
+                    border: "border-accent/30",
+                    bg: "bg-accent/10",
+                    text: "text-accent",
+                  },
+                  warning: {
+                    border: "border-warning/30",
+                    bg: "bg-warning/10",
+                    text: "text-warning",
+                  },
+                  destructive: {
+                    border: "border-destructive/30",
+                    bg: "bg-destructive/10",
+                    text: "text-destructive",
+                  },
+                }[s.tone];
+                return (
+                  <div
+                    key={s.label}
+                    className={`rounded-2xl border p-4 ${toneConfig.border} ${toneConfig.bg} ${isCurrent ? "ring-2 ring-accent ring-offset-2 ring-offset-background" : ""}`}
+                  >
+                    <p className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                      {s.label}
+                    </p>
+                    <p className={`tnum text-[22px] font-bold mt-1 ${toneConfig.text}`}>
+                      {fmt0(s.monthly)}
+                    </p>
+                    <p className="text-[12px] text-muted-foreground mt-1">
+                      {s.rate.toFixed(2)}%
+                    </p>
+                    <p className="text-[12px] font-medium mt-0.5 text-muted-foreground">
+                      {diffText}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
 
           <div className="grid grid-cols-2 gap-3">
             <StatCard label="Total repayments" value={fmt0(result.totalRepaid)} />
