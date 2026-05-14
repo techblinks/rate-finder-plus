@@ -132,6 +132,45 @@ function readUrlParams() {
   };
 }
 
+/** Simulate paying a fixed amount at a given frequency (for half-monthly / divided-weekly savings callout). */
+function simulateDividedFrequency(
+  principal: number,
+  annualRatePct: number,
+  paymentPerPeriod: number,
+  periodsPerYear: number,
+) {
+  const r = annualRatePct / 100 / periodsPerYear;
+  let balance = principal;
+  let totalInterest = 0;
+  let totalRepaid = 0;
+  let periods = 0;
+  const maxPeriods = 100 * periodsPerYear;
+
+  while (balance > 0.01 && periods < maxPeriods) {
+    const interest = balance * r;
+    if (paymentPerPeriod <= interest) break; // payment doesn't cover interest
+    let principalPaid = paymentPerPeriod - interest;
+    if (principalPaid > balance) principalPaid = balance;
+    const actualPayment = interest + principalPaid;
+    balance -= principalPaid;
+    totalInterest += interest;
+    totalRepaid += actualPayment;
+    periods++;
+    if (balance < 0.01) balance = 0;
+  }
+
+  const years = periods / periodsPerYear;
+  const yearsTaken = Math.floor(years);
+  const monthsRemainder = Math.round((years - yearsTaken) * 12);
+  return {
+    totalInterest,
+    totalRepaid,
+    yearsTaken,
+    monthsRemainder,
+    payoffMonths: yearsTaken * 12 + monthsRemainder,
+  };
+}
+
 const MortgageCalculatorRedesign = () => {
   const rbaRates = useRbaRates();
   const isMobile = useIsMobile();
@@ -358,6 +397,31 @@ const MortgageCalculatorRedesign = () => {
       { label: "Rise 1%", rate: dRate + 1.0, tone: "destructive" as const, monthly: compute(dRate + 1.0) },
     ].map((s) => ({ ...s, diff: s.monthly - currentMonthly }));
   }, [dLoan, dRate, dTerm, dExtra, loanType, result.monthly]);
+
+  // Frequency savings (half-monthly / divided-weekly vs monthly)
+  const freqSavings = useMemo(() => {
+    if (freq === "monthly") return null;
+    const monthlyTotal = result.monthly + dExtra;
+    const monthlyScenario = simulateDividedFrequency(dLoan, dRate, monthlyTotal, 12);
+
+    if (freq === "fortnightly") {
+      const fortPayment = monthlyTotal / 2;
+      const fortScenario = simulateDividedFrequency(dLoan, dRate, fortPayment, 26);
+      const monthsSaved = Math.max(0, monthlyScenario.payoffMonths - fortScenario.payoffMonths);
+      const interestSaved = Math.max(0, monthlyScenario.totalInterest - fortScenario.totalInterest);
+      return { monthsSaved, interestSaved, label: "fortnightly" as const };
+    }
+
+    if (freq === "weekly") {
+      const weekPayment = monthlyTotal / 4;
+      const weekScenario = simulateDividedFrequency(dLoan, dRate, weekPayment, 52);
+      const monthsSaved = Math.max(0, monthlyScenario.payoffMonths - weekScenario.payoffMonths);
+      const interestSaved = Math.max(0, monthlyScenario.totalInterest - weekScenario.totalInterest);
+      return { monthsSaved, interestSaved, label: "weekly" as const };
+    }
+
+    return null;
+  }, [freq, dLoan, dRate, dExtra, result.monthly]);
 
   const lvr = propValue > 0 ? Math.min(999, (loan / propValue) * 100) : null;
 
@@ -917,6 +981,19 @@ const MortgageCalculatorRedesign = () => {
                 .map((f) => `${FREQ_LABEL[f]}: ${fmt0(result[f])}`)
                 .join(" · ")}
             </p>
+
+            {freqSavings && (
+              <div className="mt-4 rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-[13px]">
+                <p className="text-success">
+                  <span className="font-semibold">Tip:</span> Paying{" "}
+                  {freqSavings.label} instead of monthly saves you{" "}
+                  <span className="font-semibold">{freqSavings.monthsSaved} months</span>{" "}
+                  and{" "}
+                  <span className="font-semibold">{fmt0(freqSavings.interestSaved)}</span>{" "}
+                  in total interest
+                </p>
+              </div>
+            )}
           </div>
 
           {isMobile && (
