@@ -342,6 +342,23 @@ const MortgageCalculatorRedesign = () => {
     [offset, dLoan, dRate, dTerm, freq, dExtra],
   );
 
+  // Rate change scenarios
+  const rateScenarios = useMemo(() => {
+    const currentMonthly = result.monthly;
+    const compute = (r: number) => {
+      if (loanType === "io") {
+        return (dLoan * r) / 100 / 12;
+      }
+      return basePmt(dLoan, r, dTerm) + dExtra;
+    };
+    return [
+      { label: "Drop 0.25%", rate: Math.max(0.01, dRate - 0.25), tone: "success" as const, monthly: compute(Math.max(0.01, dRate - 0.25)) },
+      { label: "Current", rate: dRate, tone: "accent" as const, monthly: currentMonthly },
+      { label: "Rise 0.5%", rate: dRate + 0.5, tone: "warning" as const, monthly: compute(dRate + 0.5) },
+      { label: "Rise 1%", rate: dRate + 1.0, tone: "destructive" as const, monthly: compute(dRate + 1.0) },
+    ].map((s) => ({ ...s, diff: s.monthly - currentMonthly }));
+  }, [dLoan, dRate, dTerm, dExtra, loanType, result.monthly]);
+
   const lvr = propValue > 0 ? Math.min(999, (loan / propValue) * 100) : null;
 
   const shareText = `${fmt0(loan)} loan at ${rate.toFixed(2)}% over ${term} years = ${fmt0(headline)} per ${freq}. Calculated with Calcy.`;
