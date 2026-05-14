@@ -398,6 +398,31 @@ const MortgageCalculatorRedesign = () => {
     ].map((s) => ({ ...s, diff: s.monthly - currentMonthly }));
   }, [dLoan, dRate, dTerm, dExtra, loanType, result.monthly]);
 
+  // Frequency savings (half-monthly / divided-weekly vs monthly)
+  const freqSavings = useMemo(() => {
+    if (freq === "monthly") return null;
+    const monthlyTotal = result.monthly + dExtra;
+    const monthlyScenario = simulateDividedFrequency(dLoan, dRate, monthlyTotal, 12);
+
+    if (freq === "fortnightly") {
+      const fortPayment = monthlyTotal / 2;
+      const fortScenario = simulateDividedFrequency(dLoan, dRate, fortPayment, 26);
+      const monthsSaved = Math.max(0, monthlyScenario.payoffMonths - fortScenario.payoffMonths);
+      const interestSaved = Math.max(0, monthlyScenario.totalInterest - fortScenario.totalInterest);
+      return { monthsSaved, interestSaved, label: "fortnightly" as const };
+    }
+
+    if (freq === "weekly") {
+      const weekPayment = (monthlyTotal * 12) / 52;
+      const weekScenario = simulateDividedFrequency(dLoan, dRate, weekPayment, 52);
+      const monthsSaved = Math.max(0, monthlyScenario.payoffMonths - weekScenario.payoffMonths);
+      const interestSaved = Math.max(0, monthlyScenario.totalInterest - weekScenario.totalInterest);
+      return { monthsSaved, interestSaved, label: "weekly" as const };
+    }
+
+    return null;
+  }, [freq, dLoan, dRate, dExtra, result.monthly]);
+
   const lvr = propValue > 0 ? Math.min(999, (loan / propValue) * 100) : null;
 
   const shareText = `${fmt0(loan)} loan at ${rate.toFixed(2)}% over ${term} years = ${fmt0(headline)} per ${freq}. Calculated with Calcy.`;
