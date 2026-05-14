@@ -413,7 +413,7 @@ const MortgageCalculatorRedesign = () => {
     }
 
     if (freq === "weekly") {
-      const weekPayment = (monthlyTotal * 12) / 52;
+      const weekPayment = monthlyTotal / 4;
       const weekScenario = simulateDividedFrequency(dLoan, dRate, weekPayment, 52);
       const monthsSaved = Math.max(0, monthlyScenario.payoffMonths - weekScenario.payoffMonths);
       const interestSaved = Math.max(0, monthlyScenario.totalInterest - weekScenario.totalInterest);
