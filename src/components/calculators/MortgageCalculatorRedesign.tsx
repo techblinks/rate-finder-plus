@@ -981,6 +981,19 @@ const MortgageCalculatorRedesign = () => {
                 .map((f) => `${FREQ_LABEL[f]}: ${fmt0(result[f])}`)
                 .join(" · ")}
             </p>
+
+            {freqSavings && (
+              <div className="mt-4 rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-[13px]">
+                <p className="text-success">
+                  <span className="font-semibold">Tip:</span> Paying{" "}
+                  {freqSavings.label} instead of monthly saves you{" "}
+                  <span className="font-semibold">{freqSavings.monthsSaved} months</span>{" "}
+                  and{" "}
+                  <span className="font-semibold">{fmt0(freqSavings.interestSaved)}</span>{" "}
+                  in total interest
+                </p>
+              </div>
+            )}
           </div>
 
           {isMobile && (
