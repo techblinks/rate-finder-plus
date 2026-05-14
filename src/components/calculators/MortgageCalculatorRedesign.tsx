@@ -132,6 +132,45 @@ function readUrlParams() {
   };
 }
 
+/** Simulate paying a fixed amount at a given frequency (for half-monthly / divided-weekly savings callout). */
+function simulateDividedFrequency(
+  principal: number,
+  annualRatePct: number,
+  paymentPerPeriod: number,
+  periodsPerYear: number,
+) {
+  const r = annualRatePct / 100 / periodsPerYear;
+  let balance = principal;
+  let totalInterest = 0;
+  let totalRepaid = 0;
+  let periods = 0;
+  const maxPeriods = 100 * periodsPerYear;
+
+  while (balance > 0.01 && periods < maxPeriods) {
+    const interest = balance * r;
+    if (paymentPerPeriod <= interest) break; // payment doesn't cover interest
+    let principalPaid = paymentPerPeriod - interest;
+    if (principalPaid > balance) principalPaid = balance;
+    const actualPayment = interest + principalPaid;
+    balance -= principalPaid;
+    totalInterest += interest;
+    totalRepaid += actualPayment;
+    periods++;
+    if (balance < 0.01) balance = 0;
+  }
+
+  const years = periods / periodsPerYear;
+  const yearsTaken = Math.floor(years);
+  const monthsRemainder = Math.round((years - yearsTaken) * 12);
+  return {
+    totalInterest,
+    totalRepaid,
+    yearsTaken,
+    monthsRemainder,
+    payoffMonths: yearsTaken * 12 + monthsRemainder,
+  };
+}
+
 const MortgageCalculatorRedesign = () => {
   const rbaRates = useRbaRates();
   const isMobile = useIsMobile();
