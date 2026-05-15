@@ -648,7 +648,88 @@ const StampDuty = ({ lockedState }: StampDutyProps) => {
         )}
       </div>
 
-      {/* Compare-all-states mode */}
+      {/* Total upfront costs summary */}
+      {s.mode === "single" && (() => {
+        const CONVEYANCING = 1500;
+        const INSPECTION = 600;
+        const LOAN_FEE = 300;
+        const MOVING = 1500;
+        const propertyValue = Math.max(0, dState.value);
+        const dep = Math.max(0, dState.deposit);
+        const loan = Math.max(0, propertyValue - dep);
+        const lvr = propertyValue > 0 ? (loan / propertyValue) * 100 : 0;
+        let lmiRate = 0;
+        if (dep > 0 && propertyValue > 0 && lvr > 80) {
+          if (lvr <= 85) lmiRate = 0.0066;
+          else if (lvr <= 90) lmiRate = 0.0119;
+          else if (lvr <= 95) lmiRate = 0.0196;
+          else lmiRate = 0.031;
+        }
+        const lmi = Math.round(loan * lmiRate);
+        const showLmi = dep > 0 && lvr > 80;
+        const total =
+          result.netDuty + (showLmi ? lmi : 0) + CONVEYANCING + INSPECTION + LOAN_FEE + MOVING;
+        const cashNeeded = total + dep;
+
+        return (
+          <section className="rounded-2xl border border-border bg-muted/30 p-5">
+            <header className="mb-3">
+              <h2 className="text-[18px] font-semibold text-foreground">Total upfront costs</h2>
+              <p className="text-[12px] text-muted-foreground">
+                A full picture of what you'll need to pay at settlement, on top of your deposit.
+              </p>
+            </header>
+            <ul className="divide-y divide-border text-[14px]">
+              <li className="flex items-center justify-between gap-3 py-2">
+                <span className="text-foreground">Stamp duty</span>
+                <span className="tnum font-medium text-foreground">{fmt0(result.netDuty)}</span>
+              </li>
+              {showLmi && (
+                <li className="flex items-center justify-between gap-3 py-2">
+                  <span className="text-foreground">
+                    LMI estimate
+                    <span className="ml-1 text-[12px] text-muted-foreground">
+                      (LVR {lvr.toFixed(1)}%)
+                    </span>
+                  </span>
+                  <span className="tnum font-medium text-foreground">{fmt0(lmi)}</span>
+                </li>
+              )}
+              <li className="flex items-center justify-between gap-3 py-2">
+                <span className="text-foreground">Conveyancing / legal fees</span>
+                <span className="tnum font-medium text-foreground">{fmt0(CONVEYANCING)}</span>
+              </li>
+              <li className="flex items-center justify-between gap-3 py-2">
+                <span className="text-foreground">Building &amp; pest inspection</span>
+                <span className="tnum font-medium text-foreground">{fmt0(INSPECTION)}</span>
+              </li>
+              <li className="flex items-center justify-between gap-3 py-2">
+                <span className="text-foreground">Loan application fee</span>
+                <span className="tnum font-medium text-foreground">{fmt0(LOAN_FEE)}</span>
+              </li>
+              <li className="flex items-center justify-between gap-3 py-2">
+                <span className="text-foreground">Moving costs</span>
+                <span className="tnum font-medium text-foreground">{fmt0(MOVING)}</span>
+              </li>
+            </ul>
+            <div className="mt-3 flex items-center justify-between border-t border-border pt-3 text-[15px] font-bold">
+              <span className="text-foreground">Total upfront costs</span>
+              <span className="tnum text-foreground">{fmt0(total)}</span>
+            </div>
+            {dep > 0 && (
+              <p className="mt-3 rounded-lg border border-border bg-background px-3 py-2 text-[13px] text-foreground">
+                You need <strong className="tnum">{fmt0(cashNeeded)}</strong> total cash to proceed
+                (deposit + upfront costs).
+              </p>
+            )}
+            <p className="mt-2 text-[11px] text-muted-foreground">
+              Estimates only — actual costs vary by lender and location.
+            </p>
+          </section>
+        );
+      })()}
+
+
       {s.mode === "compare" && !lockedState && (
         <section className="rounded-2xl border border-border bg-card p-5">
           <header className="mb-3">
