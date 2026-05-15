@@ -658,6 +658,30 @@ const Lmi = () => {
         </div>
       </div>
 
+      {/* How to avoid this cost */}
+      {lmi > 0 && lvr > 80 && (
+        <section
+          aria-label="How to avoid LMI"
+          className="rounded-2xl border border-amber-500/40 bg-amber-50 p-5 dark:bg-amber-500/10"
+        >
+          <h2 className="mb-2 text-[16px] font-semibold text-amber-900 dark:text-amber-200">
+            How to avoid this cost
+          </h2>
+          <p className="text-[14px] text-amber-900/90 dark:text-amber-100/90">
+            You need <strong className="tnum">{fmt0(extraDepositNeeded)}</strong> more deposit to
+            reach 20% and avoid LMI entirely.
+          </p>
+          <p className="mt-1 text-[13px] text-amber-900/80 dark:text-amber-100/80">
+            Total deposit needed:{" "}
+            <strong className="tnum">{fmt0(depositFor20)}</strong> (20% of property value)
+          </p>
+          <p className="mt-2 text-[13px] text-amber-900/80 dark:text-amber-100/80">
+            A larger deposit saves you <strong className="tnum">{fmt0(lmi)}</strong> in LMI plus
+            reduces your loan and interest.
+          </p>
+        </section>
+      )}
+
       {/* Upfront vs capitalised */}
       {lmi > 0 && (
         <section className="rounded-2xl border border-border bg-card p-5">
