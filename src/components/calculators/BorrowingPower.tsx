@@ -554,30 +554,16 @@ const BorrowingPower = () => {
               tooltip="Enter your gross annual salary. We'll estimate your net income at approximately 70% for serviceability purposes."
             />
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-[13px] font-medium text-foreground">Applying jointly?</span>
-                <Segmented
-                  ariaLabel="Applying jointly"
-                  value={s.joint ? "yes" : "no"}
-                  onChange={(v) => set("joint", v === "yes")}
-                  options={[
-                    { value: "no", label: "No" },
-                    { value: "yes", label: "Yes" },
-                  ]}
-                />
-              </div>
-              {s.joint && (
-                <NumberField
-                  label="Partner's annual income (optional)"
-                  value={s.partnerIncome}
-                  onChange={(v) => set("partnerIncome", v)}
-                  prefix="$"
-                  step={1000}
-                  tooltip="If applying jointly, add your partner's gross annual income. Both incomes are assessed together."
-                />
-              )}
-            </div>
+            {s.joint && (
+              <NumberField
+                label="Partner's annual income"
+                value={s.partnerIncome}
+                onChange={(v) => set("partnerIncome", v)}
+                prefix="$"
+                step={1000}
+                tooltip="Your partner's gross annual income. Both incomes are assessed together."
+              />
+            )}
 
             <NumberField
               label="Regular overtime or bonus income (annual)"
@@ -717,7 +703,7 @@ const BorrowingPower = () => {
           >
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                Borrowing power
+                {s.joint ? "Combined borrowing power" : "Borrowing power"}
               </p>
               <p className="tnum text-[34px] font-bold leading-tight text-foreground">
                 {fmt0(result.borrowingPower)}
