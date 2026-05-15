@@ -521,6 +521,23 @@ const BorrowingPower = () => {
       <div className="grid gap-6 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         {/* Inputs */}
         <div className="space-y-6">
+          {/* Single / Couple toggle — first thing users see */}
+          <section className="space-y-2 rounded-2xl border-2 border-accent/30 bg-accent-light/40 p-5">
+            <h2 className="text-[15px] font-semibold text-foreground">Are you applying as a…</h2>
+            <Segmented
+              ariaLabel="Single or couple"
+              value={s.joint ? "couple" : "single"}
+              onChange={(v) => set("joint", v === "couple")}
+              options={[
+                { value: "single", label: "Single" },
+                { value: "couple", label: "Couple" },
+              ]}
+            />
+            <p className="text-[12px] text-muted-foreground">
+              Australian lenders assess combined income for couples.
+            </p>
+          </section>
+
           <section className="space-y-4 rounded-2xl border border-border bg-card p-5">
             <header className="flex items-center justify-between">
               <h2 className="text-[15px] font-semibold text-foreground">Your income</h2>
