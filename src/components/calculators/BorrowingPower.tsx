@@ -521,6 +521,23 @@ const BorrowingPower = () => {
       <div className="grid gap-6 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         {/* Inputs */}
         <div className="space-y-6">
+          {/* Single / Couple toggle — first thing users see */}
+          <section className="space-y-2 rounded-2xl border-2 border-accent/30 bg-accent-light/40 p-5">
+            <h2 className="text-[15px] font-semibold text-foreground">Are you applying as a…</h2>
+            <Segmented
+              ariaLabel="Single or couple"
+              value={s.joint ? "couple" : "single"}
+              onChange={(v) => set("joint", v === "couple")}
+              options={[
+                { value: "single", label: "Single" },
+                { value: "couple", label: "Couple" },
+              ]}
+            />
+            <p className="text-[12px] text-muted-foreground">
+              Australian lenders assess combined income for couples.
+            </p>
+          </section>
+
           <section className="space-y-4 rounded-2xl border border-border bg-card p-5">
             <header className="flex items-center justify-between">
               <h2 className="text-[15px] font-semibold text-foreground">Your income</h2>
@@ -537,30 +554,16 @@ const BorrowingPower = () => {
               tooltip="Enter your gross annual salary. We'll estimate your net income at approximately 70% for serviceability purposes."
             />
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-[13px] font-medium text-foreground">Applying jointly?</span>
-                <Segmented
-                  ariaLabel="Applying jointly"
-                  value={s.joint ? "yes" : "no"}
-                  onChange={(v) => set("joint", v === "yes")}
-                  options={[
-                    { value: "no", label: "No" },
-                    { value: "yes", label: "Yes" },
-                  ]}
-                />
-              </div>
-              {s.joint && (
-                <NumberField
-                  label="Partner's annual income (optional)"
-                  value={s.partnerIncome}
-                  onChange={(v) => set("partnerIncome", v)}
-                  prefix="$"
-                  step={1000}
-                  tooltip="If applying jointly, add your partner's gross annual income. Both incomes are assessed together."
-                />
-              )}
-            </div>
+            {s.joint && (
+              <NumberField
+                label="Partner's annual income"
+                value={s.partnerIncome}
+                onChange={(v) => set("partnerIncome", v)}
+                prefix="$"
+                step={1000}
+                tooltip="Your partner's gross annual income. Both incomes are assessed together."
+              />
+            )}
 
             <NumberField
               label="Regular overtime or bonus income (annual)"
@@ -700,7 +703,7 @@ const BorrowingPower = () => {
           >
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                Borrowing power
+                {s.joint ? "Combined borrowing power" : "Borrowing power"}
               </p>
               <p className="tnum text-[34px] font-bold leading-tight text-foreground">
                 {fmt0(result.borrowingPower)}
