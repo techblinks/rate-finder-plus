@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ChevronDown, Download } from "lucide-react";
 import type { YearAmort } from "@/lib/calc/mortgageEngine";
 
 const AUD = (n: number) =>
@@ -9,15 +9,65 @@ const AUD = (n: number) =>
     maximumFractionDigits: 0,
   }).format(Math.max(0, Math.round(n)));
 
-const SUMMARY_YEARS = [1, 5, 10, 15, 20, 25, 30];
+const HIGHLIGHT_YEARS = new Set([1, 5, 10, 20, 25]);
 
 const MortgageAmortTable = ({ schedule }: { schedule: YearAmort[] }) => {
   const [open, setOpen] = useState(false);
-  const [showAll, setShowAll] = useState(false);
 
-  const rows = showAll
-    ? schedule
-    : schedule.filter((r) => SUMMARY_YEARS.includes(r.year) || r.year === schedule.length);
+  const finalYear = schedule.length;
+  const totals = useMemo(() => {
+    let principal = 0;
+    let interest = 0;
+    for (const r of schedule) {
+      principal += r.principalPaid;
+      interest += r.interestPaid;
+    }
+    return { principal, interest, repayments: principal + interest };
+  }, [schedule]);
+
+  const downloadCsv = () => {
+    const header = [
+      "Year",
+      "Opening balance",
+      "Annual repayments",
+      "Principal paid",
+      "Interest paid",
+      "Closing balance",
+    ];
+    const lines = [header.join(",")];
+    for (const r of schedule) {
+      const annual = r.principalPaid + r.interestPaid;
+      lines.push(
+        [
+          r.year,
+          Math.round(r.openingBalance),
+          Math.round(annual),
+          Math.round(r.principalPaid),
+          Math.round(r.interestPaid),
+          Math.round(r.closingBalance),
+        ].join(","),
+      );
+    }
+    lines.push(
+      [
+        "Total",
+        "",
+        Math.round(totals.repayments),
+        Math.round(totals.principal),
+        Math.round(totals.interest),
+        "",
+      ].join(","),
+    );
+    const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "mortgage-schedule.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <section aria-label="Amortisation schedule" className="rounded-2xl border border-border bg-card">
@@ -32,39 +82,63 @@ const MortgageAmortTable = ({ schedule }: { schedule: YearAmort[] }) => {
       </button>
       {open && (
         <div className="border-t border-border p-3">
+          <div className="mb-3 flex justify-end">
+            <button
+              type="button"
+              onClick={downloadCsv}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-[13px] font-semibold text-foreground hover:bg-surface"
+            >
+              <Download className="h-3.5 w-3.5" />
+              Download as CSV
+            </button>
+          </div>
           <div className="overflow-x-auto rounded-lg border border-border">
-            <table className="w-full min-w-[640px] text-[13px]">
+            <table className="w-full min-w-[720px] text-[13px]">
               <thead className="bg-surface text-muted-foreground">
                 <tr>
                   <th className="px-3 py-2 text-left font-semibold">Year</th>
-                  <th className="px-3 py-2 text-right font-semibold">Opening</th>
-                  <th className="px-3 py-2 text-right font-semibold">Principal</th>
-                  <th className="px-3 py-2 text-right font-semibold">Interest</th>
-                  <th className="px-3 py-2 text-right font-semibold">Closing</th>
+                  <th className="px-3 py-2 text-right font-semibold">Opening balance</th>
+                  <th className="px-3 py-2 text-right font-semibold">Annual repayments</th>
+                  <th className="px-3 py-2 text-right font-semibold">Principal paid</th>
+                  <th className="px-3 py-2 text-right font-semibold">Interest paid</th>
+                  <th className="px-3 py-2 text-right font-semibold">Closing balance</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {rows.map((r) => (
-                  <tr key={r.year}>
-                    <td className="px-3 py-2 font-medium">{r.year}</td>
-                    <td className="px-3 py-2 text-right tnum">{AUD(r.openingBalance)}</td>
-                    <td className="px-3 py-2 text-right tnum">{AUD(r.principalPaid)}</td>
-                    <td className="px-3 py-2 text-right tnum">{AUD(r.interestPaid)}</td>
-                    <td className="px-3 py-2 text-right tnum">{AUD(r.closingBalance)}</td>
-                  </tr>
-                ))}
+                {schedule.map((r) => {
+                  const highlight = HIGHLIGHT_YEARS.has(r.year) || r.year === finalYear;
+                  const annual = r.principalPaid + r.interestPaid;
+                  return (
+                    <tr
+                      key={r.year}
+                      className={
+                        highlight
+                          ? "bg-sky-50 dark:bg-sky-950/30"
+                          : ""
+                      }
+                    >
+                      <td className="px-3 py-2 font-medium">{r.year}</td>
+                      <td className="px-3 py-2 text-right tnum">{AUD(r.openingBalance)}</td>
+                      <td className="px-3 py-2 text-right tnum">{AUD(annual)}</td>
+                      <td className="px-3 py-2 text-right tnum">{AUD(r.principalPaid)}</td>
+                      <td className="px-3 py-2 text-right tnum">{AUD(r.interestPaid)}</td>
+                      <td className="px-3 py-2 text-right tnum">{AUD(r.closingBalance)}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
+              <tfoot className="bg-surface font-semibold text-foreground">
+                <tr>
+                  <td className="px-3 py-2">Total</td>
+                  <td className="px-3 py-2" />
+                  <td className="px-3 py-2 text-right tnum">{AUD(totals.repayments)}</td>
+                  <td className="px-3 py-2 text-right tnum">{AUD(totals.principal)}</td>
+                  <td className="px-3 py-2 text-right tnum">{AUD(totals.interest)}</td>
+                  <td className="px-3 py-2" />
+                </tr>
+              </tfoot>
             </table>
           </div>
-          {!showAll && schedule.length > SUMMARY_YEARS.length && (
-            <button
-              type="button"
-              onClick={() => setShowAll(true)}
-              className="mt-3 text-[13px] font-semibold text-accent hover:underline"
-            >
-              Show all {schedule.length} years
-            </button>
-          )}
         </div>
       )}
     </section>
