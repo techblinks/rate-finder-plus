@@ -731,6 +731,27 @@ const BorrowingPower = () => {
               </p>
             </div>
 
+            {/* Plain-English "What this means" summary */}
+            {result.borrowingPower > 0 && (() => {
+              const price = result.maxPurchasePrice;
+              let suburbs = "Logan Central (QLD), Elizabeth (SA), Frankston North (VIC)";
+              if (price >= 1_500_000) suburbs = "Bondi (NSW), Brighton (VIC), New Farm (QLD)";
+              else if (price >= 1_100_000) suburbs = "Marrickville (NSW), Northcote (VIC), Paddington (QLD)";
+              else if (price >= 800_000) suburbs = "Penrith (NSW), Sunshine (VIC), Chermside (QLD)";
+              else if (price >= 550_000) suburbs = "Campbelltown (NSW), Werribee (VIC), Ipswich (QLD)";
+              return (
+                <div className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-[13px] text-sky-900 dark:border-sky-900/50 dark:bg-sky-950/30 dark:text-sky-100">
+                  <p className="mb-1 font-semibold">What this means</p>
+                  <p>
+                    Based on your borrowing power of{" "}
+                    <span className="font-semibold">{fmt0(result.borrowingPower)}</span>, you could purchase a home up to approximately{" "}
+                    <span className="font-semibold">{fmt0(price)}</span> with your{" "}
+                    <span className="font-semibold">{fmt0(s.deposit)}</span> deposit. This is roughly the median price in suburbs like {suburbs}.
+                  </p>
+                </div>
+              );
+            })()}
+
             <div className="grid grid-cols-2 gap-2">
               <div className="rounded-xl border border-border bg-background p-3">
                 <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Repayment at actual rate</p>

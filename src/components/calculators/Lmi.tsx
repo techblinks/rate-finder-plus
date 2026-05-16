@@ -658,6 +658,27 @@ const Lmi = () => {
         </div>
       </div>
 
+      {/* Plain-English "What this means" summary */}
+      {lmi > 0 && (() => {
+        const r = dState.interestRate / 100 / 12;
+        const extraInterest = lmi * Math.pow(1 + r, 360) - lmi;
+        return (
+          <section
+            aria-label="What this means"
+            className="rounded-2xl border border-sky-200 bg-sky-50 p-5 dark:border-sky-900/50 dark:bg-sky-950/30"
+          >
+            <h2 className="mb-1 text-[15px] font-semibold text-sky-900 dark:text-sky-100">
+              What this means
+            </h2>
+            <p className="text-[14px] text-sky-900/90 dark:text-sky-100/90">
+              Your LMI cost of <strong className="tnum">{fmt0(lmi)}</strong> added to your loan means
+              you'll pay approximately <strong className="tnum">{fmt0(extraInterest)}</strong> extra
+              in interest over 30 years at current rates.
+            </p>
+          </section>
+        );
+      })()}
+
       {/* How to avoid this cost */}
       {lmi > 0 && lvr > 80 && (
         <section
