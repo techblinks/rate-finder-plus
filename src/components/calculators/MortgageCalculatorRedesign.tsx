@@ -996,6 +996,27 @@ const MortgageCalculatorRedesign = () => {
             )}
           </div>
 
+          {/* Plain-English "What this means" summary */}
+          {(() => {
+            const monthlyRepay = result.monthly + dExtra;
+            const requiredIncome = Math.max(0, (monthlyRepay * 12) / 0.3);
+            const pctOfIncome = requiredIncome > 0 ? (monthlyRepay * 12 / requiredIncome) * 100 : 0;
+            if (monthlyRepay <= 0) return null;
+            return (
+              <div className="rounded-2xl border border-sky-200 bg-sky-50 p-5 text-[14px] text-sky-900 dark:border-sky-900/50 dark:bg-sky-950/30 dark:text-sky-100">
+                <p className="mb-1 font-semibold">What this means</p>
+                <p>
+                  To comfortably afford this loan, most lenders suggest a minimum gross income of approximately{" "}
+                  <span className="font-semibold">{fmt0(requiredIncome)}/year</span>{" "}
+                  (based on the 30% of income rule). Your monthly repayment of{" "}
+                  <span className="font-semibold">{fmt0(monthlyRepay)}</span> represents{" "}
+                  <span className="font-semibold">{pctOfIncome.toFixed(0)}%</span> of a{" "}
+                  {fmt0(requiredIncome)} annual salary.
+                </p>
+              </div>
+            );
+          })()}
+
           {isMobile && (
             <MobileInsightStrip
               loan={dLoan}
