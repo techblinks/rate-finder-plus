@@ -655,7 +655,18 @@ const Lmi = () => {
               {copied ? "Copied!" : "Share this calculation"}
             </button>
 
-            <ResultActions calculator="lmi" />
+            <ResultActions
+              calculator="lmi"
+              onEmail={() => setEmailOpen(true)}
+              emailSummary={`LMI estimate ${fmt0(lmi)} at ${lvr.toFixed(1)}% LVR.`}
+            />
+            <EmailResultsDialog
+              open={emailOpen}
+              onOpenChange={setEmailOpen}
+              calculator="lmi"
+              inputs={s as unknown as Record<string, unknown>}
+              resultSummary={`LMI estimate ${fmt0(lmi)} at ${lvr.toFixed(1)}% LVR on a ${fmt0(s.propertyValue)} property.`}
+            />
           </div>
         </div>
       </div>

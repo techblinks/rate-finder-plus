@@ -792,7 +792,18 @@ const BorrowingPower = () => {
               </button>
             </div>
 
-            <ResultActions calculator="borrowing_power" />
+            <ResultActions
+              calculator="borrowing_power"
+              onEmail={() => setEmailOpen(true)}
+              emailSummary={`Borrowing power ${fmt0(result.borrowingPower)} — buy up to ${fmt0(result.maxPurchasePrice)}.`}
+            />
+            <EmailResultsDialog
+              open={emailOpen}
+              onOpenChange={setEmailOpen}
+              calculator="borrowing_power"
+              inputs={s as unknown as Record<string, unknown>}
+              resultSummary={`Borrowing power ${fmt0(result.borrowingPower)} — buy up to ${fmt0(result.maxPurchasePrice)}.`}
+            />
           </div>
         </div>
       </div>

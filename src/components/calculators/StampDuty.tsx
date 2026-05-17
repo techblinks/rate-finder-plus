@@ -639,7 +639,18 @@ const StampDuty = ({ lockedState }: StampDutyProps) => {
                 {copied ? "Copied!" : "Share this calculation"}
               </button>
 
-              <ResultActions calculator="stamp_duty" />
+              <ResultActions
+                calculator="stamp_duty"
+                onEmail={() => setEmailOpen(true)}
+                emailSummary={`Stamp duty on a ${fmt0(s.value)} property in ${s.state}: ${fmt0(result.netDuty)}.`}
+              />
+              <EmailResultsDialog
+                open={emailOpen}
+                onOpenChange={setEmailOpen}
+                calculator="stamp_duty"
+                inputs={s as unknown as Record<string, unknown>}
+                resultSummary={`Stamp duty on a ${fmt0(s.value)} property in ${s.state}: ${fmt0(result.netDuty)}. Total upfront ${fmt0(totalCash)}.`}
+              />
 
               <p className="text-[11px] leading-relaxed text-muted-foreground">
                 Stamp duty rates are indicative for 2026. Confirm with your state revenue office before
