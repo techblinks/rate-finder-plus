@@ -12,6 +12,7 @@ import MobileInsightBar from "@/components/mobile/MobileInsightBar";
 import { useRbaRates } from "@/hooks/useRbaRates";
 import Tooltip from "@/components/Tooltip";
 import ResultActions from "@/components/ResultActions";
+import EmailResultsDialog from "@/components/EmailResultsDialog";
 
 const AUD0 = new Intl.NumberFormat("en-AU", {
   style: "currency",

@@ -25,6 +25,7 @@ import {
 } from "@/lib/mortgageState";
 import RangeField from "@/components/RangeField";
 import ResultActions from "@/components/ResultActions";
+import EmailResultsDialog from "@/components/EmailResultsDialog";
 import ShareResult from "@/components/ShareResult";
 import StickyResultsBar from "@/components/StickyResultsBar";
 import QuickAdjustChips from "@/components/mobile/QuickAdjustChips";

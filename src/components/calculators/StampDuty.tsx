@@ -19,6 +19,7 @@ import { usePublishMobileResult } from "@/lib/mobileResult";
 import { shareCurrent } from "@/lib/shareCurrent";
 import Tooltip from "@/components/Tooltip";
 import ResultActions from "@/components/ResultActions";
+import EmailResultsDialog from "@/components/EmailResultsDialog";
 
 interface StampDutyProps {
   lockedState?: StateCode;
