@@ -11,6 +11,7 @@ import MobileInsightBar from "@/components/mobile/MobileInsightBar";
 import { useRbaRates } from "@/hooks/useRbaRates";
 import Tooltip from "@/components/Tooltip";
 import ResultActions from "@/components/ResultActions";
+import EmailResultsDialog from "@/components/EmailResultsDialog";
 
 const AUD0 = new Intl.NumberFormat("en-AU", {
   style: "currency",
@@ -285,6 +286,7 @@ const BorrowingPower = () => {
   const [s, setS] = useState<State>(initial);
   const [bufferOpen, setBufferOpen] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
 
   const set = <K extends keyof State>(k: K, v: State[K]) =>
@@ -790,7 +792,18 @@ const BorrowingPower = () => {
               </button>
             </div>
 
-            <ResultActions calculator="borrowing_power" />
+            <ResultActions
+              calculator="borrowing_power"
+              onEmail={() => setEmailOpen(true)}
+              emailSummary={`Borrowing power ${fmt0(result.borrowingPower)} — buy up to ${fmt0(result.maxPurchasePrice)}.`}
+            />
+            <EmailResultsDialog
+              open={emailOpen}
+              onOpenChange={setEmailOpen}
+              calculator="borrowing_power"
+              inputs={s as unknown as Record<string, unknown>}
+              resultSummary={`Borrowing power ${fmt0(result.borrowingPower)} — buy up to ${fmt0(result.maxPurchasePrice)}.`}
+            />
           </div>
         </div>
       </div>

@@ -9,6 +9,7 @@ import SeoPanel from "./SeoPanel";
 import ContentPanel from "./ContentPanel";
 import NewsPanel from "./NewsPanel";
 import CommandCentre from "./CommandCentre";
+import LeadsPanel from "./LeadsPanel";
 
 const BUCKET = "branding";
 
@@ -29,6 +30,7 @@ type TabKey =
   | "seo_intel"
   | "content"
   | "news"
+  | "leads"
   | "live_data"
   | "adsense"
   | "branding"
@@ -44,6 +46,7 @@ const NAV: NavGroup[] = [
     { key: "seo_intel", label: "SEO Intelligence", icon: "📈" },
     { key: "content", label: "Content Engine", icon: "✍" },
     { key: "news", label: "News Articles", icon: "📰" },
+    { key: "leads", label: "Leads", icon: "📧" },
   ]},
   { label: "Data", items: [
     { key: "live_data", label: "Live Rates", icon: "📡" },
@@ -69,6 +72,7 @@ const PAGE_META: Record<TabKey, { title: string; desc: string }> = {
   seo_intel: { title: "SEO Intelligence", desc: "Track keyword rankings and find opportunities to reach page 1." },
   content: { title: "Content Engine", desc: "Generate SEO-optimised articles from your top keyword opportunities." },
   news: { title: "News Articles", desc: "Manage published news articles — edit content and toggle visibility." },
+  leads: { title: "Leads", desc: "Email captures from calculator pages — exportable to CSV." },
   live_data: { title: "Live Rates", desc: "Manage rate data, FHOG amounts, LMI bands, and verify freshness." },
   adsense: { title: "AdSense", desc: "Configure ad slots and monitor revenue once approved." },
   branding: { title: "Branding", desc: "Logo, favicon, and OG image used across the site." },
@@ -283,6 +287,7 @@ const AdminDashboard = () => {
               {tab === "dashboard" && <CommandCentre onNavigate={(k) => setTab(k as TabKey)} />}
               {tab === "content" && <ContentPanel />}
               {tab === "news" && <NewsPanel />}
+              {tab === "leads" && <LeadsPanel />}
               {tab === "seo_intel" && <SeoPanel />}
               {tab === "live_data" && <LiveDataPanel />}
 

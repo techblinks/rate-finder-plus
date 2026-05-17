@@ -30,6 +30,8 @@ import { useIsPending } from "@/hooks/useIsPending";
 import { useIsMobile } from "@/hooks/use-mobile";
 import MobileInsightBar from "@/components/mobile/MobileInsightBar";
 import MobileChartTableSection from "@/components/mobile/MobileChartTableSection";
+import ResultActions from "@/components/ResultActions";
+import EmailResultsDialog from "@/components/EmailResultsDialog";
 
 const AUD = new Intl.NumberFormat("en-AU", {
   style: "currency",
@@ -279,6 +281,7 @@ const Refinance = () => {
   });
   const [restored, setRestored] = useState<"local" | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -1155,6 +1158,19 @@ const Refinance = () => {
           </Link>
         </div>
       </section>
+
+      <ResultActions
+        calculator="refinance"
+        onEmail={() => setEmailOpen(true)}
+        emailSummary={`Refinance ${fmt0(s.currentBalance)} from ${s.currentRate.toFixed(2)}% to ${s.newRate.toFixed(2)}%: ${result.monthlySaving >= 0 ? "save" : "extra cost of"} ${fmt0(Math.abs(result.monthlySaving))}/mo.`}
+      />
+      <EmailResultsDialog
+        open={emailOpen}
+        onOpenChange={setEmailOpen}
+        calculator="refinance"
+        inputs={s as unknown as Record<string, unknown>}
+        resultSummary={`Refinance ${fmt0(s.currentBalance)} from ${s.currentRate.toFixed(2)}% to ${s.newRate.toFixed(2)}%: ${result.monthlySaving >= 0 ? "save" : "extra cost of"} ${fmt0(Math.abs(result.monthlySaving))}/mo.`}
+      />
 
     </div>
   );

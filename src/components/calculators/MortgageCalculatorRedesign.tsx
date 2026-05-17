@@ -25,6 +25,7 @@ import {
 } from "@/lib/mortgageState";
 import RangeField from "@/components/RangeField";
 import ResultActions from "@/components/ResultActions";
+import EmailResultsDialog from "@/components/EmailResultsDialog";
 import ShareResult from "@/components/ShareResult";
 import StickyResultsBar from "@/components/StickyResultsBar";
 import QuickAdjustChips from "@/components/mobile/QuickAdjustChips";
@@ -207,6 +208,7 @@ const MortgageCalculatorRedesign = () => {
   const [scenariosOpen, setScenariosOpen] = useState(false);
   const [offsetPresets, setOffsetPresets] = useState<OffsetPreset[]>([]);
   const [copied, setCopied] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
   const sliderHaptic = useRef(0);
   const inputsRef = useRef<HTMLDivElement>(null);
 
@@ -1242,7 +1244,20 @@ const MortgageCalculatorRedesign = () => {
             </Suspense>
           )}
 
-          {!isMobile && <ResultActions calculator="mortgage_repayment" />}
+          {!isMobile && (
+            <ResultActions
+              calculator="mortgage_repayment"
+              onEmail={() => setEmailOpen(true)}
+              emailSummary={`${freq.charAt(0).toUpperCase() + freq.slice(1)} repayment of ${fmt0(headline)} on a ${fmt0(loan)} loan at ${rate.toFixed(2)}% over ${term} years.`}
+            />
+          )}
+          <EmailResultsDialog
+            open={emailOpen}
+            onOpenChange={setEmailOpen}
+            calculator="mortgage"
+            inputs={{ loan, rate, term, freq, extra, propValue, offsetStart, offsetMonthly }}
+            resultSummary={`${freq.charAt(0).toUpperCase() + freq.slice(1)} repayment of ${fmt0(headline)} on a ${fmt0(loan)} loan at ${rate.toFixed(2)}% over ${term} years.`}
+          />
 
           <ShareResult
             calculator="mortgage_repayment"

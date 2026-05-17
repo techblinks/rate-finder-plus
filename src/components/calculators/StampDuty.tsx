@@ -19,6 +19,7 @@ import { usePublishMobileResult } from "@/lib/mobileResult";
 import { shareCurrent } from "@/lib/shareCurrent";
 import Tooltip from "@/components/Tooltip";
 import ResultActions from "@/components/ResultActions";
+import EmailResultsDialog from "@/components/EmailResultsDialog";
 
 interface StampDutyProps {
   lockedState?: StateCode;
@@ -170,6 +171,7 @@ const StampDuty = ({ lockedState }: StampDutyProps) => {
     setS((prev) => ({ ...prev, [k]: v }));
 
   const [copied, setCopied] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
   const [includeLegal, setIncludeLegal] = useState(true);
   const [includeBuilding, setIncludeBuilding] = useState(true);
   const [includePest, setIncludePest] = useState(true);
@@ -637,7 +639,18 @@ const StampDuty = ({ lockedState }: StampDutyProps) => {
                 {copied ? "Copied!" : "Share this calculation"}
               </button>
 
-              <ResultActions calculator="stamp_duty" />
+              <ResultActions
+                calculator="stamp_duty"
+                onEmail={() => setEmailOpen(true)}
+                emailSummary={`Stamp duty on a ${fmt0(s.value)} property in ${s.state}: ${fmt0(result.netDuty)}.`}
+              />
+              <EmailResultsDialog
+                open={emailOpen}
+                onOpenChange={setEmailOpen}
+                calculator="stamp_duty"
+                inputs={s as unknown as Record<string, unknown>}
+                resultSummary={`Stamp duty on a ${fmt0(s.value)} property in ${s.state}: ${fmt0(result.netDuty)}. Total upfront ${fmt0(totalCash)}.`}
+              />
 
               <p className="text-[11px] leading-relaxed text-muted-foreground">
                 Stamp duty rates are indicative for 2026. Confirm with your state revenue office before

@@ -12,6 +12,7 @@ import MobileInsightBar from "@/components/mobile/MobileInsightBar";
 import { useRbaRates } from "@/hooks/useRbaRates";
 import Tooltip from "@/components/Tooltip";
 import ResultActions from "@/components/ResultActions";
+import EmailResultsDialog from "@/components/EmailResultsDialog";
 
 const AUD0 = new Intl.NumberFormat("en-AU", {
   style: "currency",
@@ -231,6 +232,7 @@ const Lmi = () => {
   );
   const dRent = useDebouncedValue(monthlyRent, 150);
   const [copied, setCopied] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
   const prevLmi = useRef(0);
 
   const dState = useDebouncedValue(s, 150);
@@ -653,7 +655,18 @@ const Lmi = () => {
               {copied ? "Copied!" : "Share this calculation"}
             </button>
 
-            <ResultActions calculator="lmi" />
+            <ResultActions
+              calculator="lmi"
+              onEmail={() => setEmailOpen(true)}
+              emailSummary={`LMI estimate ${fmt0(lmi)} at ${lvr.toFixed(1)}% LVR.`}
+            />
+            <EmailResultsDialog
+              open={emailOpen}
+              onOpenChange={setEmailOpen}
+              calculator="lmi"
+              inputs={s as unknown as Record<string, unknown>}
+              resultSummary={`LMI estimate ${fmt0(lmi)} at ${lvr.toFixed(1)}% LVR on a ${fmt0(s.propertyValue)} property.`}
+            />
           </div>
         </div>
       </div>
