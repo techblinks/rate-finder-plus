@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      calculation_leads: {
+        Row: {
+          calculator_type: string
+          created_at: string
+          email: string
+          id: string
+          inputs: Json
+          result_summary: string | null
+          suburb: string | null
+        }
+        Insert: {
+          calculator_type: string
+          created_at?: string
+          email: string
+          id?: string
+          inputs?: Json
+          result_summary?: string | null
+          suburb?: string | null
+        }
+        Update: {
+          calculator_type?: string
+          created_at?: string
+          email?: string
+          id?: string
+          inputs?: Json
+          result_summary?: string | null
+          suburb?: string | null
+        }
+        Relationships: []
+      }
       competitor_pages: {
         Row: {
           category: string | null

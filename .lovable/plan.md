@@ -1,30 +1,61 @@
-## Create `publish-news` Edge Function
 
-### Function: `supabase/functions/publish-news/index.ts`
+# Email My Results — Lead Capture
 
-- POST-only endpoint (return 405 otherwise) with full CORS headers (OPTIONS preflight handler).
-- Parse JSON body; validate required fields (`title`, `slug`, `body`, `secret`) with Zod. `excerpt` and `published_at` optional.
-- Compare `secret` against `Deno.env.get("PUBLISH_SECRET")` using constant-time comparison. Mismatch → `401 {"error":"Unauthorized"}`.
-- Use service-role Supabase client (`SUPABASE_SERVICE_ROLE_KEY`) to insert into `news_articles` with `is_published = true`, `published_at = body.published_at ?? new Date().toISOString()`, `author` left to default (`'Calcy Team'`).
-- On success: `200 {"success": true, "id": <uuid>}`. On DB error: `500 {"error": <message>}`. Duplicate slug → `409 {"error":"Slug already exists"}`.
-- Configured with `verify_jwt = false` in `supabase/config.toml` so GitHub Actions can call it without a Supabase user JWT (auth handled by `PUBLISH_SECRET`).
+## Part 1 — Database (migration)
 
-### Secret
+Create `public.calculation_leads`:
 
-- Generate a strong random value (32-byte base64url) and store via the secrets tool as `PUBLISH_SECRET`. Requires user to confirm in the secure form — I'll prefill the generated value so you just click save.
+- `id uuid pk default gen_random_uuid()`
+- `email text not null`
+- `calculator_type text not null` (`mortgage` | `borrowing_power` | `stamp_duty` | `lmi` | `refinance`)
+- `inputs jsonb not null default '{}'::jsonb`
+- `result_summary text`
+- `suburb text`
+- `created_at timestamptz not null default now()`
 
-### Deliverable to user
+Enable RLS with these policies:
 
-After deploy, share the function URL:
-`https://newvydpcchjbuhcldckf.supabase.co/functions/v1/publish-news`
+- **Insert (public, anon + authenticated)** — `WITH CHECK (true)` and a lightweight email format check (`email ~* '^[^@\s]+@[^@\s]+\.[^@\s]+$'` and `length(email) <= 254`) to limit junk.
+- **Select (admin only)** — `USING (has_role(auth.uid(), 'admin'))`. No user-row self-read (privacy requirement).
+- **Update / Delete** — admin-only via the same `has_role` check.
 
-Example GitHub Actions curl:
-```bash
-curl -X POST https://newvydpcchjbuhcldckf.supabase.co/functions/v1/publish-news \
-  -H "Content-Type: application/json" \
-  -d '{"title":"...","slug":"...","excerpt":"...","body":"...","published_at":"2026-05-13T14:30:00Z","secret":"'"$PUBLISH_SECRET"'"}'
-```
+Indexes: `created_at desc`, `calculator_type`.
 
-### Out of scope
+## Part 2 — Shared lead-capture UI
 
-- No update/delete endpoints, no auth beyond shared secret, no markdown→HTML conversion (body stored as-is).
+New files:
+
+- `src/lib/leads.ts` — `submitLead({ calculator_type, email, inputs, result_summary, suburb? })`. Inserts via `supabase.from('calculation_leads')`, validates email with `zod`, fires `trackEvent('lead_capture_submit', { calculator })`. Returns `{ ok, error }`.
+- `src/components/EmailResultsDialog.tsx` — Radix `Dialog` with email input, consent line ("We'll email you a copy of these results. No spam."), submit + success states. Props: `open`, `onOpenChange`, `calculator`, `inputs`, `resultSummary`, `suburb?`.
+
+Wire into existing `ResultActions` ("Email me this" button is already there with `onEmail` prop) — each calculator passes an `onEmail` handler that opens the dialog and supplies a tailored `resultSummary` string, plus the inputs object and (where relevant) suburb from route/page context.
+
+Calculators to wire up:
+
+1. `MortgageCalculatorRedesign.tsx` (mortgage)
+2. `BorrowingPower.tsx` (borrowing_power)
+3. `StampDuty.tsx` (stamp_duty) — pass `lockedState`/suburb when present
+4. `Lmi.tsx` (lmi)
+5. `Refinance.tsx` (refinance) — also needs a `ResultActions` mount (verify; add if missing)
+
+Each `resultSummary` is a one-line plain-English string built from the current computed values (e.g. mortgage: "Monthly repayment: $3,241 on $600,000 loan at 6.24% over 30 years").
+
+## Part 3 — Admin Leads panel
+
+- New file `src/pages/admin/LeadsPanel.tsx`: table of leads (email, calculator, result summary, suburb, created), filter by calculator, search by email, CSV export, pagination (50/page). Reads via `supabase.from('calculation_leads').select(...).order('created_at', { ascending: false })`.
+- Update `AdminDashboard.tsx`:
+  - Add `"leads"` to `TabKey`
+  - Add nav item under **Growth** group: `{ key: "leads", label: "Leads", icon: "📧" }`
+  - Add `PAGE_META.leads`
+  - Render `<LeadsPanel />` when `tab === "leads"`
+
+## Technical notes
+
+- Use the existing `supabase` client; no edge function needed for insert (RLS handles it).
+- `zod` schema: trimmed email, max 254 chars, valid email format. Client- and DB-side both enforce.
+- No automated email is actually sent yet — the "Email my results" submission only captures the lead. Copy in the dialog reflects that ("We'll send a copy shortly"). If transactional email is wanted later, that's a follow-up (Resend edge function).
+- No changes to existing calculator formulas, SEO, schemas, or meta tags.
+
+## Open questions
+
+- Should the dialog also fire a transactional email now (requires Resend secret + edge function), or capture-only for v1? Plan assumes **capture-only**; confirm if you want sending wired up.
