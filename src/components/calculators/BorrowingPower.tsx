@@ -286,6 +286,7 @@ const BorrowingPower = () => {
   const [s, setS] = useState<State>(initial);
   const [bufferOpen, setBufferOpen] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
 
   const set = <K extends keyof State>(k: K, v: State[K]) =>

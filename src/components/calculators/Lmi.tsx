@@ -232,6 +232,7 @@ const Lmi = () => {
   );
   const dRent = useDebouncedValue(monthlyRent, 150);
   const [copied, setCopied] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
   const prevLmi = useRef(0);
 
   const dState = useDebouncedValue(s, 150);

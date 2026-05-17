@@ -171,6 +171,7 @@ const StampDuty = ({ lockedState }: StampDutyProps) => {
     setS((prev) => ({ ...prev, [k]: v }));
 
   const [copied, setCopied] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
   const [includeLegal, setIncludeLegal] = useState(true);
   const [includeBuilding, setIncludeBuilding] = useState(true);
   const [includePest, setIncludePest] = useState(true);
