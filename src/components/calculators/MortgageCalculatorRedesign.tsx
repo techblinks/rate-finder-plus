@@ -1243,7 +1243,20 @@ const MortgageCalculatorRedesign = () => {
             </Suspense>
           )}
 
-          {!isMobile && <ResultActions calculator="mortgage_repayment" />}
+          {!isMobile && (
+            <ResultActions
+              calculator="mortgage_repayment"
+              onEmail={() => setEmailOpen(true)}
+              emailSummary={`${freq.charAt(0).toUpperCase() + freq.slice(1)} repayment of ${fmt0(headline)} on a ${fmt0(loan)} loan at ${rate.toFixed(2)}% over ${term} years.`}
+            />
+          )}
+          <EmailResultsDialog
+            open={emailOpen}
+            onOpenChange={setEmailOpen}
+            calculator="mortgage"
+            inputs={{ loan, rate, term, freq, extra, propValue, offsetStart, offsetMonthly }}
+            resultSummary={`${freq.charAt(0).toUpperCase() + freq.slice(1)} repayment of ${fmt0(headline)} on a ${fmt0(loan)} loan at ${rate.toFixed(2)}% over ${term} years.`}
+          />
 
           <ShareResult
             calculator="mortgage_repayment"
