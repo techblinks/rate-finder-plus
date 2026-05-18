@@ -31,6 +31,7 @@ import StickyResultsBar from "@/components/StickyResultsBar";
 import QuickAdjustChips from "@/components/mobile/QuickAdjustChips";
 import MobileCollapse from "@/components/mobile/MobileCollapse";
 import MobileInsightStrip from "@/components/mobile/MobileInsightStrip";
+import MobileResultCard from "@/components/mobile/MobileResultCard";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePublishMobileResult } from "@/lib/mobileResult";
 
@@ -312,6 +313,44 @@ const MortgageCalculatorRedesign = () => {
       haptic(8);
     }
   }, [loan]);
+
+  // Haptic snap on 0.25% rate boundaries
+  const rateSnapRef = useRef<number>(Math.round(rate * 4));
+  useEffect(() => {
+    const snap = Math.round(rate * 4); // each unit = 0.25%
+    if (rateSnapRef.current !== snap) {
+      rateSnapRef.current = snap;
+      haptic(8);
+    }
+  }, [rate]);
+
+  // One-shot success haptic when LVR crosses the 80% LMI threshold (in either direction)
+  const lvrCrossedRef = useRef<boolean | null>(null);
+  useEffect(() => {
+    if (propValue <= 0) {
+      lvrCrossedRef.current = null;
+      return;
+    }
+    const above = (loan / propValue) * 100 > 80;
+    if (lvrCrossedRef.current !== null && lvrCrossedRef.current !== above) {
+      haptic(20);
+    }
+    lvrCrossedRef.current = above;
+  }, [loan, propValue]);
+
+  // Scroll a target input into view and pulse-highlight it (mobile edit-chip flow)
+  const handleEditField = useCallback((field: "loan" | "rate" | "term") => {
+    const id =
+      field === "loan" ? "loan-amount-input" : field === "rate" ? "interest-rate-input" : "loan-term-input";
+    const el = typeof document !== "undefined" ? document.getElementById(id) : null;
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    el.classList.remove("calcy-field-pulse");
+    // Force reflow so the animation restarts if tapped twice
+    void el.offsetWidth;
+    el.classList.add("calcy-field-pulse");
+    window.setTimeout(() => el.classList.remove("calcy-field-pulse"), 1600);
+  }, []);
 
   // Savings vs base loan (extra repayments)
   const savings = useMemo(() => {
@@ -634,10 +673,10 @@ const MortgageCalculatorRedesign = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-3 md:gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
         {/* INPUTS */}
-        <div ref={inputsRef} className="space-y-5 rounded-2xl border border-border bg-card p-5">
-          <div>
+        <div ref={inputsRef} className="space-y-4 rounded-2xl border border-border bg-card p-4 md:space-y-5 md:p-5">
+          <div id="loan-amount-input" className="scroll-mt-24">
             <RangeField
               label="Loan amount"
               value={loan}
@@ -652,7 +691,10 @@ const MortgageCalculatorRedesign = () => {
                 <button
                   key={v}
                   type="button"
-                  onClick={() => setLoan(v)}
+                  onClick={() => {
+                    haptic(10);
+                    setLoan(v);
+                  }}
                   className={`rounded-full md:rounded-md border px-3 py-1 text-[12px] font-medium ${
                     loan === v
                       ? "border-accent bg-accent text-accent-foreground md:border-[var(--c-navy)] md:bg-[var(--c-navy)] md:text-white"
@@ -665,7 +707,7 @@ const MortgageCalculatorRedesign = () => {
             </div>
           </div>
 
-          <div>
+          <div id="interest-rate-input" className="scroll-mt-24">
             <RangeField
               label="Interest rate"
               value={rate}
@@ -678,7 +720,7 @@ const MortgageCalculatorRedesign = () => {
             />
           </div>
 
-          <div>
+          <div id="loan-term-input" className="scroll-mt-24">
             <p className="mb-1 text-[13px] font-medium text-foreground">Loan term</p>
             <Segmented
               ariaLabel="Loan term"
@@ -956,47 +998,75 @@ const MortgageCalculatorRedesign = () => {
         </div>
 
         {/* RESULTS */}
-        <div className="order-first lg:order-none space-y-4">
-          <QuickAdjustChips
-            loan={loan}
-            setLoan={setLoan}
-            loanBounds={{ min: 50000, max: 3000000 }}
-            rate={rate}
-            setRate={setRate}
-            rateBounds={{ min: 1, max: 15 }}
-            term={term}
-            setTerm={setTerm}
-            termBounds={{ min: 5, max: 30 }}
-          />
-          <div
-            className={`result-panel-navy rounded-2xl border border-border bg-card p-6 text-center md:p-7 transition-opacity duration-150 ${isMobile && calcPending ? "opacity-50" : "opacity-100"}`}
-            aria-busy={isMobile && calcPending ? "true" : undefined}
-          >
-            <p className="result-primary-label text-[12px] uppercase tracking-wide text-muted-foreground">
-              {FREQ_LABEL[freq]} repayment
-            </p>
-            <p className="result-primary-value tnum text-[44px] font-bold leading-none text-accent sm:text-[52px]">
-              {fmt0(headline)}
-            </p>
-            <p className="mt-2 text-[13px] text-muted-foreground">
-              {altFreqs
-                .map((f) => `${FREQ_LABEL[f]}: ${fmt0(result[f])}`)
-                .join(" · ")}
-            </p>
+        <div className="order-first lg:order-none space-y-3 md:space-y-4">
+          {!isMobile && (
+            <QuickAdjustChips
+              loan={loan}
+              setLoan={setLoan}
+              loanBounds={{ min: 50000, max: 3000000 }}
+              rate={rate}
+              setRate={setRate}
+              rateBounds={{ min: 1, max: 15 }}
+              term={term}
+              setTerm={setTerm}
+              termBounds={{ min: 5, max: 30 }}
+            />
+          )}
+          {isMobile ? (
+            <>
+              <MobileResultCard
+                primaryLabel={`${FREQ_LABEL[freq]} repayment`}
+                primaryValue={headline}
+                secondary={altFreqs.map((f) => ({ label: FREQ_LABEL[f], value: result[f] }))}
+                loanAmount={loan}
+                rate={rate}
+                termYears={term}
+                pending={calcPending}
+                onEditField={handleEditField}
+              />
+              {freqSavings && (
+                <div className="rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-[13px]">
+                  <p className="text-success">
+                    <span className="font-semibold">Tip:</span> Paying{" "}
+                    {freqSavings.label} instead of monthly saves you{" "}
+                    <span className="font-semibold">{freqSavings.monthsSaved} months</span>{" "}
+                    and{" "}
+                    <span className="font-semibold">{fmt0(freqSavings.interestSaved)}</span>{" "}
+                    in total interest
+                  </p>
+                </div>
+              )}
+            </>
+          ) : (
+            <div
+              className="result-panel-navy rounded-2xl border border-border bg-card p-6 text-center md:p-7"
+            >
+              <p className="result-primary-label text-[12px] uppercase tracking-wide text-muted-foreground">
+                {FREQ_LABEL[freq]} repayment
+              </p>
+              <p className="result-primary-value tnum text-[44px] font-bold leading-none text-accent sm:text-[52px]">
+                {fmt0(headline)}
+              </p>
+              <p className="mt-2 text-[13px] text-muted-foreground">
+                {altFreqs
+                  .map((f) => `${FREQ_LABEL[f]}: ${fmt0(result[f])}`)
+                  .join(" · ")}
+              </p>
 
-            {freqSavings && (
-              <div className="mt-4 rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-[13px]">
-                <p className="text-success">
-                  <span className="font-semibold">Tip:</span> Paying{" "}
-                  {freqSavings.label} instead of monthly saves you{" "}
-                  <span className="font-semibold">{freqSavings.monthsSaved} months</span>{" "}
-                  and{" "}
-                  <span className="font-semibold">{fmt0(freqSavings.interestSaved)}</span>{" "}
-                  in total interest
-                </p>
-              </div>
-            )}
-          </div>
+              {freqSavings && (
+                <div className="mt-4 rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-[13px]">
+                  <p className="text-success">
+                    <span className="font-semibold">Tip:</span> Paying{" "}
+                    {freqSavings.label} instead of monthly saves you{" "}
+                    <span className="font-semibold">{freqSavings.monthsSaved} months</span>{" "}
+                    and{" "}
+                    <span className="font-semibold">{fmt0(freqSavings.interestSaved)}</span>{" "}
+                    in total interest
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Plain-English "What this means" summary */}
           {(() => {
