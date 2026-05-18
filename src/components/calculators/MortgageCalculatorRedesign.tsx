@@ -998,47 +998,75 @@ const MortgageCalculatorRedesign = () => {
         </div>
 
         {/* RESULTS */}
-        <div className="order-first lg:order-none space-y-4">
-          <QuickAdjustChips
-            loan={loan}
-            setLoan={setLoan}
-            loanBounds={{ min: 50000, max: 3000000 }}
-            rate={rate}
-            setRate={setRate}
-            rateBounds={{ min: 1, max: 15 }}
-            term={term}
-            setTerm={setTerm}
-            termBounds={{ min: 5, max: 30 }}
-          />
-          <div
-            className={`result-panel-navy rounded-2xl border border-border bg-card p-6 text-center md:p-7 transition-opacity duration-150 ${isMobile && calcPending ? "opacity-50" : "opacity-100"}`}
-            aria-busy={isMobile && calcPending ? "true" : undefined}
-          >
-            <p className="result-primary-label text-[12px] uppercase tracking-wide text-muted-foreground">
-              {FREQ_LABEL[freq]} repayment
-            </p>
-            <p className="result-primary-value tnum text-[44px] font-bold leading-none text-accent sm:text-[52px]">
-              {fmt0(headline)}
-            </p>
-            <p className="mt-2 text-[13px] text-muted-foreground">
-              {altFreqs
-                .map((f) => `${FREQ_LABEL[f]}: ${fmt0(result[f])}`)
-                .join(" · ")}
-            </p>
+        <div className="order-first lg:order-none space-y-3 md:space-y-4">
+          {!isMobile && (
+            <QuickAdjustChips
+              loan={loan}
+              setLoan={setLoan}
+              loanBounds={{ min: 50000, max: 3000000 }}
+              rate={rate}
+              setRate={setRate}
+              rateBounds={{ min: 1, max: 15 }}
+              term={term}
+              setTerm={setTerm}
+              termBounds={{ min: 5, max: 30 }}
+            />
+          )}
+          {isMobile ? (
+            <>
+              <MobileResultCard
+                primaryLabel={`${FREQ_LABEL[freq]} repayment`}
+                primaryValue={headline}
+                secondary={altFreqs.map((f) => ({ label: FREQ_LABEL[f], value: result[f] }))}
+                loanAmount={loan}
+                rate={rate}
+                termYears={term}
+                pending={calcPending}
+                onEditField={handleEditField}
+              />
+              {freqSavings && (
+                <div className="rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-[13px]">
+                  <p className="text-success">
+                    <span className="font-semibold">Tip:</span> Paying{" "}
+                    {freqSavings.label} instead of monthly saves you{" "}
+                    <span className="font-semibold">{freqSavings.monthsSaved} months</span>{" "}
+                    and{" "}
+                    <span className="font-semibold">{fmt0(freqSavings.interestSaved)}</span>{" "}
+                    in total interest
+                  </p>
+                </div>
+              )}
+            </>
+          ) : (
+            <div
+              className="result-panel-navy rounded-2xl border border-border bg-card p-6 text-center md:p-7"
+            >
+              <p className="result-primary-label text-[12px] uppercase tracking-wide text-muted-foreground">
+                {FREQ_LABEL[freq]} repayment
+              </p>
+              <p className="result-primary-value tnum text-[44px] font-bold leading-none text-accent sm:text-[52px]">
+                {fmt0(headline)}
+              </p>
+              <p className="mt-2 text-[13px] text-muted-foreground">
+                {altFreqs
+                  .map((f) => `${FREQ_LABEL[f]}: ${fmt0(result[f])}`)
+                  .join(" · ")}
+              </p>
 
-            {freqSavings && (
-              <div className="mt-4 rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-[13px]">
-                <p className="text-success">
-                  <span className="font-semibold">Tip:</span> Paying{" "}
-                  {freqSavings.label} instead of monthly saves you{" "}
-                  <span className="font-semibold">{freqSavings.monthsSaved} months</span>{" "}
-                  and{" "}
-                  <span className="font-semibold">{fmt0(freqSavings.interestSaved)}</span>{" "}
-                  in total interest
-                </p>
-              </div>
-            )}
-          </div>
+              {freqSavings && (
+                <div className="mt-4 rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-[13px]">
+                  <p className="text-success">
+                    <span className="font-semibold">Tip:</span> Paying{" "}
+                    {freqSavings.label} instead of monthly saves you{" "}
+                    <span className="font-semibold">{freqSavings.monthsSaved} months</span>{" "}
+                    and{" "}
+                    <span className="font-semibold">{fmt0(freqSavings.interestSaved)}</span>{" "}
+                    in total interest
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Plain-English "What this means" summary */}
           {(() => {
