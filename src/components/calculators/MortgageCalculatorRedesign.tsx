@@ -31,6 +31,7 @@ import StickyResultsBar from "@/components/StickyResultsBar";
 import QuickAdjustChips from "@/components/mobile/QuickAdjustChips";
 import MobileCollapse from "@/components/mobile/MobileCollapse";
 import MobileInsightStrip from "@/components/mobile/MobileInsightStrip";
+import MobileResultCard from "@/components/mobile/MobileResultCard";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePublishMobileResult } from "@/lib/mobileResult";
 
