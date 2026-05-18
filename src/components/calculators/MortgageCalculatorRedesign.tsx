@@ -673,7 +673,7 @@ const MortgageCalculatorRedesign = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-3 md:gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
         {/* INPUTS */}
         <div ref={inputsRef} className="space-y-4 rounded-2xl border border-border bg-card p-4 md:space-y-5 md:p-5">
           <div id="loan-amount-input" className="scroll-mt-24">
