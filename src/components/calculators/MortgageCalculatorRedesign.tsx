@@ -314,6 +314,44 @@ const MortgageCalculatorRedesign = () => {
     }
   }, [loan]);
 
+  // Haptic snap on 0.25% rate boundaries
+  const rateSnapRef = useRef<number>(Math.round(rate * 4));
+  useEffect(() => {
+    const snap = Math.round(rate * 4); // each unit = 0.25%
+    if (rateSnapRef.current !== snap) {
+      rateSnapRef.current = snap;
+      haptic(8);
+    }
+  }, [rate]);
+
+  // One-shot success haptic when LVR crosses the 80% LMI threshold (in either direction)
+  const lvrCrossedRef = useRef<boolean | null>(null);
+  useEffect(() => {
+    if (propValue <= 0) {
+      lvrCrossedRef.current = null;
+      return;
+    }
+    const above = (loan / propValue) * 100 > 80;
+    if (lvrCrossedRef.current !== null && lvrCrossedRef.current !== above) {
+      haptic(20);
+    }
+    lvrCrossedRef.current = above;
+  }, [loan, propValue]);
+
+  // Scroll a target input into view and pulse-highlight it (mobile edit-chip flow)
+  const handleEditField = useCallback((field: "loan" | "rate" | "term") => {
+    const id =
+      field === "loan" ? "loan-amount-input" : field === "rate" ? "interest-rate-input" : "loan-term-input";
+    const el = typeof document !== "undefined" ? document.getElementById(id) : null;
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    el.classList.remove("calcy-field-pulse");
+    // Force reflow so the animation restarts if tapped twice
+    void el.offsetWidth;
+    el.classList.add("calcy-field-pulse");
+    window.setTimeout(() => el.classList.remove("calcy-field-pulse"), 1600);
+  }, []);
+
   // Savings vs base loan (extra repayments)
   const savings = useMemo(() => {
     if (!baseResult || dExtra <= 0) return null;
