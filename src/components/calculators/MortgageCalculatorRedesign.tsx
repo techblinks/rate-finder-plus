@@ -676,7 +676,7 @@ const MortgageCalculatorRedesign = () => {
       <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
         {/* INPUTS */}
         <div ref={inputsRef} className="space-y-5 rounded-2xl border border-border bg-card p-5">
-          <div>
+          <div id="loan-amount-input" className="scroll-mt-24">
             <RangeField
               label="Loan amount"
               value={loan}
@@ -691,7 +691,10 @@ const MortgageCalculatorRedesign = () => {
                 <button
                   key={v}
                   type="button"
-                  onClick={() => setLoan(v)}
+                  onClick={() => {
+                    haptic(10);
+                    setLoan(v);
+                  }}
                   className={`rounded-full md:rounded-md border px-3 py-1 text-[12px] font-medium ${
                     loan === v
                       ? "border-accent bg-accent text-accent-foreground md:border-[var(--c-navy)] md:bg-[var(--c-navy)] md:text-white"
@@ -704,7 +707,7 @@ const MortgageCalculatorRedesign = () => {
             </div>
           </div>
 
-          <div>
+          <div id="interest-rate-input" className="scroll-mt-24">
             <RangeField
               label="Interest rate"
               value={rate}
@@ -717,7 +720,7 @@ const MortgageCalculatorRedesign = () => {
             />
           </div>
 
-          <div>
+          <div id="loan-term-input" className="scroll-mt-24">
             <p className="mb-1 text-[13px] font-medium text-foreground">Loan term</p>
             <Segmented
               ariaLabel="Loan term"
