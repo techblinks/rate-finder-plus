@@ -30,8 +30,9 @@ import ShareResult from "@/components/ShareResult";
 import StickyResultsBar from "@/components/StickyResultsBar";
 import QuickAdjustChips from "@/components/mobile/QuickAdjustChips";
 import MobileCollapse from "@/components/mobile/MobileCollapse";
-import MobileInsightStrip from "@/components/mobile/MobileInsightStrip";
+import MobileInsightCards, { type InsightCandidate } from "@/components/mobile/MobileInsightCards";
 import MobileResultCard from "@/components/mobile/MobileResultCard";
+import { MobilePendingOverlay } from "@/components/mobile/MobileSkeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePublishMobileResult } from "@/lib/mobileResult";
 
