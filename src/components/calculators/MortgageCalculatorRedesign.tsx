@@ -1320,12 +1320,14 @@ const MortgageCalculatorRedesign = () => {
 
           {(() => {
             const chart = (
-              <Suspense fallback={<div className="h-64 animate-pulse rounded-lg bg-muted/40" />}>
-                <AmortChart
-                  schedule={offset ? offset.yearlySchedule : result.schedule}
-                  baselineSchedule={offset && baselineForChart ? baselineForChart : undefined}
-                />
-              </Suspense>
+              <MobilePendingOverlay pending={isMobile && calcPending}>
+                <Suspense fallback={<div className="h-64 animate-pulse rounded-lg bg-muted/40" />}>
+                  <AmortChart
+                    schedule={offset ? offset.yearlySchedule : result.schedule}
+                    baselineSchedule={offset && baselineForChart ? baselineForChart : undefined}
+                  />
+                </Suspense>
+              </MobilePendingOverlay>
             );
             const title = offset ? "Loan balance over time" : "Principal vs interest by year";
             return isMobile ? (
