@@ -1213,20 +1213,22 @@ const MortgageCalculatorRedesign = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <StatCard label="Total repayments" value={fmt0(result.totalRepaid)} />
-            <StatCard
-              label="Total interest"
-              value={fmt0(result.totalInterest)}
-              tone="warning"
-            />
-            <StatCard
-              label="Loan-to-value ratio"
-              value={lvr !== null ? `${lvr.toFixed(1)}%` : "—"}
-              hint={lvr === null ? "Add property value" : undefined}
-            />
-            <StatCard label="Payoff year" value={String(result.payoffYear)} />
-          </div>
+          <MobilePendingOverlay pending={isMobile && calcPending}>
+            <div className="grid grid-cols-2 gap-3">
+              <StatCard label="Total repayments" value={fmt0(result.totalRepaid)} />
+              <StatCard
+                label="Total interest"
+                value={fmt0(result.totalInterest)}
+                tone="warning"
+              />
+              <StatCard
+                label="Loan-to-value ratio"
+                value={lvr !== null ? `${lvr.toFixed(1)}%` : "—"}
+                hint={lvr === null ? "Add property value" : undefined}
+              />
+              <StatCard label="Payoff year" value={String(result.payoffYear)} />
+            </div>
+          </MobilePendingOverlay>
 
           {savings && (
             <div className="rounded-2xl border border-success/30 bg-success/10 p-4 text-[14px]">
