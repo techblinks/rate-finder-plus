@@ -1091,15 +1091,63 @@ const MortgageCalculatorRedesign = () => {
           })()}
 
           {isMobile && (
-            <MobileInsightStrip
-              loan={dLoan}
-              rate={dRate}
-              term={dTerm}
-              freq={freq}
-              totalInterest={result.totalInterest}
-              monthly={result.monthly}
-              fortnightly={result.fortnightly}
-              extra={dExtra}
+            <MobileInsightCards
+              candidates={(() => {
+                const list: InsightCandidate[] = [];
+                // LMI warning (highest priority — costs real money)
+                if (lvr !== null && lvr > 80) {
+                  list.push({
+                    id: "lmi-above-80",
+                    tone: "warn",
+                    priority: 1,
+                    title: `LVR ${lvr.toFixed(0)}% — LMI likely required`,
+                    body: (
+                      <>
+                        Lenders typically charge Lenders Mortgage Insurance above 80% LVR.
+                        Try the <a href="/lmi-calculator" className="font-semibold underline">LMI calculator</a> to estimate it.
+                      </>
+                    ),
+                  });
+                }
+                // Fortnightly savings
+                if (freq === "monthly" && freqSavings === null) {
+                  // freqSavings only populated for non-monthly; compute a quick estimate
+                  const monthlyTotal = result.monthly + dExtra;
+                  const mScenario = simulateDividedFrequency(dLoan, dRate, monthlyTotal, 12);
+                  const fScenario = simulateDividedFrequency(dLoan, dRate, monthlyTotal / 2, 26);
+                  const interestSaved = Math.max(0, mScenario.totalInterest - fScenario.totalInterest);
+                  if (interestSaved > 1000) {
+                    list.push({
+                      id: "switch-fortnightly",
+                      tone: "success",
+                      priority: 2,
+                      title: `Switch to fortnightly — save ${fmt0(interestSaved)}`,
+                      body: `Paying fortnightly squeezes in an extra month's repayment each year, with no change to your budget.`,
+                    });
+                  }
+                }
+                // Interest-heavy warning
+                if (result.totalInterest > dLoan && dExtra === 0) {
+                  list.push({
+                    id: "interest-heavier-than-loan",
+                    tone: "warn",
+                    priority: 3,
+                    title: `You'll pay ${fmt0(result.totalInterest)} in interest`,
+                    body: `That's more than the loan itself. Even small extra repayments compound — try $100/mo below.`,
+                  });
+                }
+                // Extras nudge
+                if (dExtra === 0 && dTerm >= 25) {
+                  list.push({
+                    id: "extras-suggest",
+                    tone: "info",
+                    priority: 4,
+                    title: "Even $200/mo extra cuts years off",
+                    body: "Open the extra repayments slider above — small consistent extras have an outsized impact on a 25+ year loan.",
+                  });
+                }
+                return list;
+              })()}
             />
           )}
 
