@@ -1,52 +1,33 @@
-# Calcy Project Instructions
+# Calcy Codex Rules
 
-Use the calcy-growth skill for all Calcy-related work.
+This project is Calcy.com.au, an Australian finance calculator platform.
 
-This project is for calcy.com.au, an Australian mortgage and finance calculator platform.
-
-Main goal:
-Build Australia's most trusted mortgage and finance calculator ecosystem with premium mobile-first fintech UX, strong SEO/AEO, trust-focused content, and clean monetization.
-
-Always preserve:
-- calculator logic
-- SEO content
+Always protect:
+- existing URLs
+- sitemap.xml
+- programmatic sitemap
 - metadata
+- canonical tags
 - schema
-- sitemap
-- internal links
-- accessibility
-- mobile performance
-- existing routes
+- calculator logic
+- mobile UX
+- page speed
+- SSR/SSG behavior
 
-Do not:
-- create thin AI pages
-- remove structured data
-- break calculator formulas
-- add intrusive ads
-- damage mobile UX
-- make financial advice claims
-- use misleading claims like "guaranteed approval"
+Never make large unrelated refactors.
 
-Always:
-- prioritize mobile UX
-- keep the design clean and premium
-- use Australian finance wording
-- explain assumptions clearly
-- improve trust signals
-- keep pages fast
-- preserve SEO value
-- make small safe production-ready changes
+Before editing:
+1. audit the existing files
+2. explain the plan
+3. list files to change
+4. identify SEO risks
 
-Brand:
-- Primary colour: #003680
-- Clean Australian fintech feel
-- Calm, modern, trustworthy, professional
+After editing:
+1. run lint/build if available
+2. verify routes still work
+3. verify sitemap still works
+4. verify metadata/schema still exists
+5. summarize changes
 
-Mortgage calculator UX should:
-- show compact repayment summary
-- make inputs easy to access
-- reduce visual clutter
-- reduce excessive scrolling
-- use smooth interactions
-- provide helpful financial insights
-- keep advanced sections collapsible on mobile
+Implement features in phases only.
+Do not auto-publish SEO content without admin approval.
