@@ -7,7 +7,7 @@ import { SEO_FAQS } from "@/data/seoFaqs";
 const MortgageCalculatorPage = () => (
   <CalculatorPageShell
     title="Mortgage repayment calculator"
-    metaTitle="Mortgage Repayment Calculator with Offset Account 2026 | Calcy"
+    metaTitle="Mortgage Repayment Calculator with Offset 2026 | Calcy"
     metaDescription="Australia's first mortgage calculator that models offset accounts like real lenders do. Live RBA rates, extra repayments, fortnightly options."
     canonical="/mortgage-calculator"
     faqs={FAQS.mortgage}
