@@ -30,7 +30,7 @@ export const FHB_GRANT_CONTENT: Record<string, FhbGrantContent> = {
     code: "NSW",
     slug: "nsw",
     name: "New South Wales",
-    metaTitle: "First Home Owner Grant NSW 2026 — $10,000 + Stamp Duty Exemption | Calcy",
+    metaTitle: "First Home Owner Grant NSW 2026 — $10k + Stamp Duty Exempt",
     metaDescription:
       "Full guide to the NSW First Home Owner Grant: $10,000 on new homes up to $750k, $0 stamp duty under $800k, and eligibility for the 2026 financial year.",
     h1: "First Home Owner Grant NSW 2026",
@@ -89,7 +89,7 @@ export const FHB_GRANT_CONTENT: Record<string, FhbGrantContent> = {
     code: "VIC",
     slug: "vic",
     name: "Victoria",
-    metaTitle: "First Home Owner Grant VIC 2026 — $10,000 New Builds + Stamp Duty Exemption | Calcy",
+    metaTitle: "First Home Owner Grant VIC 2026 — $10k + Duty Exemption",
     metaDescription:
       "Victorian First Home Owner Grant 2026: $10,000 on new homes up to $750k plus $0 stamp duty under $600k. Eligibility, regional bonus, and worked examples.",
     h1: "First Home Owner Grant Victoria 2026",
@@ -148,7 +148,7 @@ export const FHB_GRANT_CONTENT: Record<string, FhbGrantContent> = {
     code: "QLD",
     slug: "qld",
     name: "Queensland",
-    metaTitle: "First Home Owner Grant QLD 2026 — $30,000 New Builds + Stamp Duty Concession | Calcy",
+    metaTitle: "First Home Owner Grant QLD 2026 — $30k + Duty Concession",
     metaDescription:
       "Queensland First Home Owner Grant 2026: $30,000 on new builds under $750k, plus first home concession on stamp duty. Full eligibility and examples.",
     h1: "First Home Owner Grant Queensland 2026",
@@ -207,7 +207,7 @@ export const FHB_GRANT_CONTENT: Record<string, FhbGrantContent> = {
     code: "WA",
     slug: "wa",
     name: "Western Australia",
-    metaTitle: "First Home Owner Grant WA 2026 — $10,000 + Stamp Duty Rebate | Calcy",
+    metaTitle: "First Home Owner Grant WA 2026 — $10k + Stamp Duty Rebate",
     metaDescription:
       "Western Australian First Home Owner Grant 2026: $10,000 on new builds plus stamp duty rebate up to $530k. Full eligibility, deadlines and worked examples.",
     h1: "First Home Owner Grant Western Australia 2026",
@@ -266,7 +266,7 @@ export const FHB_GRANT_CONTENT: Record<string, FhbGrantContent> = {
     code: "SA",
     slug: "sa",
     name: "South Australia",
-    metaTitle: "First Home Owner Grant SA 2026 — $15,000 Plus Stamp Duty Relief | Calcy",
+    metaTitle: "First Home Owner Grant SA 2026 — $15k + Stamp Duty Relief",
     metaDescription:
       "South Australian First Home Owner Grant 2026: $15,000 on new builds plus stamp duty abolition for eligible first home buyers. Eligibility and examples.",
     h1: "First Home Owner Grant South Australia 2026",
@@ -325,7 +325,7 @@ export const FHB_GRANT_CONTENT: Record<string, FhbGrantContent> = {
     code: "TAS",
     slug: "tas",
     name: "Tasmania",
-    metaTitle: "First Home Owner Grant TAS 2026 — $10,000 + 50% Stamp Duty Discount | Calcy",
+    metaTitle: "First Home Owner Grant TAS 2026 — $10k + 50% Duty Discount",
     metaDescription:
       "Tasmanian First Home Owner Grant 2026: $10,000 on new builds and 50% stamp duty discount for established homes up to $750,000. Eligibility and worked examples.",
     h1: "First Home Owner Grant Tasmania 2026",
@@ -384,7 +384,7 @@ export const FHB_GRANT_CONTENT: Record<string, FhbGrantContent> = {
     code: "ACT",
     slug: "act",
     name: "Australian Capital Territory",
-    metaTitle: "First Home Owner Grant ACT 2026 — Home Buyer Concession Scheme | Calcy",
+    metaTitle: "First Home Owner Grant ACT 2026 — Buyer Concession Scheme",
     metaDescription:
       "ACT First Home Owner Grant 2026: replaced by the Home Buyer Concession Scheme with full stamp duty exemption based on income. Eligibility and examples.",
     h1: "First Home Buyer Grant ACT 2026 — Home Buyer Concession Scheme",
@@ -443,7 +443,7 @@ export const FHB_GRANT_CONTENT: Record<string, FhbGrantContent> = {
     code: "NT",
     slug: "nt",
     name: "Northern Territory",
-    metaTitle: "First Home Owner Grant NT 2026 — $50,000 BuildBonus + Stamp Duty Relief | Calcy",
+    metaTitle: "First Home Owner Grant NT 2026 — $50k BuildBonus + Relief",
     metaDescription:
       "Northern Territory First Home Owner Grant 2026: HomeGrown Territory $50,000 BuildBonus plus stamp duty discounts. Eligibility and worked examples.",
     h1: "First Home Owner Grant Northern Territory 2026",
