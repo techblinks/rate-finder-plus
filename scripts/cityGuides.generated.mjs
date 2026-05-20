@@ -667,7 +667,7 @@ function mortgageGuide(country, c) {
   return {
     slug,
     title: `${c.name} mortgage guide 2026: repayments, deposits & ${c.state} rules`,
-    metaTitle: `${c.name} Mortgage Calculator & Guide 2026 (${c.state}) | Calcy`,
+    metaTitle: `${c.name} Mortgage Calculator 2026 (${c.state})`,
     metaDescription: tuneDesc(
       `2026 ${c.name} mortgage guide: repayments on the ${fmt(c.median)} median, ${c.state} stamp duty, LMI and grants. Free ${c.name} mortgage calculator.`,
       [
@@ -747,7 +747,7 @@ function lmiGuide(country, c) {
   return {
     slug,
     title: `LMI in ${c.name} 2026: how much it costs & how to avoid it`,
-    metaTitle: `${c.name} LMI Calculator 2026 \u2014 Lender's Mortgage Insurance | Calcy`,
+    metaTitle: `${c.name} LMI Calculator 2026 (${c.state})`,
     metaDescription: tuneDesc(
       `Estimate Lender's Mortgage Insurance for a ${c.name} home loan in 2026. See LMI on the ${fmt(c.median)} ${c.state} median at 5%, 10% and 15% deposits.`,
       [
@@ -834,7 +834,7 @@ function stampDutyGuide(country, c) {
   return {
     slug,
     title: `${c.name} stamp duty 2026: ${c.state} rules, FHB exemptions & worked examples`,
-    metaTitle: `${c.name} Stamp Duty Calculator 2026 (${c.state}) | Calcy`,
+    metaTitle: `${c.name} Stamp Duty Calculator 2026 (${c.state})`,
     metaDescription: tuneDesc(
       `Calculate ${c.name} stamp duty in 2026. ${c.state} rates, FHB exemptions up to ${fmt(fhbCap)}, worked examples on the ${fmt(c.median)} ${c.name} median.`,
       [
