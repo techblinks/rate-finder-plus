@@ -2961,6 +2961,13 @@ const SeoPanel = () => {
                           >
                             Reset to pending
                           </button>
+                          <button
+                            onClick={() => setPreviewDraftId(previewDraftId === d.id ? null : d.id)}
+                            className="rounded border border-accent/40 bg-accent/10 px-2 py-1 text-[11px] font-semibold text-accent"
+                            title="Preview SERP, FAQ, mobile snippet and AI Overview before applying. Nothing is published."
+                          >
+                            {previewDraftId === d.id ? "Hide preview" : "Preview in sandbox"}
+                          </button>
                           {APPLY_SUPPORTED.has(d.draft_type) ? (
                             d.approval_status === "applied" ? (
                               <button
@@ -2987,6 +2994,8 @@ const SeoPanel = () => {
                             </span>
                           )}
                         </div>
+
+                        {previewDraftId === d.id && <DraftSandboxPreview draft={d as any} />}
 
                         {(d.applied_at || d.applied_by) && (
                           <div className="mt-2 rounded border border-emerald-200 bg-emerald-50 p-2 text-[11px] text-emerald-900">
