@@ -946,6 +946,152 @@ export type Database = {
         }
         Relationships: []
       }
+      seo_draft_impact: {
+        Row: {
+          after_30d_clicks: number | null
+          after_30d_ctr: number | null
+          after_30d_end: string | null
+          after_30d_impressions: number | null
+          after_30d_position: number | null
+          after_30d_start: string | null
+          after_7d_clicks: number | null
+          after_7d_ctr: number | null
+          after_7d_end: string | null
+          after_7d_impressions: number | null
+          after_7d_position: number | null
+          after_7d_start: string | null
+          applied_at: string
+          baseline_clicks: number
+          baseline_ctr: number
+          baseline_end: string | null
+          baseline_impressions: number
+          baseline_position: number | null
+          baseline_start: string | null
+          clicks_delta_30d: number | null
+          clicks_delta_7d: number | null
+          confidence: string | null
+          created_at: string
+          ctr_delta_30d: number | null
+          ctr_delta_7d: number | null
+          draft_id: string
+          draft_type: string | null
+          estimated_revenue_impact: number | null
+          estimated_traffic_impact: number | null
+          id: string
+          impact_status: string
+          impressions_delta_30d: number | null
+          impressions_delta_7d: number | null
+          last_computed_at: string
+          notes: string | null
+          position_delta_30d: number | null
+          position_delta_7d: number | null
+          rpm_estimate: number | null
+          signals: Json
+          target_keyword: string | null
+          target_url: string
+          task_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          after_30d_clicks?: number | null
+          after_30d_ctr?: number | null
+          after_30d_end?: string | null
+          after_30d_impressions?: number | null
+          after_30d_position?: number | null
+          after_30d_start?: string | null
+          after_7d_clicks?: number | null
+          after_7d_ctr?: number | null
+          after_7d_end?: string | null
+          after_7d_impressions?: number | null
+          after_7d_position?: number | null
+          after_7d_start?: string | null
+          applied_at: string
+          baseline_clicks?: number
+          baseline_ctr?: number
+          baseline_end?: string | null
+          baseline_impressions?: number
+          baseline_position?: number | null
+          baseline_start?: string | null
+          clicks_delta_30d?: number | null
+          clicks_delta_7d?: number | null
+          confidence?: string | null
+          created_at?: string
+          ctr_delta_30d?: number | null
+          ctr_delta_7d?: number | null
+          draft_id: string
+          draft_type?: string | null
+          estimated_revenue_impact?: number | null
+          estimated_traffic_impact?: number | null
+          id?: string
+          impact_status?: string
+          impressions_delta_30d?: number | null
+          impressions_delta_7d?: number | null
+          last_computed_at?: string
+          notes?: string | null
+          position_delta_30d?: number | null
+          position_delta_7d?: number | null
+          rpm_estimate?: number | null
+          signals?: Json
+          target_keyword?: string | null
+          target_url: string
+          task_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          after_30d_clicks?: number | null
+          after_30d_ctr?: number | null
+          after_30d_end?: string | null
+          after_30d_impressions?: number | null
+          after_30d_position?: number | null
+          after_30d_start?: string | null
+          after_7d_clicks?: number | null
+          after_7d_ctr?: number | null
+          after_7d_end?: string | null
+          after_7d_impressions?: number | null
+          after_7d_position?: number | null
+          after_7d_start?: string | null
+          applied_at?: string
+          baseline_clicks?: number
+          baseline_ctr?: number
+          baseline_end?: string | null
+          baseline_impressions?: number
+          baseline_position?: number | null
+          baseline_start?: string | null
+          clicks_delta_30d?: number | null
+          clicks_delta_7d?: number | null
+          confidence?: string | null
+          created_at?: string
+          ctr_delta_30d?: number | null
+          ctr_delta_7d?: number | null
+          draft_id?: string
+          draft_type?: string | null
+          estimated_revenue_impact?: number | null
+          estimated_traffic_impact?: number | null
+          id?: string
+          impact_status?: string
+          impressions_delta_30d?: number | null
+          impressions_delta_7d?: number | null
+          last_computed_at?: string
+          notes?: string | null
+          position_delta_30d?: number | null
+          position_delta_7d?: number | null
+          rpm_estimate?: number | null
+          signals?: Json
+          target_keyword?: string | null
+          target_url?: string
+          task_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seo_draft_impact_draft_id_fkey"
+            columns: ["draft_id"]
+            isOneToOne: true
+            referencedRelation: "weekly_seo_task_drafts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       seo_keywords: {
         Row: {
           adsense_cpc_estimate: number | null
