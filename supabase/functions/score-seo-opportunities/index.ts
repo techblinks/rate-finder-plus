@@ -418,6 +418,23 @@ Deno.serve(async (req) => {
           (sig as any).matched_pattern_ids = [];
           (sig as any).pattern_reason = INSUFFICIENT_LEARNING_DATA;
           (sig as any).risk_pattern_warning = null;
+          (sig as any).reasoning = buildReasoning({
+            kind: "opportunity",
+            keyword: opp.keyword,
+            target_url: opp.target_url,
+            intent: String(sig.intent || ""),
+            confidence: String(sig.confidence || ""),
+            score: opp.score,
+            priority: opp.priority,
+            impressions_28d: Number(sig.impressions_28d || 0),
+            clicks_28d: Number(sig.clicks_28d || 0),
+            ctr_28d: Number(sig.ctr_28d || 0),
+            expected_ctr: Number(sig.expected_ctr || 0),
+            position: sig.position == null ? null : Number(sig.position),
+            previous_position: sig.previous_position == null ? null : Number(sig.previous_position),
+            learning_data_ready: false,
+            signals: Array.isArray(sig.signals) ? (sig.signals as string[]) : [],
+          });
           return opp;
         }
         const match = matchPatterns(patterns, {
