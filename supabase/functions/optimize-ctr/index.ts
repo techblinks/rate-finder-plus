@@ -321,11 +321,14 @@ Deno.serve(async (req) => {
     }
 
     const summary = {
-      keywords_checked: keywordRows.length,
+      keywords_checked: allRows.length,
+      noisy_keywords_filtered: filterLog.length,
+      keywords_evaluated: keywordRows.length,
       pages_checked: pageMap.size,
       pages_flagged: finalSuggestions.length,
       estimated_missed_clicks: finalSuggestions.reduce((sum, item) => sum + item.estimated_missed_clicks, 0),
       high_priority: finalSuggestions.filter((item) => item.ctr_opportunity_score >= 70).length,
+      ignored_sample: filterLog.slice(0, 25),
     };
 
     await supabase.from("seo_reports").insert({
