@@ -14,6 +14,132 @@ export type Database = {
   }
   public: {
     Tables: {
+      aeo_optimizations: {
+        Row: {
+          aeo_score: number
+          ai_overview_summaries: Json
+          answer_confidence_score: number
+          conversational_search_queries: Json
+          direct_answer_blocks: Json
+          faq_improvements: Json
+          featured_snippet_paragraphs: Json
+          generated_at: string | null
+          id: string
+          missing_semantic_elements: Json
+          page_title: string
+          page_url: string
+          primary_topic: string
+          priority_level: string
+          recommended_improvements: Json
+          semantic_heading_improvements: Json
+          signals: Json
+          snippet_readiness_score: number
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          aeo_score: number
+          ai_overview_summaries?: Json
+          answer_confidence_score: number
+          conversational_search_queries?: Json
+          direct_answer_blocks?: Json
+          faq_improvements?: Json
+          featured_snippet_paragraphs?: Json
+          generated_at?: string | null
+          id?: string
+          missing_semantic_elements?: Json
+          page_title: string
+          page_url: string
+          primary_topic: string
+          priority_level: string
+          recommended_improvements?: Json
+          semantic_heading_improvements?: Json
+          signals?: Json
+          snippet_readiness_score: number
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          aeo_score?: number
+          ai_overview_summaries?: Json
+          answer_confidence_score?: number
+          conversational_search_queries?: Json
+          direct_answer_blocks?: Json
+          faq_improvements?: Json
+          featured_snippet_paragraphs?: Json
+          generated_at?: string | null
+          id?: string
+          missing_semantic_elements?: Json
+          page_title?: string
+          page_url?: string
+          primary_topic?: string
+          priority_level?: string
+          recommended_improvements?: Json
+          semantic_heading_improvements?: Json
+          signals?: Json
+          snippet_readiness_score?: number
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      auto_refresh_recommendations: {
+        Row: {
+          freshness_score: number
+          freshness_signals: Json
+          generated_at: string | null
+          id: string
+          last_updated_date: string | null
+          last_updated_management: Json
+          outdated_sections: Json
+          page_title: string
+          page_type: string
+          page_url: string
+          priority_level: string
+          recommended_updates: Json
+          stale_content_alerts: Json
+          status: string
+          suggested_updates: Json
+          updated_at: string | null
+        }
+        Insert: {
+          freshness_score: number
+          freshness_signals?: Json
+          generated_at?: string | null
+          id?: string
+          last_updated_date?: string | null
+          last_updated_management?: Json
+          outdated_sections?: Json
+          page_title: string
+          page_type: string
+          page_url: string
+          priority_level: string
+          recommended_updates?: Json
+          stale_content_alerts?: Json
+          status?: string
+          suggested_updates?: Json
+          updated_at?: string | null
+        }
+        Update: {
+          freshness_score?: number
+          freshness_signals?: Json
+          generated_at?: string | null
+          id?: string
+          last_updated_date?: string | null
+          last_updated_management?: Json
+          outdated_sections?: Json
+          page_title?: string
+          page_type?: string
+          page_url?: string
+          priority_level?: string
+          recommended_updates?: Json
+          stale_content_alerts?: Json
+          status?: string
+          suggested_updates?: Json
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       calculation_leads: {
         Row: {
           calculator_type: string
@@ -92,6 +218,66 @@ export type Database = {
         }
         Relationships: []
       }
+      competitor_tracking_insights: {
+        Row: {
+          competitor_domain: string
+          competitor_growth_alerts: Json
+          competitor_url: string | null
+          content_gap_opportunities: Json
+          content_trend_alerts: Json
+          detected_topic: string
+          estimated_opportunity: string
+          generated_at: string | null
+          id: string
+          insight_type: string
+          new_topic_alerts: Json
+          priority_score: number
+          ranking_opportunity_alerts: Json
+          recommended_response: string
+          signals: Json
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          competitor_domain: string
+          competitor_growth_alerts?: Json
+          competitor_url?: string | null
+          content_gap_opportunities?: Json
+          content_trend_alerts?: Json
+          detected_topic: string
+          estimated_opportunity: string
+          generated_at?: string | null
+          id?: string
+          insight_type: string
+          new_topic_alerts?: Json
+          priority_score: number
+          ranking_opportunity_alerts?: Json
+          recommended_response: string
+          signals?: Json
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          competitor_domain?: string
+          competitor_growth_alerts?: Json
+          competitor_url?: string | null
+          content_gap_opportunities?: Json
+          content_trend_alerts?: Json
+          detected_topic?: string
+          estimated_opportunity?: string
+          generated_at?: string | null
+          id?: string
+          insight_type?: string
+          new_topic_alerts?: Json
+          priority_score?: number
+          ranking_opportunity_alerts?: Json
+          recommended_response?: string
+          signals?: Json
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       content_drafts: {
         Row: {
           brief: Json | null
@@ -164,6 +350,210 @@ export type Database = {
         }
         Relationships: []
       }
+      content_gap_opportunities: {
+        Row: {
+          affected_url: string
+          estimated_traffic_opportunity: number
+          gap_type: string
+          generated_at: string | null
+          id: string
+          is_quick_win: boolean
+          keyword_topic: string | null
+          priority_score: number
+          signals: Json
+          status: string
+          suggested_content_type: string
+          suggested_fix: string
+          suggested_related_pages: Json
+          updated_at: string | null
+        }
+        Insert: {
+          affected_url: string
+          estimated_traffic_opportunity?: number
+          gap_type: string
+          generated_at?: string | null
+          id?: string
+          is_quick_win?: boolean
+          keyword_topic?: string | null
+          priority_score: number
+          signals?: Json
+          status?: string
+          suggested_content_type?: string
+          suggested_fix: string
+          suggested_related_pages?: Json
+          updated_at?: string | null
+        }
+        Update: {
+          affected_url?: string
+          estimated_traffic_opportunity?: number
+          gap_type?: string
+          generated_at?: string | null
+          id?: string
+          is_quick_win?: boolean
+          keyword_topic?: string | null
+          priority_score?: number
+          signals?: Json
+          status?: string
+          suggested_content_type?: string
+          suggested_fix?: string
+          suggested_related_pages?: Json
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      content_optimizations: {
+        Row: {
+          ai_overview_sections: Json
+          calculator_explanation_improvements: Json
+          comparison_tables: Json
+          direct_answers: Json
+          estimated_impact: string
+          faq_additions: Json
+          finance_examples: Json
+          generated_at: string | null
+          id: string
+          improved_headings: Json
+          internal_linking_suggestions: Json
+          optimization_score: number
+          page_title: string
+          page_url: string
+          primary_topic: string
+          priority_level: string
+          recommended_improvements: Json
+          semantic_keywords: Json
+          signals: Json
+          snippet_sections: Json
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          ai_overview_sections?: Json
+          calculator_explanation_improvements?: Json
+          comparison_tables?: Json
+          direct_answers?: Json
+          estimated_impact: string
+          faq_additions?: Json
+          finance_examples?: Json
+          generated_at?: string | null
+          id?: string
+          improved_headings?: Json
+          internal_linking_suggestions?: Json
+          optimization_score: number
+          page_title: string
+          page_url: string
+          primary_topic: string
+          priority_level: string
+          recommended_improvements?: Json
+          semantic_keywords?: Json
+          signals?: Json
+          snippet_sections?: Json
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          ai_overview_sections?: Json
+          calculator_explanation_improvements?: Json
+          comparison_tables?: Json
+          direct_answers?: Json
+          estimated_impact?: string
+          faq_additions?: Json
+          finance_examples?: Json
+          generated_at?: string | null
+          id?: string
+          improved_headings?: Json
+          internal_linking_suggestions?: Json
+          optimization_score?: number
+          page_title?: string
+          page_url?: string
+          primary_topic?: string
+          priority_level?: string
+          recommended_improvements?: Json
+          semantic_keywords?: Json
+          signals?: Json
+          snippet_sections?: Json
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      ctr_optimizations: {
+        Row: {
+          clicks_28d: number
+          ctr_28d: number
+          ctr_opportunity_score: number
+          estimated_missed_clicks: number
+          generated_at: string | null
+          id: string
+          impressions_28d: number
+          page_url: string
+          position: number | null
+          primary_keyword: string
+          priority_score: number
+          reason: string
+          signals: Json
+          status: string
+          suggested_emotional_trigger: string
+          suggested_faq_snippet: string
+          suggested_featured_snippet_answer: string
+          suggested_intro: string
+          suggested_meta_description: string
+          suggested_search_intent_match: string
+          suggested_semantic_improvements: string
+          suggested_title: string
+          updated_at: string | null
+        }
+        Insert: {
+          clicks_28d?: number
+          ctr_28d?: number
+          ctr_opportunity_score?: number
+          estimated_missed_clicks?: number
+          generated_at?: string | null
+          id?: string
+          impressions_28d?: number
+          page_url: string
+          position?: number | null
+          primary_keyword: string
+          priority_score: number
+          reason: string
+          signals?: Json
+          status?: string
+          suggested_emotional_trigger?: string
+          suggested_faq_snippet: string
+          suggested_featured_snippet_answer: string
+          suggested_intro: string
+          suggested_meta_description: string
+          suggested_search_intent_match?: string
+          suggested_semantic_improvements?: string
+          suggested_title: string
+          updated_at?: string | null
+        }
+        Update: {
+          clicks_28d?: number
+          ctr_28d?: number
+          ctr_opportunity_score?: number
+          estimated_missed_clicks?: number
+          generated_at?: string | null
+          id?: string
+          impressions_28d?: number
+          page_url?: string
+          position?: number | null
+          primary_keyword?: string
+          priority_score?: number
+          reason?: string
+          signals?: Json
+          status?: string
+          suggested_emotional_trigger?: string
+          suggested_faq_snippet?: string
+          suggested_featured_snippet_answer?: string
+          suggested_intro?: string
+          suggested_meta_description?: string
+          suggested_search_intent_match?: string
+          suggested_semantic_improvements?: string
+          suggested_title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       gsc_oauth_tokens: {
         Row: {
           access_token: string | null
@@ -199,6 +589,90 @@ export type Database = {
           scope?: string | null
           site_url?: string
           token_type?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      internal_link_opportunities: {
+        Row: {
+          generated_at: string | null
+          id: string
+          priority: string
+          reason: string
+          relationship_type: string
+          signals: Json
+          source_page: string
+          status: string
+          suggested_anchor_text: string
+          target_page: string
+          updated_at: string | null
+        }
+        Insert: {
+          generated_at?: string | null
+          id?: string
+          priority: string
+          reason: string
+          relationship_type?: string
+          signals?: Json
+          source_page: string
+          status?: string
+          suggested_anchor_text: string
+          target_page: string
+          updated_at?: string | null
+        }
+        Update: {
+          generated_at?: string | null
+          id?: string
+          priority?: string
+          reason?: string
+          relationship_type?: string
+          signals?: Json
+          source_page?: string
+          status?: string
+          suggested_anchor_text?: string
+          target_page?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      money_page_scores: {
+        Row: {
+          generated_at: string | null
+          id: string
+          money_score: number
+          page_title: string
+          page_url: string
+          reason: string
+          recommended_action: string
+          related_internal_links_needed: Json
+          signals: Json
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          generated_at?: string | null
+          id?: string
+          money_score: number
+          page_title: string
+          page_url: string
+          reason: string
+          recommended_action: string
+          related_internal_links_needed?: Json
+          signals?: Json
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          generated_at?: string | null
+          id?: string
+          money_score?: number
+          page_title?: string
+          page_url?: string
+          reason?: string
+          recommended_action?: string
+          related_internal_links_needed?: Json
+          signals?: Json
+          status?: string
           updated_at?: string | null
         }
         Relationships: []
@@ -406,6 +880,72 @@ export type Database = {
         }
         Relationships: []
       }
+      semantic_finance_knowledge_graphs: {
+        Row: {
+          authority_connections: Json
+          authority_score: number
+          entity_count: number
+          entity_edges: Json
+          entity_nodes: Json
+          entity_relationships: Json
+          generated_at: string | null
+          graph_key: string
+          graph_name: string
+          id: string
+          missing_entity_coverage: Json
+          related_content_recommendations: Json
+          relationship_count: number
+          semantic_relationships: Json
+          signals: Json
+          status: string
+          suggested_internal_links: Json
+          topic_relationships: Json
+          updated_at: string | null
+        }
+        Insert: {
+          authority_connections?: Json
+          authority_score: number
+          entity_count?: number
+          entity_edges?: Json
+          entity_nodes?: Json
+          entity_relationships?: Json
+          generated_at?: string | null
+          graph_key: string
+          graph_name: string
+          id?: string
+          missing_entity_coverage?: Json
+          related_content_recommendations?: Json
+          relationship_count?: number
+          semantic_relationships?: Json
+          signals?: Json
+          status?: string
+          suggested_internal_links?: Json
+          topic_relationships?: Json
+          updated_at?: string | null
+        }
+        Update: {
+          authority_connections?: Json
+          authority_score?: number
+          entity_count?: number
+          entity_edges?: Json
+          entity_nodes?: Json
+          entity_relationships?: Json
+          generated_at?: string | null
+          graph_key?: string
+          graph_name?: string
+          id?: string
+          missing_entity_coverage?: Json
+          related_content_recommendations?: Json
+          relationship_count?: number
+          semantic_relationships?: Json
+          signals?: Json
+          status?: string
+          suggested_internal_links?: Json
+          topic_relationships?: Json
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       seo_keywords: {
         Row: {
           adsense_cpc_estimate: number | null
@@ -492,6 +1032,59 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      seo_opportunities: {
+        Row: {
+          generated_at: string | null
+          id: string
+          keyword: string
+          priority: string
+          reason: string
+          recommended_action: string
+          score: number
+          signals: Json
+          source_keyword_id: string | null
+          status: string
+          target_url: string
+          updated_at: string | null
+        }
+        Insert: {
+          generated_at?: string | null
+          id?: string
+          keyword: string
+          priority: string
+          reason: string
+          recommended_action: string
+          score: number
+          signals?: Json
+          source_keyword_id?: string | null
+          status?: string
+          target_url: string
+          updated_at?: string | null
+        }
+        Update: {
+          generated_at?: string | null
+          id?: string
+          keyword?: string
+          priority?: string
+          reason?: string
+          recommended_action?: string
+          score?: number
+          signals?: Json
+          source_keyword_id?: string | null
+          status?: string
+          target_url?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seo_opportunities_source_keyword_id_fkey"
+            columns: ["source_keyword_id"]
+            isOneToOne: false
+            referencedRelation: "seo_keywords"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       seo_reports: {
         Row: {
@@ -715,6 +1308,72 @@ export type Database = {
         }
         Relationships: []
       }
+      topic_cluster_visualizations: {
+        Row: {
+          alerts: Json
+          authority_strength: number
+          cluster_key: string
+          cluster_name: string
+          edge_count: number
+          generated_at: string | null
+          graph_edges: Json
+          graph_nodes: Json
+          health_score: number
+          id: string
+          missing_supporting_content: Json
+          node_count: number
+          orphan_pages: Json
+          semantic_hierarchy: Json
+          signals: Json
+          status: string
+          topical_gaps: Json
+          updated_at: string | null
+          weak_internal_links: Json
+        }
+        Insert: {
+          alerts?: Json
+          authority_strength: number
+          cluster_key: string
+          cluster_name: string
+          edge_count?: number
+          generated_at?: string | null
+          graph_edges?: Json
+          graph_nodes?: Json
+          health_score: number
+          id?: string
+          missing_supporting_content?: Json
+          node_count?: number
+          orphan_pages?: Json
+          semantic_hierarchy?: Json
+          signals?: Json
+          status?: string
+          topical_gaps?: Json
+          updated_at?: string | null
+          weak_internal_links?: Json
+        }
+        Update: {
+          alerts?: Json
+          authority_strength?: number
+          cluster_key?: string
+          cluster_name?: string
+          edge_count?: number
+          generated_at?: string | null
+          graph_edges?: Json
+          graph_nodes?: Json
+          health_score?: number
+          id?: string
+          missing_supporting_content?: Json
+          node_count?: number
+          orphan_pages?: Json
+          semantic_hierarchy?: Json
+          signals?: Json
+          status?: string
+          topical_gaps?: Json
+          updated_at?: string | null
+          weak_internal_links?: Json
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -733,6 +1392,108 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      weekly_seo_briefings: {
+        Row: {
+          approval_status: string
+          data_sources: Json
+          executive_summary: string
+          generated_at: string | null
+          growth_opportunities: Json
+          id: string
+          money_page_priorities: Json
+          seo_trend_overview: Json
+          top_tasks: Json
+          updated_at: string | null
+          warnings_issues: Json
+          week_start: string
+        }
+        Insert: {
+          approval_status?: string
+          data_sources?: Json
+          executive_summary: string
+          generated_at?: string | null
+          growth_opportunities?: Json
+          id?: string
+          money_page_priorities?: Json
+          seo_trend_overview?: Json
+          top_tasks?: Json
+          updated_at?: string | null
+          warnings_issues?: Json
+          week_start: string
+        }
+        Update: {
+          approval_status?: string
+          data_sources?: Json
+          executive_summary?: string
+          generated_at?: string | null
+          growth_opportunities?: Json
+          id?: string
+          money_page_priorities?: Json
+          seo_trend_overview?: Json
+          top_tasks?: Json
+          updated_at?: string | null
+          warnings_issues?: Json
+          week_start?: string
+        }
+        Relationships: []
+      }
+      weekly_seo_tasks: {
+        Row: {
+          affected_url: string
+          approval_status: string
+          expected_impact: string
+          expected_revenue_impact: string | null
+          expected_traffic_impact: string | null
+          generated_at: string | null
+          id: string
+          priority_level: string | null
+          priority_score: number
+          risk_level: string
+          source_refs: Json
+          suggested_implementation_prompt: string
+          task_title: string
+          task_type: string
+          updated_at: string | null
+          week_start: string
+        }
+        Insert: {
+          affected_url: string
+          approval_status?: string
+          expected_impact: string
+          expected_revenue_impact?: string | null
+          expected_traffic_impact?: string | null
+          generated_at?: string | null
+          id?: string
+          priority_level?: string | null
+          priority_score: number
+          risk_level: string
+          source_refs?: Json
+          suggested_implementation_prompt: string
+          task_title: string
+          task_type: string
+          updated_at?: string | null
+          week_start: string
+        }
+        Update: {
+          affected_url?: string
+          approval_status?: string
+          expected_impact?: string
+          expected_revenue_impact?: string | null
+          expected_traffic_impact?: string | null
+          generated_at?: string | null
+          id?: string
+          priority_level?: string | null
+          priority_score?: number
+          risk_level?: string
+          source_refs?: Json
+          suggested_implementation_prompt?: string
+          task_title?: string
+          task_type?: string
+          updated_at?: string | null
+          week_start?: string
         }
         Relationships: []
       }
