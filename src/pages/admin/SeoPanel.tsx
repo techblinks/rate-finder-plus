@@ -3,11 +3,51 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { Copy, Check, AlertTriangle } from "lucide-react";
 import { DraftSandboxPreview } from "@/components/admin/DraftSandboxPreview";
+import { DraftImpactInline, ImpactList, StatTile } from "@/components/admin/DraftImpactTracking";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const GSC_SITE_URL = "sc-domain:calcy.com.au";
 
-type SubTab = "overview" | "keywords" | "opportunities" | "money-pages" | "internal-links" | "content-gaps" | "content-optimizer" | "aeo" | "topic-clusters" | "knowledge-graph" | "auto-refresh" | "competitors" | "ctr" | "weekly-plan" | "reports";
+type SubTab = "overview" | "keywords" | "opportunities" | "money-pages" | "internal-links" | "content-gaps" | "content-optimizer" | "aeo" | "topic-clusters" | "knowledge-graph" | "auto-refresh" | "competitors" | "ctr" | "weekly-plan" | "impact" | "reports";
+
+type DraftImpact = {
+  id: string;
+  draft_id: string;
+  task_id: string | null;
+  target_url: string;
+  target_keyword: string | null;
+  draft_type: string | null;
+  applied_at: string;
+  baseline_start: string | null;
+  baseline_end: string | null;
+  baseline_clicks: number;
+  baseline_impressions: number;
+  baseline_ctr: number;
+  baseline_position: number | null;
+  after_7d_clicks: number | null;
+  after_7d_impressions: number | null;
+  after_7d_ctr: number | null;
+  after_7d_position: number | null;
+  after_30d_clicks: number | null;
+  after_30d_impressions: number | null;
+  after_30d_ctr: number | null;
+  after_30d_position: number | null;
+  clicks_delta_7d: number | null;
+  impressions_delta_7d: number | null;
+  ctr_delta_7d: number | null;
+  position_delta_7d: number | null;
+  clicks_delta_30d: number | null;
+  impressions_delta_30d: number | null;
+  ctr_delta_30d: number | null;
+  position_delta_30d: number | null;
+  estimated_traffic_impact: number | null;
+  estimated_revenue_impact: number | null;
+  rpm_estimate: number | null;
+  impact_status: "improving" | "neutral" | "declining" | "insufficient_data" | "awaiting_data" | string;
+  confidence: string | null;
+  signals: any;
+  last_computed_at: string;
+};
 
 type Keyword = {
   id: string;
@@ -447,6 +487,8 @@ const SeoPanel = () => {
   const [ctrOptimizations, setCtrOptimizations] = useState<CtrOptimization[]>([]);
   const [weeklySeoTasks, setWeeklySeoTasks] = useState<WeeklySeoTask[]>([]);
   const [weeklySeoTaskDrafts, setWeeklySeoTaskDrafts] = useState<WeeklySeoTaskDraft[]>([]);
+  const [draftImpacts, setDraftImpacts] = useState<DraftImpact[]>([]);
+  const [trackingImpact, setTrackingImpact] = useState(false);
   const [generatingDraftFor, setGeneratingDraftFor] = useState<string | null>(null);
   const [taskActionFor, setTaskActionFor] = useState<string | null>(null);
   const [weeklySeoBriefing, setWeeklySeoBriefing] = useState<WeeklySeoBriefing | null>(null);
@@ -516,7 +558,7 @@ const SeoPanel = () => {
   }, []);
 
   const loadAll = async () => {
-    const [tokens, kw, opp, money, links, gaps, contentOpt, aeo, clusters, knowledge, refresh, competitors, ctr, plan, briefing, rep, sj, taskDrafts] = await Promise.all([
+    const [tokens, kw, opp, money, links, gaps, contentOpt, aeo, clusters, knowledge, refresh, competitors, ctr, plan, briefing, rep, sj, taskDrafts, impacts] = await Promise.all([
       supabase.from("gsc_oauth_tokens").select("id, is_active"),
       supabase.from("seo_keywords").select("*").eq("is_active", true).order("opportunity_score", { ascending: false }),
       supabase.from("seo_opportunities").select("*").eq("status", "open").order("score", { ascending: false }).limit(100),
@@ -533,8 +575,9 @@ const SeoPanel = () => {
       supabase.from("weekly_seo_tasks").select("*").order("week_start", { ascending: false }).order("priority_score", { ascending: false }).limit(10),
       supabase.from("weekly_seo_briefings").select("*").order("week_start", { ascending: false }).limit(1),
       supabase.from("seo_reports").select("*").order("generated_at", { ascending: false }).limit(20),
-      supabase.from("sync_jobs").select("*").in("job_type", ["gsc_data", "trends", "seo_opportunity_scoring", "money_page_scoring", "internal_link_opportunities", "content_gap_analysis", "content_optimization", "aeo_optimization", "topic_cluster_visualization", "semantic_finance_knowledge_graph", "auto_refresh_engine", "competitor_tracking", "ctr_optimization", "weekly_seo_plan", "weekly_seo_briefing", "weekly_seo_task_drafts", "weekly_seo_task_review", "weekly_seo_task_draft_review", "weekly_seo_task_draft_apply", "weekly_seo_task_draft_rollback"]).order("started_at", { ascending: false }).limit(20),
+      supabase.from("sync_jobs").select("*").in("job_type", ["gsc_data", "trends", "seo_opportunity_scoring", "money_page_scoring", "internal_link_opportunities", "content_gap_analysis", "content_optimization", "aeo_optimization", "topic_cluster_visualization", "semantic_finance_knowledge_graph", "auto_refresh_engine", "competitor_tracking", "ctr_optimization", "weekly_seo_plan", "weekly_seo_briefing", "weekly_seo_task_drafts", "weekly_seo_task_review", "weekly_seo_task_draft_review", "weekly_seo_task_draft_apply", "weekly_seo_task_draft_rollback", "seo_draft_impact"]).order("started_at", { ascending: false }).limit(20),
       (supabase as any).from("weekly_seo_task_drafts").select("*").order("generated_at", { ascending: false }).limit(300),
+      (supabase as any).from("seo_draft_impact").select("*").order("last_computed_at", { ascending: false }).limit(300),
     ]);
     const tokenRows = (tokens.data as { id: string; is_active: boolean | null }[] | null) || [];
     setGscConnected(tokenRows.some((t) => t.is_active));
@@ -556,6 +599,7 @@ const SeoPanel = () => {
     setCtrOptimizations((ctr.data as CtrOptimization[]) || []);
     setWeeklySeoTasks((plan.data as WeeklySeoTask[]) || []);
     setWeeklySeoTaskDrafts(((taskDrafts as any)?.data as WeeklySeoTaskDraft[]) || []);
+    setDraftImpacts(((impacts as any)?.data as DraftImpact[]) || []);
     setWeeklySeoBriefing(((briefing.data as WeeklySeoBriefing[] | null) || [])[0] || null);
     setReports((rep.data as Report[]) || []);
     setLatestReport((rep.data?.find((r: Report) => r.report_type === "weekly_summary") as Report) || null);
@@ -727,12 +771,35 @@ const SeoPanel = () => {
     }
   };
 
+  const runImpactTracker = async (draftId?: string) => {
+    setTrackingImpact(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("track-draft-impact", { body: draftId ? { draftId } : {} });
+      if (error) throw error;
+      if (data?.success === false) throw new Error(data?.error || "track-draft-impact failed");
+      toast({
+        title: "Impact tracker run complete",
+        description: `Processed ${data?.processed ?? 0} applied draft${data?.processed === 1 ? "" : "s"} · winners ${data?.winners ?? 0} · losers ${data?.losers ?? 0}.`,
+      });
+      await loadAll();
+    } catch (err: any) {
+      console.error("[track-draft-impact] failed:", err);
+      toast({ title: "Impact tracker failed", description: err?.message || String(err), variant: "destructive" });
+    } finally {
+      setTrackingImpact(false);
+    }
+  };
 
-
+  const impactByDraft = useMemo(() => {
+    const m = new Map<string, DraftImpact>();
+    for (const i of draftImpacts) m.set(i.draft_id, i);
+    return m;
+  }, [draftImpacts]);
 
   const startGscOAuth = () => {
     window.location.href = `${SUPABASE_URL}/functions/v1/gsc-oauth-callback`;
   };
+
 
   const filteredKeywords = useMemo(() => {
     let list = [...keywords];
@@ -909,7 +976,7 @@ const SeoPanel = () => {
 
       {/* Sub-tab nav */}
       <div className="flex flex-wrap gap-2 border-b border-border">
-        {(["overview", "keywords", "opportunities", "money-pages", "internal-links", "content-gaps", "content-optimizer", "aeo", "topic-clusters", "knowledge-graph", "auto-refresh", "competitors", "ctr", "weekly-plan", "reports"] as SubTab[]).map((t) => (
+        {(["overview", "keywords", "opportunities", "money-pages", "internal-links", "content-gaps", "content-optimizer", "aeo", "topic-clusters", "knowledge-graph", "auto-refresh", "competitors", "ctr", "weekly-plan", "impact", "reports"] as SubTab[]).map((t) => (
           <button
             key={t}
             onClick={() => setSub(t)}
@@ -917,7 +984,7 @@ const SeoPanel = () => {
               sub === t ? "border-accent text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
-            {t === "internal-links" ? "Internal links" : t === "content-gaps" ? "Content gaps" : t === "content-optimizer" ? "Content optimizer" : t === "topic-clusters" ? "Topic clusters" : t === "knowledge-graph" ? "Knowledge graph" : t === "auto-refresh" ? "Auto refresh" : t === "money-pages" ? "Money pages" : t === "aeo" ? "AEO" : t === "ctr" ? "CTR" : t === "weekly-plan" ? "Weekly plan" : t}
+            {t === "internal-links" ? "Internal links" : t === "content-gaps" ? "Content gaps" : t === "content-optimizer" ? "Content optimizer" : t === "topic-clusters" ? "Topic clusters" : t === "knowledge-graph" ? "Knowledge graph" : t === "auto-refresh" ? "Auto refresh" : t === "money-pages" ? "Money pages" : t === "aeo" ? "AEO" : t === "ctr" ? "CTR" : t === "weekly-plan" ? "Weekly plan" : t === "impact" ? "Impact" : t}
           </button>
         ))}
       </div>
@@ -3003,6 +3070,20 @@ const SeoPanel = () => {
                             {d.applied_at && <> at {new Date(d.applied_at).toLocaleString("en-AU")}</>}
                             {d.applied_by && <> by {d.applied_by}</>}
                             {d.rollback_snapshot && <> · rollback snapshot stored</>}
+                            <div className="mt-1 flex items-center gap-2">
+                              <button
+                                onClick={() => runImpactTracker(d.id)}
+                                disabled={trackingImpact}
+                                className="rounded border border-emerald-300 bg-white px-2 py-0.5 text-[10px] font-semibold text-emerald-900 disabled:opacity-50"
+                              >
+                                {trackingImpact ? "Computing..." : "Recompute impact"}
+                              </button>
+                              {(() => {
+                                const imp = impactByDraft.get(d.id);
+                                if (!imp) return <span className="text-[10px] italic text-emerald-800">No impact data yet · run tracker</span>;
+                                return <DraftImpactInline impact={imp} />;
+                              })()}
+                            </div>
                           </div>
                         )}
                       </div>
@@ -3012,6 +3093,85 @@ const SeoPanel = () => {
               })()}
             </article>
           ))}
+        </section>
+      )}
+
+      {/* IMPACT TRACKING */}
+      {sub === "impact" && (
+        <section className="space-y-4">
+          <div className="rounded-2xl border border-border bg-surface p-6">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-semibold text-foreground">SEO impact tracking</h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Measures whether applied SEO drafts improved GSC performance. Baseline: 28 days before apply.
+                  Compared against 7-day and 30-day windows after apply. Nothing is auto-rolled-back.
+                </p>
+              </div>
+              <button
+                onClick={() => runImpactTracker()}
+                disabled={trackingImpact}
+                className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground disabled:opacity-50"
+              >
+                {trackingImpact ? "Running impact tracker..." : "Run impact tracker"}
+              </button>
+            </div>
+            {(() => {
+              const applied = weeklySeoTaskDrafts.filter((d) => d.approval_status === "applied");
+              const winners = draftImpacts.filter((i) => i.impact_status === "improving");
+              const losers = draftImpacts.filter((i) => i.impact_status === "declining");
+              const neutral = draftImpacts.filter((i) => i.impact_status === "neutral");
+              const awaiting = draftImpacts.filter((i) => i.impact_status === "awaiting_data");
+              const insufficient = draftImpacts.filter((i) => i.impact_status === "insufficient_data");
+              return (
+                <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-5">
+                  <StatTile label="Applied drafts" value={applied.length} />
+                  <StatTile label="Winners" value={winners.length} tone="green" />
+                  <StatTile label="Losers" value={losers.length} tone="red" />
+                  <StatTile label="Neutral" value={neutral.length} />
+                  <StatTile label="Awaiting / low data" value={awaiting.length + insufficient.length} />
+                </div>
+              );
+            })()}
+          </div>
+
+          {draftImpacts.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-border bg-surface p-8 text-center text-sm text-muted-foreground">
+              No impact records yet. Apply approved drafts, then run the impact tracker.
+            </div>
+          ) : (
+            <>
+              <ImpactList
+                title="Top winning changes"
+                tone="green"
+                emptyText="No winning changes yet — waiting for post-apply data to settle."
+                impacts={[...draftImpacts]
+                  .filter((i) => i.impact_status === "improving")
+                  .sort((a, b) => (b.clicks_delta_30d ?? b.clicks_delta_7d ?? 0) - (a.clicks_delta_30d ?? a.clicks_delta_7d ?? 0))
+                  .slice(0, 10)}
+                drafts={weeklySeoTaskDrafts}
+              />
+              <ImpactList
+                title="Changes to review or roll back"
+                tone="red"
+                emptyText="No declining changes — nothing flagged for rollback review."
+                impacts={[...draftImpacts]
+                  .filter((i) => i.impact_status === "declining")
+                  .sort((a, b) => (a.clicks_delta_30d ?? a.clicks_delta_7d ?? 0) - (b.clicks_delta_30d ?? b.clicks_delta_7d ?? 0))
+                  .slice(0, 10)}
+                drafts={weeklySeoTaskDrafts}
+              />
+              <ImpactList
+                title="All applied drafts (latest)"
+                tone="neutral"
+                emptyText="No applied drafts."
+                impacts={[...draftImpacts]
+                  .sort((a, b) => new Date(b.last_computed_at).getTime() - new Date(a.last_computed_at).getTime())
+                  .slice(0, 50)}
+                drafts={weeklySeoTaskDrafts}
+              />
+            </>
+          )}
         </section>
       )}
 
