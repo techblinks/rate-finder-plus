@@ -83,138 +83,6 @@ export type Database = {
         }
         Relationships: []
       }
-      topic_cluster_visualizations: {
-        Row: {
-          alerts: Json
-          authority_strength: number
-          cluster_key: string
-          cluster_name: string
-          edge_count: number
-          generated_at: string | null
-          graph_edges: Json
-          graph_nodes: Json
-          health_score: number
-          id: string
-          missing_supporting_content: Json
-          node_count: number
-          orphan_pages: Json
-          semantic_hierarchy: Json
-          signals: Json
-          status: string
-          topical_gaps: Json
-          updated_at: string | null
-          weak_internal_links: Json
-        }
-        Insert: {
-          alerts?: Json
-          authority_strength: number
-          cluster_key: string
-          cluster_name: string
-          edge_count?: number
-          generated_at?: string | null
-          graph_edges?: Json
-          graph_nodes?: Json
-          health_score: number
-          id?: string
-          missing_supporting_content?: Json
-          node_count?: number
-          orphan_pages?: Json
-          semantic_hierarchy?: Json
-          signals?: Json
-          status?: string
-          topical_gaps?: Json
-          updated_at?: string | null
-          weak_internal_links?: Json
-        }
-        Update: {
-          alerts?: Json
-          authority_strength?: number
-          cluster_key?: string
-          cluster_name?: string
-          edge_count?: number
-          generated_at?: string | null
-          graph_edges?: Json
-          graph_nodes?: Json
-          health_score?: number
-          id?: string
-          missing_supporting_content?: Json
-          node_count?: number
-          orphan_pages?: Json
-          semantic_hierarchy?: Json
-          signals?: Json
-          status?: string
-          topical_gaps?: Json
-          updated_at?: string | null
-          weak_internal_links?: Json
-        }
-        Relationships: []
-      }
-      semantic_finance_knowledge_graphs: {
-        Row: {
-          authority_connections: Json
-          authority_score: number
-          entity_count: number
-          entity_edges: Json
-          entity_nodes: Json
-          entity_relationships: Json
-          generated_at: string | null
-          graph_key: string
-          graph_name: string
-          id: string
-          missing_entity_coverage: Json
-          related_content_recommendations: Json
-          relationship_count: number
-          semantic_relationships: Json
-          signals: Json
-          status: string
-          suggested_internal_links: Json
-          topic_relationships: Json
-          updated_at: string | null
-        }
-        Insert: {
-          authority_connections?: Json
-          authority_score: number
-          entity_count?: number
-          entity_edges?: Json
-          entity_nodes?: Json
-          entity_relationships?: Json
-          generated_at?: string | null
-          graph_key: string
-          graph_name: string
-          id?: string
-          missing_entity_coverage?: Json
-          related_content_recommendations?: Json
-          relationship_count?: number
-          semantic_relationships?: Json
-          signals?: Json
-          status?: string
-          suggested_internal_links?: Json
-          topic_relationships?: Json
-          updated_at?: string | null
-        }
-        Update: {
-          authority_connections?: Json
-          authority_score?: number
-          entity_count?: number
-          entity_edges?: Json
-          entity_nodes?: Json
-          entity_relationships?: Json
-          generated_at?: string | null
-          graph_key?: string
-          graph_name?: string
-          id?: string
-          missing_entity_coverage?: Json
-          related_content_recommendations?: Json
-          relationship_count?: number
-          semantic_relationships?: Json
-          signals?: Json
-          status?: string
-          suggested_internal_links?: Json
-          topic_relationships?: Json
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
       auto_refresh_recommendations: {
         Row: {
           freshness_score: number
@@ -410,6 +278,78 @@ export type Database = {
         }
         Relationships: []
       }
+      content_drafts: {
+        Row: {
+          brief: Json | null
+          category: string | null
+          content: string | null
+          created_at: string
+          generated_by: string | null
+          id: string
+          keyword_impressions: number | null
+          keyword_opportunity: number | null
+          keyword_position: number | null
+          meta_description: string | null
+          meta_title: string | null
+          notes: string | null
+          published_at: string | null
+          reviewed_by: string | null
+          seo_score: number | null
+          slug: string | null
+          status: string
+          target_keyword: string | null
+          title: string
+          updated_at: string
+          word_count: number | null
+        }
+        Insert: {
+          brief?: Json | null
+          category?: string | null
+          content?: string | null
+          created_at?: string
+          generated_by?: string | null
+          id?: string
+          keyword_impressions?: number | null
+          keyword_opportunity?: number | null
+          keyword_position?: number | null
+          meta_description?: string | null
+          meta_title?: string | null
+          notes?: string | null
+          published_at?: string | null
+          reviewed_by?: string | null
+          seo_score?: number | null
+          slug?: string | null
+          status?: string
+          target_keyword?: string | null
+          title: string
+          updated_at?: string
+          word_count?: number | null
+        }
+        Update: {
+          brief?: Json | null
+          category?: string | null
+          content?: string | null
+          created_at?: string
+          generated_by?: string | null
+          id?: string
+          keyword_impressions?: number | null
+          keyword_opportunity?: number | null
+          keyword_position?: number | null
+          meta_description?: string | null
+          meta_title?: string | null
+          notes?: string | null
+          published_at?: string | null
+          reviewed_by?: string | null
+          seo_score?: number | null
+          slug?: string | null
+          status?: string
+          target_keyword?: string | null
+          title?: string
+          updated_at?: string
+          word_count?: number | null
+        }
+        Relationships: []
+      }
       content_gap_opportunities: {
         Row: {
           affected_url: string
@@ -539,8 +479,8 @@ export type Database = {
       ctr_optimizations: {
         Row: {
           clicks_28d: number
-          ctr_opportunity_score: number
           ctr_28d: number
+          ctr_opportunity_score: number
           estimated_missed_clicks: number
           generated_at: string | null
           id: string
@@ -564,8 +504,8 @@ export type Database = {
         }
         Insert: {
           clicks_28d?: number
-          ctr_opportunity_score?: number
           ctr_28d?: number
+          ctr_opportunity_score?: number
           estimated_missed_clicks?: number
           generated_at?: string | null
           id?: string
@@ -589,8 +529,8 @@ export type Database = {
         }
         Update: {
           clicks_28d?: number
-          ctr_opportunity_score?: number
           ctr_28d?: number
+          ctr_opportunity_score?: number
           estimated_missed_clicks?: number
           generated_at?: string | null
           id?: string
@@ -611,78 +551,6 @@ export type Database = {
           suggested_semantic_improvements?: string
           suggested_title?: string
           updated_at?: string | null
-        }
-        Relationships: []
-      }
-      content_drafts: {
-        Row: {
-          brief: Json | null
-          category: string | null
-          content: string | null
-          created_at: string
-          generated_by: string | null
-          id: string
-          keyword_impressions: number | null
-          keyword_opportunity: number | null
-          keyword_position: number | null
-          meta_description: string | null
-          meta_title: string | null
-          notes: string | null
-          published_at: string | null
-          reviewed_by: string | null
-          seo_score: number | null
-          slug: string | null
-          status: string
-          target_keyword: string | null
-          title: string
-          updated_at: string
-          word_count: number | null
-        }
-        Insert: {
-          brief?: Json | null
-          category?: string | null
-          content?: string | null
-          created_at?: string
-          generated_by?: string | null
-          id?: string
-          keyword_impressions?: number | null
-          keyword_opportunity?: number | null
-          keyword_position?: number | null
-          meta_description?: string | null
-          meta_title?: string | null
-          notes?: string | null
-          published_at?: string | null
-          reviewed_by?: string | null
-          seo_score?: number | null
-          slug?: string | null
-          status?: string
-          target_keyword?: string | null
-          title: string
-          updated_at?: string
-          word_count?: number | null
-        }
-        Update: {
-          brief?: Json | null
-          category?: string | null
-          content?: string | null
-          created_at?: string
-          generated_by?: string | null
-          id?: string
-          keyword_impressions?: number | null
-          keyword_opportunity?: number | null
-          keyword_position?: number | null
-          meta_description?: string | null
-          meta_title?: string | null
-          notes?: string | null
-          published_at?: string | null
-          reviewed_by?: string | null
-          seo_score?: number | null
-          slug?: string | null
-          status?: string
-          target_keyword?: string | null
-          title?: string
-          updated_at?: string
-          word_count?: number | null
         }
         Relationships: []
       }
@@ -730,8 +598,8 @@ export type Database = {
           generated_at: string | null
           id: string
           priority: string
-          relationship_type: string
           reason: string
+          relationship_type: string
           signals: Json
           source_page: string
           status: string
@@ -743,8 +611,8 @@ export type Database = {
           generated_at?: string | null
           id?: string
           priority: string
-          relationship_type?: string
           reason: string
+          relationship_type?: string
           signals?: Json
           source_page: string
           status?: string
@@ -756,13 +624,55 @@ export type Database = {
           generated_at?: string | null
           id?: string
           priority?: string
-          relationship_type?: string
           reason?: string
+          relationship_type?: string
           signals?: Json
           source_page?: string
           status?: string
           suggested_anchor_text?: string
           target_page?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      money_page_scores: {
+        Row: {
+          generated_at: string | null
+          id: string
+          money_score: number
+          page_title: string
+          page_url: string
+          reason: string
+          recommended_action: string
+          related_internal_links_needed: Json
+          signals: Json
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          generated_at?: string | null
+          id?: string
+          money_score: number
+          page_title: string
+          page_url: string
+          reason: string
+          recommended_action: string
+          related_internal_links_needed?: Json
+          signals?: Json
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          generated_at?: string | null
+          id?: string
+          money_score?: number
+          page_title?: string
+          page_url?: string
+          reason?: string
+          recommended_action?: string
+          related_internal_links_needed?: Json
+          signals?: Json
+          status?: string
           updated_at?: string | null
         }
         Relationships: []
@@ -970,6 +880,72 @@ export type Database = {
         }
         Relationships: []
       }
+      semantic_finance_knowledge_graphs: {
+        Row: {
+          authority_connections: Json
+          authority_score: number
+          entity_count: number
+          entity_edges: Json
+          entity_nodes: Json
+          entity_relationships: Json
+          generated_at: string | null
+          graph_key: string
+          graph_name: string
+          id: string
+          missing_entity_coverage: Json
+          related_content_recommendations: Json
+          relationship_count: number
+          semantic_relationships: Json
+          signals: Json
+          status: string
+          suggested_internal_links: Json
+          topic_relationships: Json
+          updated_at: string | null
+        }
+        Insert: {
+          authority_connections?: Json
+          authority_score: number
+          entity_count?: number
+          entity_edges?: Json
+          entity_nodes?: Json
+          entity_relationships?: Json
+          generated_at?: string | null
+          graph_key: string
+          graph_name: string
+          id?: string
+          missing_entity_coverage?: Json
+          related_content_recommendations?: Json
+          relationship_count?: number
+          semantic_relationships?: Json
+          signals?: Json
+          status?: string
+          suggested_internal_links?: Json
+          topic_relationships?: Json
+          updated_at?: string | null
+        }
+        Update: {
+          authority_connections?: Json
+          authority_score?: number
+          entity_count?: number
+          entity_edges?: Json
+          entity_nodes?: Json
+          entity_relationships?: Json
+          generated_at?: string | null
+          graph_key?: string
+          graph_name?: string
+          id?: string
+          missing_entity_coverage?: Json
+          related_content_recommendations?: Json
+          relationship_count?: number
+          semantic_relationships?: Json
+          signals?: Json
+          status?: string
+          suggested_internal_links?: Json
+          topic_relationships?: Json
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       seo_keywords: {
         Row: {
           adsense_cpc_estimate: number | null
@@ -1053,48 +1029,6 @@ export type Database = {
           top_competitor_url?: string | null
           trend_data?: Json | null
           trend_direction?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      money_page_scores: {
-        Row: {
-          generated_at: string | null
-          id: string
-          money_score: number
-          page_title: string
-          page_url: string
-          reason: string
-          recommended_action: string
-          related_internal_links_needed: Json
-          signals: Json
-          status: string
-          updated_at: string | null
-        }
-        Insert: {
-          generated_at?: string | null
-          id?: string
-          money_score: number
-          page_title: string
-          page_url: string
-          reason: string
-          recommended_action: string
-          related_internal_links_needed?: Json
-          signals?: Json
-          status?: string
-          updated_at?: string | null
-        }
-        Update: {
-          generated_at?: string | null
-          id?: string
-          money_score?: number
-          page_title?: string
-          page_url?: string
-          reason?: string
-          recommended_action?: string
-          related_internal_links_needed?: Json
-          signals?: Json
-          status?: string
           updated_at?: string | null
         }
         Relationships: []
@@ -1326,6 +1260,186 @@ export type Database = {
         }
         Relationships: []
       }
+      sync_jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          duration_ms: number | null
+          error_log: Json | null
+          id: string
+          job_type: string
+          records_checked: number | null
+          records_failed: number | null
+          records_updated: number | null
+          started_at: string | null
+          status: string
+          summary: Json | null
+          triggered_by: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          duration_ms?: number | null
+          error_log?: Json | null
+          id?: string
+          job_type: string
+          records_checked?: number | null
+          records_failed?: number | null
+          records_updated?: number | null
+          started_at?: string | null
+          status?: string
+          summary?: Json | null
+          triggered_by: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          duration_ms?: number | null
+          error_log?: Json | null
+          id?: string
+          job_type?: string
+          records_checked?: number | null
+          records_failed?: number | null
+          records_updated?: number | null
+          started_at?: string | null
+          status?: string
+          summary?: Json | null
+          triggered_by?: string
+        }
+        Relationships: []
+      }
+      topic_cluster_visualizations: {
+        Row: {
+          alerts: Json
+          authority_strength: number
+          cluster_key: string
+          cluster_name: string
+          edge_count: number
+          generated_at: string | null
+          graph_edges: Json
+          graph_nodes: Json
+          health_score: number
+          id: string
+          missing_supporting_content: Json
+          node_count: number
+          orphan_pages: Json
+          semantic_hierarchy: Json
+          signals: Json
+          status: string
+          topical_gaps: Json
+          updated_at: string | null
+          weak_internal_links: Json
+        }
+        Insert: {
+          alerts?: Json
+          authority_strength: number
+          cluster_key: string
+          cluster_name: string
+          edge_count?: number
+          generated_at?: string | null
+          graph_edges?: Json
+          graph_nodes?: Json
+          health_score: number
+          id?: string
+          missing_supporting_content?: Json
+          node_count?: number
+          orphan_pages?: Json
+          semantic_hierarchy?: Json
+          signals?: Json
+          status?: string
+          topical_gaps?: Json
+          updated_at?: string | null
+          weak_internal_links?: Json
+        }
+        Update: {
+          alerts?: Json
+          authority_strength?: number
+          cluster_key?: string
+          cluster_name?: string
+          edge_count?: number
+          generated_at?: string | null
+          graph_edges?: Json
+          graph_nodes?: Json
+          health_score?: number
+          id?: string
+          missing_supporting_content?: Json
+          node_count?: number
+          orphan_pages?: Json
+          semantic_hierarchy?: Json
+          signals?: Json
+          status?: string
+          topical_gaps?: Json
+          updated_at?: string | null
+          weak_internal_links?: Json
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      weekly_seo_briefings: {
+        Row: {
+          approval_status: string
+          data_sources: Json
+          executive_summary: string
+          generated_at: string | null
+          growth_opportunities: Json
+          id: string
+          money_page_priorities: Json
+          seo_trend_overview: Json
+          top_tasks: Json
+          updated_at: string | null
+          warnings_issues: Json
+          week_start: string
+        }
+        Insert: {
+          approval_status?: string
+          data_sources?: Json
+          executive_summary: string
+          generated_at?: string | null
+          growth_opportunities?: Json
+          id?: string
+          money_page_priorities?: Json
+          seo_trend_overview?: Json
+          top_tasks?: Json
+          updated_at?: string | null
+          warnings_issues?: Json
+          week_start: string
+        }
+        Update: {
+          approval_status?: string
+          data_sources?: Json
+          executive_summary?: string
+          generated_at?: string | null
+          growth_opportunities?: Json
+          id?: string
+          money_page_priorities?: Json
+          seo_trend_overview?: Json
+          top_tasks?: Json
+          updated_at?: string | null
+          warnings_issues?: Json
+          week_start?: string
+        }
+        Relationships: []
+      }
       weekly_seo_tasks: {
         Row: {
           affected_url: string
@@ -1380,120 +1494,6 @@ export type Database = {
           task_type?: string
           updated_at?: string | null
           week_start?: string
-        }
-        Relationships: []
-      }
-      weekly_seo_briefings: {
-        Row: {
-          approval_status: string
-          data_sources: Json
-          executive_summary: string
-          generated_at: string | null
-          growth_opportunities: Json
-          id: string
-          money_page_priorities: Json
-          seo_trend_overview: Json
-          top_tasks: Json
-          updated_at: string | null
-          warnings_issues: Json
-          week_start: string
-        }
-        Insert: {
-          approval_status?: string
-          data_sources?: Json
-          executive_summary: string
-          generated_at?: string | null
-          growth_opportunities?: Json
-          id?: string
-          money_page_priorities?: Json
-          seo_trend_overview?: Json
-          top_tasks?: Json
-          updated_at?: string | null
-          warnings_issues?: Json
-          week_start: string
-        }
-        Update: {
-          approval_status?: string
-          data_sources?: Json
-          executive_summary?: string
-          generated_at?: string | null
-          growth_opportunities?: Json
-          id?: string
-          money_page_priorities?: Json
-          seo_trend_overview?: Json
-          top_tasks?: Json
-          updated_at?: string | null
-          warnings_issues?: Json
-          week_start?: string
-        }
-        Relationships: []
-      }
-      sync_jobs: {
-        Row: {
-          completed_at: string | null
-          created_at: string | null
-          duration_ms: number | null
-          error_log: Json | null
-          id: string
-          job_type: string
-          records_checked: number | null
-          records_failed: number | null
-          records_updated: number | null
-          started_at: string | null
-          status: string
-          summary: Json | null
-          triggered_by: string
-        }
-        Insert: {
-          completed_at?: string | null
-          created_at?: string | null
-          duration_ms?: number | null
-          error_log?: Json | null
-          id?: string
-          job_type: string
-          records_checked?: number | null
-          records_failed?: number | null
-          records_updated?: number | null
-          started_at?: string | null
-          status?: string
-          summary?: Json | null
-          triggered_by: string
-        }
-        Update: {
-          completed_at?: string | null
-          created_at?: string | null
-          duration_ms?: number | null
-          error_log?: Json | null
-          id?: string
-          job_type?: string
-          records_checked?: number | null
-          records_failed?: number | null
-          records_updated?: number | null
-          started_at?: string | null
-          status?: string
-          summary?: Json | null
-          triggered_by?: string
-        }
-        Relationships: []
-      }
-      user_roles: {
-        Row: {
-          created_at: string
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
         }
         Relationships: []
       }
