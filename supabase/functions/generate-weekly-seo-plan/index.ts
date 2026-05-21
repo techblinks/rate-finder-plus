@@ -364,7 +364,7 @@ Deno.serve(async (req) => {
 
       score = clamp(score);
 
-      addTask(tasks, {
+      addTaskWithPatterns(tasks, {
         week_start: currentWeek,
         task_title: `Improve ${item.keyword} opportunity`,
         task_type: "opportunity",
@@ -389,7 +389,7 @@ Deno.serve(async (req) => {
 
     for (const item of moneyRows.slice(0, 16)) {
       const score = clamp(item.money_score);
-      addTask(tasks, {
+      addTaskWithPatterns(tasks, {
         week_start: currentWeek,
         task_title: `Prioritize money page ${item.page_title}`,
         task_type: "money_page",
@@ -430,7 +430,7 @@ Deno.serve(async (req) => {
       if (q.confidence === "high") score += 6;
       score = clamp(score);
 
-      addTask(tasks, {
+      addTaskWithPatterns(tasks, {
         week_start: currentWeek,
         task_title: `Lift CTR for ${pageLabel(item.page_url)}`,
         task_type: "ctr",
@@ -455,7 +455,7 @@ Deno.serve(async (req) => {
 
     for (const item of linkRows.slice(0, 30)) {
       const score = priorityWeight(item.priority);
-      addTask(tasks, {
+      addTaskWithPatterns(tasks, {
         week_start: currentWeek,
         task_title: `Add internal link to ${pageLabel(item.target_page)}`,
         task_type: "internal_link",
@@ -480,7 +480,7 @@ Deno.serve(async (req) => {
     for (const item of gapRows.slice(0, 24)) {
       const score = clamp(item.priority_score);
       const taskType: TaskType = item.gap_type.toLowerCase().includes("schema") ? "schema" : "content_gap";
-      addTask(tasks, {
+      addTaskWithPatterns(tasks, {
         week_start: currentWeek,
         task_title: `Resolve ${item.gap_type.replaceAll("_", " ")}`,
         task_type: taskType,
@@ -506,7 +506,7 @@ Deno.serve(async (req) => {
 
     for (const item of competitorRows.slice(0, 18)) {
       const score = clamp(item.priority_score);
-      addTask(tasks, {
+      addTaskWithPatterns(tasks, {
         week_start: currentWeek,
         task_title: `Respond to ${item.detected_topic} competitor movement`,
         task_type: "competitor",
@@ -531,7 +531,7 @@ Deno.serve(async (req) => {
     for (const item of freshnessRows.slice(0, 18)) {
       const score = clamp(100 - item.freshness_score);
       const updates = asStrings(item.recommended_updates).join(" ");
-      addTask(tasks, {
+      addTaskWithPatterns(tasks, {
         week_start: currentWeek,
         task_title: `Refresh ${item.page_title}`,
         task_type: "freshness",
@@ -556,7 +556,7 @@ Deno.serve(async (req) => {
     for (const item of aeoRows.slice(0, 18)) {
       const score = clamp(100 - item.aeo_score + Math.max(0, 70 - item.snippet_readiness_score) / 2);
       const improvements = asStrings(item.recommended_improvements).join(" ");
-      addTask(tasks, {
+      addTaskWithPatterns(tasks, {
         week_start: currentWeek,
         task_title: `Improve AEO readiness for ${item.page_title}`,
         task_type: "aeo",
@@ -602,7 +602,7 @@ Deno.serve(async (req) => {
       if (q.confidence === "high") score += 6;
       score = clamp(score);
 
-      addTask(tasks, {
+      addTaskWithPatterns(tasks, {
         week_start: currentWeek,
         task_title: `Investigate ranking drop for ${row.keyword}`,
         task_type: "ranking_drop",
