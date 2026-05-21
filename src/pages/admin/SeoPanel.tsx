@@ -770,12 +770,33 @@ const SeoPanel = () => {
     }
   };
 
-
-
-
-  const startGscOAuth = () => {
-    window.location.href = `${SUPABASE_URL}/functions/v1/gsc-oauth-callback`;
+  const runImpactTracker = async (draftId?: string) => {
+    setTrackingImpact(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("track-draft-impact", { body: draftId ? { draftId } : {} });
+      if (error) throw error;
+      if (data?.success === false) throw new Error(data?.error || "track-draft-impact failed");
+      toast({
+        title: "Impact tracker run complete",
+        description: `Processed ${data?.processed ?? 0} applied draft${data?.processed === 1 ? "" : "s"} · winners ${data?.winners ?? 0} · losers ${data?.losers ?? 0}.`,
+      });
+      await loadAll();
+    } catch (err: any) {
+      console.error("[track-draft-impact] failed:", err);
+      toast({ title: "Impact tracker failed", description: err?.message || String(err), variant: "destructive" });
+    } finally {
+      setTrackingImpact(false);
+    }
   };
+
+  const impactByDraft = useMemo(() => {
+    const m = new Map<string, DraftImpact>();
+    for (const i of draftImpacts) m.set(i.draft_id, i);
+    return m;
+  }, [draftImpacts]);
+
+
+
 
   const filteredKeywords = useMemo(() => {
     let list = [...keywords];
