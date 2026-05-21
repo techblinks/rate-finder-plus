@@ -512,7 +512,7 @@ const SeoPanel = () => {
   }, []);
 
   const loadAll = async () => {
-    const [tokens, kw, opp, money, links, gaps, contentOpt, aeo, clusters, knowledge, refresh, competitors, ctr, plan, briefing, rep, sj] = await Promise.all([
+    const [tokens, kw, opp, money, links, gaps, contentOpt, aeo, clusters, knowledge, refresh, competitors, ctr, plan, briefing, rep, sj, taskDrafts] = await Promise.all([
       supabase.from("gsc_oauth_tokens").select("id, is_active"),
       supabase.from("seo_keywords").select("*").eq("is_active", true).order("opportunity_score", { ascending: false }),
       supabase.from("seo_opportunities").select("*").eq("status", "open").order("score", { ascending: false }).limit(100),
@@ -530,9 +530,8 @@ const SeoPanel = () => {
       supabase.from("weekly_seo_briefings").select("*").order("week_start", { ascending: false }).limit(1),
       supabase.from("seo_reports").select("*").order("generated_at", { ascending: false }).limit(20),
       supabase.from("sync_jobs").select("*").in("job_type", ["gsc_data", "trends", "seo_opportunity_scoring", "money_page_scoring", "internal_link_opportunities", "content_gap_analysis", "content_optimization", "aeo_optimization", "topic_cluster_visualization", "semantic_finance_knowledge_graph", "auto_refresh_engine", "competitor_tracking", "ctr_optimization", "weekly_seo_plan", "weekly_seo_briefing", "weekly_seo_task_drafts"]).order("started_at", { ascending: false }).limit(20),
-      (supabase as any).from("weekly_seo_task_drafts").select("*").order("generated_at", { ascending: false }).limit(200),
+      (supabase as any).from("weekly_seo_task_drafts").select("*").order("generated_at", { ascending: false }).limit(300),
     ]);
-    const drafts = (arguments as any); // placeholder, replaced below
     const tokenRows = (tokens.data as { id: string; is_active: boolean | null }[] | null) || [];
     setGscConnected(tokenRows.some((t) => t.is_active));
     setGscPreviouslyConnected(tokenRows.length > 0);
@@ -552,6 +551,7 @@ const SeoPanel = () => {
     setCompetitorInsights((competitors.data as CompetitorTrackingInsight[]) || []);
     setCtrOptimizations((ctr.data as CtrOptimization[]) || []);
     setWeeklySeoTasks((plan.data as WeeklySeoTask[]) || []);
+    setWeeklySeoTaskDrafts(((taskDrafts as any)?.data as WeeklySeoTaskDraft[]) || []);
     setWeeklySeoBriefing(((briefing.data as WeeklySeoBriefing[] | null) || [])[0] || null);
     setReports((rep.data as Report[]) || []);
     setLatestReport((rep.data?.find((r: Report) => r.report_type === "weekly_summary") as Report) || null);
