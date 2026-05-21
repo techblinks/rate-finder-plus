@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { classifyKeyword } from "../_shared/seoQuality.ts";
+import { matchPatterns, hasEnoughLearningData, INSUFFICIENT_LEARNING_DATA, type WinningPattern } from "../_shared/patternMatch.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
