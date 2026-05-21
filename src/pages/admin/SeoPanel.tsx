@@ -3095,6 +3095,85 @@ const SeoPanel = () => {
         </section>
       )}
 
+      {/* IMPACT TRACKING */}
+      {sub === "impact" && (
+        <section className="space-y-4">
+          <div className="rounded-2xl border border-border bg-surface p-6">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-semibold text-foreground">SEO impact tracking</h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Measures whether applied SEO drafts improved GSC performance. Baseline: 28 days before apply.
+                  Compared against 7-day and 30-day windows after apply. Nothing is auto-rolled-back.
+                </p>
+              </div>
+              <button
+                onClick={() => runImpactTracker()}
+                disabled={trackingImpact}
+                className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground disabled:opacity-50"
+              >
+                {trackingImpact ? "Running impact tracker..." : "Run impact tracker"}
+              </button>
+            </div>
+            {(() => {
+              const applied = weeklySeoTaskDrafts.filter((d) => d.approval_status === "applied");
+              const winners = draftImpacts.filter((i) => i.impact_status === "improving");
+              const losers = draftImpacts.filter((i) => i.impact_status === "declining");
+              const neutral = draftImpacts.filter((i) => i.impact_status === "neutral");
+              const awaiting = draftImpacts.filter((i) => i.impact_status === "awaiting_data");
+              const insufficient = draftImpacts.filter((i) => i.impact_status === "insufficient_data");
+              return (
+                <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-5">
+                  <StatTile label="Applied drafts" value={applied.length} />
+                  <StatTile label="Winners" value={winners.length} tone="green" />
+                  <StatTile label="Losers" value={losers.length} tone="red" />
+                  <StatTile label="Neutral" value={neutral.length} />
+                  <StatTile label="Awaiting / low data" value={awaiting.length + insufficient.length} />
+                </div>
+              );
+            })()}
+          </div>
+
+          {draftImpacts.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-border bg-surface p-8 text-center text-sm text-muted-foreground">
+              No impact records yet. Apply approved drafts, then run the impact tracker.
+            </div>
+          ) : (
+            <>
+              <ImpactList
+                title="Top winning changes"
+                tone="green"
+                emptyText="No winning changes yet — waiting for post-apply data to settle."
+                impacts={[...draftImpacts]
+                  .filter((i) => i.impact_status === "improving")
+                  .sort((a, b) => (b.clicks_delta_30d ?? b.clicks_delta_7d ?? 0) - (a.clicks_delta_30d ?? a.clicks_delta_7d ?? 0))
+                  .slice(0, 10)}
+                drafts={weeklySeoTaskDrafts}
+              />
+              <ImpactList
+                title="Changes to review or roll back"
+                tone="red"
+                emptyText="No declining changes — nothing flagged for rollback review."
+                impacts={[...draftImpacts]
+                  .filter((i) => i.impact_status === "declining")
+                  .sort((a, b) => (a.clicks_delta_30d ?? a.clicks_delta_7d ?? 0) - (b.clicks_delta_30d ?? b.clicks_delta_7d ?? 0))
+                  .slice(0, 10)}
+                drafts={weeklySeoTaskDrafts}
+              />
+              <ImpactList
+                title="All applied drafts (latest)"
+                tone="neutral"
+                emptyText="No applied drafts."
+                impacts={[...draftImpacts]
+                  .sort((a, b) => new Date(b.last_computed_at).getTime() - new Date(a.last_computed_at).getTime())
+                  .slice(0, 50)}
+                drafts={weeklySeoTaskDrafts}
+              />
+            </>
+          )}
+        </section>
+      )}
+
       {/* REPORTS */}
       {sub === "reports" && (
         <section className="rounded-2xl border border-border bg-surface p-6">
