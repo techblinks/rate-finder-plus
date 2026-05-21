@@ -593,6 +593,78 @@ const SeoPanel = () => {
     }
   };
 
+  const generateTaskDraft = async (taskId: string) => {
+    setGeneratingDraftFor(taskId);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-task-draft", { body: { taskId } });
+      if (error) throw error;
+      if (data && (data as any).success === false) throw new Error((data as any).error || "Draft generation failed");
+      const count = (data as any)?.inserted ?? 0;
+      toast({ title: "Draft generated", description: `${count} admin-review draft${count === 1 ? "" : "s"} created. Pending approval.` });
+      await loadAll();
+    } catch (err: any) {
+      const msg = err?.message || String(err);
+      console.error("[generate-task-draft] failed:", err);
+      toast({ title: "Draft generation failed", description: msg, variant: "destructive" });
+    } finally {
+      setGeneratingDraftFor(null);
+    }
+  };
+
+  const setTaskApprovalStatus = async (taskId: string, status: "approved" | "rejected" | "completed" | "pending") => {
+    setTaskActionFor(taskId);
+    try {
+      // weekly_seo_tasks.approval_status uses "done" historically; map "completed" -> "done"
+      const taskStatus = status === "completed" ? "done" : status;
+      const { error } = await supabase
+        .from("weekly_seo_tasks")
+        .update({ approval_status: taskStatus })
+        .eq("id", taskId);
+      if (error) throw error;
+      // Audit trail
+      await (supabase as any).from("sync_jobs").insert({
+        job_type: "weekly_seo_task_review",
+        status: "completed",
+        triggered_by: "admin",
+        started_at: new Date().toISOString(),
+        completed_at: new Date().toISOString(),
+        records_updated: 1,
+        summary: { task_id: taskId, approval_status: taskStatus },
+      });
+      toast({ title: `Task ${status}` });
+      await loadAll();
+    } catch (err: any) {
+      console.error("[task status update] failed:", err);
+      toast({ title: "Failed to update task", description: err?.message || String(err), variant: "destructive" });
+    } finally {
+      setTaskActionFor(null);
+    }
+  };
+
+  const setDraftApprovalStatus = async (draftId: string, status: "approved" | "rejected" | "completed" | "pending") => {
+    try {
+      const { error } = await (supabase as any)
+        .from("weekly_seo_task_drafts")
+        .update({ approval_status: status, reviewed_by: "admin" })
+        .eq("id", draftId);
+      if (error) throw error;
+      await (supabase as any).from("sync_jobs").insert({
+        job_type: "weekly_seo_task_draft_review",
+        status: "completed",
+        triggered_by: "admin",
+        started_at: new Date().toISOString(),
+        completed_at: new Date().toISOString(),
+        records_updated: 1,
+        summary: { draft_id: draftId, approval_status: status },
+      });
+      toast({ title: `Draft ${status}` });
+      await loadAll();
+    } catch (err: any) {
+      toast({ title: "Failed to update draft", description: err?.message || String(err), variant: "destructive" });
+    }
+  };
+
+
   const startGscOAuth = () => {
     window.location.href = `${SUPABASE_URL}/functions/v1/gsc-oauth-callback`;
   };
