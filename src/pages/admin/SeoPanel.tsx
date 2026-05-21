@@ -3219,6 +3219,83 @@ const SeoPanel = () => {
         </section>
       )}
 
+      {sub === "patterns" && (
+        <section className="space-y-4">
+          <div className="rounded-2xl border border-border bg-surface p-6">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-semibold text-foreground">Winning patterns memory</h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Learns from applied draft impact records to identify which draft types, page types and keyword intents drive improvements.
+                  Admin-only insights. Nothing is auto-applied or auto-published.
+                </p>
+              </div>
+              <button
+                onClick={() => runLearnPatterns()}
+                disabled={learningPatterns}
+                className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground disabled:opacity-50"
+              >
+                {learningPatterns ? "Learning..." : "Recompute patterns"}
+              </button>
+            </div>
+            {(() => {
+              const winning = winningPatterns.filter((p) => p.status === "winning");
+              const risky = winningPatterns.filter((p) => p.status === "risky");
+              const neutral = winningPatterns.filter((p) => p.status === "neutral");
+              const highConf = winningPatterns.filter((p) => p.confidence_level === "high").length;
+              return (
+                <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
+                  <StatTile label="Patterns learned" value={winningPatterns.length} />
+                  <StatTile label="Winning" value={winning.length} tone="green" />
+                  <StatTile label="Risky" value={risky.length} tone="red" />
+                  <StatTile label="High confidence" value={highConf} />
+                </div>
+              );
+            })()}
+          </div>
+
+          {winningPatterns.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-border bg-surface p-8 text-center text-sm text-muted-foreground">
+              No patterns learned yet. Apply approved drafts, run the impact tracker, then click "Recompute patterns".
+            </div>
+          ) : (
+            <>
+              <PatternList
+                title="Winning patterns — prioritize in future Weekly Plans"
+                tone="green"
+                emptyText="No winning patterns yet."
+                patterns={winningPatterns.filter((p) => p.status === "winning").sort((a, b) => (b.success_count - a.success_count))}
+              />
+              <PatternList
+                title="Risky patterns — review or avoid"
+                tone="red"
+                emptyText="No risky patterns flagged."
+                patterns={winningPatterns.filter((p) => p.status === "risky").sort((a, b) => (b.failure_count - a.failure_count))}
+              />
+              <PatternList
+                title="Best performing draft types"
+                tone="neutral"
+                emptyText="No data."
+                patterns={winningPatterns.filter((p) => p.pattern_type === "draft_type").sort((a, b) => ((b.average_ctr_delta ?? 0) - (a.average_ctr_delta ?? 0)))}
+              />
+              <PatternList
+                title="Best performing keyword intents"
+                tone="neutral"
+                emptyText="No data."
+                patterns={winningPatterns.filter((p) => p.pattern_type === "keyword_intent").sort((a, b) => ((b.average_click_delta ?? 0) - (a.average_click_delta ?? 0)))}
+              />
+              <PatternList
+                title="Best performing page types"
+                tone="neutral"
+                emptyText="No data."
+                patterns={winningPatterns.filter((p) => p.pattern_type === "page_type").sort((a, b) => ((b.average_ctr_delta ?? 0) - (a.average_ctr_delta ?? 0)))}
+              />
+            </>
+          )}
+        </section>
+      )}
+
+
       {/* REPORTS */}
       {sub === "reports" && (
         <section className="rounded-2xl border border-border bg-surface p-6">
