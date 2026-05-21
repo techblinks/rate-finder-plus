@@ -7,7 +7,46 @@ import { DraftSandboxPreview } from "@/components/admin/DraftSandboxPreview";
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const GSC_SITE_URL = "sc-domain:calcy.com.au";
 
-type SubTab = "overview" | "keywords" | "opportunities" | "money-pages" | "internal-links" | "content-gaps" | "content-optimizer" | "aeo" | "topic-clusters" | "knowledge-graph" | "auto-refresh" | "competitors" | "ctr" | "weekly-plan" | "reports";
+type SubTab = "overview" | "keywords" | "opportunities" | "money-pages" | "internal-links" | "content-gaps" | "content-optimizer" | "aeo" | "topic-clusters" | "knowledge-graph" | "auto-refresh" | "competitors" | "ctr" | "weekly-plan" | "impact" | "reports";
+
+type DraftImpact = {
+  id: string;
+  draft_id: string;
+  task_id: string | null;
+  target_url: string;
+  target_keyword: string | null;
+  draft_type: string | null;
+  applied_at: string;
+  baseline_start: string | null;
+  baseline_end: string | null;
+  baseline_clicks: number;
+  baseline_impressions: number;
+  baseline_ctr: number;
+  baseline_position: number | null;
+  after_7d_clicks: number | null;
+  after_7d_impressions: number | null;
+  after_7d_ctr: number | null;
+  after_7d_position: number | null;
+  after_30d_clicks: number | null;
+  after_30d_impressions: number | null;
+  after_30d_ctr: number | null;
+  after_30d_position: number | null;
+  clicks_delta_7d: number | null;
+  impressions_delta_7d: number | null;
+  ctr_delta_7d: number | null;
+  position_delta_7d: number | null;
+  clicks_delta_30d: number | null;
+  impressions_delta_30d: number | null;
+  ctr_delta_30d: number | null;
+  position_delta_30d: number | null;
+  estimated_traffic_impact: number | null;
+  estimated_revenue_impact: number | null;
+  rpm_estimate: number | null;
+  impact_status: "improving" | "neutral" | "declining" | "insufficient_data" | "awaiting_data" | string;
+  confidence: string | null;
+  signals: any;
+  last_computed_at: string;
+};
 
 type Keyword = {
   id: string;
