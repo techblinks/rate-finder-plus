@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { classifyKeyword } from "../_shared/seoQuality.ts";
+import { matchPatterns, hasEnoughLearningData, INSUFFICIENT_LEARNING_DATA, type WinningPattern } from "../_shared/patternMatch.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -234,6 +235,7 @@ Deno.serve(async (req) => {
       { data: freshness },
       { data: aeo },
       { data: keywords },
+      { data: patternsData },
     ] = await Promise.all([
       supabase.from("seo_opportunities").select("id, keyword, target_url, score, priority, reason, recommended_action, signals").eq("status", "open").order("score", { ascending: false }).limit(80),
       supabase.from("money_page_scores").select("id, page_url, page_title, money_score, reason, recommended_action, related_internal_links_needed").eq("status", "open").order("money_score", { ascending: false }).limit(40),
@@ -244,6 +246,7 @@ Deno.serve(async (req) => {
       supabase.from("auto_refresh_recommendations").select("id, page_url, page_title, freshness_score, priority_level, outdated_sections, recommended_updates").eq("status", "open").order("freshness_score", { ascending: true }).limit(80),
       supabase.from("aeo_optimizations").select("id, page_url, page_title, primary_topic, aeo_score, snippet_readiness_score, priority_level, recommended_improvements, missing_semantic_elements").eq("status", "open").order("aeo_score", { ascending: true }).limit(80),
       supabase.from("seo_keywords").select("id, keyword, target_page, category, calcy_position, calcy_position_previous, calcy_impressions_28d, calcy_clicks_28d, opportunity_score, trend_direction").eq("is_active", true).limit(1200),
+      supabase.from("seo_winning_patterns").select("*").in("status", ["winning", "risky"]),
     ]);
 
     const opportunityRows = (opportunities as SeoOpportunity[] | null) || [];
@@ -267,6 +270,58 @@ Deno.serve(async (req) => {
       if (s >= 80) return 12;
       if (s >= 60) return 6;
       return 0;
+    };
+
+    // Winning Patterns Memory integration
+    const patterns = (patternsData as WinningPattern[] | null) || [];
+    const patternsReady = hasEnoughLearningData(patterns);
+    const taskTypeToDraftType: Record<string, string> = {
+      ctr: "title_meta",
+      opportunity: "title_meta",
+      money_page: "title_meta",
+      aeo: "aeo_answer",
+      content_gap: "content_refresh",
+      freshness: "content_refresh",
+      ranking_drop: "content_refresh",
+      internal_link: "internal_link",
+      competitor: "comparison_table",
+      schema: "faq",
+    };
+    const applyPatternToTask = (task: WeeklyTask, intent?: string | null): WeeklyTask => {
+      if (!patternsReady) {
+        return {
+          ...task,
+          source_refs: {
+            ...task.source_refs,
+            pattern_match_score: 0,
+            matched_pattern_ids: [],
+            pattern_reason: INSUFFICIENT_LEARNING_DATA,
+            risk_pattern_warning: null,
+          },
+        };
+      }
+      const dt = taskTypeToDraftType[task.task_type] || null;
+      const match = matchPatterns(patterns, { url: task.affected_url, draftType: dt, keywordIntent: intent || null });
+      // Boost: winning +up to 10 / risky -up to 10
+      const adjusted = clamp(task.priority_score + Math.round(match.pattern_match_score * 10));
+      return {
+        ...task,
+        priority_score: adjusted,
+        priority_level: priorityLevel(adjusted),
+        risk_level: match.risk_pattern_warning && task.risk_level === "low" ? "medium" : task.risk_level,
+        source_refs: {
+          ...task.source_refs,
+          pattern_match_score: match.pattern_match_score,
+          matched_pattern_ids: match.matched_pattern_ids,
+          pattern_reason: match.pattern_reason,
+          risk_pattern_warning: match.risk_pattern_warning,
+        },
+      };
+    };
+
+    const originalAddTask = addTask;
+    const addTaskWithPatterns = (taskMap: Map<string, WeeklyTask>, task: WeeklyTask, intent?: string | null) => {
+      originalAddTask(taskMap, applyPatternToTask(task, intent));
     };
 
     for (const item of opportunityRows) {
@@ -309,7 +364,7 @@ Deno.serve(async (req) => {
 
       score = clamp(score);
 
-      addTask(tasks, {
+      addTaskWithPatterns(tasks, {
         week_start: currentWeek,
         task_title: `Improve ${item.keyword} opportunity`,
         task_type: "opportunity",
@@ -334,7 +389,7 @@ Deno.serve(async (req) => {
 
     for (const item of moneyRows.slice(0, 16)) {
       const score = clamp(item.money_score);
-      addTask(tasks, {
+      addTaskWithPatterns(tasks, {
         week_start: currentWeek,
         task_title: `Prioritize money page ${item.page_title}`,
         task_type: "money_page",
@@ -375,7 +430,7 @@ Deno.serve(async (req) => {
       if (q.confidence === "high") score += 6;
       score = clamp(score);
 
-      addTask(tasks, {
+      addTaskWithPatterns(tasks, {
         week_start: currentWeek,
         task_title: `Lift CTR for ${pageLabel(item.page_url)}`,
         task_type: "ctr",
@@ -400,7 +455,7 @@ Deno.serve(async (req) => {
 
     for (const item of linkRows.slice(0, 30)) {
       const score = priorityWeight(item.priority);
-      addTask(tasks, {
+      addTaskWithPatterns(tasks, {
         week_start: currentWeek,
         task_title: `Add internal link to ${pageLabel(item.target_page)}`,
         task_type: "internal_link",
@@ -425,7 +480,7 @@ Deno.serve(async (req) => {
     for (const item of gapRows.slice(0, 24)) {
       const score = clamp(item.priority_score);
       const taskType: TaskType = item.gap_type.toLowerCase().includes("schema") ? "schema" : "content_gap";
-      addTask(tasks, {
+      addTaskWithPatterns(tasks, {
         week_start: currentWeek,
         task_title: `Resolve ${item.gap_type.replaceAll("_", " ")}`,
         task_type: taskType,
@@ -451,7 +506,7 @@ Deno.serve(async (req) => {
 
     for (const item of competitorRows.slice(0, 18)) {
       const score = clamp(item.priority_score);
-      addTask(tasks, {
+      addTaskWithPatterns(tasks, {
         week_start: currentWeek,
         task_title: `Respond to ${item.detected_topic} competitor movement`,
         task_type: "competitor",
@@ -476,7 +531,7 @@ Deno.serve(async (req) => {
     for (const item of freshnessRows.slice(0, 18)) {
       const score = clamp(100 - item.freshness_score);
       const updates = asStrings(item.recommended_updates).join(" ");
-      addTask(tasks, {
+      addTaskWithPatterns(tasks, {
         week_start: currentWeek,
         task_title: `Refresh ${item.page_title}`,
         task_type: "freshness",
@@ -501,7 +556,7 @@ Deno.serve(async (req) => {
     for (const item of aeoRows.slice(0, 18)) {
       const score = clamp(100 - item.aeo_score + Math.max(0, 70 - item.snippet_readiness_score) / 2);
       const improvements = asStrings(item.recommended_improvements).join(" ");
-      addTask(tasks, {
+      addTaskWithPatterns(tasks, {
         week_start: currentWeek,
         task_title: `Improve AEO readiness for ${item.page_title}`,
         task_type: "aeo",
@@ -547,7 +602,7 @@ Deno.serve(async (req) => {
       if (q.confidence === "high") score += 6;
       score = clamp(score);
 
-      addTask(tasks, {
+      addTaskWithPatterns(tasks, {
         week_start: currentWeek,
         task_title: `Investigate ranking drop for ${row.keyword}`,
         task_type: "ranking_drop",

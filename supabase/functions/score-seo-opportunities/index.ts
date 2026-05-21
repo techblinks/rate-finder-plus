@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { classifyKeyword } from "../_shared/seoQuality.ts";
+import { matchPatterns, hasEnoughLearningData, INSUFFICIENT_LEARNING_DATA, type WinningPattern } from "../_shared/patternMatch.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -334,9 +335,10 @@ Deno.serve(async (req) => {
   });
 
   try {
-    const [{ data: keywordRows, error: keywordError }, { data: drafts, error: draftError }] = await Promise.all([
+    const [{ data: keywordRows, error: keywordError }, { data: drafts, error: draftError }, { data: patternsData }] = await Promise.all([
       supabase.from("seo_keywords").select("*").eq("is_active", true),
       supabase.from("content_drafts").select("target_keyword, slug, status"),
+      supabase.from("seo_winning_patterns").select("*").in("status", ["winning", "risky"]),
     ]);
 
     if (keywordError) throw keywordError;
@@ -402,9 +404,33 @@ Deno.serve(async (req) => {
       pageStats.set(targetUrl, current);
     }
 
+    const patterns = (patternsData as WinningPattern[] | null) || [];
+    const patternsReady = hasEnoughLearningData(patterns);
+
     const opportunities = cleanKeywords
       .map((row) => scoreKeyword(row, draftKeywords, pageStats))
       .filter((row): row is Opportunity => Boolean(row))
+      .map((opp) => {
+        const sig = opp.signals as Record<string, unknown>;
+        if (!patternsReady) {
+          (sig as any).pattern_match_score = 0;
+          (sig as any).matched_pattern_ids = [];
+          (sig as any).pattern_reason = INSUFFICIENT_LEARNING_DATA;
+          (sig as any).risk_pattern_warning = null;
+          return opp;
+        }
+        const match = matchPatterns(patterns, {
+          url: opp.target_url,
+          keywordIntent: String(sig.intent || ""),
+        });
+        // Adjust score by up to +/-10 based on pattern match
+        const adjusted = Math.max(0, Math.min(100, opp.score + Math.round(match.pattern_match_score * 10)));
+        (sig as any).pattern_match_score = match.pattern_match_score;
+        (sig as any).matched_pattern_ids = match.matched_pattern_ids;
+        (sig as any).pattern_reason = match.pattern_reason;
+        (sig as any).risk_pattern_warning = match.risk_pattern_warning;
+        return { ...opp, score: adjusted };
+      })
       .sort((a, b) => b.score - a.score)
       .slice(0, 100);
 

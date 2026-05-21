@@ -145,13 +145,25 @@ Deno.serve(async (req) => {
     const t = task as TaskRow;
     const draftTypes = pickDraftTypes(t);
 
-    // Optional context: fetch nearby signals for the affected URL
-    const [{ data: ctr }, { data: opt }, { data: aeo }, { data: link }] = await Promise.all([
+    // Optional context: fetch nearby signals for the affected URL + winning patterns
+    const [{ data: ctr }, { data: opt }, { data: aeo }, { data: link }, { data: patternsData }] = await Promise.all([
       admin.from("ctr_optimizations").select("primary_keyword,position,impressions_28d,ctr_28d,suggested_title,suggested_meta_description,suggested_faq_snippet,suggested_featured_snippet_answer").eq("page_url", t.affected_url).limit(1),
       admin.from("content_optimizations").select("page_title,primary_topic,faq_additions,direct_answers,semantic_keywords,comparison_tables").eq("page_url", t.affected_url).limit(1),
       admin.from("aeo_optimizations").select("page_title,featured_snippet_paragraphs,direct_answer_blocks,faq_improvements,conversational_search_queries").eq("page_url", t.affected_url).limit(1),
       admin.from("internal_link_opportunities").select("source_page,target_page,suggested_anchor_text,reason").or(`source_page.eq.${t.affected_url},target_page.eq.${t.affected_url}`).limit(5),
+      admin.from("seo_winning_patterns").select("*").in("status", ["winning", "risky"]),
     ]);
+
+    // Build pattern hints for the prompt
+    const patterns = (patternsData as any[]) || [];
+    const patternHints = patterns
+      .filter((p) => draftTypes.includes((p.draft_type || "").toLowerCase()) || p.pattern_type === "page_type" || p.pattern_type === "keyword_intent")
+      .slice(0, 8)
+      .map((p) => `- [${p.status}/${p.confidence_level}] ${p.pattern_type} ${p.draft_type ?? ""} ${p.page_type ?? ""} ${p.keyword_intent ?? ""}: ${p.recommendation ?? ""}`)
+      .join("\n");
+    const patternHintsBlock = patternHints
+      ? `\nLearned winning/risky patterns to bias style, tone and structure (DO NOT mention this section in output):\n${patternHints}\n`
+      : `\n(Learning data not sufficient yet — use generic best practices.)\n`;
 
     const userPrompt = `Generate admin-review-only DRAFTS for this weekly SEO task. Return STRICT JSON with shape:
 {
@@ -193,11 +205,12 @@ Live page signals (may be empty):
 - Content optimization: ${JSON.stringify(opt?.[0] ?? null).slice(0, 1200)}
 - AEO optimization: ${JSON.stringify(aeo?.[0] ?? null).slice(0, 1200)}
 - Internal link signals: ${JSON.stringify(link ?? []).slice(0, 800)}
-
+${patternHintsBlock}
 Rules:
 - Stay strictly within scope of the task.
 - Drafts must be safe behind admin approval; never instruct to remove existing content.
 - Australian English. Mention AU states/RBA only when relevant.
+- Bias style, tone, and structure toward the learned winning patterns above (if any), and avoid the risky ones.
 - Do NOT produce more than 6 drafts total.`;
 
     let aiResult: any;
@@ -235,7 +248,14 @@ Rules:
         proposed_change: String(d.proposed_change).slice(0, 1000),
         before_text: d.before_text ? String(d.before_text).slice(0, 2000) : null,
         after_text: d.after_text ? String(d.after_text).slice(0, 4000) : null,
-        payload: d.payload ?? {},
+        payload: {
+          ...(d.payload ?? {}),
+          matched_pattern_ids: patterns
+            .filter((p: any) => (p.draft_type || "").toLowerCase() === String(d.draft_type).toLowerCase())
+            .slice(0, 5)
+            .map((p: any) => p.id),
+          pattern_reason: patterns.length === 0 ? "Learning data not sufficient yet." : null,
+        },
         expected_seo_impact: d.expected_seo_impact ? String(d.expected_seo_impact).slice(0, 500) : null,
         risk_level: ["low", "medium", "high"].includes(d.risk_level) ? d.risk_level : t.risk_level || "low",
         approval_status: "pending",
