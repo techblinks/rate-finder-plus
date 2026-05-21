@@ -2765,6 +2765,143 @@ const SeoPanel = () => {
                   <p className="mt-1 text-sm text-foreground">{task.suggested_implementation_prompt}</p>
                 </div>
               </div>
+
+              {/* Approval workflow actions */}
+              <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-border pt-4">
+                <button
+                  onClick={() => generateTaskDraft(task.id)}
+                  disabled={generatingDraftFor === task.id || taskActionFor === task.id}
+                  className="rounded-lg bg-accent px-3 py-2 text-xs font-semibold text-accent-foreground disabled:opacity-50"
+                >
+                  {generatingDraftFor === task.id ? "Generating draft..." : "Generate draft improvement"}
+                </button>
+                <button
+                  onClick={() => setTaskApprovalStatus(task.id, "approved")}
+                  disabled={taskActionFor === task.id || task.approval_status === "approved"}
+                  className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-900 disabled:opacity-50"
+                >
+                  Mark approved
+                </button>
+                <button
+                  onClick={() => setTaskApprovalStatus(task.id, "rejected")}
+                  disabled={taskActionFor === task.id || task.approval_status === "rejected"}
+                  className="rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-xs font-semibold text-red-900 disabled:opacity-50"
+                >
+                  Mark rejected
+                </button>
+                <button
+                  onClick={() => setTaskApprovalStatus(task.id, "completed")}
+                  disabled={taskActionFor === task.id || task.approval_status === "done"}
+                  className="rounded-lg border border-blue-300 bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-900 disabled:opacity-50"
+                >
+                  Mark completed
+                </button>
+                <span className="ml-auto text-[11px] text-muted-foreground">
+                  Drafts are admin-review only and never auto-published.
+                </span>
+              </div>
+
+              {/* Drafts list */}
+              {(() => {
+                const taskDrafts = weeklySeoTaskDrafts.filter((d) => d.task_id === task.id);
+                if (taskDrafts.length === 0) return null;
+                return (
+                  <div className="mt-4 space-y-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                      Generated drafts ({taskDrafts.length})
+                    </p>
+                    {taskDrafts.map((d) => (
+                      <div key={d.id} className="rounded-lg border border-border bg-background p-4">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-foreground">
+                              {String(d.draft_type).replace(/_/g, " ")}
+                            </span>
+                            <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                              d.risk_level === "high" ? "bg-red-100 text-red-900" : d.risk_level === "medium" ? "bg-amber-100 text-amber-900" : "bg-emerald-100 text-emerald-900"
+                            }`}>
+                              {d.risk_level} risk
+                            </span>
+                            <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                              d.approval_status === "approved" ? "bg-emerald-100 text-emerald-900" : d.approval_status === "rejected" ? "bg-red-100 text-red-900" : d.approval_status === "completed" ? "bg-blue-100 text-blue-900" : "bg-muted text-muted-foreground"
+                            }`}>
+                              {d.approval_status}
+                            </span>
+                          </div>
+                          <span className="text-[11px] text-muted-foreground">
+                            {new Date(d.generated_at).toLocaleString("en-AU")} · {d.generated_by}
+                          </span>
+                        </div>
+
+                        <p className="mt-2 text-sm font-medium text-foreground">{d.proposed_change}</p>
+
+                        <div className="mt-2 grid gap-2 text-xs text-muted-foreground md:grid-cols-2">
+                          {d.target_url && (
+                            <div><span className="font-semibold text-foreground">Target URL:</span> <a className="text-accent underline" href={d.target_url} target="_blank" rel="noreferrer">{d.target_url}</a></div>
+                          )}
+                          {d.target_keyword && (
+                            <div><span className="font-semibold text-foreground">Target keyword:</span> {d.target_keyword}</div>
+                          )}
+                          {d.expected_seo_impact && (
+                            <div className="md:col-span-2"><span className="font-semibold text-foreground">Expected SEO impact:</span> {d.expected_seo_impact}</div>
+                          )}
+                        </div>
+
+                        {(d.before_text || d.after_text) && (
+                          <div className="mt-3 grid gap-2 md:grid-cols-2">
+                            <div className="rounded border border-border bg-surface p-2">
+                              <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Before</p>
+                              <p className="mt-1 whitespace-pre-wrap text-xs text-foreground">{d.before_text || "—"}</p>
+                            </div>
+                            <div className="rounded border border-emerald-200 bg-emerald-50 p-2">
+                              <p className="text-[10px] uppercase tracking-wide text-emerald-800">After (proposed)</p>
+                              <p className="mt-1 whitespace-pre-wrap text-xs text-emerald-950">{d.after_text || "—"}</p>
+                            </div>
+                          </div>
+                        )}
+
+                        {d.payload && Object.keys(d.payload).length > 0 && (
+                          <details className="mt-3">
+                            <summary className="cursor-pointer text-[11px] text-muted-foreground">Structured payload</summary>
+                            <pre className="mt-2 overflow-x-auto rounded border border-border bg-surface p-2 text-[11px] text-foreground">{JSON.stringify(d.payload, null, 2)}</pre>
+                          </details>
+                        )}
+
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          <button
+                            onClick={() => setDraftApprovalStatus(d.id, "approved")}
+                            disabled={d.approval_status === "approved"}
+                            className="rounded border border-emerald-300 bg-emerald-50 px-2 py-1 text-[11px] font-semibold text-emerald-900 disabled:opacity-50"
+                          >
+                            Approve draft
+                          </button>
+                          <button
+                            onClick={() => setDraftApprovalStatus(d.id, "rejected")}
+                            disabled={d.approval_status === "rejected"}
+                            className="rounded border border-red-300 bg-red-50 px-2 py-1 text-[11px] font-semibold text-red-900 disabled:opacity-50"
+                          >
+                            Reject draft
+                          </button>
+                          <button
+                            onClick={() => setDraftApprovalStatus(d.id, "completed")}
+                            disabled={d.approval_status === "completed"}
+                            className="rounded border border-blue-300 bg-blue-50 px-2 py-1 text-[11px] font-semibold text-blue-900 disabled:opacity-50"
+                          >
+                            Mark completed
+                          </button>
+                          <button
+                            onClick={() => setDraftApprovalStatus(d.id, "pending")}
+                            disabled={d.approval_status === "pending"}
+                            className="rounded border border-border bg-background px-2 py-1 text-[11px] font-semibold text-muted-foreground disabled:opacity-50"
+                          >
+                            Reset to pending
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
             </article>
           ))}
         </section>
