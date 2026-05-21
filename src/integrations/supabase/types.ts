@@ -1346,6 +1346,72 @@ export type Database = {
         }
         Relationships: []
       }
+      seo_winning_patterns: {
+        Row: {
+          average_click_delta: number | null
+          average_ctr_delta: number | null
+          average_position_delta: number | null
+          confidence_level: string
+          created_at: string
+          draft_type: string | null
+          failure_count: number
+          id: string
+          keyword_intent: string | null
+          neutral_count: number
+          page_type: string | null
+          pattern_key: string
+          pattern_type: string
+          recommendation: string | null
+          sample_draft_ids: Json
+          signals: Json
+          status: string
+          success_count: number
+          updated_at: string
+        }
+        Insert: {
+          average_click_delta?: number | null
+          average_ctr_delta?: number | null
+          average_position_delta?: number | null
+          confidence_level?: string
+          created_at?: string
+          draft_type?: string | null
+          failure_count?: number
+          id?: string
+          keyword_intent?: string | null
+          neutral_count?: number
+          page_type?: string | null
+          pattern_key: string
+          pattern_type: string
+          recommendation?: string | null
+          sample_draft_ids?: Json
+          signals?: Json
+          status?: string
+          success_count?: number
+          updated_at?: string
+        }
+        Update: {
+          average_click_delta?: number | null
+          average_ctr_delta?: number | null
+          average_position_delta?: number | null
+          confidence_level?: string
+          created_at?: string
+          draft_type?: string | null
+          failure_count?: number
+          id?: string
+          keyword_intent?: string | null
+          neutral_count?: number
+          page_type?: string | null
+          pattern_key?: string
+          pattern_type?: string
+          recommendation?: string | null
+          sample_draft_ids?: Json
+          signals?: Json
+          status?: string
+          success_count?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           ads_txt: string | null

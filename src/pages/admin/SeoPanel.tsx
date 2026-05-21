@@ -4,11 +4,33 @@ import { toast } from "@/hooks/use-toast";
 import { Copy, Check, AlertTriangle } from "lucide-react";
 import { DraftSandboxPreview } from "@/components/admin/DraftSandboxPreview";
 import { DraftImpactInline, ImpactList, StatTile } from "@/components/admin/DraftImpactTracking";
+import { PatternList } from "@/components/admin/WinningPatternsList";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const GSC_SITE_URL = "sc-domain:calcy.com.au";
 
-type SubTab = "overview" | "keywords" | "opportunities" | "money-pages" | "internal-links" | "content-gaps" | "content-optimizer" | "aeo" | "topic-clusters" | "knowledge-graph" | "auto-refresh" | "competitors" | "ctr" | "weekly-plan" | "impact" | "reports";
+type SubTab = "overview" | "keywords" | "opportunities" | "money-pages" | "internal-links" | "content-gaps" | "content-optimizer" | "aeo" | "topic-clusters" | "knowledge-graph" | "auto-refresh" | "competitors" | "ctr" | "weekly-plan" | "impact" | "patterns" | "reports";
+
+type WinningPattern = {
+  id: string;
+  pattern_key: string;
+  pattern_type: string;
+  draft_type: string | null;
+  page_type: string | null;
+  keyword_intent: string | null;
+  confidence_level: string;
+  average_ctr_delta: number | null;
+  average_click_delta: number | null;
+  average_position_delta: number | null;
+  success_count: number;
+  failure_count: number;
+  neutral_count: number;
+  sample_draft_ids: string[];
+  recommendation: string | null;
+  signals: any;
+  status: "winning" | "risky" | "neutral" | string;
+  updated_at: string;
+};
 
 type DraftImpact = {
   id: string;
@@ -488,6 +510,8 @@ const SeoPanel = () => {
   const [weeklySeoTasks, setWeeklySeoTasks] = useState<WeeklySeoTask[]>([]);
   const [weeklySeoTaskDrafts, setWeeklySeoTaskDrafts] = useState<WeeklySeoTaskDraft[]>([]);
   const [draftImpacts, setDraftImpacts] = useState<DraftImpact[]>([]);
+  const [winningPatterns, setWinningPatterns] = useState<WinningPattern[]>([]);
+  const [learningPatterns, setLearningPatterns] = useState(false);
   const [trackingImpact, setTrackingImpact] = useState(false);
   const [generatingDraftFor, setGeneratingDraftFor] = useState<string | null>(null);
   const [taskActionFor, setTaskActionFor] = useState<string | null>(null);
@@ -558,7 +582,7 @@ const SeoPanel = () => {
   }, []);
 
   const loadAll = async () => {
-    const [tokens, kw, opp, money, links, gaps, contentOpt, aeo, clusters, knowledge, refresh, competitors, ctr, plan, briefing, rep, sj, taskDrafts, impacts] = await Promise.all([
+    const [tokens, kw, opp, money, links, gaps, contentOpt, aeo, clusters, knowledge, refresh, competitors, ctr, plan, briefing, rep, sj, taskDrafts, impacts, patterns] = await Promise.all([
       supabase.from("gsc_oauth_tokens").select("id, is_active"),
       supabase.from("seo_keywords").select("*").eq("is_active", true).order("opportunity_score", { ascending: false }),
       supabase.from("seo_opportunities").select("*").eq("status", "open").order("score", { ascending: false }).limit(100),
@@ -575,9 +599,10 @@ const SeoPanel = () => {
       supabase.from("weekly_seo_tasks").select("*").order("week_start", { ascending: false }).order("priority_score", { ascending: false }).limit(10),
       supabase.from("weekly_seo_briefings").select("*").order("week_start", { ascending: false }).limit(1),
       supabase.from("seo_reports").select("*").order("generated_at", { ascending: false }).limit(20),
-      supabase.from("sync_jobs").select("*").in("job_type", ["gsc_data", "trends", "seo_opportunity_scoring", "money_page_scoring", "internal_link_opportunities", "content_gap_analysis", "content_optimization", "aeo_optimization", "topic_cluster_visualization", "semantic_finance_knowledge_graph", "auto_refresh_engine", "competitor_tracking", "ctr_optimization", "weekly_seo_plan", "weekly_seo_briefing", "weekly_seo_task_drafts", "weekly_seo_task_review", "weekly_seo_task_draft_review", "weekly_seo_task_draft_apply", "weekly_seo_task_draft_rollback", "seo_draft_impact"]).order("started_at", { ascending: false }).limit(20),
+      supabase.from("sync_jobs").select("*").in("job_type", ["gsc_data", "trends", "seo_opportunity_scoring", "money_page_scoring", "internal_link_opportunities", "content_gap_analysis", "content_optimization", "aeo_optimization", "topic_cluster_visualization", "semantic_finance_knowledge_graph", "auto_refresh_engine", "competitor_tracking", "ctr_optimization", "weekly_seo_plan", "weekly_seo_briefing", "weekly_seo_task_drafts", "weekly_seo_task_review", "weekly_seo_task_draft_review", "weekly_seo_task_draft_apply", "weekly_seo_task_draft_rollback", "seo_draft_impact", "seo_winning_patterns"]).order("started_at", { ascending: false }).limit(20),
       (supabase as any).from("weekly_seo_task_drafts").select("*").order("generated_at", { ascending: false }).limit(300),
       (supabase as any).from("seo_draft_impact").select("*").order("last_computed_at", { ascending: false }).limit(300),
+      (supabase as any).from("seo_winning_patterns").select("*").order("updated_at", { ascending: false }).limit(200),
     ]);
     const tokenRows = (tokens.data as { id: string; is_active: boolean | null }[] | null) || [];
     setGscConnected(tokenRows.some((t) => t.is_active));
@@ -600,6 +625,7 @@ const SeoPanel = () => {
     setWeeklySeoTasks((plan.data as WeeklySeoTask[]) || []);
     setWeeklySeoTaskDrafts(((taskDrafts as any)?.data as WeeklySeoTaskDraft[]) || []);
     setDraftImpacts(((impacts as any)?.data as DraftImpact[]) || []);
+    setWinningPatterns(((patterns as any)?.data as WinningPattern[]) || []);
     setWeeklySeoBriefing(((briefing.data as WeeklySeoBriefing[] | null) || [])[0] || null);
     setReports((rep.data as Report[]) || []);
     setLatestReport((rep.data?.find((r: Report) => r.report_type === "weekly_summary") as Report) || null);
@@ -790,6 +816,25 @@ const SeoPanel = () => {
     }
   };
 
+  const runLearnPatterns = async () => {
+    setLearningPatterns(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("learn-winning-patterns", { body: {} });
+      if (error) throw error;
+      if (data?.success === false) throw new Error(data?.error || "learn-winning-patterns failed");
+      toast({
+        title: "Pattern learning complete",
+        description: `Analyzed ${data?.analyzed ?? 0} impact records · ${data?.patterns ?? 0} patterns · winning ${data?.winning ?? 0} · risky ${data?.risky ?? 0}.`,
+      });
+      await loadAll();
+    } catch (err: any) {
+      console.error("[learn-winning-patterns] failed:", err);
+      toast({ title: "Pattern learning failed", description: err?.message || String(err), variant: "destructive" });
+    } finally {
+      setLearningPatterns(false);
+    }
+  };
+
   const impactByDraft = useMemo(() => {
     const m = new Map<string, DraftImpact>();
     for (const i of draftImpacts) m.set(i.draft_id, i);
@@ -976,7 +1021,7 @@ const SeoPanel = () => {
 
       {/* Sub-tab nav */}
       <div className="flex flex-wrap gap-2 border-b border-border">
-        {(["overview", "keywords", "opportunities", "money-pages", "internal-links", "content-gaps", "content-optimizer", "aeo", "topic-clusters", "knowledge-graph", "auto-refresh", "competitors", "ctr", "weekly-plan", "impact", "reports"] as SubTab[]).map((t) => (
+        {(["overview", "keywords", "opportunities", "money-pages", "internal-links", "content-gaps", "content-optimizer", "aeo", "topic-clusters", "knowledge-graph", "auto-refresh", "competitors", "ctr", "weekly-plan", "impact", "patterns", "reports"] as SubTab[]).map((t) => (
           <button
             key={t}
             onClick={() => setSub(t)}
@@ -984,7 +1029,7 @@ const SeoPanel = () => {
               sub === t ? "border-accent text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
-            {t === "internal-links" ? "Internal links" : t === "content-gaps" ? "Content gaps" : t === "content-optimizer" ? "Content optimizer" : t === "topic-clusters" ? "Topic clusters" : t === "knowledge-graph" ? "Knowledge graph" : t === "auto-refresh" ? "Auto refresh" : t === "money-pages" ? "Money pages" : t === "aeo" ? "AEO" : t === "ctr" ? "CTR" : t === "weekly-plan" ? "Weekly plan" : t === "impact" ? "Impact" : t}
+            {t === "internal-links" ? "Internal links" : t === "content-gaps" ? "Content gaps" : t === "content-optimizer" ? "Content optimizer" : t === "topic-clusters" ? "Topic clusters" : t === "knowledge-graph" ? "Knowledge graph" : t === "auto-refresh" ? "Auto refresh" : t === "money-pages" ? "Money pages" : t === "aeo" ? "AEO" : t === "ctr" ? "CTR" : t === "weekly-plan" ? "Weekly plan" : t === "impact" ? "Impact" : t === "patterns" ? "Patterns" : t}
           </button>
         ))}
       </div>
@@ -3174,6 +3219,83 @@ const SeoPanel = () => {
           )}
         </section>
       )}
+
+      {sub === "patterns" && (
+        <section className="space-y-4">
+          <div className="rounded-2xl border border-border bg-surface p-6">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-semibold text-foreground">Winning patterns memory</h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Learns from applied draft impact records to identify which draft types, page types and keyword intents drive improvements.
+                  Admin-only insights. Nothing is auto-applied or auto-published.
+                </p>
+              </div>
+              <button
+                onClick={() => runLearnPatterns()}
+                disabled={learningPatterns}
+                className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground disabled:opacity-50"
+              >
+                {learningPatterns ? "Learning..." : "Recompute patterns"}
+              </button>
+            </div>
+            {(() => {
+              const winning = winningPatterns.filter((p) => p.status === "winning");
+              const risky = winningPatterns.filter((p) => p.status === "risky");
+              const neutral = winningPatterns.filter((p) => p.status === "neutral");
+              const highConf = winningPatterns.filter((p) => p.confidence_level === "high").length;
+              return (
+                <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
+                  <StatTile label="Patterns learned" value={winningPatterns.length} />
+                  <StatTile label="Winning" value={winning.length} tone="green" />
+                  <StatTile label="Risky" value={risky.length} tone="red" />
+                  <StatTile label="High confidence" value={highConf} />
+                </div>
+              );
+            })()}
+          </div>
+
+          {winningPatterns.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-border bg-surface p-8 text-center text-sm text-muted-foreground">
+              No patterns learned yet. Apply approved drafts, run the impact tracker, then click "Recompute patterns".
+            </div>
+          ) : (
+            <>
+              <PatternList
+                title="Winning patterns — prioritize in future Weekly Plans"
+                tone="green"
+                emptyText="No winning patterns yet."
+                patterns={winningPatterns.filter((p) => p.status === "winning").sort((a, b) => (b.success_count - a.success_count))}
+              />
+              <PatternList
+                title="Risky patterns — review or avoid"
+                tone="red"
+                emptyText="No risky patterns flagged."
+                patterns={winningPatterns.filter((p) => p.status === "risky").sort((a, b) => (b.failure_count - a.failure_count))}
+              />
+              <PatternList
+                title="Best performing draft types"
+                tone="neutral"
+                emptyText="No data."
+                patterns={winningPatterns.filter((p) => p.pattern_type === "draft_type").sort((a, b) => ((b.average_ctr_delta ?? 0) - (a.average_ctr_delta ?? 0)))}
+              />
+              <PatternList
+                title="Best performing keyword intents"
+                tone="neutral"
+                emptyText="No data."
+                patterns={winningPatterns.filter((p) => p.pattern_type === "keyword_intent").sort((a, b) => ((b.average_click_delta ?? 0) - (a.average_click_delta ?? 0)))}
+              />
+              <PatternList
+                title="Best performing page types"
+                tone="neutral"
+                emptyText="No data."
+                patterns={winningPatterns.filter((p) => p.pattern_type === "page_type").sort((a, b) => ((b.average_ctr_delta ?? 0) - (a.average_ctr_delta ?? 0)))}
+              />
+            </>
+          )}
+        </section>
+      )}
+
 
       {/* REPORTS */}
       {sub === "reports" && (
