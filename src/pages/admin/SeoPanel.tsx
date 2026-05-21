@@ -1009,7 +1009,7 @@ const SeoPanel = () => {
               sub === t ? "border-accent text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
-            {t === "internal-links" ? "Internal links" : t === "content-gaps" ? "Content gaps" : t === "content-optimizer" ? "Content optimizer" : t === "topic-clusters" ? "Topic clusters" : t === "knowledge-graph" ? "Knowledge graph" : t === "auto-refresh" ? "Auto refresh" : t === "money-pages" ? "Money pages" : t === "aeo" ? "AEO" : t === "ctr" ? "CTR" : t === "weekly-plan" ? "Weekly plan" : t === "impact" ? "Impact" : t}
+            {t === "internal-links" ? "Internal links" : t === "content-gaps" ? "Content gaps" : t === "content-optimizer" ? "Content optimizer" : t === "topic-clusters" ? "Topic clusters" : t === "knowledge-graph" ? "Knowledge graph" : t === "auto-refresh" ? "Auto refresh" : t === "money-pages" ? "Money pages" : t === "aeo" ? "AEO" : t === "ctr" ? "CTR" : t === "weekly-plan" ? "Weekly plan" : t === "impact" ? "Impact" : t === "patterns" ? "Patterns" : t}
           </button>
         ))}
       </div>
