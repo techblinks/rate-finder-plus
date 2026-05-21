@@ -537,10 +537,31 @@ const SeoPanel = () => {
     try {
       const { data, error } = await supabase.functions.invoke(name, { body: body ?? {} });
       if (error) throw error;
-      toast({ title: `${name} complete`, description: data?.success ? "Data refreshed." : "Done." });
+      if (data && data.success === false) {
+        throw new Error(data.error || "Function returned success=false");
+      }
+      const parts: string[] = [];
+      const candidates: Array<[string, string]> = [
+        ["opportunities_scored", "opportunities"],
+        ["records_updated", "records updated"],
+        ["records_checked", "records checked"],
+        ["total", "rows"],
+        ["updated", "updated"],
+        ["newKeywords", "new keywords"],
+        ["inserted", "inserted"],
+        ["count", "rows"],
+      ];
+      for (const [key, label] of candidates) {
+        const v = (data as any)?.[key];
+        if (typeof v === "number") parts.push(`${v} ${label}`);
+      }
+      const desc = parts.length > 0 ? parts.join(" • ") : "Completed.";
+      toast({ title: `${name} complete`, description: desc });
       await loadAll();
     } catch (err: any) {
-      toast({ title: `${name} failed`, description: err.message, variant: "destructive" });
+      const msg = err?.message || err?.error || String(err);
+      console.error(`[${name}] failed:`, err);
+      toast({ title: `${name} failed`, description: msg, variant: "destructive" });
     } finally {
       setRunning(null);
     }
