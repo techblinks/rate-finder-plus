@@ -2745,6 +2745,7 @@ const SeoPanel = () => {
                   <p className="mt-1 text-sm text-foreground">{item.suggested_search_intent_match || "Align title, meta, intro and FAQ copy with the primary search intent."}</p>
                 </div>
               </div>
+              <RecommendationReasoning reasoning={item.signals?.reasoning} />
             </article>
           ))}
         </section>
