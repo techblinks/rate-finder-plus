@@ -665,7 +665,9 @@ Deno.serve(async (req) => {
         tasks_generated: topTasks.length,
         high_priority: topTasks.filter((task) => task.priority_level === "high").length,
         pending_approval: topTasks.length,
+        suppressed_low_quality: suppressionLog.length,
       },
+
     }).eq("id", jobId);
 
     return new Response(JSON.stringify({ success: true, briefing, tasks: topTasks }), {
