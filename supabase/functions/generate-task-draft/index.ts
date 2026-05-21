@@ -248,7 +248,14 @@ Rules:
         proposed_change: String(d.proposed_change).slice(0, 1000),
         before_text: d.before_text ? String(d.before_text).slice(0, 2000) : null,
         after_text: d.after_text ? String(d.after_text).slice(0, 4000) : null,
-        payload: d.payload ?? {},
+        payload: {
+          ...(d.payload ?? {}),
+          matched_pattern_ids: patterns
+            .filter((p: any) => (p.draft_type || "").toLowerCase() === String(d.draft_type).toLowerCase())
+            .slice(0, 5)
+            .map((p: any) => p.id),
+          pattern_reason: patterns.length === 0 ? "Learning data not sufficient yet." : null,
+        },
         expected_seo_impact: d.expected_seo_impact ? String(d.expected_seo_impact).slice(0, 500) : null,
         risk_level: ["low", "medium", "high"].includes(d.risk_level) ? d.risk_level : t.risk_level || "low",
         approval_status: "pending",
