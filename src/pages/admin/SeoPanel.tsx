@@ -598,6 +598,7 @@ const SeoPanel = () => {
     setCtrOptimizations((ctr.data as CtrOptimization[]) || []);
     setWeeklySeoTasks((plan.data as WeeklySeoTask[]) || []);
     setWeeklySeoTaskDrafts(((taskDrafts as any)?.data as WeeklySeoTaskDraft[]) || []);
+    setDraftImpacts(((impacts as any)?.data as DraftImpact[]) || []);
     setWeeklySeoBriefing(((briefing.data as WeeklySeoBriefing[] | null) || [])[0] || null);
     setReports((rep.data as Report[]) || []);
     setLatestReport((rep.data?.find((r: Report) => r.report_type === "weekly_summary") as Report) || null);
