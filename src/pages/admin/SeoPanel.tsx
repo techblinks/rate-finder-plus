@@ -509,6 +509,8 @@ const SeoPanel = () => {
   const [weeklySeoTasks, setWeeklySeoTasks] = useState<WeeklySeoTask[]>([]);
   const [weeklySeoTaskDrafts, setWeeklySeoTaskDrafts] = useState<WeeklySeoTaskDraft[]>([]);
   const [draftImpacts, setDraftImpacts] = useState<DraftImpact[]>([]);
+  const [winningPatterns, setWinningPatterns] = useState<WinningPattern[]>([]);
+  const [learningPatterns, setLearningPatterns] = useState(false);
   const [trackingImpact, setTrackingImpact] = useState(false);
   const [generatingDraftFor, setGeneratingDraftFor] = useState<string | null>(null);
   const [taskActionFor, setTaskActionFor] = useState<string | null>(null);
