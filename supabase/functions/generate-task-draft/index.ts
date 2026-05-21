@@ -205,11 +205,12 @@ Live page signals (may be empty):
 - Content optimization: ${JSON.stringify(opt?.[0] ?? null).slice(0, 1200)}
 - AEO optimization: ${JSON.stringify(aeo?.[0] ?? null).slice(0, 1200)}
 - Internal link signals: ${JSON.stringify(link ?? []).slice(0, 800)}
-
+${patternHintsBlock}
 Rules:
 - Stay strictly within scope of the task.
 - Drafts must be safe behind admin approval; never instruct to remove existing content.
 - Australian English. Mention AU states/RBA only when relevant.
+- Bias style, tone, and structure toward the learned winning patterns above (if any), and avoid the risky ones.
 - Do NOT produce more than 6 drafts total.`;
 
     let aiResult: any;
