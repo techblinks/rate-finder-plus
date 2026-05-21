@@ -2959,7 +2959,41 @@ const SeoPanel = () => {
                           >
                             Reset to pending
                           </button>
+                          {APPLY_SUPPORTED.has(d.draft_type) ? (
+                            d.approval_status === "applied" ? (
+                              <button
+                                onClick={() => rollbackAppliedDraft(d)}
+                                disabled={applyingDraftId === d.id}
+                                className="rounded border border-amber-400 bg-amber-50 px-2 py-1 text-[11px] font-semibold text-amber-900 disabled:opacity-50"
+                                title="Restore the previous override from the rollback snapshot"
+                              >
+                                {applyingDraftId === d.id ? "Rolling back..." : "Rollback applied draft"}
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => applyApprovedDraft(d)}
+                                disabled={applyingDraftId === d.id || d.approval_status !== "approved"}
+                                className="rounded border border-emerald-500 bg-emerald-600 px-2 py-1 text-[11px] font-semibold text-white disabled:opacity-50"
+                                title={d.approval_status === "approved" ? "Apply this approved draft (admin-only, rollback snapshot stored)" : "Only approved drafts can be applied"}
+                              >
+                                {applyingDraftId === d.id ? "Applying..." : "Apply approved draft"}
+                              </button>
+                            )
+                          ) : (
+                            <span className="rounded border border-dashed border-border bg-background px-2 py-1 text-[11px] font-semibold text-muted-foreground" title="Phase 1 supports only title/meta and FAQ apply. Other draft types remain manual-review only.">
+                              Manual review only (Phase 1)
+                            </span>
+                          )}
                         </div>
+
+                        {(d.applied_at || d.applied_by) && (
+                          <div className="mt-2 rounded border border-emerald-200 bg-emerald-50 p-2 text-[11px] text-emerald-900">
+                            <span className="font-semibold">Applied</span>
+                            {d.applied_at && <> at {new Date(d.applied_at).toLocaleString("en-AU")}</>}
+                            {d.applied_by && <> by {d.applied_by}</>}
+                            {d.rollback_snapshot && <> · rollback snapshot stored</>}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
