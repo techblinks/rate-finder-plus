@@ -221,7 +221,24 @@ Deno.serve(async (req) => {
 
     if (error) throw error;
 
-    const keywordRows = (data as KeywordRow[] | null) || [];
+    const allRows = (data as KeywordRow[] | null) || [];
+    const filterLog: { keyword: string; reason: string }[] = [];
+    const keywordRows: KeywordRow[] = [];
+    for (const row of allRows) {
+      const q = classifyKeyword({
+        keyword: row.keyword,
+        category: row.category,
+        impressions: row.calcy_impressions_28d,
+        clicks: row.calcy_clicks_28d,
+        ctr: row.calcy_ctr_28d,
+        position: row.calcy_position,
+      });
+      if (q.isNoise || (!q.isFinance && q.intent !== "calculator") || q.intent === "navigational") {
+        filterLog.push({ keyword: row.keyword, reason: q.noiseReason || (q.intent === "navigational" ? "navigational" : "non_finance") });
+        continue;
+      }
+      keywordRows.push(row);
+    }
     const pageMap = new Map<string, KeywordRow[]>();
 
     for (const row of keywordRows) {
