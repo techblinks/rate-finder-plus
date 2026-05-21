@@ -262,7 +262,20 @@ Deno.serve(async (req) => {
       const ctrGap = Math.max(0, stats.expectedCtr - stats.ctr);
       const positionBoost = stats.position != null && stats.position >= 3 && stats.position <= 15 ? 14 : 0;
       const declineBoost = stats.decliningClicks ? 8 : 0;
-      const opportunityScore = clamp(38 + Math.min(26, stats.impressions / 450) + Math.min(22, stats.missedClicks * 2.5) + ctrGap * 160 + positionBoost + declineBoost);
+      let opportunityScore = clamp(38 + Math.min(26, stats.impressions / 450) + Math.min(22, stats.missedClicks * 2.5) + ctrGap * 160 + positionBoost + declineBoost);
+
+      // Winning-pattern boost for title/meta improvements
+      const intent = classifyKeyword({ keyword: stats.topKeyword.keyword, position: stats.position, impressions: stats.impressions, clicks: stats.clicks }).intent;
+      const ctrMatch = patternsReady
+        ? matchPatterns(patterns, { url: page, draftType: "title_meta", keywordIntent: intent })
+        : null;
+      if (ctrMatch) {
+        opportunityScore = clamp(opportunityScore + Math.round(ctrMatch.pattern_match_score * 10));
+      }
+
+      let semantic = semanticImprovements(stats);
+      if (ctrMatch?.pattern_reason) semantic = `${semantic} | Pattern: ${ctrMatch.pattern_reason}`;
+      if (ctrMatch?.risk_pattern_warning) semantic = `${semantic} | Risk: ${ctrMatch.risk_pattern_warning}`;
 
       suggestions.push({
         page_url: page,
@@ -279,7 +292,7 @@ Deno.serve(async (req) => {
         suggested_faq_snippet: faqFor(stats),
         suggested_featured_snippet_answer: featuredAnswerFor(stats),
         suggested_emotional_trigger: emotionalTrigger(stats),
-        suggested_semantic_improvements: semanticImprovements(stats),
+        suggested_semantic_improvements: semantic,
         suggested_search_intent_match: searchIntentMatch(stats),
         reason: `${pageLabel(page)} ranks around position ${stats.position?.toFixed(1) ?? "unknown"} with ${stats.impressions.toLocaleString()} impressions and ${(stats.ctr * 100).toFixed(1)}% CTR. Expected CTR is ${(stats.expectedCtr * 100).toFixed(1)}%, leaving an estimated ${stats.missedClicks.toLocaleString()} missed clicks.`,
         priority_score: opportunityScore,
