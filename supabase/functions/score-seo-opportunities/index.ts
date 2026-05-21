@@ -148,12 +148,38 @@ function actionPartsFor(signals: string[]) {
   return [...new Set(parts)];
 }
 
-function buildRecommendation(row: KeywordRow, targetUrl: string, signals: string[]): string {
+function pageLabel(url: string): string {
+  if (url.includes("mortgage")) return "Mortgage Calculator";
+  if (url.includes("borrowing-power")) return "Borrowing Power Calculator";
+  if (url.includes("stamp-duty")) return "Stamp Duty Calculator";
+  if (url.includes("lmi")) return "LMI Calculator";
+  if (url.includes("hecs")) return "HECS Borrowing Power Calculator";
+  if (url.includes("refinance")) return "Refinance Calculator";
+  if (url.includes("extra-repayments")) return "Extra Repayments Calculator";
+  if (url.includes("loan-comparison")) return "Loan Comparison Calculator";
+  if (url.includes("rent-vs-buy")) return "Rent vs Buy Calculator";
+  return "Australian Finance page";
+}
+
+function buildRecommendation(
+  row: KeywordRow,
+  targetUrl: string,
+  signals: string[],
+  quality: { intent: string; financeScore: number; confidence: string },
+): string {
   const position = row.calcy_position ?? 99;
-  const keyword = row.keyword;
+  const label = pageLabel(targetUrl);
   const actions = actionPartsFor(signals);
-  const actionText = actions.length > 0 ? actions.join(", ") : "review the page for intent match and internal links";
-  return `${keyword} has ${(row.calcy_impressions_28d ?? 0).toLocaleString()} impressions, ${((row.calcy_ctr_28d ?? 0) * 100).toFixed(1)}% CTR, and average position ${position.toFixed(1)}. For ${targetUrl}, ${actionText}. Admin suggestions only; do not publish or change URLs automatically.`;
+  if (quality.intent === "calculator" || quality.intent === "transactional") {
+    actions.unshift(`align ${label} above-the-fold copy to ${quality.intent} intent for "${row.keyword}"`);
+  } else if (quality.intent === "comparison") {
+    actions.unshift(`add or expand a comparison/options table relevant to "${row.keyword}"`);
+  }
+  if (quality.financeScore >= 8) {
+    actions.push("add FAQ schema with 3-5 finance-specific Q&As and clear Australian assumptions");
+  }
+  const actionText = actions.length > 0 ? actions.join("; ") : "review intent match and internal links";
+  return `${row.keyword} ranks ~position ${position.toFixed(1)} on ${label} (${targetUrl}) with ${(row.calcy_impressions_28d ?? 0).toLocaleString()} impressions and ${((row.calcy_ctr_28d ?? 0) * 100).toFixed(1)}% CTR (confidence: ${quality.confidence}). Recommended: ${actionText}. Admin-only suggestion — do not auto-publish or change URLs.`;
 }
 
 function scoreKeyword(row: KeywordRow, draftKeywords: Set<string>, pageStats: Map<string, PageStats>): Opportunity | null {
