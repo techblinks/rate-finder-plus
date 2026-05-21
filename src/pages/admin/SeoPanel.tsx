@@ -486,6 +486,8 @@ const SeoPanel = () => {
   const [ctrOptimizations, setCtrOptimizations] = useState<CtrOptimization[]>([]);
   const [weeklySeoTasks, setWeeklySeoTasks] = useState<WeeklySeoTask[]>([]);
   const [weeklySeoTaskDrafts, setWeeklySeoTaskDrafts] = useState<WeeklySeoTaskDraft[]>([]);
+  const [draftImpacts, setDraftImpacts] = useState<DraftImpact[]>([]);
+  const [trackingImpact, setTrackingImpact] = useState(false);
   const [generatingDraftFor, setGeneratingDraftFor] = useState<string | null>(null);
   const [taskActionFor, setTaskActionFor] = useState<string | null>(null);
   const [weeklySeoBriefing, setWeeklySeoBriefing] = useState<WeeklySeoBriefing | null>(null);
