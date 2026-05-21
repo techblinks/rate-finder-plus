@@ -215,12 +215,18 @@ Deno.serve(async (req) => {
   });
 
   try {
-    const { data, error } = await supabase
-      .from("seo_keywords")
-      .select("keyword, category, target_page, calcy_clicks_28d, calcy_impressions_28d, calcy_ctr_28d, calcy_position, calcy_position_previous, trend_direction")
-      .eq("is_active", true);
+    const [{ data, error }, { data: patternsData }] = await Promise.all([
+      supabase
+        .from("seo_keywords")
+        .select("keyword, category, target_page, calcy_clicks_28d, calcy_impressions_28d, calcy_ctr_28d, calcy_position, calcy_position_previous, trend_direction")
+        .eq("is_active", true),
+      supabase.from("seo_winning_patterns").select("*").in("status", ["winning", "risky"]),
+    ]);
 
     if (error) throw error;
+
+    const patterns = (patternsData as WinningPattern[] | null) || [];
+    const patternsReady = hasEnoughLearningData(patterns);
 
     const allRows = (data as KeywordRow[] | null) || [];
     const filterLog: { keyword: string; reason: string }[] = [];
