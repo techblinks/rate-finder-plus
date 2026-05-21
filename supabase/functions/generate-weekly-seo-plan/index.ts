@@ -530,8 +530,23 @@ Deno.serve(async (req) => {
       if (current == null || previous == null) continue;
       const drop = current - previous;
       if (drop < 3 || impressions < 20) continue;
+      const q = classifyKeyword({
+        keyword: row.keyword,
+        category: row.category,
+        impressions,
+        clicks: row.calcy_clicks_28d,
+        position: current,
+      });
+      if (q.isNoise || q.intent === "navigational" || (!q.isFinance && q.intent !== "calculator")) {
+        suppressionLog.push({ source: "ranking_drop", keyword: row.keyword, reason: q.noiseReason || "non_finance" });
+        continue;
+      }
       const target = row.target_page || "/guides";
-      const score = clamp(58 + Math.min(22, impressions / 120) + Math.min(20, drop * 3));
+      let score = 58 + Math.min(22, impressions / 120) + Math.min(20, drop * 3);
+      score += moneyBoost(target);
+      if (q.confidence === "high") score += 6;
+      score = clamp(score);
+
       addTask(tasks, {
         week_start: currentWeek,
         task_title: `Investigate ranking drop for ${row.keyword}`,
