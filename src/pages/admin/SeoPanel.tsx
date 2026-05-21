@@ -815,6 +815,25 @@ const SeoPanel = () => {
     }
   };
 
+  const runLearnPatterns = async () => {
+    setLearningPatterns(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("learn-winning-patterns", { body: {} });
+      if (error) throw error;
+      if (data?.success === false) throw new Error(data?.error || "learn-winning-patterns failed");
+      toast({
+        title: "Pattern learning complete",
+        description: `Analyzed ${data?.analyzed ?? 0} impact records · ${data?.patterns ?? 0} patterns · winning ${data?.winning ?? 0} · risky ${data?.risky ?? 0}.`,
+      });
+      await loadAll();
+    } catch (err: any) {
+      console.error("[learn-winning-patterns] failed:", err);
+      toast({ title: "Pattern learning failed", description: err?.message || String(err), variant: "destructive" });
+    } finally {
+      setLearningPatterns(false);
+    }
+  };
+
   const impactByDraft = useMemo(() => {
     const m = new Map<string, DraftImpact>();
     for (const i of draftImpacts) m.set(i.draft_id, i);
