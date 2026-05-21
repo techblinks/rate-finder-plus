@@ -1365,6 +1365,7 @@ const SeoPanel = () => {
                   <a className="rounded-lg border border-border px-3 py-1.5 hover:bg-muted" href={`https://www.google.com/search?q=${encodeURIComponent(k.keyword)}&gl=au`} target="_blank" rel="noreferrer">View on Google</a>
                   <a className="rounded-lg border border-border px-3 py-1.5 hover:bg-muted" href={target} target="_blank" rel="noreferrer">View page</a>
                 </div>
+                <RecommendationReasoning reasoning={k.signals?.reasoning} />
               </div>
             );
           })}
