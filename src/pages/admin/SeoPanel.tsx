@@ -2946,6 +2946,8 @@ const SeoPanel = () => {
                 </div>
               </div>
 
+              <RecommendationReasoning reasoning={(task as any).source_refs?.reasoning} />
+
               {/* Approval workflow actions */}
               <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-border pt-4">
                 <button
