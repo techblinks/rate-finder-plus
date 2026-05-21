@@ -667,6 +667,66 @@ const SeoPanel = () => {
     }
   };
 
+  const [applyingDraftId, setApplyingDraftId] = useState<string | null>(null);
+  const APPLY_SUPPORTED = new Set(["title_meta", "faq"]);
+
+  const applyApprovedDraft = async (draft: WeeklySeoTaskDraft) => {
+    if (draft.approval_status !== "approved") {
+      toast({ title: "Cannot apply", description: "Only approved drafts can be applied.", variant: "destructive" });
+      return;
+    }
+    if (!APPLY_SUPPORTED.has(draft.draft_type)) {
+      toast({ title: "Manual review only", description: `Apply is not enabled for "${draft.draft_type}" in Phase 1.`, variant: "destructive" });
+      return;
+    }
+    const summary = draft.draft_type === "title_meta"
+      ? `Update title / meta description on ${draft.target_url}`
+      : `Add ${(draft.payload?.questions?.length ?? 0)} FAQ item(s) to ${draft.target_url}`;
+    const ok = typeof window !== "undefined" && window.confirm(
+      `Apply this approved draft?\n\n${summary}\n\nA rollback snapshot will be stored. Calculator logic, URLs, sitemap and schema are NOT modified.`,
+    );
+    if (!ok) return;
+    setApplyingDraftId(draft.id);
+    try {
+      const { data, error } = await supabase.functions.invoke("apply-task-draft", { body: { draftId: draft.id } });
+      if (error) throw error;
+      if (data && (data as any).success === false) throw new Error((data as any).error || "Apply failed");
+      toast({ title: "Draft applied", description: `Override stored for ${draft.target_url}. Rollback available.` });
+      await loadAll();
+    } catch (err: any) {
+      console.error("[apply-task-draft] failed:", err);
+      toast({ title: "Apply failed", description: err?.message || String(err), variant: "destructive" });
+    } finally {
+      setApplyingDraftId(null);
+    }
+  };
+
+  const rollbackAppliedDraft = async (draft: WeeklySeoTaskDraft) => {
+    if (draft.approval_status !== "applied") {
+      toast({ title: "Nothing to rollback", description: "Draft is not in 'applied' state.", variant: "destructive" });
+      return;
+    }
+    const ok = typeof window !== "undefined" && window.confirm(
+      `Roll back applied draft on ${draft.target_url}? The previous override will be restored.`,
+    );
+    if (!ok) return;
+    setApplyingDraftId(draft.id);
+    try {
+      const { data, error } = await supabase.functions.invoke("rollback-task-draft", { body: { draftId: draft.id } });
+      if (error) throw error;
+      if (data && (data as any).success === false) throw new Error((data as any).error || "Rollback failed");
+      toast({ title: "Draft rolled back", description: `Override restored for ${draft.target_url}.` });
+      await loadAll();
+    } catch (err: any) {
+      console.error("[rollback-task-draft] failed:", err);
+      toast({ title: "Rollback failed", description: err?.message || String(err), variant: "destructive" });
+    } finally {
+      setApplyingDraftId(null);
+    }
+  };
+
+
+
 
   const startGscOAuth = () => {
     window.location.href = `${SUPABASE_URL}/functions/v1/gsc-oauth-callback`;
