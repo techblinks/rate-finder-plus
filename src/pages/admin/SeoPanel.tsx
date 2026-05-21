@@ -529,8 +529,10 @@ const SeoPanel = () => {
       supabase.from("weekly_seo_tasks").select("*").order("week_start", { ascending: false }).order("priority_score", { ascending: false }).limit(10),
       supabase.from("weekly_seo_briefings").select("*").order("week_start", { ascending: false }).limit(1),
       supabase.from("seo_reports").select("*").order("generated_at", { ascending: false }).limit(20),
-      supabase.from("sync_jobs").select("*").in("job_type", ["gsc_data", "trends", "seo_opportunity_scoring", "money_page_scoring", "internal_link_opportunities", "content_gap_analysis", "content_optimization", "aeo_optimization", "topic_cluster_visualization", "semantic_finance_knowledge_graph", "auto_refresh_engine", "competitor_tracking", "ctr_optimization", "weekly_seo_plan", "weekly_seo_briefing"]).order("started_at", { ascending: false }).limit(20),
+      supabase.from("sync_jobs").select("*").in("job_type", ["gsc_data", "trends", "seo_opportunity_scoring", "money_page_scoring", "internal_link_opportunities", "content_gap_analysis", "content_optimization", "aeo_optimization", "topic_cluster_visualization", "semantic_finance_knowledge_graph", "auto_refresh_engine", "competitor_tracking", "ctr_optimization", "weekly_seo_plan", "weekly_seo_briefing", "weekly_seo_task_drafts"]).order("started_at", { ascending: false }).limit(20),
+      (supabase as any).from("weekly_seo_task_drafts").select("*").order("generated_at", { ascending: false }).limit(200),
     ]);
+    const drafts = (arguments as any); // placeholder, replaced below
     const tokenRows = (tokens.data as { id: string; is_active: boolean | null }[] | null) || [];
     setGscConnected(tokenRows.some((t) => t.is_active));
     setGscPreviouslyConnected(tokenRows.length > 0);
