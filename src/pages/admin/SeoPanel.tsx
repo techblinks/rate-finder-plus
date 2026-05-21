@@ -332,12 +332,15 @@ type WeeklySeoTaskDraft = {
   payload: any;
   expected_seo_impact: string | null;
   risk_level: "low" | "medium" | "high" | string;
-  approval_status: "pending" | "approved" | "rejected" | "completed" | string;
+  approval_status: "pending" | "approved" | "rejected" | "completed" | "applied" | string;
   reviewed_by: string | null;
   review_note: string | null;
   generated_by: string;
   generated_at: string;
   updated_at: string;
+  applied_at: string | null;
+  applied_by: string | null;
+  rollback_snapshot: any;
 };
 
 type WeeklySeoBriefing = {
@@ -529,7 +532,7 @@ const SeoPanel = () => {
       supabase.from("weekly_seo_tasks").select("*").order("week_start", { ascending: false }).order("priority_score", { ascending: false }).limit(10),
       supabase.from("weekly_seo_briefings").select("*").order("week_start", { ascending: false }).limit(1),
       supabase.from("seo_reports").select("*").order("generated_at", { ascending: false }).limit(20),
-      supabase.from("sync_jobs").select("*").in("job_type", ["gsc_data", "trends", "seo_opportunity_scoring", "money_page_scoring", "internal_link_opportunities", "content_gap_analysis", "content_optimization", "aeo_optimization", "topic_cluster_visualization", "semantic_finance_knowledge_graph", "auto_refresh_engine", "competitor_tracking", "ctr_optimization", "weekly_seo_plan", "weekly_seo_briefing", "weekly_seo_task_drafts"]).order("started_at", { ascending: false }).limit(20),
+      supabase.from("sync_jobs").select("*").in("job_type", ["gsc_data", "trends", "seo_opportunity_scoring", "money_page_scoring", "internal_link_opportunities", "content_gap_analysis", "content_optimization", "aeo_optimization", "topic_cluster_visualization", "semantic_finance_knowledge_graph", "auto_refresh_engine", "competitor_tracking", "ctr_optimization", "weekly_seo_plan", "weekly_seo_briefing", "weekly_seo_task_drafts", "weekly_seo_task_review", "weekly_seo_task_draft_review", "weekly_seo_task_draft_apply", "weekly_seo_task_draft_rollback"]).order("started_at", { ascending: false }).limit(20),
       (supabase as any).from("weekly_seo_task_drafts").select("*").order("generated_at", { ascending: false }).limit(300),
     ]);
     const tokenRows = (tokens.data as { id: string; is_active: boolean | null }[] | null) || [];
@@ -663,6 +666,66 @@ const SeoPanel = () => {
       toast({ title: "Failed to update draft", description: err?.message || String(err), variant: "destructive" });
     }
   };
+
+  const [applyingDraftId, setApplyingDraftId] = useState<string | null>(null);
+  const APPLY_SUPPORTED = new Set(["title_meta", "faq"]);
+
+  const applyApprovedDraft = async (draft: WeeklySeoTaskDraft) => {
+    if (draft.approval_status !== "approved") {
+      toast({ title: "Cannot apply", description: "Only approved drafts can be applied.", variant: "destructive" });
+      return;
+    }
+    if (!APPLY_SUPPORTED.has(draft.draft_type)) {
+      toast({ title: "Manual review only", description: `Apply is not enabled for "${draft.draft_type}" in Phase 1.`, variant: "destructive" });
+      return;
+    }
+    const summary = draft.draft_type === "title_meta"
+      ? `Update title / meta description on ${draft.target_url}`
+      : `Add ${(draft.payload?.questions?.length ?? 0)} FAQ item(s) to ${draft.target_url}`;
+    const ok = typeof window !== "undefined" && window.confirm(
+      `Apply this approved draft?\n\n${summary}\n\nA rollback snapshot will be stored. Calculator logic, URLs, sitemap and schema are NOT modified.`,
+    );
+    if (!ok) return;
+    setApplyingDraftId(draft.id);
+    try {
+      const { data, error } = await supabase.functions.invoke("apply-task-draft", { body: { draftId: draft.id } });
+      if (error) throw error;
+      if (data && (data as any).success === false) throw new Error((data as any).error || "Apply failed");
+      toast({ title: "Draft applied", description: `Override stored for ${draft.target_url}. Rollback available.` });
+      await loadAll();
+    } catch (err: any) {
+      console.error("[apply-task-draft] failed:", err);
+      toast({ title: "Apply failed", description: err?.message || String(err), variant: "destructive" });
+    } finally {
+      setApplyingDraftId(null);
+    }
+  };
+
+  const rollbackAppliedDraft = async (draft: WeeklySeoTaskDraft) => {
+    if (draft.approval_status !== "applied") {
+      toast({ title: "Nothing to rollback", description: "Draft is not in 'applied' state.", variant: "destructive" });
+      return;
+    }
+    const ok = typeof window !== "undefined" && window.confirm(
+      `Roll back applied draft on ${draft.target_url}? The previous override will be restored.`,
+    );
+    if (!ok) return;
+    setApplyingDraftId(draft.id);
+    try {
+      const { data, error } = await supabase.functions.invoke("rollback-task-draft", { body: { draftId: draft.id } });
+      if (error) throw error;
+      if (data && (data as any).success === false) throw new Error((data as any).error || "Rollback failed");
+      toast({ title: "Draft rolled back", description: `Override restored for ${draft.target_url}.` });
+      await loadAll();
+    } catch (err: any) {
+      console.error("[rollback-task-draft] failed:", err);
+      toast({ title: "Rollback failed", description: err?.message || String(err), variant: "destructive" });
+    } finally {
+      setApplyingDraftId(null);
+    }
+  };
+
+
 
 
   const startGscOAuth = () => {
@@ -2896,7 +2959,41 @@ const SeoPanel = () => {
                           >
                             Reset to pending
                           </button>
+                          {APPLY_SUPPORTED.has(d.draft_type) ? (
+                            d.approval_status === "applied" ? (
+                              <button
+                                onClick={() => rollbackAppliedDraft(d)}
+                                disabled={applyingDraftId === d.id}
+                                className="rounded border border-amber-400 bg-amber-50 px-2 py-1 text-[11px] font-semibold text-amber-900 disabled:opacity-50"
+                                title="Restore the previous override from the rollback snapshot"
+                              >
+                                {applyingDraftId === d.id ? "Rolling back..." : "Rollback applied draft"}
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => applyApprovedDraft(d)}
+                                disabled={applyingDraftId === d.id || d.approval_status !== "approved"}
+                                className="rounded border border-emerald-500 bg-emerald-600 px-2 py-1 text-[11px] font-semibold text-white disabled:opacity-50"
+                                title={d.approval_status === "approved" ? "Apply this approved draft (admin-only, rollback snapshot stored)" : "Only approved drafts can be applied"}
+                              >
+                                {applyingDraftId === d.id ? "Applying..." : "Apply approved draft"}
+                              </button>
+                            )
+                          ) : (
+                            <span className="rounded border border-dashed border-border bg-background px-2 py-1 text-[11px] font-semibold text-muted-foreground" title="Phase 1 supports only title/meta and FAQ apply. Other draft types remain manual-review only.">
+                              Manual review only (Phase 1)
+                            </span>
+                          )}
                         </div>
+
+                        {(d.applied_at || d.applied_by) && (
+                          <div className="mt-2 rounded border border-emerald-200 bg-emerald-50 p-2 text-[11px] text-emerald-900">
+                            <span className="font-semibold">Applied</span>
+                            {d.applied_at && <> at {new Date(d.applied_at).toLocaleString("en-AU")}</>}
+                            {d.applied_by && <> by {d.applied_by}</>}
+                            {d.rollback_snapshot && <> · rollback snapshot stored</>}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
