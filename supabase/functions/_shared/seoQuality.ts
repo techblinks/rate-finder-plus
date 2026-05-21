@@ -139,10 +139,6 @@ export function classifyKeyword(input: {
     isNoise = true;
     noiseReason = "accidental_single_click";
   }
-  for (const [term, weight] of Object.entries(FINANCE_TERMS)) {
-    if (lower.includes(term)) financeScore = Math.max(financeScore, weight);
-  }
-  if ((input.category || "").trim() && financeScore < 6) financeScore = Math.max(financeScore, 6);
 
   const isFinance = financeScore >= 4;
 
