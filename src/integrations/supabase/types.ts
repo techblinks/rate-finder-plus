@@ -1086,6 +1086,45 @@ export type Database = {
           },
         ]
       }
+      seo_page_overrides: {
+        Row: {
+          applied_draft_id: string | null
+          created_at: string
+          faq_additions: Json
+          id: string
+          meta_description: string | null
+          meta_title: string | null
+          source_task_id: string | null
+          updated_at: string
+          updated_by: string | null
+          url: string
+        }
+        Insert: {
+          applied_draft_id?: string | null
+          created_at?: string
+          faq_additions?: Json
+          id?: string
+          meta_description?: string | null
+          meta_title?: string | null
+          source_task_id?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          url: string
+        }
+        Update: {
+          applied_draft_id?: string | null
+          created_at?: string
+          faq_additions?: Json
+          id?: string
+          meta_description?: string | null
+          meta_title?: string | null
+          source_task_id?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          url?: string
+        }
+        Relationships: []
+      }
       seo_reports: {
         Row: {
           avg_ctr: number | null
@@ -1443,6 +1482,8 @@ export type Database = {
       weekly_seo_task_drafts: {
         Row: {
           after_text: string | null
+          applied_at: string | null
+          applied_by: string | null
           approval_status: string
           before_text: string | null
           draft_type: string
@@ -1455,6 +1496,7 @@ export type Database = {
           review_note: string | null
           reviewed_by: string | null
           risk_level: string
+          rollback_snapshot: Json | null
           target_keyword: string | null
           target_url: string | null
           task_id: string
@@ -1463,6 +1505,8 @@ export type Database = {
         }
         Insert: {
           after_text?: string | null
+          applied_at?: string | null
+          applied_by?: string | null
           approval_status?: string
           before_text?: string | null
           draft_type: string
@@ -1475,6 +1519,7 @@ export type Database = {
           review_note?: string | null
           reviewed_by?: string | null
           risk_level?: string
+          rollback_snapshot?: Json | null
           target_keyword?: string | null
           target_url?: string | null
           task_id: string
@@ -1483,6 +1528,8 @@ export type Database = {
         }
         Update: {
           after_text?: string | null
+          applied_at?: string | null
+          applied_by?: string | null
           approval_status?: string
           before_text?: string | null
           draft_type?: string
@@ -1495,6 +1542,7 @@ export type Database = {
           review_note?: string | null
           reviewed_by?: string | null
           risk_level?: string
+          rollback_snapshot?: Json | null
           target_keyword?: string | null
           target_url?: string | null
           task_id?: string
