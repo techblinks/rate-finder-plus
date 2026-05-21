@@ -522,7 +522,22 @@ Deno.serve(async (req) => {
         };
         return priorityRank[b.priority] - priorityRank[a.priority] || relationshipRank[b.relationship_type] - relationshipRank[a.relationship_type];
       })
-      .slice(0, 180);
+      .slice(0, 180)
+      .map((op) => ({
+        ...op,
+        signals: {
+          ...op.signals,
+          reasoning: buildReasoning({
+            kind: "internal_link",
+            target_url: op.target_page,
+            score: op.priority === "high" ? 80 : op.priority === "medium" ? 55 : 35,
+            priority: op.priority,
+            risk_level: "low",
+            signals: [String((op.signals as any)?.source_signal || op.relationship_type)],
+            notes: op.reason,
+          }),
+        },
+      }));
 
     if (opportunities.length > 0) {
       const { error: upsertError } = await supabase
