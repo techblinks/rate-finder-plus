@@ -1001,7 +1001,7 @@ const SeoPanel = () => {
 
       {/* Sub-tab nav */}
       <div className="flex flex-wrap gap-2 border-b border-border">
-        {(["overview", "keywords", "opportunities", "money-pages", "internal-links", "content-gaps", "content-optimizer", "aeo", "topic-clusters", "knowledge-graph", "auto-refresh", "competitors", "ctr", "weekly-plan", "impact", "reports"] as SubTab[]).map((t) => (
+        {(["overview", "keywords", "opportunities", "money-pages", "internal-links", "content-gaps", "content-optimizer", "aeo", "topic-clusters", "knowledge-graph", "auto-refresh", "competitors", "ctr", "weekly-plan", "impact", "patterns", "reports"] as SubTab[]).map((t) => (
           <button
             key={t}
             onClick={() => setSub(t)}
