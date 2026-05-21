@@ -235,6 +235,7 @@ Deno.serve(async (req) => {
       { data: freshness },
       { data: aeo },
       { data: keywords },
+      { data: patternsData },
     ] = await Promise.all([
       supabase.from("seo_opportunities").select("id, keyword, target_url, score, priority, reason, recommended_action, signals").eq("status", "open").order("score", { ascending: false }).limit(80),
       supabase.from("money_page_scores").select("id, page_url, page_title, money_score, reason, recommended_action, related_internal_links_needed").eq("status", "open").order("money_score", { ascending: false }).limit(40),
@@ -245,6 +246,7 @@ Deno.serve(async (req) => {
       supabase.from("auto_refresh_recommendations").select("id, page_url, page_title, freshness_score, priority_level, outdated_sections, recommended_updates").eq("status", "open").order("freshness_score", { ascending: true }).limit(80),
       supabase.from("aeo_optimizations").select("id, page_url, page_title, primary_topic, aeo_score, snippet_readiness_score, priority_level, recommended_improvements, missing_semantic_elements").eq("status", "open").order("aeo_score", { ascending: true }).limit(80),
       supabase.from("seo_keywords").select("id, keyword, target_page, category, calcy_position, calcy_position_previous, calcy_impressions_28d, calcy_clicks_28d, opportunity_score, trend_direction").eq("is_active", true).limit(1200),
+      supabase.from("seo_winning_patterns").select("*").in("status", ["winning", "risky"]),
     ]);
 
     const opportunityRows = (opportunities as SeoOpportunity[] | null) || [];
