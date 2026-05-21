@@ -8,7 +8,28 @@ import { DraftImpactInline, ImpactList, StatTile } from "@/components/admin/Draf
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const GSC_SITE_URL = "sc-domain:calcy.com.au";
 
-type SubTab = "overview" | "keywords" | "opportunities" | "money-pages" | "internal-links" | "content-gaps" | "content-optimizer" | "aeo" | "topic-clusters" | "knowledge-graph" | "auto-refresh" | "competitors" | "ctr" | "weekly-plan" | "impact" | "reports";
+type SubTab = "overview" | "keywords" | "opportunities" | "money-pages" | "internal-links" | "content-gaps" | "content-optimizer" | "aeo" | "topic-clusters" | "knowledge-graph" | "auto-refresh" | "competitors" | "ctr" | "weekly-plan" | "impact" | "patterns" | "reports";
+
+type WinningPattern = {
+  id: string;
+  pattern_key: string;
+  pattern_type: string;
+  draft_type: string | null;
+  page_type: string | null;
+  keyword_intent: string | null;
+  confidence_level: string;
+  average_ctr_delta: number | null;
+  average_click_delta: number | null;
+  average_position_delta: number | null;
+  success_count: number;
+  failure_count: number;
+  neutral_count: number;
+  sample_draft_ids: string[];
+  recommendation: string | null;
+  signals: any;
+  status: "winning" | "risky" | "neutral" | string;
+  updated_at: string;
+};
 
 type DraftImpact = {
   id: string;
