@@ -319,6 +319,10 @@ Deno.serve(async (req) => {
             stats.position != null && stats.position >= 3 && stats.position <= 15 ? "position_3_to_15" : null,
             stats.decliningClicks ? "declining_clicks_or_rank" : null,
           ].filter(Boolean),
+          pattern_match_score: ctrMatch?.pattern_match_score ?? 0,
+          matched_pattern_ids: ctrMatch?.matched_pattern_ids ?? [],
+          pattern_reason: patternsReady ? (ctrMatch?.pattern_reason ?? null) : INSUFFICIENT_LEARNING_DATA,
+          risk_pattern_warning: ctrMatch?.risk_pattern_warning ?? null,
         },
       });
     }
