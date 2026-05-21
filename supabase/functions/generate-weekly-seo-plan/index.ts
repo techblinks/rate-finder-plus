@@ -356,29 +356,47 @@ Deno.serve(async (req) => {
       });
     }
 
-    for (const item of ctrRows.slice(0, 20)) {
-      const score = clamp(item.priority_score);
+    for (const item of ctrRows) {
+      const q = classifyKeyword({
+        keyword: item.primary_keyword,
+        impressions: item.impressions_28d,
+        clicks: item.clicks_28d,
+        ctr: item.ctr_28d,
+        position: item.position,
+      });
+      if (q.isNoise || q.intent === "navigational" || (!q.isFinance && q.intent !== "calculator")) {
+        suppressionLog.push({ source: "ctr", keyword: item.primary_keyword, url: item.page_url, reason: q.noiseReason || "non_finance" });
+        continue;
+      }
+      let score = item.priority_score;
+      if (item.position != null && item.position >= 8 && item.position <= 20) score += 8;
+      if (item.impressions_28d >= 200 && item.ctr_28d < 0.02) score += 10;
+      score += moneyBoost(item.page_url);
+      if (q.confidence === "high") score += 6;
+      score = clamp(score);
+
       addTask(tasks, {
         week_start: currentWeek,
         task_title: `Lift CTR for ${pageLabel(item.page_url)}`,
         task_type: "ctr",
         affected_url: item.page_url,
-        expected_impact: `${item.impressions_28d.toLocaleString()} impressions at ${(item.ctr_28d * 100).toFixed(1)}% CTR, average position ${item.position?.toFixed(1) ?? "unknown"}.`,
+        expected_impact: `${item.impressions_28d.toLocaleString()} impressions at ${(item.ctr_28d * 100).toFixed(1)}% CTR, average position ${item.position?.toFixed(1) ?? "unknown"} (${q.intent}, confidence ${q.confidence}).`,
         expected_traffic_impact: trafficImpact(item.impressions_28d, item.estimated_missed_clicks),
-        expected_revenue_impact: "Medium-high: CTR gains can increase AdSense revenue without requiring ranking movement.",
+        expected_revenue_impact: moneyUrlScores.has(item.page_url) ? moneyTier(moneyUrlScores.get(item.page_url)!) : "Medium-high: CTR gains can increase AdSense revenue without requiring ranking movement.",
         risk_level: "low",
         priority_level: priorityLevel(score),
         suggested_implementation_prompt: implementationPrompt({
           taskType: "CTR Engine",
           affectedUrl: item.page_url,
           action: `Review title "${item.suggested_title}" and meta "${item.suggested_meta_description}" for admin approval.`,
-          context: item.reason,
+          context: `${item.reason} | intent=${q.intent}, confidence=${q.confidence}, finance_relevance=${q.financeScore}/10.`,
         }),
         approval_status: "pending",
         priority_score: score,
-        source_refs: { ctr_optimization_id: item.id, keyword: item.primary_keyword },
+        source_refs: { ctr_optimization_id: item.id, keyword: item.primary_keyword, intent: q.intent, confidence: q.confidence, finance_relevance_score: q.financeScore },
       });
     }
+
 
     for (const item of linkRows.slice(0, 30)) {
       const score = priorityWeight(item.priority);
