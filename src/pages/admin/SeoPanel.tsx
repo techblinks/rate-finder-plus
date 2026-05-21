@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { Copy, Check, AlertTriangle } from "lucide-react";
+import { DraftSandboxPreview } from "@/components/admin/DraftSandboxPreview";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const GSC_SITE_URL = "sc-domain:calcy.com.au";
@@ -668,6 +669,7 @@ const SeoPanel = () => {
   };
 
   const [applyingDraftId, setApplyingDraftId] = useState<string | null>(null);
+  const [previewDraftId, setPreviewDraftId] = useState<string | null>(null);
   const APPLY_SUPPORTED = new Set(["title_meta", "faq"]);
 
   const applyApprovedDraft = async (draft: WeeklySeoTaskDraft) => {
@@ -2959,6 +2961,13 @@ const SeoPanel = () => {
                           >
                             Reset to pending
                           </button>
+                          <button
+                            onClick={() => setPreviewDraftId(previewDraftId === d.id ? null : d.id)}
+                            className="rounded border border-accent/40 bg-accent/10 px-2 py-1 text-[11px] font-semibold text-accent"
+                            title="Preview SERP, FAQ, mobile snippet and AI Overview before applying. Nothing is published."
+                          >
+                            {previewDraftId === d.id ? "Hide preview" : "Preview in sandbox"}
+                          </button>
                           {APPLY_SUPPORTED.has(d.draft_type) ? (
                             d.approval_status === "applied" ? (
                               <button
@@ -2985,6 +2994,8 @@ const SeoPanel = () => {
                             </span>
                           )}
                         </div>
+
+                        {previewDraftId === d.id && <DraftSandboxPreview draft={d as any} />}
 
                         {(d.applied_at || d.applied_by) && (
                           <div className="mt-2 rounded border border-emerald-200 bg-emerald-50 p-2 text-[11px] text-emerald-900">
