@@ -338,7 +338,7 @@ Deno.serve(async (req) => {
     const [{ data: keywordRows, error: keywordError }, { data: drafts, error: draftError }, { data: patternsData }] = await Promise.all([
       supabase.from("seo_keywords").select("*").eq("is_active", true),
       supabase.from("content_drafts").select("target_keyword, slug, status"),
-      supabase.from("seo_winning_patterns").select("*").eq("status", "winning").or("status.eq.risky"),
+      supabase.from("seo_winning_patterns").select("*").in("status", ["winning", "risky"]),
     ]);
 
     if (keywordError) throw keywordError;
