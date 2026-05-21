@@ -332,12 +332,15 @@ type WeeklySeoTaskDraft = {
   payload: any;
   expected_seo_impact: string | null;
   risk_level: "low" | "medium" | "high" | string;
-  approval_status: "pending" | "approved" | "rejected" | "completed" | string;
+  approval_status: "pending" | "approved" | "rejected" | "completed" | "applied" | string;
   reviewed_by: string | null;
   review_note: string | null;
   generated_by: string;
   generated_at: string;
   updated_at: string;
+  applied_at: string | null;
+  applied_by: string | null;
+  rollback_snapshot: any;
 };
 
 type WeeklySeoBriefing = {
