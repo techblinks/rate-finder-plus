@@ -257,31 +257,80 @@ Deno.serve(async (req) => {
     const keywordRows = (keywords as KeywordRow[] | null) || [];
 
     const tasks = new Map<string, WeeklyTask>();
+    const suppressionLog: { source: string; keyword?: string; url?: string; reason: string }[] = [];
 
-    for (const item of opportunityRows.slice(0, 24)) {
-      const impressions = Number((item.signals?.impressions_28d as number | undefined) || 0);
-      const score = clamp(item.score);
+    // Money page URL set for revenue boosting
+    const moneyUrlScores = new Map<string, number>();
+    for (const m of moneyRows) moneyUrlScores.set(m.page_url, m.money_score);
+    const moneyBoost = (url: string) => {
+      const s = moneyUrlScores.get(url) ?? 0;
+      if (s >= 80) return 12;
+      if (s >= 60) return 6;
+      return 0;
+    };
+
+    for (const item of opportunityRows) {
+      const sig = (item.signals || {}) as Record<string, unknown>;
+      const intent = String(sig.intent || "informational");
+      const confidence = String(sig.confidence || "low");
+      const financeScore = Number(sig.finance_relevance_score || 0);
+      const qualityScore = Number(sig.quality_score || 0);
+      const impressions = Number((sig.impressions_28d as number | undefined) || 0);
+      const ctr = Number((sig.ctr_28d as number | undefined) || 0);
+      const expectedCtr = Number((sig.expected_ctr as number | undefined) || 0);
+      const position = sig.position == null ? null : Number(sig.position);
+
+      // Suppress noisy / low-confidence non-finance tasks
+      if (intent === "navigational") {
+        suppressionLog.push({ source: "opportunity", keyword: item.keyword, url: item.target_url, reason: "navigational" });
+        continue;
+      }
+      if (confidence === "low" && financeScore < 6 && item.score < 70) {
+        suppressionLog.push({ source: "opportunity", keyword: item.keyword, url: item.target_url, reason: "low_confidence_non_finance" });
+        continue;
+      }
+      if (qualityScore > 0 && qualityScore < 25 && item.score < 60) {
+        suppressionLog.push({ source: "opportunity", keyword: item.keyword, url: item.target_url, reason: "low_quality_score" });
+        continue;
+      }
+
+      let score = item.score;
+      // Boost: position band 8-20
+      if (position != null && position >= 8 && position <= 20) score += 8;
+      // Boost: high impressions + low CTR
+      if (impressions >= 200 && expectedCtr > 0 && ctr < expectedCtr * 0.6) score += 10;
+      // Boost: calculator/transactional/comparison intent
+      if (intent === "calculator" || intent === "transactional") score += 8;
+      else if (intent === "comparison") score += 4;
+      // Boost: high-confidence Australian finance
+      if (confidence === "high" && financeScore >= 7) score += 8;
+      // Boost: money page
+      score += moneyBoost(item.target_url);
+
+      score = clamp(score);
+
       addTask(tasks, {
         week_start: currentWeek,
         task_title: `Improve ${item.keyword} opportunity`,
         task_type: "opportunity",
         affected_url: item.target_url,
-        expected_impact: `${priorityLevel(score)} ROI: ${item.reason}`,
+        expected_impact: `${priorityLevel(score)} ROI (${intent}, confidence ${confidence}, finance ${financeScore}/10): ${item.reason}`,
         expected_traffic_impact: trafficImpact(impressions),
-        expected_revenue_impact: moneyTier(score),
+        expected_revenue_impact: moneyTier(Math.max(score, moneyUrlScores.get(item.target_url) ?? 0)),
         risk_level: "medium",
         priority_level: priorityLevel(score),
         suggested_implementation_prompt: implementationPrompt({
           taskType: "Opportunity Radar",
           affectedUrl: item.target_url,
           action: item.recommended_action,
-          context: item.reason,
+          context: `${item.reason} | intent=${intent}, confidence=${confidence}, finance_relevance=${financeScore}/10, quality=${qualityScore}/100.`,
         }),
         approval_status: "pending",
         priority_score: score,
-        source_refs: { seo_opportunity_id: item.id, keyword: item.keyword, priority: item.priority },
+        source_refs: { seo_opportunity_id: item.id, keyword: item.keyword, priority: item.priority, intent, confidence, finance_relevance_score: financeScore, quality_score: qualityScore },
       });
     }
+
 
     for (const item of moneyRows.slice(0, 16)) {
       const score = clamp(item.money_score);
