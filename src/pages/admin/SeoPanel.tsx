@@ -581,7 +581,7 @@ const SeoPanel = () => {
   }, []);
 
   const loadAll = async () => {
-    const [tokens, kw, opp, money, links, gaps, contentOpt, aeo, clusters, knowledge, refresh, competitors, ctr, plan, briefing, rep, sj, taskDrafts, impacts] = await Promise.all([
+    const [tokens, kw, opp, money, links, gaps, contentOpt, aeo, clusters, knowledge, refresh, competitors, ctr, plan, briefing, rep, sj, taskDrafts, impacts, patterns] = await Promise.all([
       supabase.from("gsc_oauth_tokens").select("id, is_active"),
       supabase.from("seo_keywords").select("*").eq("is_active", true).order("opportunity_score", { ascending: false }),
       supabase.from("seo_opportunities").select("*").eq("status", "open").order("score", { ascending: false }).limit(100),
