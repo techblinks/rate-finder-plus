@@ -114,21 +114,31 @@ export function classifyKeyword(input: {
       }
     }
   }
-  if (!isNoise && impressions < 10) {
-    isNoise = true;
-    noiseReason = "below_impression_threshold";
+  // Compute finance score early so we can gate noise rules conditionally.
+  let financeScore = 0;
+  for (const [term, weight] of Object.entries(FINANCE_TERMS)) {
+    if (lower.includes(term)) financeScore = Math.max(financeScore, weight);
   }
-  if (!isNoise && impressions <= 2 && clicks >= 1 && ctr >= 0.95) {
+  if ((input.category || "").trim() && financeScore < 6) financeScore = Math.max(financeScore, 6);
+
+  // Volume-based filters only apply to lower-confidence (non-strong-finance) keywords.
+  // Strong finance keywords are preserved even with sparse GSC data.
+  if (!isNoise && financeScore < 7) {
+    if (impressions < 10) {
+      isNoise = true;
+      noiseReason = "below_impression_threshold";
+    } else if (impressions <= 2 && clicks >= 1 && ctr >= 0.95) {
+      isNoise = true;
+      noiseReason = "accidental_single_click";
+    } else if (impressions < 5 && clicks <= 1) {
+      isNoise = true;
+      noiseReason = "low_confidence_volume";
+    }
+  } else if (!isNoise && impressions <= 2 && clicks >= 1 && ctr >= 0.95) {
+    // Even strong finance keywords: drop obvious accidental 1/1 100% CTR rows.
     isNoise = true;
     noiseReason = "accidental_single_click";
   }
-  if (!isNoise && impressions < 5 && clicks <= 1) {
-    isNoise = true;
-    noiseReason = "low_confidence_volume";
-  }
-
-  // Finance relevance score (0-10) using term hits + category hint
-  let financeScore = 0;
   for (const [term, weight] of Object.entries(FINANCE_TERMS)) {
     if (lower.includes(term)) financeScore = Math.max(financeScore, weight);
   }
