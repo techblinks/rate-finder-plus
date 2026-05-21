@@ -4,6 +4,7 @@ import { toast } from "@/hooks/use-toast";
 import { Copy, Check, AlertTriangle } from "lucide-react";
 import { DraftSandboxPreview } from "@/components/admin/DraftSandboxPreview";
 import { DraftImpactInline, ImpactList, StatTile } from "@/components/admin/DraftImpactTracking";
+import { PatternList } from "@/components/admin/WinningPatternsList";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const GSC_SITE_URL = "sc-domain:calcy.com.au";
