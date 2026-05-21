@@ -187,6 +187,21 @@ function scoreKeyword(row: KeywordRow, draftKeywords: Set<string>, pageStats: Ma
   const clicks = row.calcy_clicks_28d ?? 0;
   const ctr = row.calcy_ctr_28d ?? (impressions > 0 ? clicks / impressions : 0);
   const position = row.calcy_position;
+
+  const quality = classifyKeyword({
+    keyword: row.keyword,
+    category: row.category,
+    impressions,
+    clicks,
+    ctr,
+    position,
+  });
+
+  // Hard gate: drop noisy / non-finance / navigational keywords entirely.
+  if (quality.isNoise) return null;
+  if (!quality.isFinance && quality.intent !== "calculator") return null;
+  if (quality.intent === "navigational") return null;
+
   const previous = row.calcy_position_previous;
   const targetUrl = normaliseTargetUrl(row.target_page, row.category);
   const expected = expectedCtr(position);
@@ -243,7 +258,12 @@ function scoreKeyword(row: KeywordRow, draftKeywords: Set<string>, pageStats: Ma
     score += 10;
   }
 
-  if (signals.length === 0 || score < 20) return null;
+  // Finance intent + CPC boost
+  score += quality.financeScore * 1.5;
+  if (quality.intent === "calculator" || quality.intent === "transactional") score += 8;
+  if (quality.intent === "comparison") score += 5;
+
+  if (signals.length === 0 || score < 28) return null;
 
   const roundedScore = Math.round(clamp(score));
   const reasonParts = signals.map((signal) => {
@@ -263,10 +283,14 @@ function scoreKeyword(row: KeywordRow, draftKeywords: Set<string>, pageStats: Ma
     score: roundedScore,
     priority: priorityFor(roundedScore),
     reason: reasonParts.join("; "),
-    recommended_action: buildRecommendation(row, targetUrl, signals),
+    recommended_action: buildRecommendation(row, targetUrl, signals, quality),
     source_keyword_id: row.id,
     signals: {
       signals,
+      intent: quality.intent,
+      confidence: quality.confidence,
+      finance_relevance_score: quality.financeScore,
+      quality_score: quality.qualityScore,
       category: row.category,
       impressions_28d: impressions,
       clicks_28d: clicks,
@@ -324,10 +348,37 @@ Deno.serve(async (req) => {
         .filter((keyword): keyword is string => Boolean(keyword)),
     );
 
-    const activeKeywords = (keywordRows as KeywordRow[] | null) || [];
-    const pageStats = new Map<string, PageStats>();
+    const allKeywords = (keywordRows as KeywordRow[] | null) || [];
 
-    for (const row of activeKeywords) {
+    // Pre-filter pass: drop noisy / non-finance keywords from pageStats AND scoring.
+    const filterLog: { keyword: string; reason: string }[] = [];
+    const cleanKeywords: KeywordRow[] = [];
+    for (const row of allKeywords) {
+      const q = classifyKeyword({
+        keyword: row.keyword,
+        category: row.category,
+        impressions: row.calcy_impressions_28d,
+        clicks: row.calcy_clicks_28d,
+        ctr: row.calcy_ctr_28d,
+        position: row.calcy_position,
+      });
+      if (q.isNoise) {
+        filterLog.push({ keyword: row.keyword, reason: q.noiseReason || "noise" });
+        continue;
+      }
+      if (!q.isFinance && q.intent !== "calculator") {
+        filterLog.push({ keyword: row.keyword, reason: "non_finance_irrelevant" });
+        continue;
+      }
+      if (q.intent === "navigational") {
+        filterLog.push({ keyword: row.keyword, reason: "navigational_branded" });
+        continue;
+      }
+      cleanKeywords.push(row);
+    }
+
+    const pageStats = new Map<string, PageStats>();
+    for (const row of cleanKeywords) {
       const targetUrl = normaliseTargetUrl(row.target_page, row.category);
       const impressions = row.calcy_impressions_28d ?? 0;
       const clicks = row.calcy_clicks_28d ?? 0;
@@ -351,7 +402,7 @@ Deno.serve(async (req) => {
       pageStats.set(targetUrl, current);
     }
 
-    const opportunities = ((keywordRows as KeywordRow[] | null) || [])
+    const opportunities = cleanKeywords
       .map((row) => scoreKeyword(row, draftKeywords, pageStats))
       .filter((row): row is Opportunity => Boolean(row))
       .sort((a, b) => b.score - a.score)
@@ -373,11 +424,15 @@ Deno.serve(async (req) => {
     }
 
     const summary = {
-      total_keywords_checked: (keywordRows || []).length,
+      total_keywords_checked: allKeywords.length,
+      noisy_keywords_filtered: filterLog.length,
+      finance_keywords_evaluated: cleanKeywords.length,
       opportunities_scored: opportunities.length,
       high_priority: opportunities.filter((item) => item.priority === "high").length,
       medium_priority: opportunities.filter((item) => item.priority === "medium").length,
       low_priority: opportunities.filter((item) => item.priority === "low").length,
+      high_confidence: opportunities.filter((o) => (o.signals as Record<string, unknown>).confidence === "high").length,
+      ignored_sample: filterLog.slice(0, 25),
     };
 
     await supabase.from("seo_reports").insert({
