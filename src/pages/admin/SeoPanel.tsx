@@ -624,6 +624,7 @@ const SeoPanel = () => {
     setWeeklySeoTasks((plan.data as WeeklySeoTask[]) || []);
     setWeeklySeoTaskDrafts(((taskDrafts as any)?.data as WeeklySeoTaskDraft[]) || []);
     setDraftImpacts(((impacts as any)?.data as DraftImpact[]) || []);
+    setWinningPatterns(((patterns as any)?.data as WinningPattern[]) || []);
     setWeeklySeoBriefing(((briefing.data as WeeklySeoBriefing[] | null) || [])[0] || null);
     setReports((rep.data as Report[]) || []);
     setLatestReport((rep.data?.find((r: Report) => r.report_type === "weekly_summary") as Report) || null);
