@@ -430,6 +430,27 @@ Deno.serve(async (req) => {
         (sig as any).matched_pattern_ids = match.matched_pattern_ids;
         (sig as any).pattern_reason = match.pattern_reason;
         (sig as any).risk_pattern_warning = match.risk_pattern_warning;
+        (sig as any).reasoning = buildReasoning({
+          kind: "opportunity",
+          keyword: opp.keyword,
+          target_url: opp.target_url,
+          intent: String(sig.intent || ""),
+          confidence: String(sig.confidence || ""),
+          score: adjusted,
+          priority: opp.priority,
+          impressions_28d: Number(sig.impressions_28d || 0),
+          clicks_28d: Number(sig.clicks_28d || 0),
+          ctr_28d: Number(sig.ctr_28d || 0),
+          expected_ctr: Number(sig.expected_ctr || 0),
+          position: sig.position == null ? null : Number(sig.position),
+          previous_position: sig.previous_position == null ? null : Number(sig.previous_position),
+          pattern_match_score: match.pattern_match_score,
+          pattern_reason: match.pattern_reason,
+          risk_pattern_warning: match.risk_pattern_warning,
+          matched_pattern_ids: match.matched_pattern_ids,
+          learning_data_ready: true,
+          signals: Array.isArray(sig.signals) ? (sig.signals as string[]) : [],
+        });
         return { ...opp, score: adjusted };
       })
       .sort((a, b) => b.score - a.score)
