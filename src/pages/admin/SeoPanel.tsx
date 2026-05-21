@@ -319,6 +319,27 @@ type WeeklySeoTask = {
   generated_at: string | null;
 };
 
+type WeeklySeoTaskDraft = {
+  id: string;
+  task_id: string;
+  week_start: string | null;
+  draft_type: "title_meta" | "faq" | "internal_link" | "aeo_answer" | "content_refresh" | "comparison_table" | string;
+  target_url: string | null;
+  target_keyword: string | null;
+  proposed_change: string;
+  before_text: string | null;
+  after_text: string | null;
+  payload: any;
+  expected_seo_impact: string | null;
+  risk_level: "low" | "medium" | "high" | string;
+  approval_status: "pending" | "approved" | "rejected" | "completed" | string;
+  reviewed_by: string | null;
+  review_note: string | null;
+  generated_by: string;
+  generated_at: string;
+  updated_at: string;
+};
+
 type WeeklySeoBriefing = {
   id: string;
   week_start: string;
@@ -421,6 +442,9 @@ const SeoPanel = () => {
   const [competitorInsights, setCompetitorInsights] = useState<CompetitorTrackingInsight[]>([]);
   const [ctrOptimizations, setCtrOptimizations] = useState<CtrOptimization[]>([]);
   const [weeklySeoTasks, setWeeklySeoTasks] = useState<WeeklySeoTask[]>([]);
+  const [weeklySeoTaskDrafts, setWeeklySeoTaskDrafts] = useState<WeeklySeoTaskDraft[]>([]);
+  const [generatingDraftFor, setGeneratingDraftFor] = useState<string | null>(null);
+  const [taskActionFor, setTaskActionFor] = useState<string | null>(null);
   const [weeklySeoBriefing, setWeeklySeoBriefing] = useState<WeeklySeoBriefing | null>(null);
   const [reports, setReports] = useState<Report[]>([]);
   const [latestReport, setLatestReport] = useState<Report | null>(null);
@@ -488,7 +512,7 @@ const SeoPanel = () => {
   }, []);
 
   const loadAll = async () => {
-    const [tokens, kw, opp, money, links, gaps, contentOpt, aeo, clusters, knowledge, refresh, competitors, ctr, plan, briefing, rep, sj] = await Promise.all([
+    const [tokens, kw, opp, money, links, gaps, contentOpt, aeo, clusters, knowledge, refresh, competitors, ctr, plan, briefing, rep, sj, taskDrafts] = await Promise.all([
       supabase.from("gsc_oauth_tokens").select("id, is_active"),
       supabase.from("seo_keywords").select("*").eq("is_active", true).order("opportunity_score", { ascending: false }),
       supabase.from("seo_opportunities").select("*").eq("status", "open").order("score", { ascending: false }).limit(100),
@@ -505,7 +529,8 @@ const SeoPanel = () => {
       supabase.from("weekly_seo_tasks").select("*").order("week_start", { ascending: false }).order("priority_score", { ascending: false }).limit(10),
       supabase.from("weekly_seo_briefings").select("*").order("week_start", { ascending: false }).limit(1),
       supabase.from("seo_reports").select("*").order("generated_at", { ascending: false }).limit(20),
-      supabase.from("sync_jobs").select("*").in("job_type", ["gsc_data", "trends", "seo_opportunity_scoring", "money_page_scoring", "internal_link_opportunities", "content_gap_analysis", "content_optimization", "aeo_optimization", "topic_cluster_visualization", "semantic_finance_knowledge_graph", "auto_refresh_engine", "competitor_tracking", "ctr_optimization", "weekly_seo_plan", "weekly_seo_briefing"]).order("started_at", { ascending: false }).limit(20),
+      supabase.from("sync_jobs").select("*").in("job_type", ["gsc_data", "trends", "seo_opportunity_scoring", "money_page_scoring", "internal_link_opportunities", "content_gap_analysis", "content_optimization", "aeo_optimization", "topic_cluster_visualization", "semantic_finance_knowledge_graph", "auto_refresh_engine", "competitor_tracking", "ctr_optimization", "weekly_seo_plan", "weekly_seo_briefing", "weekly_seo_task_drafts"]).order("started_at", { ascending: false }).limit(20),
+      (supabase as any).from("weekly_seo_task_drafts").select("*").order("generated_at", { ascending: false }).limit(300),
     ]);
     const tokenRows = (tokens.data as { id: string; is_active: boolean | null }[] | null) || [];
     setGscConnected(tokenRows.some((t) => t.is_active));
@@ -526,6 +551,7 @@ const SeoPanel = () => {
     setCompetitorInsights((competitors.data as CompetitorTrackingInsight[]) || []);
     setCtrOptimizations((ctr.data as CtrOptimization[]) || []);
     setWeeklySeoTasks((plan.data as WeeklySeoTask[]) || []);
+    setWeeklySeoTaskDrafts(((taskDrafts as any)?.data as WeeklySeoTaskDraft[]) || []);
     setWeeklySeoBriefing(((briefing.data as WeeklySeoBriefing[] | null) || [])[0] || null);
     setReports((rep.data as Report[]) || []);
     setLatestReport((rep.data?.find((r: Report) => r.report_type === "weekly_summary") as Report) || null);
@@ -566,6 +592,78 @@ const SeoPanel = () => {
       setRunning(null);
     }
   };
+
+  const generateTaskDraft = async (taskId: string) => {
+    setGeneratingDraftFor(taskId);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-task-draft", { body: { taskId } });
+      if (error) throw error;
+      if (data && (data as any).success === false) throw new Error((data as any).error || "Draft generation failed");
+      const count = (data as any)?.inserted ?? 0;
+      toast({ title: "Draft generated", description: `${count} admin-review draft${count === 1 ? "" : "s"} created. Pending approval.` });
+      await loadAll();
+    } catch (err: any) {
+      const msg = err?.message || String(err);
+      console.error("[generate-task-draft] failed:", err);
+      toast({ title: "Draft generation failed", description: msg, variant: "destructive" });
+    } finally {
+      setGeneratingDraftFor(null);
+    }
+  };
+
+  const setTaskApprovalStatus = async (taskId: string, status: "approved" | "rejected" | "completed" | "pending") => {
+    setTaskActionFor(taskId);
+    try {
+      // weekly_seo_tasks.approval_status uses "done" historically; map "completed" -> "done"
+      const taskStatus = status === "completed" ? "done" : status;
+      const { error } = await supabase
+        .from("weekly_seo_tasks")
+        .update({ approval_status: taskStatus })
+        .eq("id", taskId);
+      if (error) throw error;
+      // Audit trail
+      await (supabase as any).from("sync_jobs").insert({
+        job_type: "weekly_seo_task_review",
+        status: "completed",
+        triggered_by: "admin",
+        started_at: new Date().toISOString(),
+        completed_at: new Date().toISOString(),
+        records_updated: 1,
+        summary: { task_id: taskId, approval_status: taskStatus },
+      });
+      toast({ title: `Task ${status}` });
+      await loadAll();
+    } catch (err: any) {
+      console.error("[task status update] failed:", err);
+      toast({ title: "Failed to update task", description: err?.message || String(err), variant: "destructive" });
+    } finally {
+      setTaskActionFor(null);
+    }
+  };
+
+  const setDraftApprovalStatus = async (draftId: string, status: "approved" | "rejected" | "completed" | "pending") => {
+    try {
+      const { error } = await (supabase as any)
+        .from("weekly_seo_task_drafts")
+        .update({ approval_status: status, reviewed_by: "admin" })
+        .eq("id", draftId);
+      if (error) throw error;
+      await (supabase as any).from("sync_jobs").insert({
+        job_type: "weekly_seo_task_draft_review",
+        status: "completed",
+        triggered_by: "admin",
+        started_at: new Date().toISOString(),
+        completed_at: new Date().toISOString(),
+        records_updated: 1,
+        summary: { draft_id: draftId, approval_status: status },
+      });
+      toast({ title: `Draft ${status}` });
+      await loadAll();
+    } catch (err: any) {
+      toast({ title: "Failed to update draft", description: err?.message || String(err), variant: "destructive" });
+    }
+  };
+
 
   const startGscOAuth = () => {
     window.location.href = `${SUPABASE_URL}/functions/v1/gsc-oauth-callback`;
@@ -2667,6 +2765,143 @@ const SeoPanel = () => {
                   <p className="mt-1 text-sm text-foreground">{task.suggested_implementation_prompt}</p>
                 </div>
               </div>
+
+              {/* Approval workflow actions */}
+              <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-border pt-4">
+                <button
+                  onClick={() => generateTaskDraft(task.id)}
+                  disabled={generatingDraftFor === task.id || taskActionFor === task.id}
+                  className="rounded-lg bg-accent px-3 py-2 text-xs font-semibold text-accent-foreground disabled:opacity-50"
+                >
+                  {generatingDraftFor === task.id ? "Generating draft..." : "Generate draft improvement"}
+                </button>
+                <button
+                  onClick={() => setTaskApprovalStatus(task.id, "approved")}
+                  disabled={taskActionFor === task.id || task.approval_status === "approved"}
+                  className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-900 disabled:opacity-50"
+                >
+                  Mark approved
+                </button>
+                <button
+                  onClick={() => setTaskApprovalStatus(task.id, "rejected")}
+                  disabled={taskActionFor === task.id || task.approval_status === "rejected"}
+                  className="rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-xs font-semibold text-red-900 disabled:opacity-50"
+                >
+                  Mark rejected
+                </button>
+                <button
+                  onClick={() => setTaskApprovalStatus(task.id, "completed")}
+                  disabled={taskActionFor === task.id || task.approval_status === "done"}
+                  className="rounded-lg border border-blue-300 bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-900 disabled:opacity-50"
+                >
+                  Mark completed
+                </button>
+                <span className="ml-auto text-[11px] text-muted-foreground">
+                  Drafts are admin-review only and never auto-published.
+                </span>
+              </div>
+
+              {/* Drafts list */}
+              {(() => {
+                const taskDrafts = weeklySeoTaskDrafts.filter((d) => d.task_id === task.id);
+                if (taskDrafts.length === 0) return null;
+                return (
+                  <div className="mt-4 space-y-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                      Generated drafts ({taskDrafts.length})
+                    </p>
+                    {taskDrafts.map((d) => (
+                      <div key={d.id} className="rounded-lg border border-border bg-background p-4">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-foreground">
+                              {String(d.draft_type).replace(/_/g, " ")}
+                            </span>
+                            <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                              d.risk_level === "high" ? "bg-red-100 text-red-900" : d.risk_level === "medium" ? "bg-amber-100 text-amber-900" : "bg-emerald-100 text-emerald-900"
+                            }`}>
+                              {d.risk_level} risk
+                            </span>
+                            <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                              d.approval_status === "approved" ? "bg-emerald-100 text-emerald-900" : d.approval_status === "rejected" ? "bg-red-100 text-red-900" : d.approval_status === "completed" ? "bg-blue-100 text-blue-900" : "bg-muted text-muted-foreground"
+                            }`}>
+                              {d.approval_status}
+                            </span>
+                          </div>
+                          <span className="text-[11px] text-muted-foreground">
+                            {new Date(d.generated_at).toLocaleString("en-AU")} · {d.generated_by}
+                          </span>
+                        </div>
+
+                        <p className="mt-2 text-sm font-medium text-foreground">{d.proposed_change}</p>
+
+                        <div className="mt-2 grid gap-2 text-xs text-muted-foreground md:grid-cols-2">
+                          {d.target_url && (
+                            <div><span className="font-semibold text-foreground">Target URL:</span> <a className="text-accent underline" href={d.target_url} target="_blank" rel="noreferrer">{d.target_url}</a></div>
+                          )}
+                          {d.target_keyword && (
+                            <div><span className="font-semibold text-foreground">Target keyword:</span> {d.target_keyword}</div>
+                          )}
+                          {d.expected_seo_impact && (
+                            <div className="md:col-span-2"><span className="font-semibold text-foreground">Expected SEO impact:</span> {d.expected_seo_impact}</div>
+                          )}
+                        </div>
+
+                        {(d.before_text || d.after_text) && (
+                          <div className="mt-3 grid gap-2 md:grid-cols-2">
+                            <div className="rounded border border-border bg-surface p-2">
+                              <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Before</p>
+                              <p className="mt-1 whitespace-pre-wrap text-xs text-foreground">{d.before_text || "—"}</p>
+                            </div>
+                            <div className="rounded border border-emerald-200 bg-emerald-50 p-2">
+                              <p className="text-[10px] uppercase tracking-wide text-emerald-800">After (proposed)</p>
+                              <p className="mt-1 whitespace-pre-wrap text-xs text-emerald-950">{d.after_text || "—"}</p>
+                            </div>
+                          </div>
+                        )}
+
+                        {d.payload && Object.keys(d.payload).length > 0 && (
+                          <details className="mt-3">
+                            <summary className="cursor-pointer text-[11px] text-muted-foreground">Structured payload</summary>
+                            <pre className="mt-2 overflow-x-auto rounded border border-border bg-surface p-2 text-[11px] text-foreground">{JSON.stringify(d.payload, null, 2)}</pre>
+                          </details>
+                        )}
+
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          <button
+                            onClick={() => setDraftApprovalStatus(d.id, "approved")}
+                            disabled={d.approval_status === "approved"}
+                            className="rounded border border-emerald-300 bg-emerald-50 px-2 py-1 text-[11px] font-semibold text-emerald-900 disabled:opacity-50"
+                          >
+                            Approve draft
+                          </button>
+                          <button
+                            onClick={() => setDraftApprovalStatus(d.id, "rejected")}
+                            disabled={d.approval_status === "rejected"}
+                            className="rounded border border-red-300 bg-red-50 px-2 py-1 text-[11px] font-semibold text-red-900 disabled:opacity-50"
+                          >
+                            Reject draft
+                          </button>
+                          <button
+                            onClick={() => setDraftApprovalStatus(d.id, "completed")}
+                            disabled={d.approval_status === "completed"}
+                            className="rounded border border-blue-300 bg-blue-50 px-2 py-1 text-[11px] font-semibold text-blue-900 disabled:opacity-50"
+                          >
+                            Mark completed
+                          </button>
+                          <button
+                            onClick={() => setDraftApprovalStatus(d.id, "pending")}
+                            disabled={d.approval_status === "pending"}
+                            className="rounded border border-border bg-background px-2 py-1 text-[11px] font-semibold text-muted-foreground disabled:opacity-50"
+                          >
+                            Reset to pending
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
             </article>
           ))}
         </section>

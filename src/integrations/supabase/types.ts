@@ -1440,6 +1440,69 @@ export type Database = {
         }
         Relationships: []
       }
+      weekly_seo_task_drafts: {
+        Row: {
+          after_text: string | null
+          approval_status: string
+          before_text: string | null
+          draft_type: string
+          expected_seo_impact: string | null
+          generated_at: string
+          generated_by: string
+          id: string
+          payload: Json
+          proposed_change: string
+          review_note: string | null
+          reviewed_by: string | null
+          risk_level: string
+          target_keyword: string | null
+          target_url: string | null
+          task_id: string
+          updated_at: string
+          week_start: string | null
+        }
+        Insert: {
+          after_text?: string | null
+          approval_status?: string
+          before_text?: string | null
+          draft_type: string
+          expected_seo_impact?: string | null
+          generated_at?: string
+          generated_by?: string
+          id?: string
+          payload?: Json
+          proposed_change: string
+          review_note?: string | null
+          reviewed_by?: string | null
+          risk_level?: string
+          target_keyword?: string | null
+          target_url?: string | null
+          task_id: string
+          updated_at?: string
+          week_start?: string | null
+        }
+        Update: {
+          after_text?: string | null
+          approval_status?: string
+          before_text?: string | null
+          draft_type?: string
+          expected_seo_impact?: string | null
+          generated_at?: string
+          generated_by?: string
+          id?: string
+          payload?: Json
+          proposed_change?: string
+          review_note?: string | null
+          reviewed_by?: string | null
+          risk_level?: string
+          target_keyword?: string | null
+          target_url?: string | null
+          task_id?: string
+          updated_at?: string
+          week_start?: string | null
+        }
+        Relationships: []
+      }
       weekly_seo_tasks: {
         Row: {
           affected_url: string
