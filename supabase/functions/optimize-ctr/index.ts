@@ -1,6 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { classifyKeyword } from "../_shared/seoQuality.ts";
 import { matchPatterns, hasEnoughLearningData, INSUFFICIENT_LEARNING_DATA, type WinningPattern } from "../_shared/patternMatch.ts";
+import { buildReasoning } from "../_shared/decisionIntelligence.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -323,6 +324,31 @@ Deno.serve(async (req) => {
           matched_pattern_ids: ctrMatch?.matched_pattern_ids ?? [],
           pattern_reason: patternsReady ? (ctrMatch?.pattern_reason ?? null) : INSUFFICIENT_LEARNING_DATA,
           risk_pattern_warning: ctrMatch?.risk_pattern_warning ?? null,
+          reasoning: buildReasoning({
+            kind: "ctr",
+            keyword: stats.topKeyword.keyword,
+            target_url: page,
+            draft_type: "title_meta",
+            intent,
+            confidence: "medium",
+            score: opportunityScore,
+            impressions_28d: stats.impressions,
+            clicks_28d: stats.clicks,
+            ctr_28d: stats.ctr,
+            expected_ctr: stats.expectedCtr,
+            position: stats.position,
+            estimated_missed_clicks: stats.missedClicks,
+            pattern_match_score: ctrMatch?.pattern_match_score ?? 0,
+            pattern_reason: ctrMatch?.pattern_reason ?? null,
+            risk_pattern_warning: ctrMatch?.risk_pattern_warning ?? null,
+            matched_pattern_ids: ctrMatch?.matched_pattern_ids ?? [],
+            learning_data_ready: patternsReady,
+            signals: [
+              stats.impressions >= 80 && stats.ctr < stats.expectedCtr * 0.78 ? "high_impressions_low_ctr" : null,
+              stats.position != null && stats.position >= 3 && stats.position <= 15 ? "position_3_to_15" : null,
+              stats.decliningClicks ? "declining_clicks_or_rank" : null,
+            ].filter(Boolean) as string[],
+          }),
         },
       });
     }

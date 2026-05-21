@@ -1,6 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { classifyKeyword } from "../_shared/seoQuality.ts";
 import { matchPatterns, hasEnoughLearningData, INSUFFICIENT_LEARNING_DATA, type WinningPattern } from "../_shared/patternMatch.ts";
+import { buildReasoning } from "../_shared/decisionIntelligence.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -288,7 +289,19 @@ Deno.serve(async (req) => {
       schema: "faq",
     };
     const applyPatternToTask = (task: WeeklyTask, intent?: string | null): WeeklyTask => {
+      const dt = taskTypeToDraftType[task.task_type] || null;
       if (!patternsReady) {
+        const reasoning = buildReasoning({
+          kind: "weekly_task",
+          target_url: task.affected_url,
+          draft_type: dt,
+          task_type: task.task_type,
+          intent: intent || null,
+          score: task.priority_score,
+          priority: task.priority_level,
+          risk_level: task.risk_level,
+          learning_data_ready: false,
+        });
         return {
           ...task,
           source_refs: {
@@ -297,24 +310,41 @@ Deno.serve(async (req) => {
             matched_pattern_ids: [],
             pattern_reason: INSUFFICIENT_LEARNING_DATA,
             risk_pattern_warning: null,
+            reasoning,
           },
         };
       }
-      const dt = taskTypeToDraftType[task.task_type] || null;
       const match = matchPatterns(patterns, { url: task.affected_url, draftType: dt, keywordIntent: intent || null });
       // Boost: winning +up to 10 / risky -up to 10
       const adjusted = clamp(task.priority_score + Math.round(match.pattern_match_score * 10));
+      const newRisk: RiskLevel = match.risk_pattern_warning && task.risk_level === "low" ? "medium" : task.risk_level;
+      const reasoning = buildReasoning({
+        kind: "weekly_task",
+        target_url: task.affected_url,
+        draft_type: dt,
+        task_type: task.task_type,
+        intent: intent || null,
+        score: adjusted,
+        priority: priorityLevel(adjusted),
+        risk_level: newRisk,
+        pattern_match_score: match.pattern_match_score,
+        pattern_reason: match.pattern_reason,
+        risk_pattern_warning: match.risk_pattern_warning,
+        matched_pattern_ids: match.matched_pattern_ids,
+        learning_data_ready: true,
+      });
       return {
         ...task,
         priority_score: adjusted,
         priority_level: priorityLevel(adjusted),
-        risk_level: match.risk_pattern_warning && task.risk_level === "low" ? "medium" : task.risk_level,
+        risk_level: newRisk,
         source_refs: {
           ...task.source_refs,
           pattern_match_score: match.pattern_match_score,
           matched_pattern_ids: match.matched_pattern_ids,
           pattern_reason: match.pattern_reason,
           risk_pattern_warning: match.risk_pattern_warning,
+          reasoning,
         },
       };
     };

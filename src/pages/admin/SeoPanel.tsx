@@ -5,6 +5,7 @@ import { Copy, Check, AlertTriangle } from "lucide-react";
 import { DraftSandboxPreview } from "@/components/admin/DraftSandboxPreview";
 import { DraftImpactInline, ImpactList, StatTile } from "@/components/admin/DraftImpactTracking";
 import { PatternList } from "@/components/admin/WinningPatternsList";
+import RecommendationReasoning from "@/components/admin/RecommendationReasoning";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const GSC_SITE_URL = "sc-domain:calcy.com.au";
@@ -1364,6 +1365,7 @@ const SeoPanel = () => {
                   <a className="rounded-lg border border-border px-3 py-1.5 hover:bg-muted" href={`https://www.google.com/search?q=${encodeURIComponent(k.keyword)}&gl=au`} target="_blank" rel="noreferrer">View on Google</a>
                   <a className="rounded-lg border border-border px-3 py-1.5 hover:bg-muted" href={target} target="_blank" rel="noreferrer">View page</a>
                 </div>
+                <RecommendationReasoning reasoning={k.signals?.reasoning} />
               </div>
             );
           })}
@@ -2743,6 +2745,7 @@ const SeoPanel = () => {
                   <p className="mt-1 text-sm text-foreground">{item.suggested_search_intent_match || "Align title, meta, intro and FAQ copy with the primary search intent."}</p>
                 </div>
               </div>
+              <RecommendationReasoning reasoning={item.signals?.reasoning} />
             </article>
           ))}
         </section>
@@ -2942,6 +2945,8 @@ const SeoPanel = () => {
                   <p className="mt-1 text-sm text-foreground">{task.suggested_implementation_prompt}</p>
                 </div>
               </div>
+
+              <RecommendationReasoning reasoning={(task as any).source_refs?.reasoning} />
 
               {/* Approval workflow actions */}
               <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-border pt-4">
