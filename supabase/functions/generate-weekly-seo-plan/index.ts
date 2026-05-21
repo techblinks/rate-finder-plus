@@ -272,6 +272,58 @@ Deno.serve(async (req) => {
       return 0;
     };
 
+    // Winning Patterns Memory integration
+    const patterns = (patternsData as WinningPattern[] | null) || [];
+    const patternsReady = hasEnoughLearningData(patterns);
+    const taskTypeToDraftType: Record<string, string> = {
+      ctr: "title_meta",
+      opportunity: "title_meta",
+      money_page: "title_meta",
+      aeo: "aeo_answer",
+      content_gap: "content_refresh",
+      freshness: "content_refresh",
+      ranking_drop: "content_refresh",
+      internal_link: "internal_link",
+      competitor: "comparison_table",
+      schema: "faq",
+    };
+    const applyPatternToTask = (task: WeeklyTask, intent?: string | null): WeeklyTask => {
+      if (!patternsReady) {
+        return {
+          ...task,
+          source_refs: {
+            ...task.source_refs,
+            pattern_match_score: 0,
+            matched_pattern_ids: [],
+            pattern_reason: INSUFFICIENT_LEARNING_DATA,
+            risk_pattern_warning: null,
+          },
+        };
+      }
+      const dt = taskTypeToDraftType[task.task_type] || null;
+      const match = matchPatterns(patterns, { url: task.affected_url, draftType: dt, keywordIntent: intent || null });
+      // Boost: winning +up to 10 / risky -up to 10
+      const adjusted = clamp(task.priority_score + Math.round(match.pattern_match_score * 10));
+      return {
+        ...task,
+        priority_score: adjusted,
+        priority_level: priorityLevel(adjusted),
+        risk_level: match.risk_pattern_warning && task.risk_level === "low" ? "medium" : task.risk_level,
+        source_refs: {
+          ...task.source_refs,
+          pattern_match_score: match.pattern_match_score,
+          matched_pattern_ids: match.matched_pattern_ids,
+          pattern_reason: match.pattern_reason,
+          risk_pattern_warning: match.risk_pattern_warning,
+        },
+      };
+    };
+
+    const originalAddTask = addTask;
+    const addTaskWithPatterns = (taskMap: Map<string, WeeklyTask>, task: WeeklyTask, intent?: string | null) => {
+      originalAddTask(taskMap, applyPatternToTask(task, intent));
+    };
+
     for (const item of opportunityRows) {
       const sig = (item.signals || {}) as Record<string, unknown>;
       const intent = String(sig.intent || "informational");
