@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Share2, X, Plus, Check, ChevronDown } from "lucide-react";
+import { Share2, X, Plus, Check, ChevronDown, Mail } from "lucide-react";
 import { buildAmortisation, type Frequency, type YearAmort } from "@/lib/calc/mortgageEngine";
 import { calculateWithOffset } from "@/lib/calc/offset";
 import { monthlyPayment as basePmt } from "@/lib/calc/mortgage";
@@ -25,7 +25,6 @@ import {
 } from "@/lib/mortgageState";
 import RangeField from "@/components/RangeField";
 import ResultActions from "@/components/ResultActions";
-import EmailResultsDialog from "@/components/EmailResultsDialog";
 import ShareResult from "@/components/ShareResult";
 import StickyResultsBar from "@/components/StickyResultsBar";
 import QuickAdjustChips from "@/components/mobile/QuickAdjustChips";
@@ -38,6 +37,7 @@ import { usePublishMobileResult } from "@/lib/mobileResult";
 
 const AmortChart = lazy(() => import("@/components/MortgageAmortChart"));
 const AmortTable = lazy(() => import("@/components/MortgageAmortTable"));
+const EmailResultsDialog = lazy(() => import("@/components/EmailResultsDialog"));
 
 const AUD0 = new Intl.NumberFormat("en-AU", {
   style: "currency",
@@ -467,6 +467,7 @@ const MortgageCalculatorRedesign = () => {
 
   const lvr = propValue > 0 ? Math.min(999, (loan / propValue) * 100) : null;
 
+  const resultSummary = `${freq.charAt(0).toUpperCase() + freq.slice(1)} repayment of ${fmt0(headline)} on a ${fmt0(loan)} loan at ${rate.toFixed(2)}% over ${term} years.`;
   const shareText = `${fmt0(loan)} loan at ${rate.toFixed(2)}% over ${term} years = ${fmt0(headline)} per ${freq}. Calculated with Calcy.`;
 
   const onShare = useCallback(async () => {
@@ -755,36 +756,36 @@ const MortgageCalculatorRedesign = () => {
 
           {/* Offset account (advanced, Sprint 4) */}
           <div className="rounded-xl border border-border">
-            <button
-              type="button"
-              onClick={() => {
-                setOffsetOpen((v) => !v);
-                haptic(8);
-              }}
-              aria-expanded={offsetOpen}
-              className="flex w-full min-h-[44px] items-center justify-between gap-2 px-4 py-3 text-left"
-            >
-              <span className="flex flex-wrap items-center gap-2">
-                <strong className="text-[14px] font-semibold text-foreground">
-                  Add an offset account
-                </strong>
-                <span className="text-[12px] uppercase tracking-wide text-muted-foreground">
-                  advanced
+            <div className="flex min-h-[44px] items-center gap-2 px-4 py-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setOffsetOpen((v) => !v);
+                  haptic(8);
+                }}
+                aria-expanded={offsetOpen}
+                className="flex min-w-0 flex-1 items-center justify-between gap-2 text-left"
+              >
+                <span className="flex flex-wrap items-center gap-2">
+                  <strong className="text-[14px] font-semibold text-foreground">
+                    Add an offset account
+                  </strong>
+                  <span className="text-[12px] uppercase tracking-wide text-muted-foreground">
+                    advanced
+                  </span>
                 </span>
-                <span onClick={(e) => e.stopPropagation()}>
-                  <Tooltip
-                    label="What is an offset account?"
-                    text="An offset account is a transaction account linked to your loan. Money in the offset reduces the interest you pay daily. $50,000 in offset on a $650,000 loan means you only pay interest on $600,000. Most Australian variable-rate loans include this feature free."
-                  />
-                </span>
-              </span>
-              <ChevronDown
-                className={`h-4 w-4 text-muted-foreground transition-transform ${
-                  offsetOpen ? "rotate-180" : ""
-                }`}
-                aria-hidden="true"
+                <ChevronDown
+                  className={`h-4 w-4 flex-none text-muted-foreground transition-transform ${
+                    offsetOpen ? "rotate-180" : ""
+                  }`}
+                  aria-hidden="true"
+                />
+              </button>
+              <Tooltip
+                label="What is an offset account?"
+                text="An offset account is a transaction account linked to your loan. Money in the offset reduces the interest you pay daily. $50,000 in offset on a $650,000 loan means you only pay interest on $600,000. Most Australian variable-rate loans include this feature free."
               />
-            </button>
+            </div>
             <p className="px-4 pb-3 text-[13px] text-muted-foreground">
               Model an offset account like 80% of Australian mortgages use.
             </p>
@@ -1000,19 +1001,6 @@ const MortgageCalculatorRedesign = () => {
 
         {/* RESULTS */}
         <div className="order-first lg:order-none space-y-3 md:space-y-4">
-          {!isMobile && (
-            <QuickAdjustChips
-              loan={loan}
-              setLoan={setLoan}
-              loanBounds={{ min: 50000, max: 3000000 }}
-              rate={rate}
-              setRate={setRate}
-              rateBounds={{ min: 1, max: 15 }}
-              term={term}
-              setTerm={setTerm}
-              termBounds={{ min: 5, max: 30 }}
-            />
-          )}
           {isMobile ? (
             <>
               <MobileResultCard
@@ -1025,6 +1013,39 @@ const MortgageCalculatorRedesign = () => {
                 pending={calcPending}
                 onEditField={handleEditField}
               />
+              <QuickAdjustChips
+                loan={loan}
+                setLoan={setLoan}
+                loanBounds={{ min: 50000, max: 3000000 }}
+                rate={rate}
+                setRate={setRate}
+                rateBounds={{ min: 1, max: 15 }}
+                term={term}
+                setTerm={setTerm}
+                termBounds={{ min: 5, max: 30 }}
+              />
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEmailOpen(true);
+                    haptic(10);
+                  }}
+                  className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 py-2 text-[13px] font-semibold text-foreground shadow-sm active:scale-[0.98]"
+                >
+                  <Mail className="h-4 w-4 text-accent" aria-hidden />
+                  Email result
+                </button>
+                <button
+                  type="button"
+                  onClick={onShare}
+                  className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 py-2 text-[13px] font-semibold text-foreground shadow-sm active:scale-[0.98]"
+                  aria-live="polite"
+                >
+                  {copied ? <Check className="h-4 w-4 text-success" aria-hidden /> : <Share2 className="h-4 w-4 text-accent" aria-hidden />}
+                  {copied ? "Copied" : "Share"}
+                </button>
+              </div>
               {freqSavings && (
                 <div className="rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-[13px]">
                   <p className="text-success">
@@ -1072,19 +1093,17 @@ const MortgageCalculatorRedesign = () => {
           {/* Plain-English "What this means" summary */}
           {(() => {
             const monthlyRepay = result.monthly + dExtra;
-            const requiredIncome = Math.max(0, (monthlyRepay * 12) / 0.3);
-            const pctOfIncome = requiredIncome > 0 ? (monthlyRepay * 12 / requiredIncome) * 100 : 0;
+            const benchmarkIncome = Math.max(0, (monthlyRepay * 12) / 0.3);
             if (monthlyRepay <= 0) return null;
             return (
               <div className="rounded-2xl border border-sky-200 bg-sky-50 p-5 text-[14px] text-sky-900 dark:border-sky-900/50 dark:bg-sky-950/30 dark:text-sky-100">
-                <p className="mb-1 font-semibold">What this means</p>
+                <p className="mb-1 font-semibold">Repayment-to-income check</p>
                 <p>
-                  To comfortably afford this loan, most lenders suggest a minimum gross income of approximately{" "}
-                  <span className="font-semibold">{fmt0(requiredIncome)}/year</span>{" "}
-                  (based on the 30% of income rule). Your monthly repayment of{" "}
-                  <span className="font-semibold">{fmt0(monthlyRepay)}</span> represents{" "}
-                  <span className="font-semibold">{pctOfIncome.toFixed(0)}%</span> of a{" "}
-                  {fmt0(requiredIncome)} annual salary.
+                  At a 30% repayment-to-gross-income benchmark, a{" "}
+                  <span className="font-semibold">{fmt0(monthlyRepay)}</span> monthly repayment lines up with about{" "}
+                  <span className="font-semibold">{fmt0(benchmarkIncome)}/year</span>{" "}
+                  in gross income. Treat this as a planning guide only; lenders also assess expenses,
+                  debts, buffers, credit history, and policy settings.
                 </p>
               </div>
             );
@@ -1152,66 +1171,82 @@ const MortgageCalculatorRedesign = () => {
           )}
 
           {/* Rate change scenarios */}
-          <div className="space-y-3">
-            <div>
-              <h3 className="text-[15px] font-semibold text-foreground">
-                What if rates change?
-              </h3>
-              <p className="text-[13px] text-muted-foreground">
-                The RBA meets 8 times per year. See how rate changes affect your repayments.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-              {rateScenarios.map((s) => {
-                const isCurrent = s.label === "Current";
-                const diffText =
-                  s.diff === 0
-                    ? "Same as now"
-                    : `${s.diff > 0 ? "+" : "-"}${fmt0(Math.abs(s.diff))}/month`;
-                const toneConfig = {
-                  success: {
-                    border: "border-success/30",
-                    bg: "bg-success/10",
-                    text: "text-success",
-                  },
-                  accent: {
-                    border: "border-accent/30",
-                    bg: "bg-accent/10",
-                    text: "text-accent",
-                  },
-                  warning: {
-                    border: "border-warning/30",
-                    bg: "bg-warning/10",
-                    text: "text-warning",
-                  },
-                  destructive: {
-                    border: "border-destructive/30",
-                    bg: "bg-destructive/10",
-                    text: "text-destructive",
-                  },
-                }[s.tone];
-                return (
-                  <div
-                    key={s.label}
-                    className={`rounded-2xl border p-4 ${toneConfig.border} ${toneConfig.bg} ${isCurrent ? "ring-2 ring-accent ring-offset-2 ring-offset-background" : ""}`}
-                  >
-                    <p className="text-[11px] uppercase tracking-wide text-muted-foreground">
-                      {s.label}
-                    </p>
-                    <p className={`tnum text-[22px] font-bold mt-1 ${toneConfig.text}`}>
-                      {fmt0(s.monthly)}
-                    </p>
-                    <p className="text-[12px] text-muted-foreground mt-1">
-                      {s.rate.toFixed(2)}%
-                    </p>
-                    <p className="text-[12px] font-medium mt-0.5 text-muted-foreground">
-                      {diffText}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          {(() => {
+            const onePointRise = rateScenarios.find((s) => s.label === "Rise 1%");
+            const rateScenarioContent = (
+              <div className="space-y-3">
+                <div>
+                  <h3 className="text-[15px] font-semibold text-foreground">
+                    What if rates change?
+                  </h3>
+                  <p className="text-[13px] text-muted-foreground">
+                    The RBA meets 8 times per year. See how rate changes affect your repayments.
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                  {rateScenarios.map((s) => {
+                    const isCurrent = s.label === "Current";
+                    const diffText =
+                      s.diff === 0
+                        ? "Same as now"
+                        : `${s.diff > 0 ? "+" : "-"}${fmt0(Math.abs(s.diff))}/month`;
+                    const toneConfig = {
+                      success: {
+                        border: "border-success/30",
+                        bg: "bg-success/10",
+                        text: "text-success",
+                      },
+                      accent: {
+                        border: "border-accent/30",
+                        bg: "bg-accent/10",
+                        text: "text-accent",
+                      },
+                      warning: {
+                        border: "border-warning/30",
+                        bg: "bg-warning/10",
+                        text: "text-warning",
+                      },
+                      destructive: {
+                        border: "border-destructive/30",
+                        bg: "bg-destructive/10",
+                        text: "text-destructive",
+                      },
+                    }[s.tone];
+                    return (
+                      <div
+                        key={s.label}
+                        className={`rounded-2xl border p-4 ${toneConfig.border} ${toneConfig.bg} ${isCurrent ? "ring-2 ring-accent ring-offset-2 ring-offset-background" : ""}`}
+                      >
+                        <p className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                          {s.label}
+                        </p>
+                        <p className={`tnum text-[22px] font-bold mt-1 ${toneConfig.text}`}>
+                          {fmt0(s.monthly)}
+                        </p>
+                        <p className="text-[12px] text-muted-foreground mt-1">
+                          {s.rate.toFixed(2)}%
+                        </p>
+                        <p className="text-[12px] font-medium mt-0.5 text-muted-foreground">
+                          {diffText}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+
+            return isMobile ? (
+              <MobileCollapse
+                title="Stress test rate changes"
+                hint={onePointRise ? `A 1% rise adds ${fmt0(Math.abs(onePointRise.diff))}/month` : "Compare repayments if rates move"}
+              >
+                {rateScenarioContent}
+              </MobileCollapse>
+            ) : (
+              rateScenarioContent
+            );
+          })()}
 
           <MobilePendingOverlay pending={isMobile && calcPending}>
             <div className="grid grid-cols-2 gap-3">
@@ -1371,31 +1406,37 @@ const MortgageCalculatorRedesign = () => {
             <ResultActions
               calculator="mortgage_repayment"
               onEmail={() => setEmailOpen(true)}
-              emailSummary={`${freq.charAt(0).toUpperCase() + freq.slice(1)} repayment of ${fmt0(headline)} on a ${fmt0(loan)} loan at ${rate.toFixed(2)}% over ${term} years.`}
+              emailSummary={resultSummary}
             />
           )}
-          <EmailResultsDialog
-            open={emailOpen}
-            onOpenChange={setEmailOpen}
-            calculator="mortgage"
-            inputs={{ loan, rate, term, freq, extra, propValue, offsetStart, offsetMonthly }}
-            resultSummary={`${freq.charAt(0).toUpperCase() + freq.slice(1)} repayment of ${fmt0(headline)} on a ${fmt0(loan)} loan at ${rate.toFixed(2)}% over ${term} years.`}
-          />
+          {emailOpen && (
+            <Suspense fallback={null}>
+              <EmailResultsDialog
+                open={emailOpen}
+                onOpenChange={setEmailOpen}
+                calculator="mortgage"
+                inputs={{ loan, rate, term, freq, extra, propValue, offsetStart, offsetMonthly }}
+                resultSummary={resultSummary}
+              />
+            </Suspense>
+          )}
 
-          <ShareResult
-            calculator="mortgage_repayment"
-            params={{
-              loan: Math.round(loan),
-              rate: rate.toFixed(2),
-              term,
-              freq,
-              extra: Math.round(extra),
-              pv: propValue > 0 ? Math.round(propValue) : undefined,
-              offset_start: offsetStart > 0 ? Math.round(offsetStart) : undefined,
-              offset_monthly: offsetMonthly > 0 ? Math.round(offsetMonthly) : undefined,
-            }}
-            shareText={`I calculated my mortgage repayment at ${fmt0(headline)} per ${freq}`}
-          />
+          {!isMobile && (
+            <ShareResult
+              calculator="mortgage_repayment"
+              params={{
+                loan: Math.round(loan),
+                rate: rate.toFixed(2),
+                term,
+                freq,
+                extra: Math.round(extra),
+                pv: propValue > 0 ? Math.round(propValue) : undefined,
+                offset_start: offsetStart > 0 ? Math.round(offsetStart) : undefined,
+                offset_monthly: offsetMonthly > 0 ? Math.round(offsetMonthly) : undefined,
+              }}
+              shareText={`I calculated my mortgage repayment at ${fmt0(headline)} per ${freq}`}
+            />
+          )}
 
           <p className="text-[12px] text-muted-foreground">
             Calculations use a {fmt2(result.monthly)} monthly base repayment. Offset figures are a

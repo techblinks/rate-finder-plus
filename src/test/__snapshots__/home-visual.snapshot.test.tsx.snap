@@ -20,7 +20,7 @@ exports[`Home visual regression > matches desktop (1280px) snapshot 1`] = `
           <strong
             class="text-foreground"
           >
-            4.10
+            4.35
             %
           </strong>
         </span>
@@ -31,13 +31,20 @@ exports[`Home visual regression > matches desktop (1280px) snapshot 1`] = `
         </span>
         <span>
           Updated 
-          12 May 2026
+          20 May 2026
         </span>
       </div>
       <h1
-        class="text-[clamp(36px,4vw,54px)] mb-5"
+        class="text-[clamp(36px,4vw,54px)] font-semibold leading-[1.08] tracking-[-0.018em] mb-5"
       >
-        Australia's most
+        <em
+          class="font-serif italic font-semibold not-italic-fallback"
+          style="font-family: var(--font-display-serif); color: rgb(0, 54, 128); font-size: 0.94em; letter-spacing: -0.005em; font-style: italic;"
+        >
+          Australia's
+        </em>
+         
+        most
         <br />
         accurate mortgage
         <br />
@@ -134,7 +141,7 @@ exports[`Home visual regression > matches desktop (1280px) snapshot 1`] = `
         <span
           class="data-value"
         >
-          4.10
+          4.35
           %
         </span>
       </div>
@@ -149,7 +156,7 @@ exports[`Home visual regression > matches desktop (1280px) snapshot 1`] = `
         <span
           class="data-value"
         >
-          5.66
+          6.39
           %
         </span>
       </div>
@@ -165,7 +172,7 @@ exports[`Home visual regression > matches desktop (1280px) snapshot 1`] = `
           class="data-value"
         >
           ~
-          6.14
+          6.39
           %
         </span>
       </div>
@@ -232,16 +239,16 @@ exports[`Home visual regression > matches mobile (375px) snapshot 1`] = `
     class="px-4 pt-4 pb-3"
   >
     <h1
-      class="text-[28px] font-bold leading-[1.1] tracking-tight text-foreground"
+      class="text-[clamp(28px,7.6vw,34px)] font-semibold leading-[1.1] tracking-[-0.015em] text-foreground"
     >
-      Australian mortgage
-       
       <em
-        class="font-serif italic font-normal text-accent"
-        style="font-family: var(--font-display-serif);"
+        class="font-serif italic font-semibold"
+        style="font-family: var(--font-display-serif); color: rgb(0, 54, 128); font-size: 0.94em; letter-spacing: -0.005em;"
       >
-        tools
+        Australian
       </em>
+       
+      mortgage tools
     </h1>
     <p
       class="mt-1.5 text-[14px] text-muted-foreground"
@@ -263,7 +270,7 @@ exports[`Home visual regression > matches mobile (375px) snapshot 1`] = `
         <strong
           class="font-semibold tnum text-foreground"
         >
-          4.10
+          4.35
           %
         </strong>
          
@@ -666,7 +673,7 @@ exports[`Home visual regression > matches mobile (375px) snapshot 1`] = `
         <span
           class="tnum font-semibold text-foreground"
         >
-          4.10%
+          4.35%
         </span>
       </div>
       <div
@@ -680,7 +687,7 @@ exports[`Home visual regression > matches mobile (375px) snapshot 1`] = `
         <span
           class="tnum font-semibold text-foreground"
         >
-          5.66%
+          6.39%
         </span>
       </div>
       <div
@@ -874,7 +881,7 @@ exports[`Home visual regression > matches mobile (375px) snapshot 1`] = `
         <div
           class="px-4 pb-4 text-[14px] leading-relaxed text-muted-foreground"
         >
-          The RBA cash rate is currently 4.10% (May 2026). Average owner-occupier rates sit around 5.66%. Use the mortgage calculator to see what this means for your repayments.
+          The RBA cash rate is currently 4.35% (May 2026). Average owner-occupier rates sit around 6.39%. Use the mortgage calculator to see what this means for your repayments.
         </div>
       </div>
       <div

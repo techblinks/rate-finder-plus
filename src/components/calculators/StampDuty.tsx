@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import RestoreBanner from "@/components/RestoreBanner";
 import { Link } from "react-router-dom";
 import { Share2, Check, ArrowUpDown } from "lucide-react";
@@ -19,7 +19,8 @@ import { usePublishMobileResult } from "@/lib/mobileResult";
 import { shareCurrent } from "@/lib/shareCurrent";
 import Tooltip from "@/components/Tooltip";
 import ResultActions from "@/components/ResultActions";
-import EmailResultsDialog from "@/components/EmailResultsDialog";
+
+const EmailResultsDialog = lazy(() => import("@/components/EmailResultsDialog"));
 
 interface StampDutyProps {
   lockedState?: StateCode;
@@ -644,13 +645,17 @@ const StampDuty = ({ lockedState }: StampDutyProps) => {
                 onEmail={() => setEmailOpen(true)}
                 emailSummary={`Stamp duty on a ${fmt0(s.value)} property in ${s.state}: ${fmt0(result.netDuty)}.`}
               />
-              <EmailResultsDialog
+              {emailOpen && (
+                <Suspense fallback={null}>
+                  <EmailResultsDialog
                 open={emailOpen}
                 onOpenChange={setEmailOpen}
                 calculator="stamp_duty"
                 inputs={s as unknown as Record<string, unknown>}
                 resultSummary={`Stamp duty on a ${fmt0(s.value)} property in ${s.state}: ${fmt0(result.netDuty)}. Total upfront ${fmt0(totalCash)}.`}
-              />
+                  />
+                </Suspense>
+              )}
 
               <p className="text-[11px] leading-relaxed text-muted-foreground">
                 Stamp duty rates are indicative for 2026. Confirm with your state revenue office before

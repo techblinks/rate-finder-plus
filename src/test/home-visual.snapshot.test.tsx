@@ -6,7 +6,7 @@
  * spacing utilities (py-*, mb-*, gap-*), typography classes, or hero/section
  * structure will produce a snapshot diff and force a deliberate review.
  */
-import { describe, it, expect, beforeAll, vi } from "vitest";
+import { describe, it, expect, beforeAll, afterAll, vi } from "vitest";
 import { render } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
@@ -21,6 +21,17 @@ vi.mock("@/integrations/supabase/client", () => ({
       }),
     }),
   },
+}));
+
+vi.mock("@/hooks/useRbaRates", () => ({
+  useRbaRates: () => ({
+    cashRate: 4.35,
+    ownerOccupier: 6.39,
+    investor: 6.62,
+    lastUpdated: "May 2026",
+    averageLoanSize: 650000,
+    source: "Test fixture",
+  }),
 }));
 
 const setViewport = (width: number) => {
@@ -50,7 +61,7 @@ const setViewport = (width: number) => {
 const renderHome = () =>
   render(
     <HelmetProvider>
-      <BrowserRouter>
+      <BrowserRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
         <LocaleProvider>
           <Home />
         </LocaleProvider>
@@ -60,7 +71,12 @@ const renderHome = () =>
 
 describe("Home visual regression", () => {
   beforeAll(() => {
-    // Stable timestamps / random not needed; Home is deterministic.
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-05-20T12:00:00+10:00"));
+  });
+
+  afterAll(() => {
+    vi.useRealTimers();
   });
 
   it("matches mobile (375px) snapshot", () => {

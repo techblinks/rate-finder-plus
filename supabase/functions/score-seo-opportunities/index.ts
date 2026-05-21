@@ -1,0 +1,396 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-triggered-by",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
+
+const supabase = createClient(
+  Deno.env.get("SUPABASE_URL")!,
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+);
+
+type KeywordRow = {
+  id: string;
+  keyword: string;
+  category: string | null;
+  target_page: string | null;
+  calcy_position: number | null;
+  calcy_position_previous: number | null;
+  calcy_clicks_28d: number | null;
+  calcy_impressions_28d: number | null;
+  calcy_ctr_28d: number | null;
+  monthly_search_volume: number | null;
+  trend_direction: string | null;
+  content_gap_notes: string | null;
+  last_synced_at: string | null;
+};
+
+type DraftRow = {
+  target_keyword: string | null;
+  slug: string | null;
+  status: string;
+};
+
+type Opportunity = {
+  keyword: string;
+  target_url: string;
+  score: number;
+  priority: "high" | "medium" | "low";
+  reason: string;
+  recommended_action: string;
+  source_keyword_id: string;
+  signals: Record<string, unknown>;
+};
+
+type PageStats = {
+  keywordCount: number;
+  impressions: number;
+  clicks: number;
+  positionDrops: number;
+  weightedPositionSum: number;
+  weakContentSignals: number;
+};
+
+const HIGH_VALUE_TOPICS = [
+  "mortgage",
+  "home loan",
+  "repayment",
+  "borrowing power",
+  "stamp duty",
+  "transfer duty",
+  "lmi",
+  "lenders mortgage insurance",
+  "hecs",
+  "help debt",
+  "refinance",
+  "extra repayment",
+  "offset",
+  "first home buyer",
+  "investment property",
+  "rba",
+  "interest rate",
+];
+
+function clamp(value: number, min = 0, max = 100) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function expectedCtr(position: number | null): number {
+  if (position == null) return 0.02;
+  if (position <= 1) return 0.28;
+  if (position <= 2) return 0.16;
+  if (position <= 3) return 0.11;
+  if (position <= 5) return 0.07;
+  if (position <= 10) return 0.035;
+  if (position <= 20) return 0.015;
+  return 0.008;
+}
+
+function priorityFor(score: number): "high" | "medium" | "low" {
+  if (score >= 72) return "high";
+  if (score >= 46) return "medium";
+  return "low";
+}
+
+function normaliseTargetUrl(targetPage: string | null, category: string | null): string {
+  if (targetPage?.startsWith("/")) return targetPage;
+  const map: Record<string, string> = {
+    mortgage: "/mortgage-calculator",
+    stamp_duty: "/stamp-duty-calculator",
+    lmi: "/lmi-calculator",
+    borrowing_power: "/borrowing-power-calculator",
+    refinance: "/refinance-calculator",
+    rent_vs_buy: "/rent-vs-buy-calculator",
+    extra_repayments: "/extra-repayments-calculator",
+    loan_comparison: "/loan-comparison-calculator",
+  };
+  return map[category || ""] || "/guides";
+}
+
+function highValueTopic(keyword: string, category: string | null) {
+  const text = `${keyword} ${category || ""}`.toLowerCase();
+  return HIGH_VALUE_TOPICS.find((topic) => text.includes(topic)) || null;
+}
+
+function keywordMatchesTarget(keyword: string, targetUrl: string) {
+  if (!targetUrl || targetUrl === "/guides") return false;
+  const targetText = targetUrl.replace(/[-/]/g, " ").toLowerCase();
+  return keyword
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((part) => part.length > 3)
+    .some((part) => targetText.includes(part));
+}
+
+function actionPartsFor(signals: string[]) {
+  const parts: string[] = [];
+  if (signals.includes("high_impressions_low_ctr") || signals.includes("near_page_1")) {
+    parts.push("strengthen the title/meta description and above-the-fold answer");
+  }
+  if (signals.includes("ranking_8_to_20")) {
+    parts.push("add a focused comparison table or answer block");
+  }
+  if (signals.includes("needs_content_refresh") || signals.includes("page_declining")) {
+    parts.push("refresh assumptions, source notes and reviewed date");
+  }
+  if (signals.includes("keyword_without_strong_matching_content")) {
+    parts.push("add a dedicated section or admin-reviewed content brief");
+  }
+  if (signals.includes("weak_internal_linking")) {
+    parts.push("add contextual internal links from related calculators and guides");
+  }
+  if (signals.includes("high_value_finance_topic")) {
+    parts.push("prioritise this as a finance money-topic opportunity");
+  }
+  return [...new Set(parts)];
+}
+
+function buildRecommendation(row: KeywordRow, targetUrl: string, signals: string[]): string {
+  const position = row.calcy_position ?? 99;
+  const keyword = row.keyword;
+  const actions = actionPartsFor(signals);
+  const actionText = actions.length > 0 ? actions.join(", ") : "review the page for intent match and internal links";
+  return `${keyword} has ${(row.calcy_impressions_28d ?? 0).toLocaleString()} impressions, ${((row.calcy_ctr_28d ?? 0) * 100).toFixed(1)}% CTR, and average position ${position.toFixed(1)}. For ${targetUrl}, ${actionText}. Admin suggestions only; do not publish or change URLs automatically.`;
+}
+
+function scoreKeyword(row: KeywordRow, draftKeywords: Set<string>, pageStats: Map<string, PageStats>): Opportunity | null {
+  const impressions = row.calcy_impressions_28d ?? 0;
+  const clicks = row.calcy_clicks_28d ?? 0;
+  const ctr = row.calcy_ctr_28d ?? (impressions > 0 ? clicks / impressions : 0);
+  const position = row.calcy_position;
+  const previous = row.calcy_position_previous;
+  const targetUrl = normaliseTargetUrl(row.target_page, row.category);
+  const expected = expectedCtr(position);
+  const ctrGap = Math.max(0, expected - ctr);
+  const positionDrop = previous != null && position != null ? position - previous : 0;
+  const syncedAt = row.last_synced_at ? new Date(row.last_synced_at).getTime() : 0;
+  const daysSinceSync = syncedAt ? Math.floor((Date.now() - syncedAt) / 86400000) : 999;
+  const hasDraft = draftKeywords.has(row.keyword.toLowerCase());
+  const topic = highValueTopic(row.keyword, row.category);
+  const page = pageStats.get(targetUrl);
+  const pageAvgPosition = page && page.impressions > 0 ? page.weightedPositionSum / page.impressions : null;
+  const hasStrongMatchingContent = keywordMatchesTarget(row.keyword, targetUrl);
+  const signals: string[] = [];
+
+  let score = 0;
+
+  if (position != null && position >= 8 && position <= 12) {
+    signals.push("near_page_1");
+    score += 22 + (12 - position) * 2;
+  }
+
+  if (position != null && position >= 8 && position <= 20) {
+    signals.push("ranking_8_to_20");
+    score += clamp(30 - (position - 8) * 1.4, 10, 30);
+  }
+
+  if (impressions >= 50 && ctr < expected * 0.75) {
+    signals.push("high_impressions_low_ctr");
+    score += clamp(Math.log10(impressions + 1) * 11 + ctrGap * 220, 8, 32);
+  }
+
+  if (topic) {
+    signals.push("high_value_finance_topic");
+    score += 12;
+  }
+
+  if (positionDrop >= 2 || row.trend_direction === "falling" || (page?.positionDrops || 0) >= 2) {
+    signals.push("page_declining");
+    score += clamp(Math.max(positionDrop, page?.positionDrops || 0) * 5, 10, 24);
+  }
+
+  if (daysSinceSync > 30) {
+    signals.push("needs_content_refresh");
+    score += daysSinceSync > 90 ? 18 : daysSinceSync > 60 ? 14 : 9;
+  }
+
+  if (targetUrl === "/guides" || row.content_gap_notes || !row.target_page || !hasStrongMatchingContent) {
+    signals.push("keyword_without_strong_matching_content");
+    score += hasDraft ? 8 : 18;
+  }
+
+  if (impressions >= 50 && targetUrl !== "/" && targetUrl !== "/guides" && position != null && position > 7) {
+    signals.push("weak_internal_linking");
+    score += 10;
+  }
+
+  if (signals.length === 0 || score < 20) return null;
+
+  const roundedScore = Math.round(clamp(score));
+  const reasonParts = signals.map((signal) => {
+    if (signal === "near_page_1") return `near page 1 at average position ${position?.toFixed(1)}`;
+    if (signal === "ranking_8_to_20") return `ranking position ${position?.toFixed(1)} is within the 8-20 improvement band`;
+    if (signal === "high_impressions_low_ctr") return `${impressions.toLocaleString()} impressions with ${(ctr * 100).toFixed(1)}% CTR below expected ${(expected * 100).toFixed(1)}%`;
+    if (signal === "high_value_finance_topic") return topic ? `high-value Australian finance topic: ${topic}` : "high-value finance topic";
+    if (signal === "page_declining") return previous != null && position != null ? `position declined from ${previous.toFixed(1)} to ${position.toFixed(1)}` : `${targetUrl} has multiple ranking drops`;
+    if (signal === "needs_content_refresh") return daysSinceSync === 999 ? "keyword has no recent sync timestamp" : `content/data signal is ${daysSinceSync} days old`;
+    if (signal === "weak_internal_linking") return `target page ${targetUrl} likely needs stronger contextual internal links`;
+    return hasDraft ? "existing draft should be reviewed against this keyword" : "keyword does not strongly match the current target content";
+  });
+
+  return {
+    keyword: row.keyword,
+    target_url: targetUrl,
+    score: roundedScore,
+    priority: priorityFor(roundedScore),
+    reason: reasonParts.join("; "),
+    recommended_action: buildRecommendation(row, targetUrl, signals),
+    source_keyword_id: row.id,
+    signals: {
+      signals,
+      category: row.category,
+      impressions_28d: impressions,
+      clicks_28d: clicks,
+      ctr_28d: ctr,
+      expected_ctr: expected,
+      position,
+      average_position: position,
+      previous_position: previous,
+      position_drop: positionDrop,
+      days_since_sync: daysSinceSync,
+      has_existing_draft: hasDraft,
+      high_value_topic: topic,
+      target_has_strong_match: hasStrongMatchingContent,
+      page_keyword_count: page?.keywordCount || 0,
+      page_impressions_28d: page?.impressions || impressions,
+      page_clicks_28d: page?.clicks || clicks,
+      page_average_position: pageAvgPosition,
+      page_position_drops: page?.positionDrops || 0,
+      monthly_search_volume: row.monthly_search_volume,
+    },
+  };
+}
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ success: false, error: "Method not allowed" }), {
+      status: 405,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  const jobId = crypto.randomUUID();
+  const startedAt = new Date();
+
+  await supabase.from("sync_jobs").insert({
+    id: jobId,
+    job_type: "seo_opportunity_scoring",
+    triggered_by: req.headers.get("x-triggered-by") || "manual",
+    status: "running",
+  });
+
+  try {
+    const [{ data: keywordRows, error: keywordError }, { data: drafts, error: draftError }] = await Promise.all([
+      supabase.from("seo_keywords").select("*").eq("is_active", true),
+      supabase.from("content_drafts").select("target_keyword, slug, status"),
+    ]);
+
+    if (keywordError) throw keywordError;
+    if (draftError) throw draftError;
+
+    const draftKeywords = new Set(
+      ((drafts as DraftRow[] | null) || [])
+        .map((draft) => draft.target_keyword?.trim().toLowerCase())
+        .filter((keyword): keyword is string => Boolean(keyword)),
+    );
+
+    const activeKeywords = (keywordRows as KeywordRow[] | null) || [];
+    const pageStats = new Map<string, PageStats>();
+
+    for (const row of activeKeywords) {
+      const targetUrl = normaliseTargetUrl(row.target_page, row.category);
+      const impressions = row.calcy_impressions_28d ?? 0;
+      const clicks = row.calcy_clicks_28d ?? 0;
+      const position = row.calcy_position ?? 99;
+      const previous = row.calcy_position_previous;
+      const positionDrop = previous != null && row.calcy_position != null ? row.calcy_position - previous : 0;
+      const current = pageStats.get(targetUrl) || {
+        keywordCount: 0,
+        impressions: 0,
+        clicks: 0,
+        positionDrops: 0,
+        weightedPositionSum: 0,
+        weakContentSignals: 0,
+      };
+      current.keywordCount += 1;
+      current.impressions += impressions;
+      current.clicks += clicks;
+      current.weightedPositionSum += position * Math.max(impressions, 1);
+      if (positionDrop >= 2 || row.trend_direction === "falling") current.positionDrops += 1;
+      if (!keywordMatchesTarget(row.keyword, targetUrl)) current.weakContentSignals += 1;
+      pageStats.set(targetUrl, current);
+    }
+
+    const opportunities = ((keywordRows as KeywordRow[] | null) || [])
+      .map((row) => scoreKeyword(row, draftKeywords, pageStats))
+      .filter((row): row is Opportunity => Boolean(row))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 100);
+
+    if (opportunities.length > 0) {
+      const { error: upsertError } = await supabase
+        .from("seo_opportunities")
+        .upsert(
+          opportunities.map((opportunity) => ({
+            ...opportunity,
+            status: "open",
+            generated_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          })),
+          { onConflict: "keyword,target_url" },
+        );
+      if (upsertError) throw upsertError;
+    }
+
+    const summary = {
+      total_keywords_checked: (keywordRows || []).length,
+      opportunities_scored: opportunities.length,
+      high_priority: opportunities.filter((item) => item.priority === "high").length,
+      medium_priority: opportunities.filter((item) => item.priority === "medium").length,
+      low_priority: opportunities.filter((item) => item.priority === "low").length,
+    };
+
+    await supabase.from("seo_reports").insert({
+      report_type: "opportunity_scoring",
+      total_keywords_tracked: summary.total_keywords_checked,
+      top_opportunities: opportunities.slice(0, 20),
+      content_recommendations: opportunities.slice(0, 20).map((item) => ({
+        keyword: item.keyword,
+        target_url: item.target_url,
+        score: item.score,
+        priority: item.priority,
+        reason: item.reason,
+        action: item.recommended_action,
+      })),
+      full_report_data: summary,
+    });
+
+    await supabase.from("sync_jobs").update({
+      status: "completed",
+      completed_at: new Date().toISOString(),
+      duration_ms: Date.now() - startedAt.getTime(),
+      records_checked: summary.total_keywords_checked,
+      records_updated: opportunities.length,
+      summary,
+    }).eq("id", jobId);
+
+    return new Response(JSON.stringify({ success: true, ...summary, opportunities: opportunities.slice(0, 20) }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    await supabase.from("sync_jobs").update({
+      status: "failed",
+      completed_at: new Date().toISOString(),
+      error_log: { message },
+    }).eq("id", jobId);
+
+    return new Response(JSON.stringify({ success: false, error: message }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+});

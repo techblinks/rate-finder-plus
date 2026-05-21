@@ -66,7 +66,7 @@ const Header = () => {
               height={hMobile}
               style={{ height: `${hMobile}px`, width: "auto" }}
               decoding="async"
-              fetchPriority="high"
+              fetchpriority="high"
             />
           </Link>
           <button
@@ -92,7 +92,7 @@ const Header = () => {
               height={hDesktop}
               style={{ height: `${hDesktop}px`, width: "auto" }}
               decoding="async"
-              fetchPriority="high"
+              fetchpriority="high"
             />
           </Link>
 

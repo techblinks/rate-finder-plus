@@ -1,9 +1,9 @@
+@import "./styles/polish.css";
+@import "./styles/calculator-patch.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import "./styles/polish.css";
-@import "./styles/calculator-patch.css";
 
 @layer base {
   :root {
@@ -448,7 +448,7 @@
     100% { transform: translateX(100%); }
   }
   @media (prefers-reduced-motion: reduce) {
-    [class*="animate-[skeleton-shimmer"] { animation: none !important; }
+    [class*="skeleton-shimmer"] { animation: none !important; }
   }
 
   /* One-shot highlight after a chip taps an input on mobile */
@@ -539,6 +539,8 @@
   /* ── Light result panel (desktop opt-in) ──
      Class kept as `result-panel-navy` for backward compatibility, but
      now styled as a clean white card with optional category accent. */
+}
+
   @media (min-width: 768px) {
     .result-panel-navy {
       background: hsl(var(--background)) !important;
@@ -653,8 +655,6 @@
       border-radius: var(--r-medium) !important;
     }
   }
-}
-
 @layer utilities {
   .tnum, .text-number { font-variant-numeric: tabular-nums lining-nums; font-feature-settings: 'tnum'; }
   @media (min-width: 768px) {

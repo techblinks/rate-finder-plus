@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import RestoreBanner from "@/components/RestoreBanner";
 import { Minus, Plus, Share2, Check, ChevronDown } from "lucide-react";
 import { calcBorrowingPowerV2, calcHem } from "@/lib/calc/borrowingPower";
@@ -11,7 +11,8 @@ import MobileInsightBar from "@/components/mobile/MobileInsightBar";
 import { useRbaRates } from "@/hooks/useRbaRates";
 import Tooltip from "@/components/Tooltip";
 import ResultActions from "@/components/ResultActions";
-import EmailResultsDialog from "@/components/EmailResultsDialog";
+
+const EmailResultsDialog = lazy(() => import("@/components/EmailResultsDialog"));
 
 const AUD0 = new Intl.NumberFormat("en-AU", {
   style: "currency",
@@ -797,13 +798,17 @@ const BorrowingPower = () => {
               onEmail={() => setEmailOpen(true)}
               emailSummary={`Borrowing power ${fmt0(result.borrowingPower)} — buy up to ${fmt0(result.maxPurchasePrice)}.`}
             />
-            <EmailResultsDialog
+            {emailOpen && (
+              <Suspense fallback={null}>
+                <EmailResultsDialog
               open={emailOpen}
               onOpenChange={setEmailOpen}
               calculator="borrowing_power"
               inputs={s as unknown as Record<string, unknown>}
               resultSummary={`Borrowing power ${fmt0(result.borrowingPower)} — buy up to ${fmt0(result.maxPurchasePrice)}.`}
-            />
+                />
+              </Suspense>
+            )}
           </div>
         </div>
       </div>

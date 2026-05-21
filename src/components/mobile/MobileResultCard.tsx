@@ -66,8 +66,6 @@ const MobileResultCard = ({
 
   return (
     <div
-      role="status"
-      aria-live="polite"
       aria-busy={pending ? "true" : undefined}
       className={`rounded-2xl bg-[var(--c-navy,#0a1628)] p-4 text-center text-white shadow-[0_8px_24px_-12px_hsl(var(--foreground)/0.25)] transition-opacity duration-150 ${
         pending ? "opacity-80" : "opacity-100"
@@ -76,7 +74,12 @@ const MobileResultCard = ({
       <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-white/55">
         {primaryLabel}
       </p>
-      <p className="tnum mt-1 text-[36px] font-bold leading-none text-white" aria-label={`${primaryLabel}: ${fmtAud(primaryValue)}`}>
+      <p
+        role="status"
+        aria-live="polite"
+        className="tnum mt-1 text-[36px] font-bold leading-none text-white"
+        aria-label={`${primaryLabel}: ${fmtAud(primaryValue)}`}
+      >
         {fmtAud(animatedPrimary)}
       </p>
 

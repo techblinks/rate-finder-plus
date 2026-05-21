@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import RestoreBanner from "@/components/RestoreBanner";
 import { Link } from "react-router-dom";
 import {
@@ -31,7 +31,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import MobileInsightBar from "@/components/mobile/MobileInsightBar";
 import MobileChartTableSection from "@/components/mobile/MobileChartTableSection";
 import ResultActions from "@/components/ResultActions";
-import EmailResultsDialog from "@/components/EmailResultsDialog";
+
+const EmailResultsDialog = lazy(() => import("@/components/EmailResultsDialog"));
 
 const AUD = new Intl.NumberFormat("en-AU", {
   style: "currency",
@@ -1164,13 +1165,17 @@ const Refinance = () => {
         onEmail={() => setEmailOpen(true)}
         emailSummary={`Refinance ${fmt0(s.currentBalance)} from ${s.currentRate.toFixed(2)}% to ${s.newRate.toFixed(2)}%: ${result.monthlySaving >= 0 ? "save" : "extra cost of"} ${fmt0(Math.abs(result.monthlySaving))}/mo.`}
       />
-      <EmailResultsDialog
+      {emailOpen && (
+        <Suspense fallback={null}>
+          <EmailResultsDialog
         open={emailOpen}
         onOpenChange={setEmailOpen}
         calculator="refinance"
         inputs={s as unknown as Record<string, unknown>}
         resultSummary={`Refinance ${fmt0(s.currentBalance)} from ${s.currentRate.toFixed(2)}% to ${s.newRate.toFixed(2)}%: ${result.monthlySaving >= 0 ? "save" : "extra cost of"} ${fmt0(Math.abs(result.monthlySaving))}/mo.`}
-      />
+          />
+        </Suspense>
+      )}
 
     </div>
   );

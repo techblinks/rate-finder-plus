@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import RestoreBanner from "@/components/RestoreBanner";
 import { Link } from "react-router-dom";
 import { Share2, Check, ExternalLink } from "lucide-react";
@@ -12,7 +12,8 @@ import MobileInsightBar from "@/components/mobile/MobileInsightBar";
 import { useRbaRates } from "@/hooks/useRbaRates";
 import Tooltip from "@/components/Tooltip";
 import ResultActions from "@/components/ResultActions";
-import EmailResultsDialog from "@/components/EmailResultsDialog";
+
+const EmailResultsDialog = lazy(() => import("@/components/EmailResultsDialog"));
 
 const AUD0 = new Intl.NumberFormat("en-AU", {
   style: "currency",
@@ -660,13 +661,17 @@ const Lmi = () => {
               onEmail={() => setEmailOpen(true)}
               emailSummary={`LMI estimate ${fmt0(lmi)} at ${lvr.toFixed(1)}% LVR.`}
             />
-            <EmailResultsDialog
+            {emailOpen && (
+              <Suspense fallback={null}>
+                <EmailResultsDialog
               open={emailOpen}
               onOpenChange={setEmailOpen}
               calculator="lmi"
               inputs={s as unknown as Record<string, unknown>}
               resultSummary={`LMI estimate ${fmt0(lmi)} at ${lvr.toFixed(1)}% LVR on a ${fmt0(s.propertyValue)} property.`}
-            />
+                />
+              </Suspense>
+            )}
           </div>
         </div>
       </div>
