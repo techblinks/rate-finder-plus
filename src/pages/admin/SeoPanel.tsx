@@ -795,7 +795,9 @@ const SeoPanel = () => {
     return m;
   }, [draftImpacts]);
 
-
+  const startGscOAuth = () => {
+    window.location.href = `${SUPABASE_URL}/functions/v1/gsc-oauth-callback`;
+  };
 
 
   const filteredKeywords = useMemo(() => {
