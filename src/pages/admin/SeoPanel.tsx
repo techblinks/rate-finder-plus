@@ -319,6 +319,27 @@ type WeeklySeoTask = {
   generated_at: string | null;
 };
 
+type WeeklySeoTaskDraft = {
+  id: string;
+  task_id: string;
+  week_start: string | null;
+  draft_type: "title_meta" | "faq" | "internal_link" | "aeo_answer" | "content_refresh" | "comparison_table" | string;
+  target_url: string | null;
+  target_keyword: string | null;
+  proposed_change: string;
+  before_text: string | null;
+  after_text: string | null;
+  payload: any;
+  expected_seo_impact: string | null;
+  risk_level: "low" | "medium" | "high" | string;
+  approval_status: "pending" | "approved" | "rejected" | "completed" | string;
+  reviewed_by: string | null;
+  review_note: string | null;
+  generated_by: string;
+  generated_at: string;
+  updated_at: string;
+};
+
 type WeeklySeoBriefing = {
   id: string;
   week_start: string;
