@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { classifyKeyword } from "../_shared/seoQuality.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -147,12 +148,38 @@ function actionPartsFor(signals: string[]) {
   return [...new Set(parts)];
 }
 
-function buildRecommendation(row: KeywordRow, targetUrl: string, signals: string[]): string {
+function pageLabel(url: string): string {
+  if (url.includes("mortgage")) return "Mortgage Calculator";
+  if (url.includes("borrowing-power")) return "Borrowing Power Calculator";
+  if (url.includes("stamp-duty")) return "Stamp Duty Calculator";
+  if (url.includes("lmi")) return "LMI Calculator";
+  if (url.includes("hecs")) return "HECS Borrowing Power Calculator";
+  if (url.includes("refinance")) return "Refinance Calculator";
+  if (url.includes("extra-repayments")) return "Extra Repayments Calculator";
+  if (url.includes("loan-comparison")) return "Loan Comparison Calculator";
+  if (url.includes("rent-vs-buy")) return "Rent vs Buy Calculator";
+  return "Australian Finance page";
+}
+
+function buildRecommendation(
+  row: KeywordRow,
+  targetUrl: string,
+  signals: string[],
+  quality: { intent: string; financeScore: number; confidence: string },
+): string {
   const position = row.calcy_position ?? 99;
-  const keyword = row.keyword;
+  const label = pageLabel(targetUrl);
   const actions = actionPartsFor(signals);
-  const actionText = actions.length > 0 ? actions.join(", ") : "review the page for intent match and internal links";
-  return `${keyword} has ${(row.calcy_impressions_28d ?? 0).toLocaleString()} impressions, ${((row.calcy_ctr_28d ?? 0) * 100).toFixed(1)}% CTR, and average position ${position.toFixed(1)}. For ${targetUrl}, ${actionText}. Admin suggestions only; do not publish or change URLs automatically.`;
+  if (quality.intent === "calculator" || quality.intent === "transactional") {
+    actions.unshift(`align ${label} above-the-fold copy to ${quality.intent} intent for "${row.keyword}"`);
+  } else if (quality.intent === "comparison") {
+    actions.unshift(`add or expand a comparison/options table relevant to "${row.keyword}"`);
+  }
+  if (quality.financeScore >= 8) {
+    actions.push("add FAQ schema with 3-5 finance-specific Q&As and clear Australian assumptions");
+  }
+  const actionText = actions.length > 0 ? actions.join("; ") : "review intent match and internal links";
+  return `${row.keyword} ranks ~position ${position.toFixed(1)} on ${label} (${targetUrl}) with ${(row.calcy_impressions_28d ?? 0).toLocaleString()} impressions and ${((row.calcy_ctr_28d ?? 0) * 100).toFixed(1)}% CTR (confidence: ${quality.confidence}). Recommended: ${actionText}. Admin-only suggestion — do not auto-publish or change URLs.`;
 }
 
 function scoreKeyword(row: KeywordRow, draftKeywords: Set<string>, pageStats: Map<string, PageStats>): Opportunity | null {
@@ -160,6 +187,21 @@ function scoreKeyword(row: KeywordRow, draftKeywords: Set<string>, pageStats: Ma
   const clicks = row.calcy_clicks_28d ?? 0;
   const ctr = row.calcy_ctr_28d ?? (impressions > 0 ? clicks / impressions : 0);
   const position = row.calcy_position;
+
+  const quality = classifyKeyword({
+    keyword: row.keyword,
+    category: row.category,
+    impressions,
+    clicks,
+    ctr,
+    position,
+  });
+
+  // Hard gate: drop noisy / non-finance / navigational keywords entirely.
+  if (quality.isNoise) return null;
+  if (!quality.isFinance && quality.intent !== "calculator") return null;
+  if (quality.intent === "navigational") return null;
+
   const previous = row.calcy_position_previous;
   const targetUrl = normaliseTargetUrl(row.target_page, row.category);
   const expected = expectedCtr(position);
@@ -216,7 +258,12 @@ function scoreKeyword(row: KeywordRow, draftKeywords: Set<string>, pageStats: Ma
     score += 10;
   }
 
-  if (signals.length === 0 || score < 20) return null;
+  // Finance intent + CPC boost
+  score += quality.financeScore * 1.5;
+  if (quality.intent === "calculator" || quality.intent === "transactional") score += 8;
+  if (quality.intent === "comparison") score += 5;
+
+  if (signals.length === 0 || score < 28) return null;
 
   const roundedScore = Math.round(clamp(score));
   const reasonParts = signals.map((signal) => {
@@ -236,10 +283,14 @@ function scoreKeyword(row: KeywordRow, draftKeywords: Set<string>, pageStats: Ma
     score: roundedScore,
     priority: priorityFor(roundedScore),
     reason: reasonParts.join("; "),
-    recommended_action: buildRecommendation(row, targetUrl, signals),
+    recommended_action: buildRecommendation(row, targetUrl, signals, quality),
     source_keyword_id: row.id,
     signals: {
       signals,
+      intent: quality.intent,
+      confidence: quality.confidence,
+      finance_relevance_score: quality.financeScore,
+      quality_score: quality.qualityScore,
       category: row.category,
       impressions_28d: impressions,
       clicks_28d: clicks,
@@ -297,10 +348,37 @@ Deno.serve(async (req) => {
         .filter((keyword): keyword is string => Boolean(keyword)),
     );
 
-    const activeKeywords = (keywordRows as KeywordRow[] | null) || [];
-    const pageStats = new Map<string, PageStats>();
+    const allKeywords = (keywordRows as KeywordRow[] | null) || [];
 
-    for (const row of activeKeywords) {
+    // Pre-filter pass: drop noisy / non-finance keywords from pageStats AND scoring.
+    const filterLog: { keyword: string; reason: string }[] = [];
+    const cleanKeywords: KeywordRow[] = [];
+    for (const row of allKeywords) {
+      const q = classifyKeyword({
+        keyword: row.keyword,
+        category: row.category,
+        impressions: row.calcy_impressions_28d,
+        clicks: row.calcy_clicks_28d,
+        ctr: row.calcy_ctr_28d,
+        position: row.calcy_position,
+      });
+      if (q.isNoise) {
+        filterLog.push({ keyword: row.keyword, reason: q.noiseReason || "noise" });
+        continue;
+      }
+      if (!q.isFinance && q.intent !== "calculator") {
+        filterLog.push({ keyword: row.keyword, reason: "non_finance_irrelevant" });
+        continue;
+      }
+      if (q.intent === "navigational") {
+        filterLog.push({ keyword: row.keyword, reason: "navigational_branded" });
+        continue;
+      }
+      cleanKeywords.push(row);
+    }
+
+    const pageStats = new Map<string, PageStats>();
+    for (const row of cleanKeywords) {
       const targetUrl = normaliseTargetUrl(row.target_page, row.category);
       const impressions = row.calcy_impressions_28d ?? 0;
       const clicks = row.calcy_clicks_28d ?? 0;
@@ -324,7 +402,7 @@ Deno.serve(async (req) => {
       pageStats.set(targetUrl, current);
     }
 
-    const opportunities = ((keywordRows as KeywordRow[] | null) || [])
+    const opportunities = cleanKeywords
       .map((row) => scoreKeyword(row, draftKeywords, pageStats))
       .filter((row): row is Opportunity => Boolean(row))
       .sort((a, b) => b.score - a.score)
@@ -346,11 +424,15 @@ Deno.serve(async (req) => {
     }
 
     const summary = {
-      total_keywords_checked: (keywordRows || []).length,
+      total_keywords_checked: allKeywords.length,
+      noisy_keywords_filtered: filterLog.length,
+      finance_keywords_evaluated: cleanKeywords.length,
       opportunities_scored: opportunities.length,
       high_priority: opportunities.filter((item) => item.priority === "high").length,
       medium_priority: opportunities.filter((item) => item.priority === "medium").length,
       low_priority: opportunities.filter((item) => item.priority === "low").length,
+      high_confidence: opportunities.filter((o) => (o.signals as Record<string, unknown>).confidence === "high").length,
+      ignored_sample: filterLog.slice(0, 25),
     };
 
     await supabase.from("seo_reports").insert({

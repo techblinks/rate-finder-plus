@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { classifyKeyword } from "../_shared/seoQuality.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -220,7 +221,24 @@ Deno.serve(async (req) => {
 
     if (error) throw error;
 
-    const keywordRows = (data as KeywordRow[] | null) || [];
+    const allRows = (data as KeywordRow[] | null) || [];
+    const filterLog: { keyword: string; reason: string }[] = [];
+    const keywordRows: KeywordRow[] = [];
+    for (const row of allRows) {
+      const q = classifyKeyword({
+        keyword: row.keyword,
+        category: row.category,
+        impressions: row.calcy_impressions_28d,
+        clicks: row.calcy_clicks_28d,
+        ctr: row.calcy_ctr_28d,
+        position: row.calcy_position,
+      });
+      if (q.isNoise || (!q.isFinance && q.intent !== "calculator") || q.intent === "navigational") {
+        filterLog.push({ keyword: row.keyword, reason: q.noiseReason || (q.intent === "navigational" ? "navigational" : "non_finance") });
+        continue;
+      }
+      keywordRows.push(row);
+    }
     const pageMap = new Map<string, KeywordRow[]>();
 
     for (const row of keywordRows) {
@@ -303,11 +321,14 @@ Deno.serve(async (req) => {
     }
 
     const summary = {
-      keywords_checked: keywordRows.length,
+      keywords_checked: allRows.length,
+      noisy_keywords_filtered: filterLog.length,
+      keywords_evaluated: keywordRows.length,
       pages_checked: pageMap.size,
       pages_flagged: finalSuggestions.length,
       estimated_missed_clicks: finalSuggestions.reduce((sum, item) => sum + item.estimated_missed_clicks, 0),
       high_priority: finalSuggestions.filter((item) => item.ctr_opportunity_score >= 70).length,
+      ignored_sample: filterLog.slice(0, 25),
     };
 
     await supabase.from("seo_reports").insert({
