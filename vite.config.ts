@@ -20,21 +20,9 @@ export default defineConfig(({ mode }) => ({
     dedupe: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime", "@tanstack/react-query", "@tanstack/query-core"],
   },
   build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (!id.includes("node_modules")) return undefined;
-          if (id.includes("/react/") || id.includes("/react-dom/") || id.includes("scheduler")) {
-            return "vendor-react";
-          }
-          if (id.includes("react-router")) return "vendor-router";
-          if (id.includes("@tanstack")) return "vendor-query";
-          if (id.includes("@supabase")) return "vendor-supabase";
-          if (id.includes("recharts") || id.includes("d3-")) return "vendor-charts";
-          if (id.includes("@radix-ui")) return "vendor-radix";
-          return "vendor-misc";
-        },
-      },
-    },
+    // Custom manualChunks removed: the aggressive vendor-misc bucket caused a
+    // production-only TDZ crash ("Cannot access 'S' before initialization" in
+    // vendor-misc-*.js) due to circular references between split chunks.
+    // Default Rollup chunking is safer here.
   },
 }));
