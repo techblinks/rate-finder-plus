@@ -3069,6 +3069,20 @@ const SeoPanel = () => {
                             {d.applied_at && <> at {new Date(d.applied_at).toLocaleString("en-AU")}</>}
                             {d.applied_by && <> by {d.applied_by}</>}
                             {d.rollback_snapshot && <> · rollback snapshot stored</>}
+                            <div className="mt-1 flex items-center gap-2">
+                              <button
+                                onClick={() => runImpactTracker(d.id)}
+                                disabled={trackingImpact}
+                                className="rounded border border-emerald-300 bg-white px-2 py-0.5 text-[10px] font-semibold text-emerald-900 disabled:opacity-50"
+                              >
+                                {trackingImpact ? "Computing..." : "Recompute impact"}
+                              </button>
+                              {(() => {
+                                const imp = impactByDraft.get(d.id);
+                                if (!imp) return <span className="text-[10px] italic text-emerald-800">No impact data yet · run tracker</span>;
+                                return <DraftImpactInline impact={imp} />;
+                              })()}
+                            </div>
                           </div>
                         )}
                       </div>
