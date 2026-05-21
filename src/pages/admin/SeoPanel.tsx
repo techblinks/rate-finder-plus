@@ -1056,7 +1056,7 @@ const SeoPanel = () => {
                     <div className="mt-3 flex flex-wrap gap-1.5">
                       {signalLabels.map((label) => (
                         <span key={label} className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-                          {label.replaceAll("_", " ")}
+                          {label.replace(/_/g, " ")}
                         </span>
                       ))}
                     </div>
@@ -1222,7 +1222,7 @@ const SeoPanel = () => {
                     <td className="px-4 py-3 font-medium text-foreground">{item.suggested_anchor_text}</td>
                     <td className="px-4 py-3">
                       <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-                        {(item.relationship_type || item.signals?.source_signal || "topic_overlap").replaceAll("_", " ")}
+                        {(item.relationship_type || item.signals?.source_signal || "topic_overlap").replace(/_/g, " ")}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-xs text-muted-foreground">{item.reason}</td>
@@ -1282,7 +1282,7 @@ const SeoPanel = () => {
               <div className="mt-3 grid gap-3 md:grid-cols-2">
                 {contentGapOpportunities.filter((item) => item.is_quick_win).slice(0, 6).map((item) => (
                   <article key={`quick-${item.id}`} className="rounded-xl border border-emerald-200 bg-white p-3">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800">{item.gap_type.replaceAll("_", " ")}</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800">{item.gap_type.replace(/_/g, " ")}</p>
                     <h4 className="mt-1 text-sm font-semibold text-emerald-950">{item.keyword_topic || item.affected_url}</h4>
                     <p className="mt-1 text-xs text-emerald-900">{item.suggested_fix}</p>
                     <p className="mt-2 text-xs text-emerald-800">
@@ -1319,7 +1319,7 @@ const SeoPanel = () => {
                       <td className="px-4 py-3">
                         <div className="flex flex-col gap-1">
                           <span className="w-fit rounded-full bg-muted px-2 py-0.5 text-xs font-semibold text-foreground">
-                            {item.gap_type.replaceAll("_", " ")}
+                            {item.gap_type.replace(/_/g, " ")}
                           </span>
                           {item.is_quick_win && (
                             <span className="w-fit rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-900">
@@ -1336,7 +1336,7 @@ const SeoPanel = () => {
                       <td className="px-4 py-3 text-xs text-foreground">{item.keyword_topic || item.signals?.keyword || "—"}</td>
                       <td className="px-4 py-3">
                         <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-                          {(item.suggested_content_type || "content_update").replaceAll("_", " ")}
+                          {(item.suggested_content_type || "content_update").replace(/_/g, " ")}
                         </span>
                       </td>
                       <td className="px-4 py-3 tnum text-xs text-foreground">{(item.estimated_traffic_opportunity || 0).toLocaleString()}</td>
@@ -1843,7 +1843,7 @@ const SeoPanel = () => {
                           {alerts.length === 0 && <p className="text-sm text-muted-foreground">No cluster alerts detected.</p>}
                           {alerts.slice(0, 8).map((alert, index) => (
                             <div key={`${activeTopicCluster.id}-alert-${index}`} className="rounded-lg border border-border bg-background p-3">
-                              <p className={`text-xs font-semibold ${alert.severity === "high" ? "text-red-700" : "text-amber-700"}`}>{alert.type.replaceAll("_", " ")}</p>
+                              <p className={`text-xs font-semibold ${alert.severity === "high" ? "text-red-700" : "text-amber-700"}`}>{alert.type.replace(/_/g, " ")}</p>
                               <p className="mt-1 text-sm text-foreground">{alert.message}</p>
                             </div>
                           ))}
@@ -1889,7 +1889,7 @@ const SeoPanel = () => {
                           {gaps.slice(0, 5).map((gap) => (
                             <div key={`${activeTopicCluster.id}-gap-${gap.url}-${gap.topic}`} className="rounded-lg border border-border bg-background p-3">
                               <p className="text-sm font-medium text-foreground">{gap.topic}</p>
-                              <p className="mt-1 text-xs text-muted-foreground">{gap.gap_type.replaceAll("_", " ")} - score {gap.score}</p>
+                              <p className="mt-1 text-xs text-muted-foreground">{gap.gap_type.replace(/_/g, " ")} - score {gap.score}</p>
                             </div>
                           ))}
                         </div>
@@ -2252,7 +2252,7 @@ const SeoPanel = () => {
                         }`}>
                           {item.priority_score}/100
                         </span>
-                        <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">{item.insight_type.replaceAll("_", " ")}</span>
+                        <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">{item.insight_type.replace(/_/g, " ")}</span>
                       </div>
                       <p className="mt-1 text-sm font-medium text-foreground">{item.detected_topic}</p>
                       {item.competitor_url && (
@@ -2407,7 +2407,7 @@ const SeoPanel = () => {
                 <div className="mt-3 flex flex-wrap gap-1.5">
                   {item.signals.detection_signals.map((signal: string) => (
                     <span key={`${item.id}-${signal}`} className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-                      {signal.replaceAll("_", " ")}
+                      {signal.replace(/_/g, " ")}
                     </span>
                   ))}
                 </div>
@@ -2531,7 +2531,7 @@ const SeoPanel = () => {
                     <div className="mt-3 space-y-2">
                       {warnings.length > 0 ? warnings.slice(0, 6).map((warning, index) => (
                         <div key={`warning-${index}`} className="rounded-lg border border-border bg-background p-3">
-                          <p className="text-sm font-medium text-foreground">{warning.type?.replaceAll("_", " ") || "warning"}</p>
+                          <p className="text-sm font-medium text-foreground">{warning.type?.replace(/_/g, " ") || "warning"}</p>
                           <p className="mt-1 text-xs text-muted-foreground">
                             {warning.keyword || warning.url || `Score ${warning.score ?? "n/a"}`}
                           </p>
@@ -2591,7 +2591,7 @@ const SeoPanel = () => {
                   <p className="text-xs text-muted-foreground">#{index + 1} - Week of {new Date(task.week_start).toLocaleDateString()}</p>
                   <h3 className="mt-1 text-base font-semibold text-foreground">{task.task_title}</h3>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Type: <span className="font-semibold text-foreground">{task.task_type.replaceAll("_", " ")}</span> - URL:{" "}
+                    Type: <span className="font-semibold text-foreground">{task.task_type.replace(/_/g, " ")}</span> - URL:{" "}
                     <a href={task.affected_url} target="_blank" rel="noreferrer" className="text-accent underline">
                       {task.affected_url}
                     </a>
