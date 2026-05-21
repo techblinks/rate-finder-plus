@@ -669,6 +669,7 @@ const SeoPanel = () => {
   };
 
   const [applyingDraftId, setApplyingDraftId] = useState<string | null>(null);
+  const [previewDraftId, setPreviewDraftId] = useState<string | null>(null);
   const APPLY_SUPPORTED = new Set(["title_meta", "faq"]);
 
   const applyApprovedDraft = async (draft: WeeklySeoTaskDraft) => {
