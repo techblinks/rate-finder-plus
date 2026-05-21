@@ -145,13 +145,25 @@ Deno.serve(async (req) => {
     const t = task as TaskRow;
     const draftTypes = pickDraftTypes(t);
 
-    // Optional context: fetch nearby signals for the affected URL
-    const [{ data: ctr }, { data: opt }, { data: aeo }, { data: link }] = await Promise.all([
+    // Optional context: fetch nearby signals for the affected URL + winning patterns
+    const [{ data: ctr }, { data: opt }, { data: aeo }, { data: link }, { data: patternsData }] = await Promise.all([
       admin.from("ctr_optimizations").select("primary_keyword,position,impressions_28d,ctr_28d,suggested_title,suggested_meta_description,suggested_faq_snippet,suggested_featured_snippet_answer").eq("page_url", t.affected_url).limit(1),
       admin.from("content_optimizations").select("page_title,primary_topic,faq_additions,direct_answers,semantic_keywords,comparison_tables").eq("page_url", t.affected_url).limit(1),
       admin.from("aeo_optimizations").select("page_title,featured_snippet_paragraphs,direct_answer_blocks,faq_improvements,conversational_search_queries").eq("page_url", t.affected_url).limit(1),
       admin.from("internal_link_opportunities").select("source_page,target_page,suggested_anchor_text,reason").or(`source_page.eq.${t.affected_url},target_page.eq.${t.affected_url}`).limit(5),
+      admin.from("seo_winning_patterns").select("*").in("status", ["winning", "risky"]),
     ]);
+
+    // Build pattern hints for the prompt
+    const patterns = (patternsData as any[]) || [];
+    const patternHints = patterns
+      .filter((p) => draftTypes.includes((p.draft_type || "").toLowerCase()) || p.pattern_type === "page_type" || p.pattern_type === "keyword_intent")
+      .slice(0, 8)
+      .map((p) => `- [${p.status}/${p.confidence_level}] ${p.pattern_type} ${p.draft_type ?? ""} ${p.page_type ?? ""} ${p.keyword_intent ?? ""}: ${p.recommendation ?? ""}`)
+      .join("\n");
+    const patternHintsBlock = patternHints
+      ? `\nLearned winning/risky patterns to bias style, tone and structure (DO NOT mention this section in output):\n${patternHints}\n`
+      : `\n(Learning data not sufficient yet — use generic best practices.)\n`;
 
     const userPrompt = `Generate admin-review-only DRAFTS for this weekly SEO task. Return STRICT JSON with shape:
 {
