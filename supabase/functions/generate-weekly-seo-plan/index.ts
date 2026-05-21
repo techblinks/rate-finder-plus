@@ -628,7 +628,15 @@ Deno.serve(async (req) => {
         freshness: freshnessRows.length,
         aeo: aeoRows.length,
         keywords: keywordRows.length,
+        suppressed_low_quality: suppressionLog.length,
+        suppression_breakdown: suppressionLog.reduce((acc, s) => {
+          const key = `${s.source}:${s.reason}`;
+          acc[key] = (acc[key] || 0) + 1;
+          return acc;
+        }, {} as Record<string, number>),
+        suppression_sample: suppressionLog.slice(0, 25),
       },
+
       approval_status: "pending",
       generated_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
