@@ -602,7 +602,29 @@ Deno.serve(async (req) => {
       });
     }
 
-    const results = [...gaps.values()].sort((a, b) => b.priority_score - a.priority_score).slice(0, 200);
+    const results = [...gaps.values()].sort((a, b) => b.priority_score - a.priority_score).slice(0, 200).map((gap) => {
+      const sig = (gap.signals || {}) as Record<string, unknown>;
+      const impressions = Number((sig.impressions_28d as number | undefined) || 0);
+      const position = sig.average_position == null ? null : Number(sig.average_position);
+      return {
+        ...gap,
+        signals: {
+          ...sig,
+          reasoning: buildReasoning({
+            kind: "content_gap",
+            keyword: gap.keyword_topic || null,
+            target_url: gap.affected_url,
+            score: gap.priority_score,
+            impressions_28d: impressions,
+            position,
+            estimated_traffic_opportunity: gap.estimated_traffic_opportunity,
+            risk_level: "medium",
+            signals: [gap.gap_type],
+            notes: gap.suggested_fix,
+          }),
+        },
+      };
+    });
 
     if (results.length > 0) {
       const { error: upsertError } = await supabase
