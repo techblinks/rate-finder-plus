@@ -211,12 +211,16 @@ for (const route of ROUTES) {
     count++;
     continue;
   }
-  // Emit folder-with-index format (dist/<path>/index.html). Cloudflare Pages
-  // natively resolves directory-index for bare URLs.
+  // Emit flat <path>.html files (NOT <path>/index.html). Cloudflare Pages
+  // serves dist/foo.html at /foo with HTTP 200 and redirects /foo/ -> /foo,
+  // which matches our sitemap + canonical convention (no trailing slash).
+  // The previous folder-with-index layout caused 308 redirects from the
+  // bare URL to the trailing-slash variant, which GSC flags as
+  // "Page with redirect" during URL validation.
   const relPath = route.canonical.replace(/^\//, "");
-  const outDir = join(DIST, relPath);
-  mkdirSync(outDir, { recursive: true });
-  writeFileSync(join(outDir, "index.html"), renderRouteHtml(route), "utf8");
+  const outFile = join(DIST, `${relPath}.html`);
+  mkdirSync(dirname(outFile), { recursive: true });
+  writeFileSync(outFile, renderRouteHtml(route), "utf8");
   count++;
 }
 
