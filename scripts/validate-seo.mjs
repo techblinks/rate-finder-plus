@@ -34,13 +34,14 @@ function loadHtml(route) {
   const file =
     route.canonical === "/"
       ? join(DIST, "index.html")
-      : join(DIST, route.canonical.replace(/^\//, ""), "index.html");
+      : join(DIST, `${route.canonical.replace(/^\//, "")}.html`);
   if (!existsSync(file)) {
     fail(route.canonical, `prerendered file missing: ${file}`);
     return null;
   }
   return readFileSync(file, "utf8");
 }
+
 
 function extractJsonLd(html, page) {
   const re = /<script type="application\/ld\+json">([\s\S]*?)<\/script>/g;
