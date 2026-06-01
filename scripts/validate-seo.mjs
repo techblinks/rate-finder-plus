@@ -160,7 +160,8 @@ function validateSitemap(routes) {
     if (!expected.has(l)) fail("sitemap-static.xml", `unknown URL ${l}`);
     const path = l.replace(SITE, "");
     const f =
-      path === "/" ? join(DIST, "index.html") : join(DIST, path.replace(/^\//, ""), "index.html");
+      path === "/" ? join(DIST, "index.html") : join(DIST, `${path.replace(/^\//, "")}.html`);
+
     if (!existsSync(f) || !statSync(f).isFile())
       fail("sitemap-static.xml", `URL has no built file: ${l}`);
   }
