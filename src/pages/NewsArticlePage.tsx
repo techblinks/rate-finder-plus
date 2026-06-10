@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { Link, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
+import { sanitiseArticleHtml } from "@/lib/safeHtml";
 
 const SITE = "https://calcy.com.au";
 
@@ -94,6 +95,7 @@ const NewsArticlePage = () => {
   const author = article.author || "Calcy Team";
   const description = (article.excerpt || "").trim();
   const date = formatDate(article.published_at);
+  const safeBody = sanitiseArticleHtml(article.body);
 
   const newsArticleSchema = {
     "@context": "https://schema.org",
@@ -141,10 +143,10 @@ const NewsArticlePage = () => {
           </p>
         </header>
 
-        {article.body && (
+        {safeBody && (
           <div
             className="article-content prose prose-slate max-w-none text-foreground"
-            dangerouslySetInnerHTML={{ __html: article.body }}
+            dangerouslySetInnerHTML={{ __html: safeBody }}
           />
         )}
 

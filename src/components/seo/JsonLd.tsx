@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import type { FaqItem } from "@/data/faqs";
 import { useRbaRates } from "@/hooks/useRbaRates";
 import { substituteRateTokens } from "@/lib/rateTokens";
+import { jsonLdTypeExists } from "@/lib/safeHtml";
 
 const SITE = "https://calcy.com.au";
 
@@ -10,6 +11,10 @@ interface BreadcrumbProps {
 }
 
 export const BreadcrumbJsonLd = ({ items }: BreadcrumbProps) => {
+  const path = items[items.length - 1]?.path;
+  if (jsonLdTypeExists("BreadcrumbList", (data) => JSON.stringify(data).includes(`${SITE}${path}`))) {
+    return null;
+  }
   const data = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -30,12 +35,7 @@ export const BreadcrumbJsonLd = ({ items }: BreadcrumbProps) => {
 export const FaqJsonLd = ({ faqs }: { faqs: FaqItem[] }) => {
   const { cashRate } = useRbaRates();
   // Skip if prerender already injected a FAQPage block — avoids GSC "Duplicate field FAQPage".
-  if (typeof document !== "undefined") {
-    const existing = document.querySelectorAll('script[type="application/ld+json"]');
-    for (const el of Array.from(existing)) {
-      if ((el.textContent || "").includes('"FAQPage"')) return null;
-    }
-  }
+  if (jsonLdTypeExists("FAQPage")) return null;
   // Google Rich Results requires the FAQPage to have at least 2 valid Q/A pairs.
   const cleaned = (faqs ?? [])
     .map((f) => ({
@@ -70,12 +70,16 @@ interface WebApplicationProps {
 }
 
 export const WebApplicationJsonLd = ({ name, description, path }: WebApplicationProps) => {
+  const url = `${SITE}${path}`;
+  if (jsonLdTypeExists("WebApplication", (data) => JSON.stringify(data).includes(url))) {
+    return null;
+  }
   const data = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     name,
     description,
-    url: `${SITE}${path}`,
+    url,
     applicationCategory: "FinanceApplication",
     operatingSystem: "Any",
     browserRequirements: "Requires JavaScript",
@@ -109,6 +113,7 @@ interface HowToProps {
 }
 
 export const HowToJsonLd = ({ name, description, totalTime, steps }: HowToProps) => {
+  if (jsonLdTypeExists("HowTo", (data) => JSON.stringify(data).includes(name))) return null;
   const data = {
     "@context": "https://schema.org",
     "@type": "HowTo",
@@ -174,11 +179,15 @@ export const OrganizationJsonLd = () => {
       "query-input": "required name=search_term_string",
     },
   };
+  const showOrg = !jsonLdTypeExists("Organization", (data) => JSON.stringify(data).includes(SITE));
+  const showFinancialService = !jsonLdTypeExists("FinancialService");
+  const showWebsite = !jsonLdTypeExists("WebSite", (data) => JSON.stringify(data).includes(SITE));
+  if (!showOrg && !showFinancialService && !showWebsite) return null;
   return (
     <Helmet>
-      <script type="application/ld+json">{JSON.stringify(org)}</script>
-      <script type="application/ld+json">{JSON.stringify(financialService)}</script>
-      <script type="application/ld+json">{JSON.stringify(website)}</script>
+      {showOrg && <script type="application/ld+json">{JSON.stringify(org)}</script>}
+      {showFinancialService && <script type="application/ld+json">{JSON.stringify(financialService)}</script>}
+      {showWebsite && <script type="application/ld+json">{JSON.stringify(website)}</script>}
     </Helmet>
   );
 };
@@ -192,6 +201,7 @@ export const ArticleJsonLd = ({
   dateModified = new Date().toISOString().slice(0, 10),
 }: ArticleProps) => {
   const url = `${SITE}${path}`;
+  if (jsonLdTypeExists("Article", (data) => JSON.stringify(data).includes(url))) return null;
   const data = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -234,12 +244,14 @@ interface DatasetProps {
  * eligibility in AI Overviews and Perplexity.
  */
 export const DatasetJsonLd = ({ name, description, path, variableMeasured }: DatasetProps) => {
+  const url = `${SITE}${path}`;
+  if (jsonLdTypeExists("Dataset", (data) => JSON.stringify(data).includes(url))) return null;
   const data = {
     "@context": "https://schema.org",
     "@type": "Dataset",
     name,
     description,
-    url: `${SITE}${path}`,
+    url,
     provider: { "@type": "Organization", name: "Calcy", url: SITE },
     temporalCoverage: String(new Date().getFullYear()),
     spatialCoverage: "Australia",
@@ -265,6 +277,7 @@ export const SpeakableJsonLd = ({
   name: string;
   selectors: string[];
 }) => {
+  if (jsonLdTypeExists("WebPage", (data) => JSON.stringify(data).includes(name))) return null;
   const data = {
     "@context": "https://schema.org",
     "@type": "WebPage",

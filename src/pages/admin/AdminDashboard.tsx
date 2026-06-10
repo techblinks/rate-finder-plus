@@ -10,6 +10,29 @@ import ContentPanel from "./ContentPanel";
 import NewsPanel from "./NewsPanel";
 import CommandCentre from "./CommandCentre";
 import LeadsPanel from "./LeadsPanel";
+import {
+  BarChart3,
+  Bot,
+  Brush,
+  CheckCircle2,
+  CircleDollarSign,
+  ClipboardCheck,
+  FileText,
+  Gauge,
+  Home,
+  LineChart,
+  LogOut,
+  Mail,
+  Newspaper,
+  RadioTower,
+  Rocket,
+  Search,
+  Settings as SettingsIcon,
+  ShieldCheck,
+  Sparkles,
+  Target,
+  type LucideIcon,
+} from "lucide-react";
 
 const BUCKET = "branding";
 
@@ -26,6 +49,14 @@ const uploadFile = async (file: File, prefix: string) => {
 };
 
 type TabKey =
+  | "today"
+  | "plan"
+  | "create"
+  | "review"
+  | "apply"
+  | "measure"
+  | "system"
+  | "settings"
   | "dashboard"
   | "seo_intel"
   | "content"
@@ -37,37 +68,39 @@ type TabKey =
   | "analytics"
   | "seo";
 
-type NavItem = { key: TabKey; label: string; icon: string };
+type NavItem = { key: TabKey; label: string; icon: LucideIcon; desc: string };
 type NavGroup = { label?: string; items: NavItem[] };
 
 const NAV: NavGroup[] = [
-  { items: [{ key: "dashboard", label: "Command Centre", icon: "⚡" }] },
-  { label: "Growth", items: [
-    { key: "seo_intel", label: "SEO Intelligence", icon: "📈" },
-    { key: "content", label: "Content Engine", icon: "✍" },
-    { key: "news", label: "News Articles", icon: "📰" },
-    { key: "leads", label: "Leads", icon: "📧" },
-  ]},
-  { label: "Data", items: [
-    { key: "live_data", label: "Live Rates", icon: "📡" },
-    { key: "adsense", label: "AdSense", icon: "💰" },
-  ]},
-  { label: "Settings", items: [
-    { key: "branding", label: "Branding", icon: "🎨" },
-    { key: "analytics", label: "Analytics", icon: "📊" },
-    { key: "seo", label: "SEO Settings", icon: "⚙" },
+  { items: [
+    { key: "today", label: "Today", icon: Gauge, desc: "Daily operating view" },
+    { key: "plan", label: "Plan", icon: Target, desc: "Opportunities and strategy" },
+    { key: "create", label: "Create", icon: FileText, desc: "Briefs and drafts" },
+    { key: "review", label: "Review", icon: ClipboardCheck, desc: "Approvals and previews" },
+    { key: "apply", label: "Apply", icon: Rocket, desc: "Safe changes and rollback" },
+    { key: "measure", label: "Measure", icon: LineChart, desc: "Impact and learning" },
+    { key: "system", label: "System", icon: ShieldCheck, desc: "Automation and health" },
+    { key: "settings", label: "Settings", icon: SettingsIcon, desc: "Brand and SEO config" },
   ]},
 ];
 
 const MOBILE_TABS: NavItem[] = [
-  { key: "dashboard", label: "Home", icon: "⚡" },
-  { key: "seo_intel", label: "SEO", icon: "📈" },
-  { key: "content", label: "Content", icon: "✍" },
-  { key: "news", label: "News", icon: "📰" },
-  { key: "live_data", label: "Rates", icon: "📡" },
+  { key: "today", label: "Today", icon: Home, desc: "Command Centre" },
+  { key: "plan", label: "Plan", icon: Target, desc: "Strategy" },
+  { key: "create", label: "Create", icon: FileText, desc: "Drafts" },
+  { key: "review", label: "Review", icon: ClipboardCheck, desc: "Approvals" },
+  { key: "system", label: "System", icon: ShieldCheck, desc: "Health" },
 ];
 
 const PAGE_META: Record<TabKey, { title: string; desc: string }> = {
+  today: { title: "Today", desc: "Daily SEO operating system for the next best action." },
+  plan: { title: "Plan", desc: "Prioritize the opportunities most likely to grow traffic and revenue." },
+  create: { title: "Create", desc: "Generate briefs, drafts, article updates, and content improvements." },
+  review: { title: "Review", desc: "Review AI recommendations before anything is applied." },
+  apply: { title: "Apply", desc: "Apply approved work safely and keep rollback control." },
+  measure: { title: "Measure", desc: "See what improved, what stalled, and what needs review." },
+  system: { title: "System", desc: "Monitor automation, health, data freshness, and integrations." },
+  settings: { title: "Settings", desc: "Manage brand, SEO defaults, analytics, and monetization config." },
   dashboard: { title: "Command Centre", desc: "" },
   seo_intel: { title: "SEO Intelligence", desc: "Track keyword rankings and find opportunities to reach page 1." },
   content: { title: "Content Engine", desc: "Generate SEO-optimised articles from your top keyword opportunities." },
@@ -101,13 +134,40 @@ const Toggle = ({ label, checked, onChange, hint }: { label: string; checked: bo
   </label>
 );
 
+const WorkflowIntro = ({ eyebrow, title, body, cta, onCta }: { eyebrow: string; title: string; body: string; cta?: string; onCta?: () => void }) => (
+  <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="flex flex-wrap items-start justify-between gap-4">
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#3366FF]">{eyebrow}</p>
+        <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">{title}</h2>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">{body}</p>
+      </div>
+      {cta && onCta && (
+        <button onClick={onCta} className="rounded-lg bg-[#003680] px-4 py-2 text-sm font-semibold text-white hover:bg-[#052b61]">
+          {cta}
+        </button>
+      )}
+    </div>
+  </section>
+);
+
+const WorkflowStat = ({ label, value, tone = "neutral" }: { label: string; value: string; tone?: "neutral" | "success" | "warning" | "danger" }) => {
+  const color = tone === "success" ? "text-emerald-700" : tone === "warning" ? "text-amber-700" : tone === "danger" ? "text-red-700" : "text-slate-950";
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">{label}</p>
+      <p className={`mt-2 text-2xl font-semibold tabular-nums ${color}`}>{value}</p>
+    </div>
+  );
+};
+
 const AdminDashboard = () => {
   const { session, isAdmin, loading } = useAuth();
   const settings = useSiteSettings();
   const [tab, setTab] = useState<TabKey>(() =>
     typeof window !== "undefined" && window.location.pathname.startsWith("/admin/news")
-      ? "news"
-      : "dashboard"
+      ? "create"
+      : "today"
   );
   const [logoHeight, setLogoHeight] = useState(settings.logo_height);
   const [logoHeightMobile, setLogoHeightMobile] = useState(settings.logo_height_mobile);
@@ -181,6 +241,22 @@ const AdminDashboard = () => {
     window.location.href = "/admin/login";
   };
 
+  const goToWorkflow = (key: string) => {
+    const map: Record<string, TabKey> = {
+      dashboard: "today",
+      seo_intel: "plan",
+      content: "create",
+      news: "create",
+      leads: "measure",
+      live_data: "system",
+      adsense: "settings",
+      branding: "settings",
+      analytics: "settings",
+      seo: "settings",
+    };
+    setTab(map[key] || (key as TabKey));
+  };
+
   const adsenseStatus: "approved" | "review" | "off" =
     settings.adsense_enabled && settings.adsense_client ? "approved" :
     settings.adsense_client ? "review" : "off";
@@ -193,78 +269,118 @@ const AdminDashboard = () => {
       <a href="#admin-main" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-white focus:px-3 focus:py-2 focus:text-sm">Skip to content</a>
 
       <div className="flex">
-        {/* Sidebar — desktop only */}
+        {/* Sidebar - desktop mission control */}
         <aside
-          className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col bg-[hsl(var(--admin-sidebar))] text-[hsl(var(--admin-sidebar-text))] md:flex"
+          className="fixed inset-y-0 left-0 z-30 hidden w-[17rem] flex-col overflow-hidden border-r border-white/10 bg-[#050505] text-white md:flex"
           aria-label="Admin navigation"
         >
-          <div className="flex items-center gap-2 px-5 pt-5 pb-3">
-            <span className="text-xl">🧮</span>
-            <div className="min-w-0">
-              <div className="text-sm font-semibold text-white">Calcy Admin</div>
-              <div className="truncate text-[11px] text-[hsl(var(--admin-sidebar-muted))]">{session.user.email}</div>
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/15" />
+          <div className="relative px-4 pb-4 pt-5">
+            <div className="rounded-xl border border-white/10 bg-white/[0.035] p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-[#003680]">
+                  <Sparkles className="h-4 w-4 text-white" />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold tracking-tight text-white">Calcy Growth OS</div>
+                  <div className="truncate text-[11px] text-white/50">{session.user.email}</div>
+                </div>
+              </div>
+              <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
+                <div className="rounded-lg border border-white/10 bg-black/20 p-2.5">
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-white/40">Mode</p>
+                  <p className="mt-1 font-semibold text-emerald-300">Live ops</p>
+                </div>
+                <div className="rounded-lg border border-white/10 bg-black/20 p-2.5">
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-white/40">Goal</p>
+                  <p className="mt-1 font-semibold text-[#9fc2ff]">$10K/mo</p>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="border-t border-white/10" />
-          <nav className="flex-1 overflow-y-auto px-2 py-3">
+
+          <nav className="relative flex-1 overflow-y-auto px-3 pb-3">
             {NAV.map((group, gi) => (
-              <div key={gi} className={gi === 0 ? "" : "mt-5"}>
+              <div key={gi} className={gi === 0 ? "" : "mt-4"}>
                 {group.label && (
-                  <div className="px-3 pb-1.5 text-[10px] font-semibold uppercase tracking-wider text-[hsl(var(--admin-sidebar-muted))]">
+                  <div className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/35">
                     {group.label}
                   </div>
                 )}
-                {group.items.map((item) => {
-                  const active = tab === item.key;
-                  return (
-                    <button
-                      key={item.key}
-                      onClick={() => setTab(item.key)}
-                      className={`flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-left text-[13px] transition ${
-                        active
-                          ? "bg-[hsl(var(--admin-sidebar-active))] text-white font-medium"
-                          : "text-[hsl(var(--admin-sidebar-text))] hover:bg-white/5 hover:text-white"
-                      }`}
-                    >
-                      <span className="w-4 text-center" aria-hidden>{item.icon}</span>
-                      <span>{item.label}</span>
-                    </button>
-                  );
-                })}
+                <div className="space-y-1">
+                  {group.items.map((item) => {
+                    const active = tab === item.key;
+                    const Icon = item.icon;
+                    return (
+                      <button
+                        key={item.key}
+                        onClick={() => setTab(item.key)}
+                        className={`group flex w-full items-center gap-3 rounded-lg border px-3 py-2.5 text-left transition ${
+                          active
+                            ? "border-[#3366FF]/45 bg-[#3366FF]/14 text-white"
+                            : "border-transparent bg-transparent text-white/62 hover:border-white/10 hover:bg-white/[0.045] hover:text-white"
+                        }`}
+                      >
+                        <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md border transition ${
+                          active
+                            ? "border-[#3366FF]/45 bg-[#003680] text-white"
+                            : "border-white/10 bg-white/[0.025] text-white/45 group-hover:text-white/80"
+                        }`}>
+                          <Icon className="h-4 w-4" />
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-sm font-semibold">{item.label}</span>
+                          <span className="mt-0.5 block truncate text-[11px] text-white/38">{item.desc}</span>
+                        </span>
+                        {active && <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             ))}
           </nav>
 
-          {/* Persistent goal tracker */}
-          <div className="border-t border-white/10 px-4 py-4">
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-[hsl(var(--admin-sidebar-muted))]">💰 Monthly goal</div>
-            <div className="mt-1.5 flex items-baseline justify-between text-xs text-[hsl(var(--admin-sidebar-text))]">
-              <span className="tnum">$0</span>
-              <span className="tnum">/ $10,000</span>
-            </div>
-            <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-white/10">
-              <div className="h-full rounded-full bg-[hsl(var(--admin-green))]" style={{ width: "0%" }} />
-            </div>
-            <div className="mt-1.5 text-[10px] text-[hsl(var(--admin-sidebar-muted))]">
-              AdSense: {adsenseStatus === "approved" ? "Active ✓" : adsenseStatus === "review" ? "Under review" : "Not connected"}
+          <div className="relative border-t border-white/10 px-4 py-4">
+            <div className="rounded-xl border border-white/10 bg-white/[0.035] p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/35">Monthly goal</div>
+                  <div className="mt-1 text-sm font-semibold text-white"><span className="tnum">$0</span> / $10,000</div>
+                </div>
+                <Target className="h-5 w-5 text-[#6EA8FF]" />
+              </div>
+              <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
+                <div className="h-full rounded-full bg-[#3366FF]" style={{ width: "0%" }} />
+              </div>
+              <div className="mt-3 flex items-center gap-2 text-[11px] text-white/45">
+                <span className={`h-2 w-2 rounded-full ${adsenseStatus === "approved" ? "bg-emerald-300" : adsenseStatus === "review" ? "bg-amber-300" : "bg-red-300"}`} />
+                AdSense: {adsenseStatus === "approved" ? "Active" : adsenseStatus === "review" ? "Under review" : "Not connected"}
+              </div>
             </div>
           </div>
 
-          <div className="border-t border-white/10 px-4 py-3 text-[12px]">
-            <Link to="/" className="block py-1 text-[hsl(var(--admin-sidebar-text))] hover:text-white">🌐 View site ↗</Link>
-            <button onClick={signOut} className="block py-1 text-[hsl(var(--admin-sidebar-muted))] hover:text-white">Sign out</button>
+          <div className="relative border-t border-white/10 px-4 py-3 text-[12px]">
+            <Link to="/" className="flex items-center gap-2 rounded-lg px-2 py-2 text-white/65 hover:bg-white/[0.045] hover:text-white">
+              <Home className="h-4 w-4" />
+              View site
+            </Link>
+            <button onClick={signOut} className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-white/45 hover:bg-white/[0.045] hover:text-white">
+              <LogOut className="h-4 w-4" />
+              Sign out
+            </button>
           </div>
         </aside>
 
         {/* Main */}
-        <main id="admin-main" className="min-h-screen flex-1 md:ml-60 pb-24 md:pb-8">
+        <main id="admin-main" className="min-h-screen flex-1 md:ml-[17rem] pb-24 md:pb-8">
           {/* Mobile top bar */}
-          <header className="sticky top-0 z-20 flex items-center justify-between border-b border-[hsl(var(--admin-border))] bg-white px-4 py-3 md:hidden">
+          <header className="sticky top-0 z-20 flex items-center justify-between border-b border-white/10 bg-[#050505] px-4 py-3 text-white md:hidden">
             <div className="flex items-center gap-2">
-              <span>🧮</span>
-              <span className="text-sm font-semibold text-[hsl(var(--admin-text))]">Calcy Admin</span>
+              <Sparkles className="h-4 w-4 text-[#6EA8FF]" />
+              <span className="text-sm font-semibold">Calcy Growth OS</span>
             </div>
-            <button onClick={signOut} className="text-xs text-[hsl(var(--admin-muted))]">Sign out</button>
+            <button onClick={signOut} className="text-xs text-white/55">Sign out</button>
           </header>
 
           <div className="px-5 py-6 md:px-8 md:py-8">
@@ -276,7 +392,7 @@ const AdminDashboard = () => {
             )}
 
             {/* Page header (skip for command centre — has its own) */}
-            {tab !== "dashboard" && (
+            {tab !== "today" && (
               <header className="mb-6">
                 <h1 className="admin-page-title">{meta.title}</h1>
                 {meta.desc && <p className="mt-1 text-sm text-[hsl(var(--admin-muted))]">{meta.desc}</p>}
@@ -284,14 +400,81 @@ const AdminDashboard = () => {
             )}
 
             <fieldset disabled={!isAdmin || saving} className="space-y-6 disabled:opacity-60">
-              {tab === "dashboard" && <CommandCentre onNavigate={(k) => setTab(k as TabKey)} />}
-              {tab === "content" && <ContentPanel />}
-              {tab === "news" && <NewsPanel />}
-              {tab === "leads" && <LeadsPanel />}
-              {tab === "seo_intel" && <SeoPanel />}
-              {tab === "live_data" && <LiveDataPanel />}
+              {tab === "today" && <CommandCentre onNavigate={goToWorkflow} />}
+              {tab === "plan" && (
+                <div className="space-y-6">
+                  <WorkflowIntro
+                    eyebrow="Plan"
+                    title="Decide what will move growth next"
+                    body="Use SEO Intelligence to identify quick wins, high-impact pages, content gaps, money pages, internal links, and CTR opportunities."
+                  />
+                  <div className="grid gap-3 md:grid-cols-5">
+                    <WorkflowStat label="Focus" value="ROI" />
+                    <WorkflowStat label="Primary action" value="Prioritize" />
+                    <WorkflowStat label="Output" value="Tasks" />
+                    <WorkflowStat label="Risk" value="Review" tone="warning" />
+                    <WorkflowStat label="Publishing" value="Manual" tone="success" />
+                  </div>
+                  <SeoPanel />
+                </div>
+              )}
+              {tab === "create" && (
+                <div className="space-y-6">
+                  <WorkflowIntro
+                    eyebrow="Create"
+                    title="Create the next useful SEO asset"
+                    body="Generate briefs, draft improvements, article updates, and editorial work from approved planning signals."
+                  />
+                  <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+                    <ContentPanel />
+                    <NewsPanel />
+                  </div>
+                </div>
+              )}
+              {tab === "review" && (
+                <div className="space-y-6">
+                  <WorkflowIntro
+                    eyebrow="Review"
+                    title="Approve only what you trust"
+                    body="Review daily recommendations, confidence reasoning, risk alerts, and draft suggestions before anything is applied."
+                  />
+                  <SeoPanel />
+                </div>
+              )}
+              {tab === "apply" && (
+                <div className="space-y-6">
+                  <WorkflowIntro
+                    eyebrow="Apply"
+                    title="Apply approved work safely"
+                    body="Use approved draft states and existing rollback discipline. Unsupported changes remain manual review only."
+                  />
+                  <ContentPanel />
+                </div>
+              )}
+              {tab === "measure" && (
+                <div className="space-y-6">
+                  <WorkflowIntro
+                    eyebrow="Measure"
+                    title="Learn what worked"
+                    body="Measure rankings, CTR movement, draft outcomes, lead capture, and winning patterns so future work gets smarter."
+                  />
+                  <SeoPanel />
+                  <LeadsPanel />
+                </div>
+              )}
+              {tab === "system" && (
+                <div className="space-y-6">
+                  <WorkflowIntro
+                    eyebrow="System"
+                    title="Keep the SEO machine healthy"
+                    body="Monitor automation, GSC sync, health warnings, RBA data freshness, live rates, and operational errors."
+                  />
+                  <SeoPanel />
+                  <LiveDataPanel />
+                </div>
+              )}
 
-              {tab === "adsense" && (
+              {(tab === "settings" || tab === "adsense") && (
                 <div className="space-y-5">
                   {/* Revenue status hero */}
                   <section className="admin-card p-6" style={{ borderLeft: "4px solid hsl(var(--admin-green))" }}>
@@ -360,7 +543,7 @@ const AdminDashboard = () => {
                 </div>
               )}
 
-              {tab === "branding" && (
+              {(tab === "settings" || tab === "branding") && (
                 <div className="space-y-5">
                   <section className="admin-card p-6">
                     <h2 className="text-base font-semibold text-[hsl(var(--admin-text))]">Logo</h2>
@@ -408,7 +591,7 @@ const AdminDashboard = () => {
                 </div>
               )}
 
-              {tab === "analytics" && (
+              {(tab === "settings" || tab === "analytics") && (
                 <section className="admin-card p-6 space-y-5">
                   <Field label="Google Analytics 4 Measurement ID" hint="Format: G-XXXXXXX">
                     <input className={fieldClass} placeholder="G-XXXXXXX" value={(value("ga4_id") as string) ?? ""} onChange={(e) => setField("ga4_id", e.target.value || null)} />
@@ -434,7 +617,7 @@ const AdminDashboard = () => {
                 </section>
               )}
 
-              {tab === "seo" && (
+              {(tab === "settings" || tab === "seo") && (
                 <section className="admin-card p-6 space-y-5">
                   <Toggle label="Allow search engines to index this site" checked={value("indexing_enabled") as boolean} onChange={(v) => setField("indexing_enabled", v)} hint="Disable to add a noindex,nofollow tag site-wide (e.g. for staging)." />
                   <Field label="Title template" hint="Use %s for the page title. Default: %s | Calcy">
@@ -492,19 +675,22 @@ const AdminDashboard = () => {
       </div>
 
       {/* Mobile bottom nav */}
-      <nav className="fixed inset-x-0 bottom-0 z-30 flex border-t border-[hsl(var(--admin-border))] bg-white shadow-lg md:hidden safe-pb" aria-label="Admin sections">
+      <nav className="fixed inset-x-0 bottom-0 z-30 flex border-t border-white/10 bg-[#050505]/95 text-white shadow-2xl backdrop-blur md:hidden safe-pb" aria-label="Admin sections">
         {MOBILE_TABS.map((item) => {
           const active = tab === item.key;
+          const Icon = item.icon;
           return (
             <button
               key={item.key}
               onClick={() => setTab(item.key)}
-              className={`flex flex-1 flex-col items-center gap-0.5 py-2.5 text-[10px] font-medium ${
-                active ? "text-[hsl(var(--admin-primary))]" : "text-[hsl(var(--admin-muted))]"
+              className={`flex flex-1 flex-col items-center gap-1 py-2.5 text-[10px] font-semibold ${
+                active ? "text-[#9fc2ff]" : "text-white/45"
               }`}
               style={{ minHeight: 56 }}
             >
-              <span className="text-lg" aria-hidden>{item.icon}</span>
+              <span className={`rounded-lg border p-1.5 ${active ? "border-[#6EA8FF]/40 bg-[#3366FF]/18" : "border-transparent"}`} aria-hidden>
+                <Icon className="h-4 w-4" />
+              </span>
               <span>{item.label}</span>
             </button>
           );

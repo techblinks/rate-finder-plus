@@ -9,6 +9,7 @@ import { useSupabaseHealth } from "@/hooks/useSupabaseHealth";
 import Home from "./pages/Home";
 
 const MortgageCalculatorPage = lazy(() => import("./pages/MortgageCalculatorPage"));
+const MortgageScenarioPage = lazy(() => import("./pages/MortgageScenarioPage"));
 const StampDutyPage = lazy(() => import("./pages/StampDutyPage"));
 const StampDutyStatePage = lazy(() => import("./pages/StampDutyStatePage"));
 const BorrowingPowerPage = lazy(() => import("./pages/BorrowingPowerPage"));
@@ -56,6 +57,16 @@ const App = () => {
           <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/mortgage-calculator" element={<MortgageCalculatorPage />} />
+          <Route path="/mortgage-calculator/with-offset" element={<MortgageScenarioPage slug="with-offset" />} />
+          <Route path="/mortgage-calculator/extra-repayments" element={<MortgageScenarioPage slug="extra-repayments" />} />
+          <Route path="/mortgage-calculator/first-home-buyer" element={<MortgageScenarioPage slug="first-home-buyer" />} />
+          <Route path="/mortgage-calculator/with-hecs" element={<MortgageScenarioPage slug="with-hecs" />} />
+          <Route path="/mortgage-calculator/700k-mortgage-repayments" element={<MortgageScenarioPage slug="700k-mortgage-repayments" />} />
+          <Route path="/mortgage-calculator/qld" element={<MortgageScenarioPage slug="qld" />} />
+          <Route path="/mortgage-calculator/nsw" element={<MortgageScenarioPage slug="nsw" />} />
+          <Route path="/mortgage-calculator/vic" element={<MortgageScenarioPage slug="vic" />} />
+          <Route path="/mortgage-calculator/brisbane" element={<MortgageScenarioPage slug="brisbane" />} />
+          <Route path="/mortgage-calculator/sydney" element={<MortgageScenarioPage slug="sydney" />} />
           <Route path="/stamp-duty-calculator" element={<StampDutyPage />} />
           {STATE_SLUGS.map((slug) => (
             <Route

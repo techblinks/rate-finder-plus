@@ -1383,6 +1383,298 @@ export type Database = {
         }
         Relationships: []
       }
+      seo_automation_schedules: {
+        Row: {
+          config: Json
+          created_at: string | null
+          enabled: boolean
+          frequency: string
+          function_name: string | null
+          id: string
+          job_key: string
+          job_name: string
+          last_error: string | null
+          last_run_at: string | null
+          next_run_at: string | null
+          rows_created: number
+          rows_processed: number
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          config?: Json
+          created_at?: string | null
+          enabled?: boolean
+          frequency?: string
+          function_name?: string | null
+          id?: string
+          job_key: string
+          job_name: string
+          last_error?: string | null
+          last_run_at?: string | null
+          next_run_at?: string | null
+          rows_created?: number
+          rows_processed?: number
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          config?: Json
+          created_at?: string | null
+          enabled?: boolean
+          frequency?: string
+          function_name?: string | null
+          id?: string
+          job_key?: string
+          job_name?: string
+          last_error?: string | null
+          last_run_at?: string | null
+          next_run_at?: string | null
+          rows_created?: number
+          rows_processed?: number
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      seo_automation_runs: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          duration_ms: number | null
+          error_message: string | null
+          function_name: string | null
+          id: string
+          job_key: string
+          job_name: string
+          result: Json
+          rows_created: number
+          rows_processed: number
+          schedule_id: string | null
+          started_at: string
+          status: string
+          trigger_type: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          duration_ms?: number | null
+          error_message?: string | null
+          function_name?: string | null
+          id?: string
+          job_key: string
+          job_name: string
+          result?: Json
+          rows_created?: number
+          rows_processed?: number
+          schedule_id?: string | null
+          started_at?: string
+          status?: string
+          trigger_type?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          duration_ms?: number | null
+          error_message?: string | null
+          function_name?: string | null
+          id?: string
+          job_key?: string
+          job_name?: string
+          result?: Json
+          rows_created?: number
+          rows_processed?: number
+          schedule_id?: string | null
+          started_at?: string
+          status?: string
+          trigger_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seo_automation_runs_schedule_id_fkey"
+            columns: ["schedule_id"]
+            isOneToOne: false
+            referencedRelation: "seo_automation_schedules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seo_digest_preferences: {
+        Row: {
+          admin_notifications_enabled: boolean
+          created_at: string | null
+          daily_enabled: boolean
+          email_enabled: boolean
+          id: string
+          last_daily_sent_at: string | null
+          last_error: string | null
+          last_weekly_sent_at: string | null
+          preference_key: string
+          recipient_email: string | null
+          send_time_local: string
+          timezone: string
+          updated_at: string | null
+          weekly_enabled: boolean
+        }
+        Insert: {
+          admin_notifications_enabled?: boolean
+          created_at?: string | null
+          daily_enabled?: boolean
+          email_enabled?: boolean
+          id?: string
+          last_daily_sent_at?: string | null
+          last_error?: string | null
+          last_weekly_sent_at?: string | null
+          preference_key?: string
+          recipient_email?: string | null
+          send_time_local?: string
+          timezone?: string
+          updated_at?: string | null
+          weekly_enabled?: boolean
+        }
+        Update: {
+          admin_notifications_enabled?: boolean
+          created_at?: string | null
+          daily_enabled?: boolean
+          email_enabled?: boolean
+          id?: string
+          last_daily_sent_at?: string | null
+          last_error?: string | null
+          last_weekly_sent_at?: string | null
+          preference_key?: string
+          recipient_email?: string | null
+          send_time_local?: string
+          timezone?: string
+          updated_at?: string | null
+          weekly_enabled?: boolean
+        }
+        Relationships: []
+      }
+      seo_digest_logs: {
+        Row: {
+          channel: string
+          digest_payload: Json
+          digest_type: string
+          email_provider_configured: boolean
+          error_message: string | null
+          generated_at: string | null
+          id: string
+          message: string | null
+          preference_id: string | null
+          recipient_email: string | null
+          sent_at: string | null
+          status: string
+          subject: string
+        }
+        Insert: {
+          channel: string
+          digest_payload?: Json
+          digest_type: string
+          email_provider_configured?: boolean
+          error_message?: string | null
+          generated_at?: string | null
+          id?: string
+          message?: string | null
+          preference_id?: string | null
+          recipient_email?: string | null
+          sent_at?: string | null
+          status?: string
+          subject: string
+        }
+        Update: {
+          channel?: string
+          digest_payload?: Json
+          digest_type?: string
+          email_provider_configured?: boolean
+          error_message?: string | null
+          generated_at?: string | null
+          id?: string
+          message?: string | null
+          preference_id?: string | null
+          recipient_email?: string | null
+          sent_at?: string | null
+          status?: string
+          subject?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seo_digest_logs_preference_id_fkey"
+            columns: ["preference_id"]
+            isOneToOne: false
+            referencedRelation: "seo_digest_preferences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      daily_seo_briefings: {
+        Row: {
+          approval_status: string
+          best_winning_pattern: Json
+          biggest_traffic_decline: Json
+          briefing_date: string
+          confidence_score: number
+          daily_summary: string
+          data_sources: Json
+          estimated_revenue_opportunity: string
+          estimated_traffic_opportunity: number
+          fastest_page_one_opportunity: Json
+          generated_at: string | null
+          highest_confidence_recommendation: Json
+          highest_roi_opportunity: Json
+          highest_rpm_opportunity: Json
+          id: string
+          risk_alerts: Json
+          seo_trend_overview: Json
+          suggested_implementation_queue: Json
+          top_urgent_actions: Json
+          updated_at: string | null
+        }
+        Insert: {
+          approval_status?: string
+          best_winning_pattern?: Json
+          biggest_traffic_decline?: Json
+          briefing_date: string
+          confidence_score?: number
+          daily_summary: string
+          data_sources?: Json
+          estimated_revenue_opportunity?: string
+          estimated_traffic_opportunity?: number
+          fastest_page_one_opportunity?: Json
+          generated_at?: string | null
+          highest_confidence_recommendation?: Json
+          highest_roi_opportunity?: Json
+          highest_rpm_opportunity?: Json
+          id?: string
+          risk_alerts?: Json
+          seo_trend_overview?: Json
+          suggested_implementation_queue?: Json
+          top_urgent_actions?: Json
+          updated_at?: string | null
+        }
+        Update: {
+          approval_status?: string
+          best_winning_pattern?: Json
+          biggest_traffic_decline?: Json
+          briefing_date?: string
+          confidence_score?: number
+          daily_summary?: string
+          data_sources?: Json
+          estimated_revenue_opportunity?: string
+          estimated_traffic_opportunity?: number
+          fastest_page_one_opportunity?: Json
+          generated_at?: string | null
+          highest_confidence_recommendation?: Json
+          highest_roi_opportunity?: Json
+          highest_rpm_opportunity?: Json
+          id?: string
+          risk_alerts?: Json
+          seo_trend_overview?: Json
+          suggested_implementation_queue?: Json
+          top_urgent_actions?: Json
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       weekly_seo_briefings: {
         Row: {
           approval_status: string
