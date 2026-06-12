@@ -1,7 +1,4 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { classifyKeyword } from "../_shared/seoQuality.ts";
-import { matchPatterns, hasEnoughLearningData, INSUFFICIENT_LEARNING_DATA, type WinningPattern } from "../_shared/patternMatch.ts";
-import { buildReasoning } from "../_shared/decisionIntelligence.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -236,7 +233,6 @@ Deno.serve(async (req) => {
       { data: freshness },
       { data: aeo },
       { data: keywords },
-      { data: patternsData },
     ] = await Promise.all([
       supabase.from("seo_opportunities").select("id, keyword, target_url, score, priority, reason, recommended_action, signals").eq("status", "open").order("score", { ascending: false }).limit(80),
       supabase.from("money_page_scores").select("id, page_url, page_title, money_score, reason, recommended_action, related_internal_links_needed").eq("status", "open").order("money_score", { ascending: false }).limit(40),
@@ -247,7 +243,6 @@ Deno.serve(async (req) => {
       supabase.from("auto_refresh_recommendations").select("id, page_url, page_title, freshness_score, priority_level, outdated_sections, recommended_updates").eq("status", "open").order("freshness_score", { ascending: true }).limit(80),
       supabase.from("aeo_optimizations").select("id, page_url, page_title, primary_topic, aeo_score, snippet_readiness_score, priority_level, recommended_improvements, missing_semantic_elements").eq("status", "open").order("aeo_score", { ascending: true }).limit(80),
       supabase.from("seo_keywords").select("id, keyword, target_page, category, calcy_position, calcy_position_previous, calcy_impressions_28d, calcy_clicks_28d, opportunity_score, trend_direction").eq("is_active", true).limit(1200),
-      supabase.from("seo_winning_patterns").select("*").in("status", ["winning", "risky"]),
     ]);
 
     const opportunityRows = (opportunities as SeoOpportunity[] | null) || [];
@@ -261,165 +256,35 @@ Deno.serve(async (req) => {
     const keywordRows = (keywords as KeywordRow[] | null) || [];
 
     const tasks = new Map<string, WeeklyTask>();
-    const suppressionLog: { source: string; keyword?: string; url?: string; reason: string }[] = [];
 
-    // Money page URL set for revenue boosting
-    const moneyUrlScores = new Map<string, number>();
-    for (const m of moneyRows) moneyUrlScores.set(m.page_url, m.money_score);
-    const moneyBoost = (url: string) => {
-      const s = moneyUrlScores.get(url) ?? 0;
-      if (s >= 80) return 12;
-      if (s >= 60) return 6;
-      return 0;
-    };
-
-    // Winning Patterns Memory integration
-    const patterns = (patternsData as WinningPattern[] | null) || [];
-    const patternsReady = hasEnoughLearningData(patterns);
-    const taskTypeToDraftType: Record<string, string> = {
-      ctr: "title_meta",
-      opportunity: "title_meta",
-      money_page: "title_meta",
-      aeo: "aeo_answer",
-      content_gap: "content_refresh",
-      freshness: "content_refresh",
-      ranking_drop: "content_refresh",
-      internal_link: "internal_link",
-      competitor: "comparison_table",
-      schema: "faq",
-    };
-    const applyPatternToTask = (task: WeeklyTask, intent?: string | null): WeeklyTask => {
-      const dt = taskTypeToDraftType[task.task_type] || null;
-      if (!patternsReady) {
-        const reasoning = buildReasoning({
-          kind: "weekly_task",
-          target_url: task.affected_url,
-          draft_type: dt,
-          task_type: task.task_type,
-          intent: intent || null,
-          score: task.priority_score,
-          priority: task.priority_level,
-          risk_level: task.risk_level,
-          learning_data_ready: false,
-        });
-        return {
-          ...task,
-          source_refs: {
-            ...task.source_refs,
-            pattern_match_score: 0,
-            matched_pattern_ids: [],
-            pattern_reason: INSUFFICIENT_LEARNING_DATA,
-            risk_pattern_warning: null,
-            reasoning,
-          },
-        };
-      }
-      const match = matchPatterns(patterns, { url: task.affected_url, draftType: dt, keywordIntent: intent || null });
-      // Boost: winning +up to 10 / risky -up to 10
-      const adjusted = clamp(task.priority_score + Math.round(match.pattern_match_score * 10));
-      const newRisk: RiskLevel = match.risk_pattern_warning && task.risk_level === "low" ? "medium" : task.risk_level;
-      const reasoning = buildReasoning({
-        kind: "weekly_task",
-        target_url: task.affected_url,
-        draft_type: dt,
-        task_type: task.task_type,
-        intent: intent || null,
-        score: adjusted,
-        priority: priorityLevel(adjusted),
-        risk_level: newRisk,
-        pattern_match_score: match.pattern_match_score,
-        pattern_reason: match.pattern_reason,
-        risk_pattern_warning: match.risk_pattern_warning,
-        matched_pattern_ids: match.matched_pattern_ids,
-        learning_data_ready: true,
-      });
-      return {
-        ...task,
-        priority_score: adjusted,
-        priority_level: priorityLevel(adjusted),
-        risk_level: newRisk,
-        source_refs: {
-          ...task.source_refs,
-          pattern_match_score: match.pattern_match_score,
-          matched_pattern_ids: match.matched_pattern_ids,
-          pattern_reason: match.pattern_reason,
-          risk_pattern_warning: match.risk_pattern_warning,
-          reasoning,
-        },
-      };
-    };
-
-    const originalAddTask = addTask;
-    const addTaskWithPatterns = (taskMap: Map<string, WeeklyTask>, task: WeeklyTask, intent?: string | null) => {
-      originalAddTask(taskMap, applyPatternToTask(task, intent));
-    };
-
-    for (const item of opportunityRows) {
-      const sig = (item.signals || {}) as Record<string, unknown>;
-      const intent = String(sig.intent || "informational");
-      const confidence = String(sig.confidence || "low");
-      const financeScore = Number(sig.finance_relevance_score || 0);
-      const qualityScore = Number(sig.quality_score || 0);
-      const impressions = Number((sig.impressions_28d as number | undefined) || 0);
-      const ctr = Number((sig.ctr_28d as number | undefined) || 0);
-      const expectedCtr = Number((sig.expected_ctr as number | undefined) || 0);
-      const position = sig.position == null ? null : Number(sig.position);
-
-      // Suppress noisy / low-confidence non-finance tasks
-      if (intent === "navigational") {
-        suppressionLog.push({ source: "opportunity", keyword: item.keyword, url: item.target_url, reason: "navigational" });
-        continue;
-      }
-      if (confidence === "low" && financeScore < 6 && item.score < 70) {
-        suppressionLog.push({ source: "opportunity", keyword: item.keyword, url: item.target_url, reason: "low_confidence_non_finance" });
-        continue;
-      }
-      if (qualityScore > 0 && qualityScore < 25 && item.score < 60) {
-        suppressionLog.push({ source: "opportunity", keyword: item.keyword, url: item.target_url, reason: "low_quality_score" });
-        continue;
-      }
-
-      let score = item.score;
-      // Boost: position band 8-20
-      if (position != null && position >= 8 && position <= 20) score += 8;
-      // Boost: high impressions + low CTR
-      if (impressions >= 200 && expectedCtr > 0 && ctr < expectedCtr * 0.6) score += 10;
-      // Boost: calculator/transactional/comparison intent
-      if (intent === "calculator" || intent === "transactional") score += 8;
-      else if (intent === "comparison") score += 4;
-      // Boost: high-confidence Australian finance
-      if (confidence === "high" && financeScore >= 7) score += 8;
-      // Boost: money page
-      score += moneyBoost(item.target_url);
-
-      score = clamp(score);
-
-      addTaskWithPatterns(tasks, {
+    for (const item of opportunityRows.slice(0, 24)) {
+      const impressions = Number((item.signals?.impressions_28d as number | undefined) || 0);
+      const score = clamp(item.score);
+      addTask(tasks, {
         week_start: currentWeek,
         task_title: `Improve ${item.keyword} opportunity`,
         task_type: "opportunity",
         affected_url: item.target_url,
-        expected_impact: `${priorityLevel(score)} ROI (${intent}, confidence ${confidence}, finance ${financeScore}/10): ${item.reason}`,
+        expected_impact: `${priorityLevel(score)} ROI: ${item.reason}`,
         expected_traffic_impact: trafficImpact(impressions),
-        expected_revenue_impact: moneyTier(Math.max(score, moneyUrlScores.get(item.target_url) ?? 0)),
+        expected_revenue_impact: moneyTier(score),
         risk_level: "medium",
         priority_level: priorityLevel(score),
         suggested_implementation_prompt: implementationPrompt({
           taskType: "Opportunity Radar",
           affectedUrl: item.target_url,
           action: item.recommended_action,
-          context: `${item.reason} | intent=${intent}, confidence=${confidence}, finance_relevance=${financeScore}/10, quality=${qualityScore}/100.`,
+          context: item.reason,
         }),
         approval_status: "pending",
         priority_score: score,
-        source_refs: { seo_opportunity_id: item.id, keyword: item.keyword, priority: item.priority, intent, confidence, finance_relevance_score: financeScore, quality_score: qualityScore },
+        source_refs: { seo_opportunity_id: item.id, keyword: item.keyword, priority: item.priority },
       });
     }
 
-
     for (const item of moneyRows.slice(0, 16)) {
       const score = clamp(item.money_score);
-      addTaskWithPatterns(tasks, {
+      addTask(tasks, {
         week_start: currentWeek,
         task_title: `Prioritize money page ${item.page_title}`,
         task_type: "money_page",
@@ -441,51 +306,33 @@ Deno.serve(async (req) => {
       });
     }
 
-    for (const item of ctrRows) {
-      const q = classifyKeyword({
-        keyword: item.primary_keyword,
-        impressions: item.impressions_28d,
-        clicks: item.clicks_28d,
-        ctr: item.ctr_28d,
-        position: item.position,
-      });
-      if (q.isNoise || q.intent === "navigational" || (!q.isFinance && q.intent !== "calculator")) {
-        suppressionLog.push({ source: "ctr", keyword: item.primary_keyword, url: item.page_url, reason: q.noiseReason || "non_finance" });
-        continue;
-      }
-      let score = item.priority_score;
-      if (item.position != null && item.position >= 8 && item.position <= 20) score += 8;
-      if (item.impressions_28d >= 200 && item.ctr_28d < 0.02) score += 10;
-      score += moneyBoost(item.page_url);
-      if (q.confidence === "high") score += 6;
-      score = clamp(score);
-
-      addTaskWithPatterns(tasks, {
+    for (const item of ctrRows.slice(0, 20)) {
+      const score = clamp(item.priority_score);
+      addTask(tasks, {
         week_start: currentWeek,
         task_title: `Lift CTR for ${pageLabel(item.page_url)}`,
         task_type: "ctr",
         affected_url: item.page_url,
-        expected_impact: `${item.impressions_28d.toLocaleString()} impressions at ${(item.ctr_28d * 100).toFixed(1)}% CTR, average position ${item.position?.toFixed(1) ?? "unknown"} (${q.intent}, confidence ${q.confidence}).`,
+        expected_impact: `${item.impressions_28d.toLocaleString()} impressions at ${(item.ctr_28d * 100).toFixed(1)}% CTR, average position ${item.position?.toFixed(1) ?? "unknown"}.`,
         expected_traffic_impact: trafficImpact(item.impressions_28d, item.estimated_missed_clicks),
-        expected_revenue_impact: moneyUrlScores.has(item.page_url) ? moneyTier(moneyUrlScores.get(item.page_url)!) : "Medium-high: CTR gains can increase AdSense revenue without requiring ranking movement.",
+        expected_revenue_impact: "Medium-high: CTR gains can increase AdSense revenue without requiring ranking movement.",
         risk_level: "low",
         priority_level: priorityLevel(score),
         suggested_implementation_prompt: implementationPrompt({
           taskType: "CTR Engine",
           affectedUrl: item.page_url,
           action: `Review title "${item.suggested_title}" and meta "${item.suggested_meta_description}" for admin approval.`,
-          context: `${item.reason} | intent=${q.intent}, confidence=${q.confidence}, finance_relevance=${q.financeScore}/10.`,
+          context: item.reason,
         }),
         approval_status: "pending",
         priority_score: score,
-        source_refs: { ctr_optimization_id: item.id, keyword: item.primary_keyword, intent: q.intent, confidence: q.confidence, finance_relevance_score: q.financeScore },
+        source_refs: { ctr_optimization_id: item.id, keyword: item.primary_keyword },
       });
     }
 
-
     for (const item of linkRows.slice(0, 30)) {
       const score = priorityWeight(item.priority);
-      addTaskWithPatterns(tasks, {
+      addTask(tasks, {
         week_start: currentWeek,
         task_title: `Add internal link to ${pageLabel(item.target_page)}`,
         task_type: "internal_link",
@@ -510,7 +357,7 @@ Deno.serve(async (req) => {
     for (const item of gapRows.slice(0, 24)) {
       const score = clamp(item.priority_score);
       const taskType: TaskType = item.gap_type.toLowerCase().includes("schema") ? "schema" : "content_gap";
-      addTaskWithPatterns(tasks, {
+      addTask(tasks, {
         week_start: currentWeek,
         task_title: `Resolve ${item.gap_type.replaceAll("_", " ")}`,
         task_type: taskType,
@@ -536,7 +383,7 @@ Deno.serve(async (req) => {
 
     for (const item of competitorRows.slice(0, 18)) {
       const score = clamp(item.priority_score);
-      addTaskWithPatterns(tasks, {
+      addTask(tasks, {
         week_start: currentWeek,
         task_title: `Respond to ${item.detected_topic} competitor movement`,
         task_type: "competitor",
@@ -561,7 +408,7 @@ Deno.serve(async (req) => {
     for (const item of freshnessRows.slice(0, 18)) {
       const score = clamp(100 - item.freshness_score);
       const updates = asStrings(item.recommended_updates).join(" ");
-      addTaskWithPatterns(tasks, {
+      addTask(tasks, {
         week_start: currentWeek,
         task_title: `Refresh ${item.page_title}`,
         task_type: "freshness",
@@ -586,7 +433,7 @@ Deno.serve(async (req) => {
     for (const item of aeoRows.slice(0, 18)) {
       const score = clamp(100 - item.aeo_score + Math.max(0, 70 - item.snippet_readiness_score) / 2);
       const improvements = asStrings(item.recommended_improvements).join(" ");
-      addTaskWithPatterns(tasks, {
+      addTask(tasks, {
         week_start: currentWeek,
         task_title: `Improve AEO readiness for ${item.page_title}`,
         task_type: "aeo",
@@ -615,24 +462,9 @@ Deno.serve(async (req) => {
       if (current == null || previous == null) continue;
       const drop = current - previous;
       if (drop < 3 || impressions < 20) continue;
-      const q = classifyKeyword({
-        keyword: row.keyword,
-        category: row.category,
-        impressions,
-        clicks: row.calcy_clicks_28d,
-        position: current,
-      });
-      if (q.isNoise || q.intent === "navigational" || (!q.isFinance && q.intent !== "calculator")) {
-        suppressionLog.push({ source: "ranking_drop", keyword: row.keyword, reason: q.noiseReason || "non_finance" });
-        continue;
-      }
       const target = row.target_page || "/guides";
-      let score = 58 + Math.min(22, impressions / 120) + Math.min(20, drop * 3);
-      score += moneyBoost(target);
-      if (q.confidence === "high") score += 6;
-      score = clamp(score);
-
-      addTaskWithPatterns(tasks, {
+      const score = clamp(58 + Math.min(22, impressions / 120) + Math.min(20, drop * 3));
+      addTask(tasks, {
         week_start: currentWeek,
         task_title: `Investigate ranking drop for ${row.keyword}`,
         task_type: "ranking_drop",
@@ -713,15 +545,7 @@ Deno.serve(async (req) => {
         freshness: freshnessRows.length,
         aeo: aeoRows.length,
         keywords: keywordRows.length,
-        suppressed_low_quality: suppressionLog.length,
-        suppression_breakdown: suppressionLog.reduce((acc, s) => {
-          const key = `${s.source}:${s.reason}`;
-          acc[key] = (acc[key] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>),
-        suppression_sample: suppressionLog.slice(0, 25),
       },
-
       approval_status: "pending",
       generated_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -750,9 +574,7 @@ Deno.serve(async (req) => {
         tasks_generated: topTasks.length,
         high_priority: topTasks.filter((task) => task.priority_level === "high").length,
         pending_approval: topTasks.length,
-        suppressed_low_quality: suppressionLog.length,
       },
-
     }).eq("id", jobId);
 
     return new Response(JSON.stringify({ success: true, briefing, tasks: topTasks }), {

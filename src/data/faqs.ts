@@ -37,7 +37,7 @@ export const FAQS: Record<string, FaqItem[]> = {
     {
       question: "What is the current RBA cash rate?",
       answer:
-        "The current RBA cash rate is {{rbaCashRate}}% as of May 2026, following three consecutive hikes in February, March, and May 2026.",
+        "The current RBA cash rate is 4.35% as of May 2026, following three consecutive hikes in February, March, and May 2026.",
     },
     {
       question: "What is LMI?",
@@ -56,7 +56,7 @@ export const FAQS: Record<string, FaqItem[]> = {
     {
       question: "What is the current RBA cash rate in Australia?",
       answer:
-        "The RBA cash rate is {{rbaCashRate}}% as of May 2026, following the 25bps hike on 5 May 2026. The cash rate influences variable home loan interest rates. The average owner-occupier rate is currently around 6.39% p.a.",
+        "The RBA cash rate is 4.35% as of May 2026, following the 25bps hike on 5 May 2026. The cash rate influences variable home loan interest rates. The average owner-occupier rate is currently around 6.39% p.a.",
       links: [{ text: "variable home loan", href: "/loan-comparison-calculator" }],
     },
     {

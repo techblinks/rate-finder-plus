@@ -1,7 +1,4 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { classifyKeyword } from "../_shared/seoQuality.ts";
-import { matchPatterns, hasEnoughLearningData, INSUFFICIENT_LEARNING_DATA, type WinningPattern } from "../_shared/patternMatch.ts";
-import { buildReasoning } from "../_shared/decisionIntelligence.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -216,37 +213,14 @@ Deno.serve(async (req) => {
   });
 
   try {
-    const [{ data, error }, { data: patternsData }] = await Promise.all([
-      supabase
-        .from("seo_keywords")
-        .select("keyword, category, target_page, calcy_clicks_28d, calcy_impressions_28d, calcy_ctr_28d, calcy_position, calcy_position_previous, trend_direction")
-        .eq("is_active", true),
-      supabase.from("seo_winning_patterns").select("*").in("status", ["winning", "risky"]),
-    ]);
+    const { data, error } = await supabase
+      .from("seo_keywords")
+      .select("keyword, category, target_page, calcy_clicks_28d, calcy_impressions_28d, calcy_ctr_28d, calcy_position, calcy_position_previous, trend_direction")
+      .eq("is_active", true);
 
     if (error) throw error;
 
-    const patterns = (patternsData as WinningPattern[] | null) || [];
-    const patternsReady = hasEnoughLearningData(patterns);
-
-    const allRows = (data as KeywordRow[] | null) || [];
-    const filterLog: { keyword: string; reason: string }[] = [];
-    const keywordRows: KeywordRow[] = [];
-    for (const row of allRows) {
-      const q = classifyKeyword({
-        keyword: row.keyword,
-        category: row.category,
-        impressions: row.calcy_impressions_28d,
-        clicks: row.calcy_clicks_28d,
-        ctr: row.calcy_ctr_28d,
-        position: row.calcy_position,
-      });
-      if (q.isNoise || (!q.isFinance && q.intent !== "calculator") || q.intent === "navigational") {
-        filterLog.push({ keyword: row.keyword, reason: q.noiseReason || (q.intent === "navigational" ? "navigational" : "non_finance") });
-        continue;
-      }
-      keywordRows.push(row);
-    }
+    const keywordRows = (data as KeywordRow[] | null) || [];
     const pageMap = new Map<string, KeywordRow[]>();
 
     for (const row of keywordRows) {
@@ -263,20 +237,7 @@ Deno.serve(async (req) => {
       const ctrGap = Math.max(0, stats.expectedCtr - stats.ctr);
       const positionBoost = stats.position != null && stats.position >= 3 && stats.position <= 15 ? 14 : 0;
       const declineBoost = stats.decliningClicks ? 8 : 0;
-      let opportunityScore = clamp(38 + Math.min(26, stats.impressions / 450) + Math.min(22, stats.missedClicks * 2.5) + ctrGap * 160 + positionBoost + declineBoost);
-
-      // Winning-pattern boost for title/meta improvements
-      const intent = classifyKeyword({ keyword: stats.topKeyword.keyword, position: stats.position, impressions: stats.impressions, clicks: stats.clicks }).intent;
-      const ctrMatch = patternsReady
-        ? matchPatterns(patterns, { url: page, draftType: "title_meta", keywordIntent: intent })
-        : null;
-      if (ctrMatch) {
-        opportunityScore = clamp(opportunityScore + Math.round(ctrMatch.pattern_match_score * 10));
-      }
-
-      let semantic = semanticImprovements(stats);
-      if (ctrMatch?.pattern_reason) semantic = `${semantic} | Pattern: ${ctrMatch.pattern_reason}`;
-      if (ctrMatch?.risk_pattern_warning) semantic = `${semantic} | Risk: ${ctrMatch.risk_pattern_warning}`;
+      const opportunityScore = clamp(38 + Math.min(26, stats.impressions / 450) + Math.min(22, stats.missedClicks * 2.5) + ctrGap * 160 + positionBoost + declineBoost);
 
       suggestions.push({
         page_url: page,
@@ -293,7 +254,7 @@ Deno.serve(async (req) => {
         suggested_faq_snippet: faqFor(stats),
         suggested_featured_snippet_answer: featuredAnswerFor(stats),
         suggested_emotional_trigger: emotionalTrigger(stats),
-        suggested_semantic_improvements: semantic,
+        suggested_semantic_improvements: semanticImprovements(stats),
         suggested_search_intent_match: searchIntentMatch(stats),
         reason: `${pageLabel(page)} ranks around position ${stats.position?.toFixed(1) ?? "unknown"} with ${stats.impressions.toLocaleString()} impressions and ${(stats.ctr * 100).toFixed(1)}% CTR. Expected CTR is ${(stats.expectedCtr * 100).toFixed(1)}%, leaving an estimated ${stats.missedClicks.toLocaleString()} missed clicks.`,
         priority_score: opportunityScore,
@@ -320,35 +281,6 @@ Deno.serve(async (req) => {
             stats.position != null && stats.position >= 3 && stats.position <= 15 ? "position_3_to_15" : null,
             stats.decliningClicks ? "declining_clicks_or_rank" : null,
           ].filter(Boolean),
-          pattern_match_score: ctrMatch?.pattern_match_score ?? 0,
-          matched_pattern_ids: ctrMatch?.matched_pattern_ids ?? [],
-          pattern_reason: patternsReady ? (ctrMatch?.pattern_reason ?? null) : INSUFFICIENT_LEARNING_DATA,
-          risk_pattern_warning: ctrMatch?.risk_pattern_warning ?? null,
-          reasoning: buildReasoning({
-            kind: "ctr",
-            keyword: stats.topKeyword.keyword,
-            target_url: page,
-            draft_type: "title_meta",
-            intent,
-            confidence: "medium",
-            score: opportunityScore,
-            impressions_28d: stats.impressions,
-            clicks_28d: stats.clicks,
-            ctr_28d: stats.ctr,
-            expected_ctr: stats.expectedCtr,
-            position: stats.position,
-            estimated_missed_clicks: stats.missedClicks,
-            pattern_match_score: ctrMatch?.pattern_match_score ?? 0,
-            pattern_reason: ctrMatch?.pattern_reason ?? null,
-            risk_pattern_warning: ctrMatch?.risk_pattern_warning ?? null,
-            matched_pattern_ids: ctrMatch?.matched_pattern_ids ?? [],
-            learning_data_ready: patternsReady,
-            signals: [
-              stats.impressions >= 80 && stats.ctr < stats.expectedCtr * 0.78 ? "high_impressions_low_ctr" : null,
-              stats.position != null && stats.position >= 3 && stats.position <= 15 ? "position_3_to_15" : null,
-              stats.decliningClicks ? "declining_clicks_or_rank" : null,
-            ].filter(Boolean) as string[],
-          }),
         },
       });
     }
@@ -371,14 +303,11 @@ Deno.serve(async (req) => {
     }
 
     const summary = {
-      keywords_checked: allRows.length,
-      noisy_keywords_filtered: filterLog.length,
-      keywords_evaluated: keywordRows.length,
+      keywords_checked: keywordRows.length,
       pages_checked: pageMap.size,
       pages_flagged: finalSuggestions.length,
       estimated_missed_clicks: finalSuggestions.reduce((sum, item) => sum + item.estimated_missed_clicks, 0),
       high_priority: finalSuggestions.filter((item) => item.ctr_opportunity_score >= 70).length,
-      ignored_sample: filterLog.slice(0, 25),
     };
 
     await supabase.from("seo_reports").insert({

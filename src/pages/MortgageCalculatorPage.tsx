@@ -1,8 +1,169 @@
 import CalculatorPageShell from "./CalculatorPageShell";
 import MortgageCalculatorRedesign from "@/components/calculators/MortgageCalculatorRedesign";
+import DownloadableToolsSection from "@/components/DownloadableToolsSection";
 import NextStepsLinks from "@/components/NextStepsLinks";
 import { FAQS } from "@/data/faqs";
 import { SEO_FAQS } from "@/data/seoFaqs";
+import { Link } from "react-router-dom";
+
+const scenarioCards = [
+  {
+    title: "Mortgage with offset",
+    body: "Model how money in an offset account can reduce interest while your repayment stays on track.",
+    to: "/mortgage-calculator/with-offset",
+    cta: "Read offset scenario",
+  },
+  {
+    title: "Extra repayments",
+    body: "See how additional weekly, fortnightly, or monthly payments can reduce total interest and shorten the loan.",
+    to: "/mortgage-calculator/extra-repayments",
+    cta: "Read extra repayment scenario",
+  },
+  {
+    title: "Interest rate rise",
+    body: "Stress-test repayments by changing the rate in the calculator before committing to a loan size.",
+    to: "/mortgage-calculator",
+    cta: "Stress-test this loan",
+  },
+  {
+    title: "$700k mortgage repayments",
+    body: "Review how rate, term, frequency, deposit, LMI, and upfront costs affect a $700k loan estimate.",
+    to: "/mortgage-calculator/700k-mortgage-repayments",
+    cta: "Read $700k scenario",
+  },
+  {
+    title: "Queensland mortgage planning",
+    body: "Estimate repayments alongside Queensland stamp duty awareness, LMI, borrowing power, and upfront costs.",
+    to: "/mortgage-calculator/qld",
+    cta: "Read QLD scenario",
+  },
+  {
+    title: "NSW mortgage planning",
+    body: "Estimate repayments alongside NSW stamp duty awareness, LMI, borrowing power, and upfront costs.",
+    to: "/mortgage-calculator/nsw",
+    cta: "Read NSW scenario",
+  },
+  {
+    title: "Victorian mortgage planning",
+    body: "Estimate repayments alongside Victorian stamp duty awareness, LMI, borrowing power, and first-home buyer considerations.",
+    to: "/mortgage-calculator/vic",
+    cta: "Read VIC scenario",
+  },
+  {
+    title: "Brisbane mortgage planning",
+    body: "Estimate repayments alongside Queensland upfront-cost awareness, deposit planning, LMI, and borrowing power.",
+    to: "/mortgage-calculator/brisbane",
+    cta: "Read Brisbane scenario",
+  },
+  {
+    title: "Sydney mortgage planning",
+    body: "Estimate repayments alongside NSW upfront-cost awareness, deposit pressure, LMI, and borrowing power.",
+    to: "/mortgage-calculator/sydney",
+    cta: "Read Sydney scenario",
+  },
+  {
+    title: "First home buyer",
+    body: "Estimate repayments alongside stamp duty, grants, deposit size, and upfront costs.",
+    to: "/mortgage-calculator/first-home-buyer",
+    cta: "Read first home buyer scenario",
+  },
+  {
+    title: "Investment property",
+    body: "Compare repayments, LMI exposure, and cash-flow assumptions before treating a loan as affordable.",
+    to: null,
+    cta: "Coming soon",
+  },
+  {
+    title: "Refinance comparison",
+    body: "Compare your current repayment with a possible new loan, including fees and break-even timing.",
+    to: "/refinance-calculator",
+    cta: "Compare refinance",
+  },
+  {
+    title: "HECS impact",
+    body: "Check how HECS or HELP repayments may reduce borrowing capacity before finalising loan size.",
+    to: "/mortgage-calculator/with-hecs",
+    cta: "Read HECS scenario",
+  },
+  {
+    title: "Stamp duty and upfront costs",
+    body: "Calculate the cash needed at settlement before deciding how much you actually need to borrow.",
+    to: "/stamp-duty-calculator",
+    cta: "Calculate stamp duty",
+  },
+];
+
+const toolLinks = [
+  {
+    to: "/borrowing-power-calculator",
+    title: "Borrowing power calculator",
+    description: "Estimate how much a lender may let you borrow before you choose a repayment target.",
+  },
+  {
+    to: "/stamp-duty-calculator",
+    title: "Stamp duty calculator",
+    description: "Estimate duty, concessions, and upfront costs for Australian property purchases.",
+  },
+  {
+    to: "/lmi-calculator",
+    title: "LMI calculator",
+    description: "Check whether a low deposit could add Lenders Mortgage Insurance to the loan.",
+  },
+  {
+    to: "/extra-repayments-calculator",
+    title: "Extra repayment calculator",
+    description: "Estimate the interest and time saved by paying more than the minimum repayment.",
+  },
+  {
+    to: "/refinance-calculator",
+    title: "Refinance calculator",
+    description: "Compare a current loan with a new offer, including fees and break-even timing.",
+  },
+  {
+    to: "/rent-vs-buy-calculator",
+    title: "Rent vs buy calculator",
+    description: "Compare long-term renting and buying outcomes before committing to a purchase.",
+  },
+  {
+    to: "/loan-comparison-calculator",
+    title: "Loan comparison calculator",
+    description: "Compare two home loans side-by-side using repayments, interest, and fees.",
+  },
+  {
+    to: "/hecs-borrowing-power",
+    title: "HECS and borrowing power calculator",
+    description: "See how HECS or HELP repayments may affect home loan borrowing capacity.",
+  },
+];
+
+const ScenarioCard = ({
+  title,
+  body,
+  to,
+  cta,
+}: {
+  title: string;
+  body: string;
+  to: string | null;
+  cta: string;
+}) => (
+  <div className="rounded-2xl border border-border bg-white p-4 shadow-sm">
+    <h3 className="text-[15px] font-semibold text-foreground">{title}</h3>
+    <p className="mt-2 text-sm leading-6 text-muted-foreground">{body}</p>
+    {to ? (
+      <Link
+        to={to}
+        className="mt-4 inline-flex text-sm font-semibold text-primary underline-offset-4 hover:underline"
+      >
+        {cta}
+      </Link>
+    ) : (
+      <span className="mt-4 inline-flex rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">
+        {cta}
+      </span>
+    )}
+  </div>
+);
 
 const MortgageCalculatorPage = () => (
   <CalculatorPageShell
@@ -19,6 +180,32 @@ const MortgageCalculatorPage = () => (
     ]}
     sections={[
       {
+        heading: "What this mortgage calculator helps you understand",
+        body: (
+          <div className="grid gap-3 md:grid-cols-3">
+            {[
+              {
+                title: "Your repayment rhythm",
+                text: "Compare weekly, fortnightly, and monthly repayments so the loan fits how you actually budget.",
+              },
+              {
+                title: "The cost of interest",
+                text: "See how much interest builds over the life of the loan and how rate changes affect repayments.",
+              },
+              {
+                title: "Your next decision",
+                text: "Move from repayment estimate to borrowing power, stamp duty, LMI, refinance, or extra repayment planning.",
+              },
+            ].map((item) => (
+              <div key={item.title} className="rounded-2xl border border-border bg-muted/30 p-4">
+                <h3 className="text-[15px] font-semibold text-foreground">{item.title}</h3>
+                <p className="mt-2 text-sm leading-6">{item.text}</p>
+              </div>
+            ))}
+          </div>
+        ),
+      },
+      {
         heading: "How to use this calculator",
         body: (
           <p>
@@ -28,6 +215,49 @@ const MortgageCalculatorPage = () => (
             up to three scenarios to compare side-by-side, or share your calculation with your
             partner or broker via a unique URL.
           </p>
+        ),
+      },
+      {
+        heading: "Key repayment insights",
+        body: (
+          <div className="space-y-4">
+            <p>
+              Mortgage repayments are useful only when they are connected to the full buying
+              decision. Use the repayment estimate as the centre point, then check whether the loan
+              amount is realistic, whether upfront costs fit your savings, and whether a different
+              loan structure changes the long-term result.
+            </p>
+            <div className="grid gap-3 md:grid-cols-2">
+              <div className="rounded-2xl border border-border bg-white p-4">
+                <h3 className="text-[15px] font-semibold text-foreground">Small rate changes matter</h3>
+                <p className="mt-2 text-sm leading-6">
+                  A higher rate increases each repayment and total interest. A lower rate can
+                  improve cash flow, but fees and loan features still need to be compared.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-border bg-white p-4">
+                <h3 className="text-[15px] font-semibold text-foreground">Frequency changes behaviour</h3>
+                <p className="mt-2 text-sm leading-6">
+                  Weekly and fortnightly repayments can be easier to align with pay cycles. Always
+                  compare the actual annual amount paid, not just the smaller per-period number.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-border bg-white p-4">
+                <h3 className="text-[15px] font-semibold text-foreground">Extra repayments compound</h3>
+                <p className="mt-2 text-sm leading-6">
+                  Extra repayments reduce principal earlier, so future interest is charged on a
+                  smaller balance. Use the dedicated extra repayment calculator for deeper planning.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-border bg-white p-4">
+                <h3 className="text-[15px] font-semibold text-foreground">Upfront costs change the loan</h3>
+                <p className="mt-2 text-sm leading-6">
+                  Stamp duty, LMI, conveyancing, and inspections can change how much cash is left
+                  for deposit and how much you need to borrow.
+                </p>
+              </div>
+            </div>
+          </div>
         ),
       },
       {
@@ -84,6 +314,60 @@ const MortgageCalculatorPage = () => (
         ),
       },
       {
+        heading: "Compare common mortgage scenarios",
+        body: (
+          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+            {scenarioCards.map((card) => (
+              <ScenarioCard key={card.title} {...card} />
+            ))}
+          </div>
+        ),
+      },
+      {
+        heading: "Next steps after calculating your repayment",
+        body: (
+          <div className="space-y-4">
+            <p>
+              Once you know the repayment, work through the next decisions in order: borrowing
+              capacity, upfront costs, deposit risk, loan comparison, and whether buying still beats
+              renting for your situation.
+            </p>
+            <NextStepsLinks
+              items={[
+                {
+                  to: "/borrowing-power-calculator",
+                  title: "Check your borrowing power",
+                  description: "Estimate whether the loan amount is realistic for your income, expenses, and commitments.",
+                },
+                {
+                  to: "/stamp-duty-calculator",
+                  title: "Estimate stamp duty and upfront costs",
+                  description: "Understand the cash needed at settlement before locking in your loan size.",
+                },
+                {
+                  to: "/lmi-calculator",
+                  title: "Check if LMI applies",
+                  description: "See whether a smaller deposit could add Lenders Mortgage Insurance to the loan.",
+                },
+                {
+                  to: "/loan-comparison-calculator",
+                  title: "Compare two home loans",
+                  description: "Compare repayments, interest, and fees before choosing a lender or product.",
+                },
+              ]}
+            />
+          </div>
+        ),
+      },
+      {
+        heading: "Related Calcy tools",
+        body: <NextStepsLinks items={toolLinks} />,
+      },
+      {
+        heading: "Downloadable mortgage planning tools",
+        body: <DownloadableToolsSection />,
+      },
+      {
         heading: "How offset accounts work",
         body: (
           <div className="space-y-4">
@@ -116,6 +400,56 @@ const MortgageCalculatorPage = () => (
               each month from leftover income — the calculator will show the years shaved
               off your loan, the total interest saved, and the effective rate you're really
               paying once the offset is taken into account.
+            </p>
+          </div>
+        ),
+      },
+      {
+        heading: "How Calcy calculates repayments",
+        body: (
+          <div className="space-y-4">
+            <p>
+              Calcy uses the standard amortising loan approach: the loan amount, interest rate,
+              loan term, repayment frequency, and any extra repayments are combined to estimate the
+              repayment required to reduce the balance over time.
+            </p>
+            <p>
+              In plain English, each repayment is split into interest and principal. Interest is
+              the cost of borrowing for that period. Principal is the part that reduces the loan
+              balance. As the balance falls, less interest is charged and more of each repayment
+              goes toward principal.
+            </p>
+            <p>
+              Offset and extra repayment options are modelled as repayment scenarios inside the
+              calculator. They are estimates for planning, not lender quotes or financial advice.
+            </p>
+          </div>
+        ),
+      },
+      {
+        heading: "Important assumptions",
+        body: (
+          <div className="rounded-2xl border border-border bg-muted/30 p-5">
+            <ul className="space-y-3 text-sm leading-6">
+              <li>Results are general estimates for Australian home loan planning.</li>
+              <li>Actual lender repayments may vary because of fees, rounding, package discounts, and product rules.</li>
+              <li>Rates, grants, taxes, concessions, and lender policies can change.</li>
+              <li>Calcy does not replace personal financial, tax, legal, or credit advice.</li>
+              <li>Finance fact replacements from the internal registry remain behind manual review and are not applied in this phase.</li>
+            </ul>
+          </div>
+        ),
+      },
+      {
+        heading: "Updated and reviewed",
+        body: (
+          <div className="rounded-2xl border border-[#BFDBFE] bg-[#EEF4FF] p-5">
+            <h3 className="text-[16px] font-semibold text-[#003680]">Built for ongoing review</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-700">
+              This mortgage calculator page keeps its existing metadata, canonical URL, FAQ schema,
+              and calculator logic. Public finance facts are not replaced from the internal registry
+              until they pass manual review. Use the reviewed indicator below this page for the
+              current page-level freshness signal.
             </p>
           </div>
         ),

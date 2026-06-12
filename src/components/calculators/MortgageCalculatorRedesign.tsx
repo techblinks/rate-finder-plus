@@ -17,10 +17,13 @@ import {
   clearLast,
   haptic,
   MAX_SCENARIOS,
+  canUseMortgageLocalStorage,
   loadOffsetPresets,
   saveOffsetPresets,
   MAX_OFFSET_PRESETS,
+  makeUniqueScenarioLabel,
   type SavedScenario,
+  type SavedScenarioResult,
   type OffsetPreset,
 } from "@/lib/mortgageState";
 import RangeField from "@/components/RangeField";
@@ -56,6 +59,20 @@ const FREQ_LABEL: Record<Frequency, string> = {
   weekly: "Weekly",
   fortnightly: "Fortnightly",
   monthly: "Monthly",
+};
+
+const formatSavedAt = (ts?: number) => {
+  if (!ts) return "Saved locally";
+  try {
+    return new Intl.DateTimeFormat("en-AU", {
+      day: "numeric",
+      month: "short",
+      hour: "numeric",
+      minute: "2-digit",
+    }).format(new Date(ts));
+  } catch {
+    return "Saved locally";
+  }
 };
 
 const TERM_OPTIONS = [10, 15, 20, 25, 30];
@@ -208,6 +225,8 @@ const MortgageCalculatorRedesign = () => {
   const [ioYears, setIoYears] = useState(3);
   const [scenarios, setScenarios] = useState<SavedScenario[]>([]);
   const [scenariosOpen, setScenariosOpen] = useState(false);
+  const [scenarioMessage, setScenarioMessage] = useState<string | null>(null);
+  const [localScenarioStorageAvailable, setLocalScenarioStorageAvailable] = useState(true);
   const [offsetPresets, setOffsetPresets] = useState<OffsetPreset[]>([]);
   const [copied, setCopied] = useState(false);
   const [emailOpen, setEmailOpen] = useState(false);
@@ -215,6 +234,7 @@ const MortgageCalculatorRedesign = () => {
   const inputsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setLocalScenarioStorageAvailable(canUseMortgageLocalStorage());
     setScenarios(loadScenarios());
     setOffsetPresets(loadOffsetPresets());
   }, []);
@@ -466,6 +486,71 @@ const MortgageCalculatorRedesign = () => {
   }, [freq, dLoan, dRate, dExtra, result.monthly]);
 
   const lvr = propValue > 0 ? Math.min(999, (loan / propValue) * 100) : null;
+  const payoffSummary =
+    result.monthsRemainder > 0
+      ? `${result.yearsTaken} years, ${result.monthsRemainder} months`
+      : `${result.yearsTaken} years`;
+  const totalRepaidRounded = Math.round(result.totalRepaid);
+  const totalInterestRounded = Math.round(result.totalInterest);
+  const principalShare = totalRepaidRounded > 0 ? Math.min(100, (dLoan / totalRepaidRounded) * 100) : 0;
+  const interestShare =
+    totalRepaidRounded > 0 ? Math.min(100, (totalInterestRounded / totalRepaidRounded) * 100) : 0;
+  const timelineMilestones = [
+    { label: "Start", value: "Today", detail: `${fmt0(dLoan)} loan begins` },
+    { label: "Term", value: `${dTerm} years`, detail: `${FREQ_LABEL[freq].toLowerCase()} repayments selected` },
+    { label: "Estimated payoff", value: String(result.payoffYear), detail: payoffSummary },
+  ];
+  const currentScenarioResult: SavedScenarioResult = {
+    repaymentAmount: headline,
+    repaymentFrequency: freq,
+    totalInterest: result.totalInterest,
+    totalRepaid: result.totalRepaid,
+    loanAmount: dLoan,
+    interestRate: dRate,
+    loanTerm: dTerm,
+    ...(savings
+      ? {
+          extraRepaymentImpact: {
+            interestSaved: savings.interestSaved,
+            yearsSaved: savings.yrs,
+            monthsSaved: savings.mos,
+          },
+        }
+      : {}),
+    ...(offset
+      ? {
+          offsetImpact: {
+            interestSaved: offset.interestSaved,
+            yearsSaved: offset.yearsSaved,
+          },
+        }
+      : {}),
+  };
+  const savedScenarioRows = useMemo(
+    () =>
+      scenarios.map((scenario) => {
+        const fallback = buildAmortisation(
+          scenario.loan,
+          scenario.rate,
+          scenario.term,
+          scenario.freq,
+          scenario.extra,
+        );
+        const snapshot: SavedScenarioResult =
+          scenario.result ?? {
+            repaymentAmount: fallback[scenario.freq],
+            repaymentFrequency: scenario.freq,
+            totalInterest: fallback.totalInterest,
+            totalRepaid: fallback.totalRepaid,
+            loanAmount: scenario.loan,
+            interestRate: scenario.rate,
+            loanTerm: scenario.term,
+          };
+
+        return { scenario, snapshot };
+      }),
+    [scenarios],
+  );
 
   const resultSummary = `${freq.charAt(0).toUpperCase() + freq.slice(1)} repayment of ${fmt0(headline)} on a ${fmt0(loan)} loan at ${rate.toFixed(2)}% over ${term} years.`;
   const shareText = `${fmt0(loan)} loan at ${rate.toFixed(2)}% over ${term} years = ${fmt0(headline)} per ${freq}. Calculated with Calcy.`;
@@ -510,11 +595,21 @@ const MortgageCalculatorRedesign = () => {
   };
 
   const saveScenario = () => {
-    if (scenarios.length >= MAX_SCENARIOS) return;
-    const label = `Scenario ${String.fromCharCode(65 + scenarios.length)}`;
+    if (!localScenarioStorageAvailable) {
+      setScenarioMessage("Scenario saving is unavailable because browser storage is blocked.");
+      return;
+    }
+    if (scenarios.length >= MAX_SCENARIOS) {
+      setScenarioMessage(`You can save up to ${MAX_SCENARIOS} scenarios on this device.`);
+      return;
+    }
+    const fallback = `Scenario ${String.fromCharCode(65 + scenarios.length)}`;
+    const entered = (prompt("Name this mortgage scenario", fallback) ?? fallback).trim();
+    const label = makeUniqueScenarioLabel(entered || fallback, scenarios);
     const next: SavedScenario = {
       id: crypto.randomUUID?.() ?? String(Date.now()),
       label,
+      savedAt: Date.now(),
       loan,
       rate,
       term,
@@ -523,10 +618,12 @@ const MortgageCalculatorRedesign = () => {
       propValue,
       offsetStart,
       offsetMonthly,
+      result: currentScenarioResult,
     };
     const arr = [...scenarios, next];
     setScenarios(arr);
     saveScenarios(arr);
+    setScenarioMessage(`Saved "${label}" in this browser.`);
     haptic(15);
   };
 
@@ -535,10 +632,15 @@ const MortgageCalculatorRedesign = () => {
     const arr = scenarios.filter((s) => s.id !== id);
     setScenarios(arr);
     saveScenarios(arr);
+    setScenarioMessage("Scenario deleted from this browser.");
   };
 
   const renameScenario = (id: string, label: string) => {
-    const arr = scenarios.map((s) => (s.id === id ? { ...s, label } : s));
+    const nextLabel = makeUniqueScenarioLabel(
+      label,
+      scenarios.filter((s) => s.id !== id),
+    );
+    const arr = scenarios.map((s) => (s.id === id ? { ...s, label: nextLabel } : s));
     setScenarios(arr);
     saveScenarios(arr);
   };
@@ -1249,21 +1351,237 @@ const MortgageCalculatorRedesign = () => {
           })()}
 
           <MobilePendingOverlay pending={isMobile && calcPending}>
-            <div className="grid grid-cols-2 gap-3">
-              <StatCard label="Total repayments" value={fmt0(result.totalRepaid)} />
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <StatCard
-                label="Total interest"
+                label={`Estimated ${FREQ_LABEL[freq].toLowerCase()} repayment`}
+                value={fmt0(headline)}
+                hint="Principal and interest estimate for the selected frequency."
+                emphasis
+              />
+              <StatCard label="Total amount repaid" value={fmt0(result.totalRepaid)} />
+              <StatCard
+                label="Total interest payable"
                 value={fmt0(result.totalInterest)}
                 tone="warning"
               />
+              <StatCard label="Loan term summary" value={payoffSummary} hint={`Estimated payoff year ${result.payoffYear}`} />
               <StatCard
                 label="Loan-to-value ratio"
                 value={lvr !== null ? `${lvr.toFixed(1)}%` : "—"}
                 hint={lvr === null ? "Add property value" : undefined}
               />
-              <StatCard label="Payoff year" value={String(result.payoffYear)} />
+              {freqSavings && (
+                <StatCard
+                  label={`${FREQ_LABEL[freq]} frequency impact`}
+                  value={`${freqSavings.monthsSaved} months`}
+                  hint={`${fmt0(freqSavings.interestSaved)} estimated interest saving vs monthly timing.`}
+                  tone="success"
+                />
+              )}
+              {savings && (
+                <StatCard
+                  label="Extra repayment impact"
+                  value={fmt0(savings.interestSaved)}
+                  hint={`${savings.yrs} years and ${savings.mos} months saved.`}
+                  tone="success"
+                />
+              )}
+              {offset && (
+                <StatCard
+                  label="Offset impact"
+                  value={fmt0(offset.interestSaved)}
+                  hint={`${offset.yearsSaved.toFixed(1)} years shaved off.`}
+                  tone="success"
+                />
+              )}
             </div>
           </MobilePendingOverlay>
+
+          <MobilePendingOverlay pending={isMobile && calcPending}>
+            <div
+              className="rounded-2xl border border-border bg-card p-4 md:p-5"
+              aria-labelledby="mortgage-cost-breakdown-title"
+            >
+              <div className="mb-4">
+                <p className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+                  Result insight
+                </p>
+                <h3 id="mortgage-cost-breakdown-title" className="text-[16px] font-semibold text-foreground">
+                  Principal vs interest
+                </h3>
+                <p className="mt-1 text-[13px] leading-6 text-muted-foreground">
+                  Your total repayment includes both the original loan principal and interest
+                  charged over time.
+                </p>
+              </div>
+              <div
+                className="flex h-4 overflow-hidden rounded-full bg-muted"
+                role="img"
+                aria-label={`Total repaid is ${fmt0(result.totalRepaid)}, made up of ${fmt0(dLoan)} principal and ${fmt0(result.totalInterest)} interest.`}
+              >
+                <div className="bg-[#003680]" style={{ width: `${principalShare}%` }} />
+                <div className="bg-warning" style={{ width: `${interestShare}%` }} />
+              </div>
+              <dl className="mt-4 grid gap-3 sm:grid-cols-3">
+                <div className="rounded-xl bg-muted/40 p-3">
+                  <dt className="text-[11px] uppercase tracking-wide text-muted-foreground">Principal</dt>
+                  <dd className="tnum mt-1 text-[18px] font-bold text-[#003680]">{fmt0(dLoan)}</dd>
+                </div>
+                <div className="rounded-xl bg-muted/40 p-3">
+                  <dt className="text-[11px] uppercase tracking-wide text-muted-foreground">Interest</dt>
+                  <dd className="tnum mt-1 text-[18px] font-bold text-warning">{fmt0(result.totalInterest)}</dd>
+                </div>
+                <div className="rounded-xl bg-muted/40 p-3">
+                  <dt className="text-[11px] uppercase tracking-wide text-muted-foreground">Total repaid</dt>
+                  <dd className="tnum mt-1 text-[18px] font-bold text-foreground">{fmt0(result.totalRepaid)}</dd>
+                </div>
+              </dl>
+              <p className="mt-3 text-[12px] leading-5 text-muted-foreground">
+                Text fallback: principal {fmt0(dLoan)}, interest {fmt0(result.totalInterest)}, total repaid{" "}
+                {fmt0(result.totalRepaid)}.
+              </p>
+            </div>
+          </MobilePendingOverlay>
+
+          <div className="rounded-2xl border border-border bg-card p-4 md:p-5">
+            <div className="mb-4">
+              <p className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+                Payoff summary
+              </p>
+              <h3 className="text-[16px] font-semibold text-foreground">Repayment timeline</h3>
+              <p className="mt-1 text-[13px] leading-6 text-muted-foreground">
+                Small rate changes can affect monthly repayments. Extra repayments may reduce
+                interest and shorten the loan term when you add them above.
+              </p>
+            </div>
+            <ol className="grid gap-3 sm:grid-cols-3" aria-label="Mortgage repayment timeline">
+              {timelineMilestones.map((item, index) => (
+                <li key={item.label} className="rounded-xl border border-border bg-background p-3">
+                  <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-full bg-[#003680] text-sm font-bold text-white">
+                    {index + 1}
+                  </div>
+                  <p className="text-[11px] uppercase tracking-wide text-muted-foreground">{item.label}</p>
+                  <p className="tnum mt-1 text-[18px] font-bold text-foreground">{item.value}</p>
+                  <p className="mt-1 text-[12px] leading-5 text-muted-foreground">{item.detail}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <div className="rounded-2xl border border-[#C7D7FE] bg-[#F8FBFF] p-4 md:p-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wide text-[#003680]">
+                  Save and compare
+                </p>
+                <h3 className="mt-1 text-[16px] font-semibold text-foreground">
+                  Local mortgage scenarios
+                </h3>
+                <p className="mt-1 text-[13px] leading-6 text-slate-600">
+                  Saved scenarios are stored only in your browser on this device. Nothing is sent
+                  to Calcy, Supabase, or any lender.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={saveScenario}
+                disabled={!localScenarioStorageAvailable || scenarios.length >= MAX_SCENARIOS}
+                className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[#003680] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#002B66] disabled:cursor-not-allowed disabled:opacity-55"
+              >
+                Save this scenario
+              </button>
+            </div>
+
+            {scenarioMessage && (
+              <p className="mt-3 rounded-xl border border-[#C7D7FE] bg-white px-3 py-2 text-[13px] text-slate-700">
+                {scenarioMessage}
+              </p>
+            )}
+
+            {!localScenarioStorageAvailable && (
+              <p className="mt-3 rounded-xl border border-warning/30 bg-warning/10 px-3 py-2 text-[13px] text-foreground">
+                Browser storage is unavailable, so scenarios cannot be saved on this device.
+              </p>
+            )}
+
+            {savedScenarioRows.length === 0 ? (
+              <div className="mt-4 rounded-2xl border border-dashed border-[#C7D7FE] bg-white p-4 text-sm leading-6 text-muted-foreground">
+                No saved scenarios yet. Save the current result to compare repayments, total
+                interest, total repaid, loan size, rate, term, and frequency.
+              </div>
+            ) : (
+              <div className="mt-4 grid gap-3">
+                {savedScenarioRows.map(({ scenario, snapshot }) => (
+                  <article key={scenario.id} className="rounded-2xl border border-border bg-white p-4 shadow-sm">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <h4 className="text-[15px] font-semibold text-foreground">{scenario.label}</h4>
+                        <p className="text-[12px] text-muted-foreground">
+                          {formatSavedAt(scenario.savedAt)}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => deleteScenario(scenario.id)}
+                        className="inline-flex min-h-[38px] items-center justify-center rounded-xl border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:border-destructive/40 hover:text-destructive"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                    <dl className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+                      <div>
+                        <dt className="text-[11px] uppercase tracking-wide text-muted-foreground">Repayment</dt>
+                        <dd className="tnum mt-1 text-[17px] font-bold text-[#003680]">
+                          {fmt0(snapshot.repaymentAmount)}
+                        </dd>
+                        <dd className="text-[11px] text-muted-foreground">
+                          {FREQ_LABEL[snapshot.repaymentFrequency]}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="text-[11px] uppercase tracking-wide text-muted-foreground">Total interest</dt>
+                        <dd className="tnum mt-1 text-[17px] font-bold text-warning">
+                          {fmt0(snapshot.totalInterest)}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="text-[11px] uppercase tracking-wide text-muted-foreground">Total repaid</dt>
+                        <dd className="tnum mt-1 text-[17px] font-bold text-foreground">
+                          {fmt0(snapshot.totalRepaid)}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="text-[11px] uppercase tracking-wide text-muted-foreground">Loan setup</dt>
+                        <dd className="tnum mt-1 text-[14px] font-semibold text-foreground">
+                          {fmt0(snapshot.loanAmount)} at {snapshot.interestRate.toFixed(2)}%
+                        </dd>
+                        <dd className="text-[11px] text-muted-foreground">
+                          {snapshot.loanTerm} years
+                          {scenario.extra > 0 ? `, ${fmt0(scenario.extra)}/mo extra` : ""}
+                        </dd>
+                      </div>
+                    </dl>
+                    {(snapshot.extraRepaymentImpact || snapshot.offsetImpact) && (
+                      <div className="mt-3 grid gap-2 text-[12px] sm:grid-cols-2">
+                        {snapshot.extraRepaymentImpact && (
+                          <p className="rounded-xl bg-success/10 px-3 py-2 text-success">
+                            Extra repayments saved {fmt0(snapshot.extraRepaymentImpact.interestSaved)} and{" "}
+                            {snapshot.extraRepaymentImpact.yearsSaved}y {snapshot.extraRepaymentImpact.monthsSaved}m.
+                          </p>
+                        )}
+                        {snapshot.offsetImpact && (
+                          <p className="rounded-xl bg-success/10 px-3 py-2 text-success">
+                            Offset saved {fmt0(snapshot.offsetImpact.interestSaved)} and{" "}
+                            {snapshot.offsetImpact.yearsSaved.toFixed(1)} years.
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </article>
+                ))}
+              </div>
+            )}
+          </div>
 
           {savings && (
             <div className="rounded-2xl border border-success/30 bg-success/10 p-4 text-[14px]">
@@ -1454,23 +1772,35 @@ const StatCard = ({
   value,
   tone,
   hint,
+  emphasis,
 }: {
   label: string;
   value: string;
-  tone?: "warning";
+  tone?: "warning" | "success";
   hint?: string;
+  emphasis?: boolean;
 }) => (
   <div
     className={`rounded-2xl border p-4 ${
       tone === "warning"
         ? "border-warning/30 bg-warning/10"
-        : "border-border bg-card"
+        : tone === "success"
+          ? "border-success/30 bg-success/10"
+          : emphasis
+            ? "border-[#003680]/20 bg-[#EEF4FF]"
+            : "border-border bg-card"
     }`}
   >
     <p className="text-[12px] uppercase tracking-wide text-muted-foreground">{label}</p>
     <p
       className={`tnum text-[22px] font-bold ${
-        tone === "warning" ? "text-warning" : "text-foreground"
+        tone === "warning"
+          ? "text-warning"
+          : tone === "success"
+            ? "text-success"
+            : emphasis
+              ? "text-[#003680]"
+              : "text-foreground"
       }`}
     >
       {value}

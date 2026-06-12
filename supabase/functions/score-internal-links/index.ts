@@ -1,6 +1,4 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { buildReasoning } from "../_shared/decisionIntelligence.ts";
-
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -522,22 +520,7 @@ Deno.serve(async (req) => {
         };
         return priorityRank[b.priority] - priorityRank[a.priority] || relationshipRank[b.relationship_type] - relationshipRank[a.relationship_type];
       })
-      .slice(0, 180)
-      .map((op) => ({
-        ...op,
-        signals: {
-          ...op.signals,
-          reasoning: buildReasoning({
-            kind: "internal_link",
-            target_url: op.target_page,
-            score: op.priority === "high" ? 80 : op.priority === "medium" ? 55 : 35,
-            priority: op.priority,
-            risk_level: "low",
-            signals: [String((op.signals as any)?.source_signal || op.relationship_type)],
-            notes: op.reason,
-          }),
-        },
-      }));
+      .slice(0, 180);
 
     if (opportunities.length > 0) {
       const { error: upsertError } = await supabase

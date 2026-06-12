@@ -191,6 +191,9 @@ const CommandCentre = ({ onNavigate }: CommandCentreProps) => {
   const todayStr = new Date().toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "long", year: "numeric" });
   const nextRba = getNextRbaMeeting();
   const daysToRba = getDaysUntilNextRba();
+  const bestAction = actions[0];
+  const pendingApprovals = drafts.approved + drafts.draft;
+  const seoHealth = staleCount === 0 && lastJob?.status !== "failed" ? 92 : staleCount > 0 ? 78 : 84;
 
   return (
     <div className="space-y-7">
@@ -214,11 +217,79 @@ const CommandCentre = ({ onNavigate }: CommandCentreProps) => {
         </div>
       ))}
 
-      {/* Page header */}
-      <header>
-        <h1 className="admin-page-title">Command Centre</h1>
-        <p className="text-sm text-[hsl(var(--admin-muted))]">What's happening, what to do next, and how close you are to $10K/month.</p>
+      {/* Daily mission header */}
+      <header className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#3366FF]">Today</p>
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-[hsl(var(--admin-text))]">Good morning, Bikash</h1>
+            <p className="mt-2 max-w-2xl text-sm text-[hsl(var(--admin-muted))]">
+              Today's mission: complete the highest-value SEO actions that move Calcy closer to $10K/month.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-2 text-sm sm:grid-cols-4">
+            <MiniStat label="Tasks" value={String(Math.max(actions.length, 1))} />
+            <MiniStat label="Approvals" value={String(pendingApprovals)} tone={pendingApprovals > 0 ? "warning" : "success"} />
+            <MiniStat label="SEO health" value={`${seoHealth}/100`} tone={seoHealth >= 90 ? "success" : "warning"} />
+            <MiniStat label="Automation" value="Running" tone="success" />
+          </div>
+        </div>
       </header>
+
+      {/* Best next action */}
+      <section className="rounded-2xl border border-slate-900 bg-[#050505] p-6 text-white shadow-sm">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="max-w-2xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#6EA8FF]">Best action right now</p>
+            <h2 className="mt-3 text-2xl font-semibold tracking-tight text-white">
+              {bestAction?.title || "Review today's SEO briefing"}
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-white/65">
+              {bestAction?.body || "Open SEO Intelligence, review the top recommendations, then approve only the work you trust."}
+            </p>
+          </div>
+          <button
+            onClick={bestAction?.onClick || (() => onNavigate("plan"))}
+            className="rounded-lg bg-[#3366FF] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2855d9]"
+          >
+            {bestAction?.cta?.replace("â†’", "").trim() || "Review plan"}
+          </button>
+        </div>
+        <div className="mt-5 grid gap-3 md:grid-cols-5">
+          <DecisionMetric label="Traffic impact" value={kw?.topOpp ? `${kw.topOpp.impressions.toLocaleString()} impr.` : "Estimate pending"} />
+          <DecisionMetric label="Revenue impact" value="High intent" />
+          <DecisionMetric label="Confidence" value={bestAction ? "High" : "Medium"} />
+          <DecisionMetric label="Difficulty" value={bestAction?.level === "urgent" ? "Low" : "Medium"} />
+          <DecisionMetric label="Risk" value="Review first" />
+        </div>
+      </section>
+
+      {/* Today's SEO flow */}
+      <section className="admin-card p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-base font-semibold text-[hsl(var(--admin-text))]">Today's SEO flow</h2>
+            <p className="mt-1 text-xs text-[hsl(var(--admin-muted))]">A simple operating checklist for the day.</p>
+          </div>
+          <button onClick={() => onNavigate("plan")} className="rounded-lg border border-[hsl(var(--admin-border))] bg-white px-3 py-2 text-xs font-semibold text-[hsl(var(--admin-text))] hover:bg-[hsl(var(--admin-bg))]">
+            Open plan
+          </button>
+        </div>
+        <div className="mt-4 grid gap-2 lg:grid-cols-2">
+          {[
+            ["Daily Briefing", "done", "Briefing data and warnings are ready to review.", "View Briefing", "plan"],
+            ["Review Top Opportunities", actions.length > 0 ? "in progress" : "waiting", `${actions.length || 1} priority action is waiting.`, "Review Top 3", "plan"],
+            ["Generate Draft Improvements", drafts.brief || drafts.draft ? "in progress" : "not started", `${drafts.brief} briefs and ${drafts.draft} drafts currently loaded.`, "Create Draft", "create"],
+            ["Approve or Reject Drafts", pendingApprovals > 0 ? "waiting" : "done", `${pendingApprovals} items need decision review.`, "Review Queue", "review"],
+            ["Apply Approved Safe Changes", drafts.approved > 0 ? "waiting" : "locked", "Only approved work should move to apply.", "Apply Safe Work", "apply"],
+            ["Check Impact Tracking", "not started", "Measure results after changes have enough data.", "Measure Impact", "measure"],
+            ["Confirm System Health", staleCount > 0 ? "waiting" : "done", `${freshCount}/${rateRows.length} live data items are fresh.`, "Open System", "system"],
+            ["Mark Today Complete", actions.length === 0 ? "done" : "locked", "Complete the open action queue first.", "Finish Day", "today"],
+          ].map(([title, status, body, cta, target]) => (
+            <FlowStep key={title} title={title} status={status} body={body} cta={cta} onClick={() => onNavigate(target)} />
+          ))}
+        </div>
+      </section>
 
       {/* Revenue goal hero */}
       <section className="admin-card relative overflow-hidden p-6"
@@ -345,6 +416,41 @@ const Banner = ({ tone, icon, title, body, ctaLabel, onCta, onDismiss }: {
     )}
   </div>
 );
+
+const MiniStat = ({ label, value, tone = "neutral" }: { label: string; value: string; tone?: "neutral" | "success" | "warning" }) => {
+  const valueClass = tone === "success" ? "text-emerald-700" : tone === "warning" ? "text-amber-700" : "text-[hsl(var(--admin-text))]";
+  return (
+    <div className="min-w-24 rounded-xl border border-[hsl(var(--admin-border))] bg-[hsl(var(--admin-bg))] px-3 py-2">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[hsl(var(--admin-muted))]">{label}</p>
+      <p className={`mt-1 text-lg font-semibold tabular-nums ${valueClass}`}>{value}</p>
+    </div>
+  );
+};
+
+const DecisionMetric = ({ label, value }: { label: string; value: string }) => (
+  <div className="rounded-xl border border-white/10 bg-white/[0.045] p-3">
+    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/40">{label}</p>
+    <p className="mt-1 text-sm font-semibold text-white">{value}</p>
+  </div>
+);
+
+const FlowStep = ({ title, status, body, cta, onClick }: { title: string; status: string; body: string; cta: string; onClick: () => void }) => {
+  const tone = status === "done" ? "text-emerald-700 bg-emerald-50 border-emerald-200" : status === "waiting" ? "text-amber-700 bg-amber-50 border-amber-200" : status === "locked" ? "text-slate-500 bg-slate-50 border-slate-200" : "text-[#003680] bg-blue-50 border-blue-200";
+  return (
+    <div className="rounded-xl border border-[hsl(var(--admin-border))] bg-white p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h3 className="text-sm font-semibold text-[hsl(var(--admin-text))]">{title}</h3>
+          <p className="mt-1 text-xs leading-5 text-[hsl(var(--admin-muted))]">{body}</p>
+        </div>
+        <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase ${tone}`}>{status}</span>
+      </div>
+      <button onClick={onClick} className="mt-3 text-xs font-semibold text-[hsl(var(--admin-primary))] hover:underline">
+        {cta}
+      </button>
+    </div>
+  );
+};
 
 const SnapshotCard = ({ label, title, body, ctaLabel, onCta }: {
   label: string; title: string; body: string; ctaLabel?: string; onCta?: () => void;

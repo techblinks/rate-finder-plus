@@ -83,6 +83,138 @@ export type Database = {
         }
         Relationships: []
       }
+      topic_cluster_visualizations: {
+        Row: {
+          alerts: Json
+          authority_strength: number
+          cluster_key: string
+          cluster_name: string
+          edge_count: number
+          generated_at: string | null
+          graph_edges: Json
+          graph_nodes: Json
+          health_score: number
+          id: string
+          missing_supporting_content: Json
+          node_count: number
+          orphan_pages: Json
+          semantic_hierarchy: Json
+          signals: Json
+          status: string
+          topical_gaps: Json
+          updated_at: string | null
+          weak_internal_links: Json
+        }
+        Insert: {
+          alerts?: Json
+          authority_strength: number
+          cluster_key: string
+          cluster_name: string
+          edge_count?: number
+          generated_at?: string | null
+          graph_edges?: Json
+          graph_nodes?: Json
+          health_score: number
+          id?: string
+          missing_supporting_content?: Json
+          node_count?: number
+          orphan_pages?: Json
+          semantic_hierarchy?: Json
+          signals?: Json
+          status?: string
+          topical_gaps?: Json
+          updated_at?: string | null
+          weak_internal_links?: Json
+        }
+        Update: {
+          alerts?: Json
+          authority_strength?: number
+          cluster_key?: string
+          cluster_name?: string
+          edge_count?: number
+          generated_at?: string | null
+          graph_edges?: Json
+          graph_nodes?: Json
+          health_score?: number
+          id?: string
+          missing_supporting_content?: Json
+          node_count?: number
+          orphan_pages?: Json
+          semantic_hierarchy?: Json
+          signals?: Json
+          status?: string
+          topical_gaps?: Json
+          updated_at?: string | null
+          weak_internal_links?: Json
+        }
+        Relationships: []
+      }
+      semantic_finance_knowledge_graphs: {
+        Row: {
+          authority_connections: Json
+          authority_score: number
+          entity_count: number
+          entity_edges: Json
+          entity_nodes: Json
+          entity_relationships: Json
+          generated_at: string | null
+          graph_key: string
+          graph_name: string
+          id: string
+          missing_entity_coverage: Json
+          related_content_recommendations: Json
+          relationship_count: number
+          semantic_relationships: Json
+          signals: Json
+          status: string
+          suggested_internal_links: Json
+          topic_relationships: Json
+          updated_at: string | null
+        }
+        Insert: {
+          authority_connections?: Json
+          authority_score: number
+          entity_count?: number
+          entity_edges?: Json
+          entity_nodes?: Json
+          entity_relationships?: Json
+          generated_at?: string | null
+          graph_key: string
+          graph_name: string
+          id?: string
+          missing_entity_coverage?: Json
+          related_content_recommendations?: Json
+          relationship_count?: number
+          semantic_relationships?: Json
+          signals?: Json
+          status?: string
+          suggested_internal_links?: Json
+          topic_relationships?: Json
+          updated_at?: string | null
+        }
+        Update: {
+          authority_connections?: Json
+          authority_score?: number
+          entity_count?: number
+          entity_edges?: Json
+          entity_nodes?: Json
+          entity_relationships?: Json
+          generated_at?: string | null
+          graph_key?: string
+          graph_name?: string
+          id?: string
+          missing_entity_coverage?: Json
+          related_content_recommendations?: Json
+          relationship_count?: number
+          semantic_relationships?: Json
+          signals?: Json
+          status?: string
+          suggested_internal_links?: Json
+          topic_relationships?: Json
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       auto_refresh_recommendations: {
         Row: {
           freshness_score: number
@@ -278,78 +410,6 @@ export type Database = {
         }
         Relationships: []
       }
-      content_drafts: {
-        Row: {
-          brief: Json | null
-          category: string | null
-          content: string | null
-          created_at: string
-          generated_by: string | null
-          id: string
-          keyword_impressions: number | null
-          keyword_opportunity: number | null
-          keyword_position: number | null
-          meta_description: string | null
-          meta_title: string | null
-          notes: string | null
-          published_at: string | null
-          reviewed_by: string | null
-          seo_score: number | null
-          slug: string | null
-          status: string
-          target_keyword: string | null
-          title: string
-          updated_at: string
-          word_count: number | null
-        }
-        Insert: {
-          brief?: Json | null
-          category?: string | null
-          content?: string | null
-          created_at?: string
-          generated_by?: string | null
-          id?: string
-          keyword_impressions?: number | null
-          keyword_opportunity?: number | null
-          keyword_position?: number | null
-          meta_description?: string | null
-          meta_title?: string | null
-          notes?: string | null
-          published_at?: string | null
-          reviewed_by?: string | null
-          seo_score?: number | null
-          slug?: string | null
-          status?: string
-          target_keyword?: string | null
-          title: string
-          updated_at?: string
-          word_count?: number | null
-        }
-        Update: {
-          brief?: Json | null
-          category?: string | null
-          content?: string | null
-          created_at?: string
-          generated_by?: string | null
-          id?: string
-          keyword_impressions?: number | null
-          keyword_opportunity?: number | null
-          keyword_position?: number | null
-          meta_description?: string | null
-          meta_title?: string | null
-          notes?: string | null
-          published_at?: string | null
-          reviewed_by?: string | null
-          seo_score?: number | null
-          slug?: string | null
-          status?: string
-          target_keyword?: string | null
-          title?: string
-          updated_at?: string
-          word_count?: number | null
-        }
-        Relationships: []
-      }
       content_gap_opportunities: {
         Row: {
           affected_url: string
@@ -479,8 +539,8 @@ export type Database = {
       ctr_optimizations: {
         Row: {
           clicks_28d: number
-          ctr_28d: number
           ctr_opportunity_score: number
+          ctr_28d: number
           estimated_missed_clicks: number
           generated_at: string | null
           id: string
@@ -504,8 +564,8 @@ export type Database = {
         }
         Insert: {
           clicks_28d?: number
-          ctr_28d?: number
           ctr_opportunity_score?: number
+          ctr_28d?: number
           estimated_missed_clicks?: number
           generated_at?: string | null
           id?: string
@@ -529,8 +589,8 @@ export type Database = {
         }
         Update: {
           clicks_28d?: number
-          ctr_28d?: number
           ctr_opportunity_score?: number
+          ctr_28d?: number
           estimated_missed_clicks?: number
           generated_at?: string | null
           id?: string
@@ -551,6 +611,78 @@ export type Database = {
           suggested_semantic_improvements?: string
           suggested_title?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      content_drafts: {
+        Row: {
+          brief: Json | null
+          category: string | null
+          content: string | null
+          created_at: string
+          generated_by: string | null
+          id: string
+          keyword_impressions: number | null
+          keyword_opportunity: number | null
+          keyword_position: number | null
+          meta_description: string | null
+          meta_title: string | null
+          notes: string | null
+          published_at: string | null
+          reviewed_by: string | null
+          seo_score: number | null
+          slug: string | null
+          status: string
+          target_keyword: string | null
+          title: string
+          updated_at: string
+          word_count: number | null
+        }
+        Insert: {
+          brief?: Json | null
+          category?: string | null
+          content?: string | null
+          created_at?: string
+          generated_by?: string | null
+          id?: string
+          keyword_impressions?: number | null
+          keyword_opportunity?: number | null
+          keyword_position?: number | null
+          meta_description?: string | null
+          meta_title?: string | null
+          notes?: string | null
+          published_at?: string | null
+          reviewed_by?: string | null
+          seo_score?: number | null
+          slug?: string | null
+          status?: string
+          target_keyword?: string | null
+          title: string
+          updated_at?: string
+          word_count?: number | null
+        }
+        Update: {
+          brief?: Json | null
+          category?: string | null
+          content?: string | null
+          created_at?: string
+          generated_by?: string | null
+          id?: string
+          keyword_impressions?: number | null
+          keyword_opportunity?: number | null
+          keyword_position?: number | null
+          meta_description?: string | null
+          meta_title?: string | null
+          notes?: string | null
+          published_at?: string | null
+          reviewed_by?: string | null
+          seo_score?: number | null
+          slug?: string | null
+          status?: string
+          target_keyword?: string | null
+          title?: string
+          updated_at?: string
+          word_count?: number | null
         }
         Relationships: []
       }
@@ -598,8 +730,8 @@ export type Database = {
           generated_at: string | null
           id: string
           priority: string
-          reason: string
           relationship_type: string
+          reason: string
           signals: Json
           source_page: string
           status: string
@@ -611,8 +743,8 @@ export type Database = {
           generated_at?: string | null
           id?: string
           priority: string
-          reason: string
           relationship_type?: string
+          reason: string
           signals?: Json
           source_page: string
           status?: string
@@ -624,55 +756,13 @@ export type Database = {
           generated_at?: string | null
           id?: string
           priority?: string
-          reason?: string
           relationship_type?: string
+          reason?: string
           signals?: Json
           source_page?: string
           status?: string
           suggested_anchor_text?: string
           target_page?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      money_page_scores: {
-        Row: {
-          generated_at: string | null
-          id: string
-          money_score: number
-          page_title: string
-          page_url: string
-          reason: string
-          recommended_action: string
-          related_internal_links_needed: Json
-          signals: Json
-          status: string
-          updated_at: string | null
-        }
-        Insert: {
-          generated_at?: string | null
-          id?: string
-          money_score: number
-          page_title: string
-          page_url: string
-          reason: string
-          recommended_action: string
-          related_internal_links_needed?: Json
-          signals?: Json
-          status?: string
-          updated_at?: string | null
-        }
-        Update: {
-          generated_at?: string | null
-          id?: string
-          money_score?: number
-          page_title?: string
-          page_url?: string
-          reason?: string
-          recommended_action?: string
-          related_internal_links_needed?: Json
-          signals?: Json
-          status?: string
           updated_at?: string | null
         }
         Relationships: []
@@ -880,218 +970,6 @@ export type Database = {
         }
         Relationships: []
       }
-      semantic_finance_knowledge_graphs: {
-        Row: {
-          authority_connections: Json
-          authority_score: number
-          entity_count: number
-          entity_edges: Json
-          entity_nodes: Json
-          entity_relationships: Json
-          generated_at: string | null
-          graph_key: string
-          graph_name: string
-          id: string
-          missing_entity_coverage: Json
-          related_content_recommendations: Json
-          relationship_count: number
-          semantic_relationships: Json
-          signals: Json
-          status: string
-          suggested_internal_links: Json
-          topic_relationships: Json
-          updated_at: string | null
-        }
-        Insert: {
-          authority_connections?: Json
-          authority_score: number
-          entity_count?: number
-          entity_edges?: Json
-          entity_nodes?: Json
-          entity_relationships?: Json
-          generated_at?: string | null
-          graph_key: string
-          graph_name: string
-          id?: string
-          missing_entity_coverage?: Json
-          related_content_recommendations?: Json
-          relationship_count?: number
-          semantic_relationships?: Json
-          signals?: Json
-          status?: string
-          suggested_internal_links?: Json
-          topic_relationships?: Json
-          updated_at?: string | null
-        }
-        Update: {
-          authority_connections?: Json
-          authority_score?: number
-          entity_count?: number
-          entity_edges?: Json
-          entity_nodes?: Json
-          entity_relationships?: Json
-          generated_at?: string | null
-          graph_key?: string
-          graph_name?: string
-          id?: string
-          missing_entity_coverage?: Json
-          related_content_recommendations?: Json
-          relationship_count?: number
-          semantic_relationships?: Json
-          signals?: Json
-          status?: string
-          suggested_internal_links?: Json
-          topic_relationships?: Json
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      seo_draft_impact: {
-        Row: {
-          after_30d_clicks: number | null
-          after_30d_ctr: number | null
-          after_30d_end: string | null
-          after_30d_impressions: number | null
-          after_30d_position: number | null
-          after_30d_start: string | null
-          after_7d_clicks: number | null
-          after_7d_ctr: number | null
-          after_7d_end: string | null
-          after_7d_impressions: number | null
-          after_7d_position: number | null
-          after_7d_start: string | null
-          applied_at: string
-          baseline_clicks: number
-          baseline_ctr: number
-          baseline_end: string | null
-          baseline_impressions: number
-          baseline_position: number | null
-          baseline_start: string | null
-          clicks_delta_30d: number | null
-          clicks_delta_7d: number | null
-          confidence: string | null
-          created_at: string
-          ctr_delta_30d: number | null
-          ctr_delta_7d: number | null
-          draft_id: string
-          draft_type: string | null
-          estimated_revenue_impact: number | null
-          estimated_traffic_impact: number | null
-          id: string
-          impact_status: string
-          impressions_delta_30d: number | null
-          impressions_delta_7d: number | null
-          last_computed_at: string
-          notes: string | null
-          position_delta_30d: number | null
-          position_delta_7d: number | null
-          rpm_estimate: number | null
-          signals: Json
-          target_keyword: string | null
-          target_url: string
-          task_id: string | null
-          updated_at: string
-        }
-        Insert: {
-          after_30d_clicks?: number | null
-          after_30d_ctr?: number | null
-          after_30d_end?: string | null
-          after_30d_impressions?: number | null
-          after_30d_position?: number | null
-          after_30d_start?: string | null
-          after_7d_clicks?: number | null
-          after_7d_ctr?: number | null
-          after_7d_end?: string | null
-          after_7d_impressions?: number | null
-          after_7d_position?: number | null
-          after_7d_start?: string | null
-          applied_at: string
-          baseline_clicks?: number
-          baseline_ctr?: number
-          baseline_end?: string | null
-          baseline_impressions?: number
-          baseline_position?: number | null
-          baseline_start?: string | null
-          clicks_delta_30d?: number | null
-          clicks_delta_7d?: number | null
-          confidence?: string | null
-          created_at?: string
-          ctr_delta_30d?: number | null
-          ctr_delta_7d?: number | null
-          draft_id: string
-          draft_type?: string | null
-          estimated_revenue_impact?: number | null
-          estimated_traffic_impact?: number | null
-          id?: string
-          impact_status?: string
-          impressions_delta_30d?: number | null
-          impressions_delta_7d?: number | null
-          last_computed_at?: string
-          notes?: string | null
-          position_delta_30d?: number | null
-          position_delta_7d?: number | null
-          rpm_estimate?: number | null
-          signals?: Json
-          target_keyword?: string | null
-          target_url: string
-          task_id?: string | null
-          updated_at?: string
-        }
-        Update: {
-          after_30d_clicks?: number | null
-          after_30d_ctr?: number | null
-          after_30d_end?: string | null
-          after_30d_impressions?: number | null
-          after_30d_position?: number | null
-          after_30d_start?: string | null
-          after_7d_clicks?: number | null
-          after_7d_ctr?: number | null
-          after_7d_end?: string | null
-          after_7d_impressions?: number | null
-          after_7d_position?: number | null
-          after_7d_start?: string | null
-          applied_at?: string
-          baseline_clicks?: number
-          baseline_ctr?: number
-          baseline_end?: string | null
-          baseline_impressions?: number
-          baseline_position?: number | null
-          baseline_start?: string | null
-          clicks_delta_30d?: number | null
-          clicks_delta_7d?: number | null
-          confidence?: string | null
-          created_at?: string
-          ctr_delta_30d?: number | null
-          ctr_delta_7d?: number | null
-          draft_id?: string
-          draft_type?: string | null
-          estimated_revenue_impact?: number | null
-          estimated_traffic_impact?: number | null
-          id?: string
-          impact_status?: string
-          impressions_delta_30d?: number | null
-          impressions_delta_7d?: number | null
-          last_computed_at?: string
-          notes?: string | null
-          position_delta_30d?: number | null
-          position_delta_7d?: number | null
-          rpm_estimate?: number | null
-          signals?: Json
-          target_keyword?: string | null
-          target_url?: string
-          task_id?: string | null
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "seo_draft_impact_draft_id_fkey"
-            columns: ["draft_id"]
-            isOneToOne: true
-            referencedRelation: "weekly_seo_task_drafts"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       seo_keywords: {
         Row: {
           adsense_cpc_estimate: number | null
@@ -1179,6 +1057,48 @@ export type Database = {
         }
         Relationships: []
       }
+      money_page_scores: {
+        Row: {
+          generated_at: string | null
+          id: string
+          money_score: number
+          page_title: string
+          page_url: string
+          reason: string
+          recommended_action: string
+          related_internal_links_needed: Json
+          signals: Json
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          generated_at?: string | null
+          id?: string
+          money_score: number
+          page_title: string
+          page_url: string
+          reason: string
+          recommended_action: string
+          related_internal_links_needed?: Json
+          signals?: Json
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          generated_at?: string | null
+          id?: string
+          money_score?: number
+          page_title?: string
+          page_url?: string
+          reason?: string
+          recommended_action?: string
+          related_internal_links_needed?: Json
+          signals?: Json
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       seo_opportunities: {
         Row: {
           generated_at: string | null
@@ -1231,45 +1151,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      seo_page_overrides: {
-        Row: {
-          applied_draft_id: string | null
-          created_at: string
-          faq_additions: Json
-          id: string
-          meta_description: string | null
-          meta_title: string | null
-          source_task_id: string | null
-          updated_at: string
-          updated_by: string | null
-          url: string
-        }
-        Insert: {
-          applied_draft_id?: string | null
-          created_at?: string
-          faq_additions?: Json
-          id?: string
-          meta_description?: string | null
-          meta_title?: string | null
-          source_task_id?: string | null
-          updated_at?: string
-          updated_by?: string | null
-          url: string
-        }
-        Update: {
-          applied_draft_id?: string | null
-          created_at?: string
-          faq_additions?: Json
-          id?: string
-          meta_description?: string | null
-          meta_title?: string | null
-          source_task_id?: string | null
-          updated_at?: string
-          updated_by?: string | null
-          url?: string
-        }
-        Relationships: []
       }
       seo_reports: {
         Row: {
@@ -1343,72 +1224,6 @@ export type Database = {
           total_impressions_period?: number | null
           total_keywords_tracked?: number | null
           trending_keywords?: Json | null
-        }
-        Relationships: []
-      }
-      seo_winning_patterns: {
-        Row: {
-          average_click_delta: number | null
-          average_ctr_delta: number | null
-          average_position_delta: number | null
-          confidence_level: string
-          created_at: string
-          draft_type: string | null
-          failure_count: number
-          id: string
-          keyword_intent: string | null
-          neutral_count: number
-          page_type: string | null
-          pattern_key: string
-          pattern_type: string
-          recommendation: string | null
-          sample_draft_ids: Json
-          signals: Json
-          status: string
-          success_count: number
-          updated_at: string
-        }
-        Insert: {
-          average_click_delta?: number | null
-          average_ctr_delta?: number | null
-          average_position_delta?: number | null
-          confidence_level?: string
-          created_at?: string
-          draft_type?: string | null
-          failure_count?: number
-          id?: string
-          keyword_intent?: string | null
-          neutral_count?: number
-          page_type?: string | null
-          pattern_key: string
-          pattern_type: string
-          recommendation?: string | null
-          sample_draft_ids?: Json
-          signals?: Json
-          status?: string
-          success_count?: number
-          updated_at?: string
-        }
-        Update: {
-          average_click_delta?: number | null
-          average_ctr_delta?: number | null
-          average_position_delta?: number | null
-          confidence_level?: string
-          created_at?: string
-          draft_type?: string | null
-          failure_count?: number
-          id?: string
-          keyword_intent?: string | null
-          neutral_count?: number
-          page_type?: string | null
-          pattern_key?: string
-          pattern_type?: string
-          recommendation?: string | null
-          sample_draft_ids?: Json
-          signals?: Json
-          status?: string
-          success_count?: number
-          updated_at?: string
         }
         Relationships: []
       }
@@ -1511,258 +1326,6 @@ export type Database = {
         }
         Relationships: []
       }
-      sync_jobs: {
-        Row: {
-          completed_at: string | null
-          created_at: string | null
-          duration_ms: number | null
-          error_log: Json | null
-          id: string
-          job_type: string
-          records_checked: number | null
-          records_failed: number | null
-          records_updated: number | null
-          started_at: string | null
-          status: string
-          summary: Json | null
-          triggered_by: string
-        }
-        Insert: {
-          completed_at?: string | null
-          created_at?: string | null
-          duration_ms?: number | null
-          error_log?: Json | null
-          id?: string
-          job_type: string
-          records_checked?: number | null
-          records_failed?: number | null
-          records_updated?: number | null
-          started_at?: string | null
-          status?: string
-          summary?: Json | null
-          triggered_by: string
-        }
-        Update: {
-          completed_at?: string | null
-          created_at?: string | null
-          duration_ms?: number | null
-          error_log?: Json | null
-          id?: string
-          job_type?: string
-          records_checked?: number | null
-          records_failed?: number | null
-          records_updated?: number | null
-          started_at?: string | null
-          status?: string
-          summary?: Json | null
-          triggered_by?: string
-        }
-        Relationships: []
-      }
-      topic_cluster_visualizations: {
-        Row: {
-          alerts: Json
-          authority_strength: number
-          cluster_key: string
-          cluster_name: string
-          edge_count: number
-          generated_at: string | null
-          graph_edges: Json
-          graph_nodes: Json
-          health_score: number
-          id: string
-          missing_supporting_content: Json
-          node_count: number
-          orphan_pages: Json
-          semantic_hierarchy: Json
-          signals: Json
-          status: string
-          topical_gaps: Json
-          updated_at: string | null
-          weak_internal_links: Json
-        }
-        Insert: {
-          alerts?: Json
-          authority_strength: number
-          cluster_key: string
-          cluster_name: string
-          edge_count?: number
-          generated_at?: string | null
-          graph_edges?: Json
-          graph_nodes?: Json
-          health_score: number
-          id?: string
-          missing_supporting_content?: Json
-          node_count?: number
-          orphan_pages?: Json
-          semantic_hierarchy?: Json
-          signals?: Json
-          status?: string
-          topical_gaps?: Json
-          updated_at?: string | null
-          weak_internal_links?: Json
-        }
-        Update: {
-          alerts?: Json
-          authority_strength?: number
-          cluster_key?: string
-          cluster_name?: string
-          edge_count?: number
-          generated_at?: string | null
-          graph_edges?: Json
-          graph_nodes?: Json
-          health_score?: number
-          id?: string
-          missing_supporting_content?: Json
-          node_count?: number
-          orphan_pages?: Json
-          semantic_hierarchy?: Json
-          signals?: Json
-          status?: string
-          topical_gaps?: Json
-          updated_at?: string | null
-          weak_internal_links?: Json
-        }
-        Relationships: []
-      }
-      user_roles: {
-        Row: {
-          created_at: string
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
-        }
-        Relationships: []
-      }
-      weekly_seo_briefings: {
-        Row: {
-          approval_status: string
-          data_sources: Json
-          executive_summary: string
-          generated_at: string | null
-          growth_opportunities: Json
-          id: string
-          money_page_priorities: Json
-          seo_trend_overview: Json
-          top_tasks: Json
-          updated_at: string | null
-          warnings_issues: Json
-          week_start: string
-        }
-        Insert: {
-          approval_status?: string
-          data_sources?: Json
-          executive_summary: string
-          generated_at?: string | null
-          growth_opportunities?: Json
-          id?: string
-          money_page_priorities?: Json
-          seo_trend_overview?: Json
-          top_tasks?: Json
-          updated_at?: string | null
-          warnings_issues?: Json
-          week_start: string
-        }
-        Update: {
-          approval_status?: string
-          data_sources?: Json
-          executive_summary?: string
-          generated_at?: string | null
-          growth_opportunities?: Json
-          id?: string
-          money_page_priorities?: Json
-          seo_trend_overview?: Json
-          top_tasks?: Json
-          updated_at?: string | null
-          warnings_issues?: Json
-          week_start?: string
-        }
-        Relationships: []
-      }
-      weekly_seo_task_drafts: {
-        Row: {
-          after_text: string | null
-          applied_at: string | null
-          applied_by: string | null
-          approval_status: string
-          before_text: string | null
-          draft_type: string
-          expected_seo_impact: string | null
-          generated_at: string
-          generated_by: string
-          id: string
-          payload: Json
-          proposed_change: string
-          review_note: string | null
-          reviewed_by: string | null
-          risk_level: string
-          rollback_snapshot: Json | null
-          target_keyword: string | null
-          target_url: string | null
-          task_id: string
-          updated_at: string
-          week_start: string | null
-        }
-        Insert: {
-          after_text?: string | null
-          applied_at?: string | null
-          applied_by?: string | null
-          approval_status?: string
-          before_text?: string | null
-          draft_type: string
-          expected_seo_impact?: string | null
-          generated_at?: string
-          generated_by?: string
-          id?: string
-          payload?: Json
-          proposed_change: string
-          review_note?: string | null
-          reviewed_by?: string | null
-          risk_level?: string
-          rollback_snapshot?: Json | null
-          target_keyword?: string | null
-          target_url?: string | null
-          task_id: string
-          updated_at?: string
-          week_start?: string | null
-        }
-        Update: {
-          after_text?: string | null
-          applied_at?: string | null
-          applied_by?: string | null
-          approval_status?: string
-          before_text?: string | null
-          draft_type?: string
-          expected_seo_impact?: string | null
-          generated_at?: string
-          generated_by?: string
-          id?: string
-          payload?: Json
-          proposed_change?: string
-          review_note?: string | null
-          reviewed_by?: string | null
-          risk_level?: string
-          rollback_snapshot?: Json | null
-          target_keyword?: string | null
-          target_url?: string | null
-          task_id?: string
-          updated_at?: string
-          week_start?: string | null
-        }
-        Relationships: []
-      }
       weekly_seo_tasks: {
         Row: {
           affected_url: string
@@ -1817,6 +1380,412 @@ export type Database = {
           task_type?: string
           updated_at?: string | null
           week_start?: string
+        }
+        Relationships: []
+      }
+      seo_automation_schedules: {
+        Row: {
+          config: Json
+          created_at: string | null
+          enabled: boolean
+          frequency: string
+          function_name: string | null
+          id: string
+          job_key: string
+          job_name: string
+          last_error: string | null
+          last_run_at: string | null
+          next_run_at: string | null
+          rows_created: number
+          rows_processed: number
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          config?: Json
+          created_at?: string | null
+          enabled?: boolean
+          frequency?: string
+          function_name?: string | null
+          id?: string
+          job_key: string
+          job_name: string
+          last_error?: string | null
+          last_run_at?: string | null
+          next_run_at?: string | null
+          rows_created?: number
+          rows_processed?: number
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          config?: Json
+          created_at?: string | null
+          enabled?: boolean
+          frequency?: string
+          function_name?: string | null
+          id?: string
+          job_key?: string
+          job_name?: string
+          last_error?: string | null
+          last_run_at?: string | null
+          next_run_at?: string | null
+          rows_created?: number
+          rows_processed?: number
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      seo_automation_runs: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          duration_ms: number | null
+          error_message: string | null
+          function_name: string | null
+          id: string
+          job_key: string
+          job_name: string
+          result: Json
+          rows_created: number
+          rows_processed: number
+          schedule_id: string | null
+          started_at: string
+          status: string
+          trigger_type: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          duration_ms?: number | null
+          error_message?: string | null
+          function_name?: string | null
+          id?: string
+          job_key: string
+          job_name: string
+          result?: Json
+          rows_created?: number
+          rows_processed?: number
+          schedule_id?: string | null
+          started_at?: string
+          status?: string
+          trigger_type?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          duration_ms?: number | null
+          error_message?: string | null
+          function_name?: string | null
+          id?: string
+          job_key?: string
+          job_name?: string
+          result?: Json
+          rows_created?: number
+          rows_processed?: number
+          schedule_id?: string | null
+          started_at?: string
+          status?: string
+          trigger_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seo_automation_runs_schedule_id_fkey"
+            columns: ["schedule_id"]
+            isOneToOne: false
+            referencedRelation: "seo_automation_schedules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seo_digest_preferences: {
+        Row: {
+          admin_notifications_enabled: boolean
+          created_at: string | null
+          daily_enabled: boolean
+          email_enabled: boolean
+          id: string
+          last_daily_sent_at: string | null
+          last_error: string | null
+          last_weekly_sent_at: string | null
+          preference_key: string
+          recipient_email: string | null
+          send_time_local: string
+          timezone: string
+          updated_at: string | null
+          weekly_enabled: boolean
+        }
+        Insert: {
+          admin_notifications_enabled?: boolean
+          created_at?: string | null
+          daily_enabled?: boolean
+          email_enabled?: boolean
+          id?: string
+          last_daily_sent_at?: string | null
+          last_error?: string | null
+          last_weekly_sent_at?: string | null
+          preference_key?: string
+          recipient_email?: string | null
+          send_time_local?: string
+          timezone?: string
+          updated_at?: string | null
+          weekly_enabled?: boolean
+        }
+        Update: {
+          admin_notifications_enabled?: boolean
+          created_at?: string | null
+          daily_enabled?: boolean
+          email_enabled?: boolean
+          id?: string
+          last_daily_sent_at?: string | null
+          last_error?: string | null
+          last_weekly_sent_at?: string | null
+          preference_key?: string
+          recipient_email?: string | null
+          send_time_local?: string
+          timezone?: string
+          updated_at?: string | null
+          weekly_enabled?: boolean
+        }
+        Relationships: []
+      }
+      seo_digest_logs: {
+        Row: {
+          channel: string
+          digest_payload: Json
+          digest_type: string
+          email_provider_configured: boolean
+          error_message: string | null
+          generated_at: string | null
+          id: string
+          message: string | null
+          preference_id: string | null
+          recipient_email: string | null
+          sent_at: string | null
+          status: string
+          subject: string
+        }
+        Insert: {
+          channel: string
+          digest_payload?: Json
+          digest_type: string
+          email_provider_configured?: boolean
+          error_message?: string | null
+          generated_at?: string | null
+          id?: string
+          message?: string | null
+          preference_id?: string | null
+          recipient_email?: string | null
+          sent_at?: string | null
+          status?: string
+          subject: string
+        }
+        Update: {
+          channel?: string
+          digest_payload?: Json
+          digest_type?: string
+          email_provider_configured?: boolean
+          error_message?: string | null
+          generated_at?: string | null
+          id?: string
+          message?: string | null
+          preference_id?: string | null
+          recipient_email?: string | null
+          sent_at?: string | null
+          status?: string
+          subject?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seo_digest_logs_preference_id_fkey"
+            columns: ["preference_id"]
+            isOneToOne: false
+            referencedRelation: "seo_digest_preferences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      daily_seo_briefings: {
+        Row: {
+          approval_status: string
+          best_winning_pattern: Json
+          biggest_traffic_decline: Json
+          briefing_date: string
+          confidence_score: number
+          daily_summary: string
+          data_sources: Json
+          estimated_revenue_opportunity: string
+          estimated_traffic_opportunity: number
+          fastest_page_one_opportunity: Json
+          generated_at: string | null
+          highest_confidence_recommendation: Json
+          highest_roi_opportunity: Json
+          highest_rpm_opportunity: Json
+          id: string
+          risk_alerts: Json
+          seo_trend_overview: Json
+          suggested_implementation_queue: Json
+          top_urgent_actions: Json
+          updated_at: string | null
+        }
+        Insert: {
+          approval_status?: string
+          best_winning_pattern?: Json
+          biggest_traffic_decline?: Json
+          briefing_date: string
+          confidence_score?: number
+          daily_summary: string
+          data_sources?: Json
+          estimated_revenue_opportunity?: string
+          estimated_traffic_opportunity?: number
+          fastest_page_one_opportunity?: Json
+          generated_at?: string | null
+          highest_confidence_recommendation?: Json
+          highest_roi_opportunity?: Json
+          highest_rpm_opportunity?: Json
+          id?: string
+          risk_alerts?: Json
+          seo_trend_overview?: Json
+          suggested_implementation_queue?: Json
+          top_urgent_actions?: Json
+          updated_at?: string | null
+        }
+        Update: {
+          approval_status?: string
+          best_winning_pattern?: Json
+          biggest_traffic_decline?: Json
+          briefing_date?: string
+          confidence_score?: number
+          daily_summary?: string
+          data_sources?: Json
+          estimated_revenue_opportunity?: string
+          estimated_traffic_opportunity?: number
+          fastest_page_one_opportunity?: Json
+          generated_at?: string | null
+          highest_confidence_recommendation?: Json
+          highest_roi_opportunity?: Json
+          highest_rpm_opportunity?: Json
+          id?: string
+          risk_alerts?: Json
+          seo_trend_overview?: Json
+          suggested_implementation_queue?: Json
+          top_urgent_actions?: Json
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      weekly_seo_briefings: {
+        Row: {
+          approval_status: string
+          data_sources: Json
+          executive_summary: string
+          generated_at: string | null
+          growth_opportunities: Json
+          id: string
+          money_page_priorities: Json
+          seo_trend_overview: Json
+          top_tasks: Json
+          updated_at: string | null
+          warnings_issues: Json
+          week_start: string
+        }
+        Insert: {
+          approval_status?: string
+          data_sources?: Json
+          executive_summary: string
+          generated_at?: string | null
+          growth_opportunities?: Json
+          id?: string
+          money_page_priorities?: Json
+          seo_trend_overview?: Json
+          top_tasks?: Json
+          updated_at?: string | null
+          warnings_issues?: Json
+          week_start: string
+        }
+        Update: {
+          approval_status?: string
+          data_sources?: Json
+          executive_summary?: string
+          generated_at?: string | null
+          growth_opportunities?: Json
+          id?: string
+          money_page_priorities?: Json
+          seo_trend_overview?: Json
+          top_tasks?: Json
+          updated_at?: string | null
+          warnings_issues?: Json
+          week_start?: string
+        }
+        Relationships: []
+      }
+      sync_jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          duration_ms: number | null
+          error_log: Json | null
+          id: string
+          job_type: string
+          records_checked: number | null
+          records_failed: number | null
+          records_updated: number | null
+          started_at: string | null
+          status: string
+          summary: Json | null
+          triggered_by: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          duration_ms?: number | null
+          error_log?: Json | null
+          id?: string
+          job_type: string
+          records_checked?: number | null
+          records_failed?: number | null
+          records_updated?: number | null
+          started_at?: string | null
+          status?: string
+          summary?: Json | null
+          triggered_by: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          duration_ms?: number | null
+          error_log?: Json | null
+          id?: string
+          job_type?: string
+          records_checked?: number | null
+          records_failed?: number | null
+          records_updated?: number | null
+          started_at?: string | null
+          status?: string
+          summary?: Json | null
+          triggered_by?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
         }
         Relationships: []
       }

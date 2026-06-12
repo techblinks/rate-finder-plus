@@ -1,4 +1,9 @@
 import { FAQS, type FaqItem } from "./faqs";
+import {
+  DRAFT_MORTGAGE_SCENARIOS,
+  mortgageScenarioPath,
+  shouldIncludeMortgageScenarioInSitemap,
+} from "./mortgageScenarioPages";
 
 export interface RouteMeta {
   path: string;
@@ -220,6 +225,21 @@ for (const g of SUBURB_GUIDES) {
     metaDescription: g.metaDescription,
     canonical: `/suburbs/${g.slug}`,
     faqs: g.faqs,
+    isArticle: true,
+  });
+}
+
+for (const scenario of DRAFT_MORTGAGE_SCENARIOS) {
+  if (!shouldIncludeMortgageScenarioInSitemap(scenario, DRAFT_MORTGAGE_SCENARIOS)) continue;
+
+  const path = mortgageScenarioPath(scenario.slug);
+  ROUTES.push({
+    path,
+    title: scenario.title,
+    metaTitle: scenario.metaTitle,
+    metaDescription: scenario.metaDescription,
+    canonical: path,
+    faqs: scenario.faqs,
     isArticle: true,
   });
 }

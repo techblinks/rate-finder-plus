@@ -1,7 +1,4 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { classifyKeyword } from "../_shared/seoQuality.ts";
-import { matchPatterns, hasEnoughLearningData, INSUFFICIENT_LEARNING_DATA, type WinningPattern } from "../_shared/patternMatch.ts";
-import { buildReasoning } from "../_shared/decisionIntelligence.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -150,38 +147,12 @@ function actionPartsFor(signals: string[]) {
   return [...new Set(parts)];
 }
 
-function pageLabel(url: string): string {
-  if (url.includes("mortgage")) return "Mortgage Calculator";
-  if (url.includes("borrowing-power")) return "Borrowing Power Calculator";
-  if (url.includes("stamp-duty")) return "Stamp Duty Calculator";
-  if (url.includes("lmi")) return "LMI Calculator";
-  if (url.includes("hecs")) return "HECS Borrowing Power Calculator";
-  if (url.includes("refinance")) return "Refinance Calculator";
-  if (url.includes("extra-repayments")) return "Extra Repayments Calculator";
-  if (url.includes("loan-comparison")) return "Loan Comparison Calculator";
-  if (url.includes("rent-vs-buy")) return "Rent vs Buy Calculator";
-  return "Australian Finance page";
-}
-
-function buildRecommendation(
-  row: KeywordRow,
-  targetUrl: string,
-  signals: string[],
-  quality: { intent: string; financeScore: number; confidence: string },
-): string {
+function buildRecommendation(row: KeywordRow, targetUrl: string, signals: string[]): string {
   const position = row.calcy_position ?? 99;
-  const label = pageLabel(targetUrl);
+  const keyword = row.keyword;
   const actions = actionPartsFor(signals);
-  if (quality.intent === "calculator" || quality.intent === "transactional") {
-    actions.unshift(`align ${label} above-the-fold copy to ${quality.intent} intent for "${row.keyword}"`);
-  } else if (quality.intent === "comparison") {
-    actions.unshift(`add or expand a comparison/options table relevant to "${row.keyword}"`);
-  }
-  if (quality.financeScore >= 8) {
-    actions.push("add FAQ schema with 3-5 finance-specific Q&As and clear Australian assumptions");
-  }
-  const actionText = actions.length > 0 ? actions.join("; ") : "review intent match and internal links";
-  return `${row.keyword} ranks ~position ${position.toFixed(1)} on ${label} (${targetUrl}) with ${(row.calcy_impressions_28d ?? 0).toLocaleString()} impressions and ${((row.calcy_ctr_28d ?? 0) * 100).toFixed(1)}% CTR (confidence: ${quality.confidence}). Recommended: ${actionText}. Admin-only suggestion — do not auto-publish or change URLs.`;
+  const actionText = actions.length > 0 ? actions.join(", ") : "review the page for intent match and internal links";
+  return `${keyword} has ${(row.calcy_impressions_28d ?? 0).toLocaleString()} impressions, ${((row.calcy_ctr_28d ?? 0) * 100).toFixed(1)}% CTR, and average position ${position.toFixed(1)}. For ${targetUrl}, ${actionText}. Admin suggestions only; do not publish or change URLs automatically.`;
 }
 
 function scoreKeyword(row: KeywordRow, draftKeywords: Set<string>, pageStats: Map<string, PageStats>): Opportunity | null {
@@ -189,21 +160,6 @@ function scoreKeyword(row: KeywordRow, draftKeywords: Set<string>, pageStats: Ma
   const clicks = row.calcy_clicks_28d ?? 0;
   const ctr = row.calcy_ctr_28d ?? (impressions > 0 ? clicks / impressions : 0);
   const position = row.calcy_position;
-
-  const quality = classifyKeyword({
-    keyword: row.keyword,
-    category: row.category,
-    impressions,
-    clicks,
-    ctr,
-    position,
-  });
-
-  // Hard gate: drop noisy / non-finance / navigational keywords entirely.
-  if (quality.isNoise) return null;
-  if (!quality.isFinance && quality.intent !== "calculator") return null;
-  if (quality.intent === "navigational") return null;
-
   const previous = row.calcy_position_previous;
   const targetUrl = normaliseTargetUrl(row.target_page, row.category);
   const expected = expectedCtr(position);
@@ -260,12 +216,7 @@ function scoreKeyword(row: KeywordRow, draftKeywords: Set<string>, pageStats: Ma
     score += 10;
   }
 
-  // Finance intent + CPC boost
-  score += quality.financeScore * 1.5;
-  if (quality.intent === "calculator" || quality.intent === "transactional") score += 8;
-  if (quality.intent === "comparison") score += 5;
-
-  if (signals.length === 0 || score < 28) return null;
+  if (signals.length === 0 || score < 20) return null;
 
   const roundedScore = Math.round(clamp(score));
   const reasonParts = signals.map((signal) => {
@@ -285,14 +236,10 @@ function scoreKeyword(row: KeywordRow, draftKeywords: Set<string>, pageStats: Ma
     score: roundedScore,
     priority: priorityFor(roundedScore),
     reason: reasonParts.join("; "),
-    recommended_action: buildRecommendation(row, targetUrl, signals, quality),
+    recommended_action: buildRecommendation(row, targetUrl, signals),
     source_keyword_id: row.id,
     signals: {
       signals,
-      intent: quality.intent,
-      confidence: quality.confidence,
-      finance_relevance_score: quality.financeScore,
-      quality_score: quality.qualityScore,
       category: row.category,
       impressions_28d: impressions,
       clicks_28d: clicks,
@@ -336,10 +283,9 @@ Deno.serve(async (req) => {
   });
 
   try {
-    const [{ data: keywordRows, error: keywordError }, { data: drafts, error: draftError }, { data: patternsData }] = await Promise.all([
+    const [{ data: keywordRows, error: keywordError }, { data: drafts, error: draftError }] = await Promise.all([
       supabase.from("seo_keywords").select("*").eq("is_active", true),
       supabase.from("content_drafts").select("target_keyword, slug, status"),
-      supabase.from("seo_winning_patterns").select("*").in("status", ["winning", "risky"]),
     ]);
 
     if (keywordError) throw keywordError;
@@ -351,37 +297,10 @@ Deno.serve(async (req) => {
         .filter((keyword): keyword is string => Boolean(keyword)),
     );
 
-    const allKeywords = (keywordRows as KeywordRow[] | null) || [];
-
-    // Pre-filter pass: drop noisy / non-finance keywords from pageStats AND scoring.
-    const filterLog: { keyword: string; reason: string }[] = [];
-    const cleanKeywords: KeywordRow[] = [];
-    for (const row of allKeywords) {
-      const q = classifyKeyword({
-        keyword: row.keyword,
-        category: row.category,
-        impressions: row.calcy_impressions_28d,
-        clicks: row.calcy_clicks_28d,
-        ctr: row.calcy_ctr_28d,
-        position: row.calcy_position,
-      });
-      if (q.isNoise) {
-        filterLog.push({ keyword: row.keyword, reason: q.noiseReason || "noise" });
-        continue;
-      }
-      if (!q.isFinance && q.intent !== "calculator") {
-        filterLog.push({ keyword: row.keyword, reason: "non_finance_irrelevant" });
-        continue;
-      }
-      if (q.intent === "navigational") {
-        filterLog.push({ keyword: row.keyword, reason: "navigational_branded" });
-        continue;
-      }
-      cleanKeywords.push(row);
-    }
-
+    const activeKeywords = (keywordRows as KeywordRow[] | null) || [];
     const pageStats = new Map<string, PageStats>();
-    for (const row of cleanKeywords) {
+
+    for (const row of activeKeywords) {
       const targetUrl = normaliseTargetUrl(row.target_page, row.category);
       const impressions = row.calcy_impressions_28d ?? 0;
       const clicks = row.calcy_clicks_28d ?? 0;
@@ -405,71 +324,9 @@ Deno.serve(async (req) => {
       pageStats.set(targetUrl, current);
     }
 
-    const patterns = (patternsData as WinningPattern[] | null) || [];
-    const patternsReady = hasEnoughLearningData(patterns);
-
-    const opportunities = cleanKeywords
+    const opportunities = ((keywordRows as KeywordRow[] | null) || [])
       .map((row) => scoreKeyword(row, draftKeywords, pageStats))
       .filter((row): row is Opportunity => Boolean(row))
-      .map((opp) => {
-        const sig = opp.signals as Record<string, unknown>;
-        if (!patternsReady) {
-          (sig as any).pattern_match_score = 0;
-          (sig as any).matched_pattern_ids = [];
-          (sig as any).pattern_reason = INSUFFICIENT_LEARNING_DATA;
-          (sig as any).risk_pattern_warning = null;
-          (sig as any).reasoning = buildReasoning({
-            kind: "opportunity",
-            keyword: opp.keyword,
-            target_url: opp.target_url,
-            intent: String(sig.intent || ""),
-            confidence: String(sig.confidence || ""),
-            score: opp.score,
-            priority: opp.priority,
-            impressions_28d: Number(sig.impressions_28d || 0),
-            clicks_28d: Number(sig.clicks_28d || 0),
-            ctr_28d: Number(sig.ctr_28d || 0),
-            expected_ctr: Number(sig.expected_ctr || 0),
-            position: sig.position == null ? null : Number(sig.position),
-            previous_position: sig.previous_position == null ? null : Number(sig.previous_position),
-            learning_data_ready: false,
-            signals: Array.isArray(sig.signals) ? (sig.signals as string[]) : [],
-          });
-          return opp;
-        }
-        const match = matchPatterns(patterns, {
-          url: opp.target_url,
-          keywordIntent: String(sig.intent || ""),
-        });
-        // Adjust score by up to +/-10 based on pattern match
-        const adjusted = Math.max(0, Math.min(100, opp.score + Math.round(match.pattern_match_score * 10)));
-        (sig as any).pattern_match_score = match.pattern_match_score;
-        (sig as any).matched_pattern_ids = match.matched_pattern_ids;
-        (sig as any).pattern_reason = match.pattern_reason;
-        (sig as any).risk_pattern_warning = match.risk_pattern_warning;
-        (sig as any).reasoning = buildReasoning({
-          kind: "opportunity",
-          keyword: opp.keyword,
-          target_url: opp.target_url,
-          intent: String(sig.intent || ""),
-          confidence: String(sig.confidence || ""),
-          score: adjusted,
-          priority: opp.priority,
-          impressions_28d: Number(sig.impressions_28d || 0),
-          clicks_28d: Number(sig.clicks_28d || 0),
-          ctr_28d: Number(sig.ctr_28d || 0),
-          expected_ctr: Number(sig.expected_ctr || 0),
-          position: sig.position == null ? null : Number(sig.position),
-          previous_position: sig.previous_position == null ? null : Number(sig.previous_position),
-          pattern_match_score: match.pattern_match_score,
-          pattern_reason: match.pattern_reason,
-          risk_pattern_warning: match.risk_pattern_warning,
-          matched_pattern_ids: match.matched_pattern_ids,
-          learning_data_ready: true,
-          signals: Array.isArray(sig.signals) ? (sig.signals as string[]) : [],
-        });
-        return { ...opp, score: adjusted };
-      })
       .sort((a, b) => b.score - a.score)
       .slice(0, 100);
 
@@ -489,15 +346,11 @@ Deno.serve(async (req) => {
     }
 
     const summary = {
-      total_keywords_checked: allKeywords.length,
-      noisy_keywords_filtered: filterLog.length,
-      finance_keywords_evaluated: cleanKeywords.length,
+      total_keywords_checked: (keywordRows || []).length,
       opportunities_scored: opportunities.length,
       high_priority: opportunities.filter((item) => item.priority === "high").length,
       medium_priority: opportunities.filter((item) => item.priority === "medium").length,
       low_priority: opportunities.filter((item) => item.priority === "low").length,
-      high_confidence: opportunities.filter((o) => (o.signals as Record<string, unknown>).confidence === "high").length,
-      ignored_sample: filterLog.slice(0, 25),
     };
 
     await supabase.from("seo_reports").insert({

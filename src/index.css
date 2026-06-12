@@ -682,7 +682,7 @@
   --admin-surface: 0 0% 100%;
   --admin-border: 214 32% 91%;         /* #e2e8f0 */
   --admin-text: 222 47% 11%;
-  --admin-muted: 215 16% 47%;          /* #64748b */
+  --admin-muted: 215 18% 42%;          /* darker muted text for AA contrast on admin cards */
   --admin-sidebar: 222 47% 11%;        /* #0f172a */
   --admin-sidebar-text: 213 27% 84%;
   --admin-sidebar-muted: 215 14% 50%;
@@ -690,7 +690,7 @@
 }
 .admin-shell { background: hsl(var(--admin-bg)); color: hsl(var(--admin-text)); }
 .admin-shell .admin-card { background: hsl(var(--admin-surface)); border: 1px solid hsl(var(--admin-border)); border-radius: 12px; }
-.admin-shell .admin-section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: hsl(var(--admin-sidebar-muted)); }
+.admin-shell .admin-section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: hsl(var(--admin-muted)); }
 .admin-shell .admin-page-title { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; color: hsl(var(--admin-text)); }
 .admin-shell .admin-metric { font-size: 28px; font-weight: 700; line-height: 1.1; color: hsl(var(--admin-text)); font-variant-numeric: tabular-nums; }
 .admin-shell .admin-metric-label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: hsl(var(--admin-muted)); }
@@ -882,4 +882,3 @@
     display: none !important;
   }
 }
-

@@ -17,6 +17,7 @@ import { existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { deriveSeoTags } from "@/components/seo/SeoHead";
+import { removeDuplicateCanonicalLinks } from "@/lib/seoCanonical";
 import type { SiteSettings } from "@/hooks/useSiteSettings";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -126,6 +127,34 @@ describe("SeoHead invariants under admin settings", () => {
       default_og_image: "https://cdn.example/og.png",
     });
     expect(ogImage).toBe("https://cdn.example/og.png");
+  });
+
+  it("removes stale runtime canonical tags while keeping the current route canonical", () => {
+    document.head.innerHTML = `
+      <link rel="canonical" href="https://calcy.com.au/" />
+      <link rel="canonical" href="https://calcy.com.au/mortgage-calculator" />
+    `;
+
+    const removed = removeDuplicateCanonicalLinks("https://calcy.com.au/mortgage-calculator");
+    const canonicals = [...document.head.querySelectorAll<HTMLLinkElement>('link[rel="canonical"]')];
+
+    expect(removed).toBe(1);
+    expect(canonicals).toHaveLength(1);
+    expect(canonicals[0].href).toBe("https://calcy.com.au/mortgage-calculator");
+  });
+
+  it("dedupes identical runtime canonical tags", () => {
+    document.head.innerHTML = `
+      <link rel="canonical" href="https://calcy.com.au/" />
+      <link rel="canonical" href="https://calcy.com.au/" />
+    `;
+
+    const removed = removeDuplicateCanonicalLinks("https://calcy.com.au/");
+    const canonicals = [...document.head.querySelectorAll<HTMLLinkElement>('link[rel="canonical"]')];
+
+    expect(removed).toBe(1);
+    expect(canonicals).toHaveLength(1);
+    expect(canonicals[0].href).toBe("https://calcy.com.au/");
   });
 });
 

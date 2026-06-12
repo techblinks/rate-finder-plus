@@ -1,0 +1,15 @@
+Payment Number,Payment Period,Opening Balance,Scheduled Repayment,Extra Repayment,Total Payment,Interest Portion,Principal Portion,Closing Balance,Notes
+Template Instructions,Enter your own loan amount rate term repayment frequency and extra repayment assumptions,,,,,,,,General information only. This template is not financial advice and does not replace lender quotes.
+Sample Assumptions,Example only: 660000 loan 6.39 percent annual rate 30 year term fortnightly repayments,,,,,,,,Replace these sample assumptions before relying on the schedule.
+1,Fortnight 1,660000.00,1902.49,0.00,1902.49,1619.93,282.56,659717.44,Example only based on sample assumptions.
+2,Fortnight 2,659717.44,1902.49,0.00,1902.49,1619.24,283.25,659434.19,Example only based on sample assumptions.
+3,Fortnight 3,659434.19,1902.49,0.00,1902.49,1618.54,283.95,659150.24,Example only based on sample assumptions.
+4,Fortnight 4,659150.24,1902.49,0.00,1902.49,1617.84,284.65,658865.59,Example only based on sample assumptions.
+5,Fortnight 5,658865.59,1902.49,0.00,1902.49,1617.14,285.35,658580.24,Example only based on sample assumptions.
+6,Fortnight 6,658580.24,1902.49,0.00,1902.49,1616.44,286.05,658294.19,Example only based on sample assumptions.
+7,Fortnight 7,658294.19,1902.49,0.00,1902.49,1615.74,286.75,658007.44,Example only based on sample assumptions.
+8,Fortnight 8,658007.44,1902.49,0.00,1902.49,1615.03,287.46,657719.98,Example only based on sample assumptions.
+9,Fortnight 9,657719.98,1902.49,0.00,1902.49,1614.33,288.16,657431.82,Example only based on sample assumptions.
+10,Fortnight 10,657431.82,1902.49,0.00,1902.49,1613.62,288.87,657142.95,Example only based on sample assumptions.
+11,Fortnight 11,657142.95,1902.49,0.00,1902.49,1612.91,289.58,656853.37,Example only based on sample assumptions.
+12,Fortnight 12,656853.37,1902.49,0.00,1902.49,1612.20,290.29,656563.08,Example only based on sample assumptions.

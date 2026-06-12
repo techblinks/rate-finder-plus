@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { activeLocales, LOCALES } from "@/lib/locale";
+import { removeDuplicateCanonicalLinks } from "@/lib/seoCanonical";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import type { SiteSettings } from "@/hooks/useSiteSettings";
 
@@ -41,6 +43,10 @@ export const SeoHead = ({ title, description, canonical }: SeoHeadProps) => {
     { title, description, canonical },
     settings,
   );
+
+  useEffect(() => {
+    removeDuplicateCanonicalLinks(url);
+  }, [url]);
 
   return (
     <Helmet>

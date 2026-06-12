@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { isSafeHtmlUrl } from "@/lib/safeHtml";
 
 /**
  * Injects admin-managed verification meta tags and custom head/body HTML
@@ -13,6 +14,7 @@ import { useSiteSettings } from "@/hooks/useSiteSettings";
  * but we still guard against accidental tag injection in unexpected places.
  */
 const ALLOWED_TAGS = ["SCRIPT", "META", "LINK", "NOSCRIPT", "STYLE"];
+const URL_ATTRS = new Set(["href", "src"]);
 
 function appendSanitised(target: HTMLElement, html: string, marker: string) {
   // Remove any previously injected nodes from this marker so updates replace.
@@ -28,6 +30,9 @@ function appendSanitised(target: HTMLElement, html: string, marker: string) {
     // Strip event handler attributes defensively.
     [...node.attributes].forEach((attr) => {
       if (attr.name.startsWith("on")) node.removeAttribute(attr.name);
+      if (URL_ATTRS.has(attr.name.toLowerCase()) && !isSafeHtmlUrl(attr.value)) {
+        node.removeAttribute(attr.name);
+      }
     });
     (node as HTMLElement).setAttribute("data-injected", marker);
   });
