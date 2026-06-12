@@ -39,7 +39,7 @@ function htmlForRoute(canonical: string) {
   const file =
     canonical === "/"
       ? join(DIST, "index.html")
-      : join(DIST, canonical.replace(/^\//, ""), "index.html");
+      : join(DIST, `${canonical.replace(/^\//, "")}.html`);
   return readFileSync(file, "utf8");
 }
 
